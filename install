@@ -1,0 +1,50 @@
+#!/usr/bin/env zsh
+# vim:set ts=4 sw=4:
+
+main () {
+    echo "~/dotfiles -> ~/ are you sure? [y/n]: \c"
+    read line
+    if [[ "$line" == y* ]]; then
+        echo "Installing main dotfiles"
+        rm -fr ~/.vim
+        rm ~/.agignore ~/.ctags ~/.gitconfig ~/.gitignore ~/.importjs.js ~/.tmux.conf ~/.vimrc ~/.zshrc
+
+        mkdir ~/dotfiles/.vim/undo
+        mkdir ~/dotfiles/.vim/session
+
+        ln -s ~/dotfiles/.agignore ~/.agignore
+        ln -s ~/dotfiles/.ctags ~/.ctags
+        ln -s ~/dotfiles/.gitconfig ~/.gitconfig
+        ln -s ~/dotfiles/.gitignore ~/.gitignore
+        ln -s ~/dotfiles/.importjs.js ~/.importjs.js
+        ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
+        ln -s ~/dotfiles/.vim ~/.vim
+        ln -s ~/dotfiles/.vimrc ~/.vimrc
+        ln -s ~/dotfiles/.zshrc ~/.zshrc
+
+        if [[ "$OSTYPE" == linux* ]]; then
+            echo "Adding Linux dotfiles"
+            rm ~/.zprofile ~/.Xresources ~/.xinitrc ~/.Xmodmap ~/.xbindkeysrc
+            rm -fr ~/.config/dunst ~/.config/i3 ~/.config/polybar ~/.config/ranger ~/.config/rofi ~/.config/termite ~/.config/zathura
+
+            cp -R ~/dotfiles/.Xmodmap ~/.Xmodmap
+            cp -R ~/dotfiles/.config/i3 ~/.config/i3
+            cp -R ~/dotfiles/.config/polybar ~/.config/polybar
+            cp -R ~/dotfiles/.xinitrc ~/.xinitrc
+
+            ln -s ~/dotfiles/.zprofile ~/.zprofile
+            ln -s ~/dotfiles/.Xresources ~/.Xresources
+            ln -s ~/dotfiles/.xbindkeysrc ~/.xbindkeysrc
+            ln -s ~/dotfiles/.config/dunst ~/.config/dunst
+            ln -s ~/dotfiles/.config/ranger ~/.config/ranger
+            ln -s ~/dotfiles/.config/termite ~/.config/termite
+            ln -s ~/dotfiles/.config/zathura ~/.config/zathura
+        elif [[ "$OSTYPE" == darwin* ]]; then
+            echo "Adding MacOS dotfiles"
+        fi
+    else
+        echo "You said no, man"
+    fi
+}
+
+main
