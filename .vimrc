@@ -872,11 +872,8 @@ nnoremap <silent> <leader>go :Git checkout<Space>
 nnoremap <silent> <leader>gl :Git lg<CR>
 nnoremap <silent> <leader>gd :Gdiff<CR>
 nnoremap <silent> <leader>gm :Gmerge<CR>
-command! -nargs=0 Push execute 'Dispatch! git push -u'
-cnoreabbrev ph Push
-command! -nargs=0 Pull execute 'Dispatch! git pull'
-cnoreabbrev pl Pull
-
+command! -nargs=1 MyGit execute 'Dispatch! git ' . <q-args>
+cnoreabbrev git MyGit
 
 " Navigations between tabs
 nnoremap <silent> H gT
@@ -889,9 +886,9 @@ nnoremap <silent> go lbve"by:call GoToTag('current', @b)<CR>
 nnoremap <silent> gT <c-w>gf
 nnoremap <silent> gS :vertical wincmd f<CR>
 nnoremap <silent> gO gf
-command! -nargs=1 GT call GoToTag('tab', <f-args>)
-command! -nargs=1 GS call GoToTag('vsplit', <f-args>)
-command! -nargs=1 GO call GoToTag('current', <f-args>)
+command! -nargs=1 -complete=tag Gt call GoToTag('tab', <f-args>)
+command! -nargs=1 -complete=tag Gs call GoToTag('vsplit', <f-args>)
+command! -nargs=1 -complete=tag Go call GoToTag('current', <f-args>)
 
 " Search and replace
 nnoremap <silent> <F2> :call FileReplaceIt(0)<cr>
