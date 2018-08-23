@@ -525,6 +525,7 @@ function! CloseBuffer()
   " when exiting the Git Status window
   if &ft == 'gitcommit'
     set nopreviewwindow
+    call fugitive#detect(getcwd())
   endif
 
   if tabpagenr('$') > 1
@@ -532,6 +533,9 @@ function! CloseBuffer()
   else
     execute 'bd'
   endif
+
+  "add the fugitive commands for the buffer
+  call fugitive#detect(getcwd())
 endfunction
 
 function GitStatus()
