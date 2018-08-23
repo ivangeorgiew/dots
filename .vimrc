@@ -869,7 +869,6 @@ nnoremap <silent> <leader>gc :call GitCommit()<CR>
 nnoremap <silent> <leader>gw :Gwrite<CR>
 nnoremap <silent> <leader>gb :Gblame<CR>
 nnoremap <silent> <leader>go :Git checkout<Space>
-nnoremap <silent> <leader>gl :Git lg<CR>
 nnoremap <silent> <leader>gd :Gdiff<CR>
 nnoremap <silent> <leader>gm :Gmerge<CR>
 command! -nargs=1 MyGit execute 'Dispatch! git ' . <q-args>
