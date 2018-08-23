@@ -103,3 +103,6 @@
 [submodule ".vim/bundle/vim-javascript"]
 	path = .vim/bundle/vim-javascript
 	url = https://github.com/ivangeorgiew/vim-javascript.git
+[submodule ".vim/bundle/vim-git-log"]
+	path = .vim/bundle/vim-git-log
+	url = https://github.com/ivangeorgiew/vim-git-log.git

@@ -411,6 +411,7 @@ let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:20'
 let g:ctrlp_switch_buffer = ''
 " open multiple files in new tabs and jump to first one
 let g:ctrlp_open_multiple_files = 'tj'
+let g:ctrlp_reuse_window = 'GV'
 let g:ag_prg = 'ag --hidden --column --nogroup --noheading -s'
 
 " Treat <li> and <p> tags like the block tags they are
@@ -531,16 +532,6 @@ function! CloseBuffer()
   else
     execute 'bd'
   endif
-endfunction
-
-function! GitCommit()
-  call inputsave()
-  let message = input('Message: ')
-  call inputrestore()
-  if message == ''
-    let message = 'update'
-  endif
-  exec ':silent! Gcommit -m "' . message . '"'
 endfunction
 
 function GitStatus()
@@ -804,6 +795,19 @@ function! JoinSpaceless()
     normal! x
   endif
 endfunction
+
+function! FastGit(args)
+  if a:args == 'lg' || a:args == 'log'
+    execute 'silent! GV'
+  elseif a:args == 'ss'
+    call GitStatus()
+  elseif a:args =~ '^ac '
+    let message = substitute(a:args, '^ac ', '', '')
+    execute 'silent! Gcommit -m ' . message
+  else
+    execute 'Dispatch! git ' . a:args
+  endif
+endfunction
 "FUNCTIONS }}}
 
 "MAPPINGS {{{
@@ -864,14 +868,11 @@ nnoremap <silent> dh :diffget //2<CR>\|:diffupdate<CR>
 nnoremap <silent> dl :diffget //3<CR>\|:diffupdate<CR>
 
 "Git (vim-fugitive) mappings
-nnoremap <silent> <leader>gs :call GitStatus()<CR>
-nnoremap <silent> <leader>gc :call GitCommit()<CR>
 nnoremap <silent> <leader>gw :Gwrite<CR>
 nnoremap <silent> <leader>gb :Gblame<CR>
-nnoremap <silent> <leader>go :Git checkout<Space>
 nnoremap <silent> <leader>gd :Gdiff<CR>
 nnoremap <silent> <leader>gm :Gmerge<CR>
-command! -nargs=1 MyGit execute 'Dispatch! git ' . <q-args>
+command! -nargs=1 MyGit call FastGit(<q-args>)
 cnoreabbrev git MyGit
 
 " Navigations between tabs

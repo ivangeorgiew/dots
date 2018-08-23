@@ -3,7 +3,7 @@
 [color]
     ui = auto
 [alias]
-    ac = !git add . && git commit -m
+    ac = !git add -A && git commit -m
     cl = clone
     ct = checkout
     df = diff
