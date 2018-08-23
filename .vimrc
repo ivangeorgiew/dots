@@ -506,7 +506,6 @@ let g:fastfold_fold_movement_commands = []
 let g:airline_powerline_fonts = 1
 let g:airline_skip_empty_sections = 1
 let g:airline_extensions = [ 'ctrlp', 'ale', 'branch' ]
-let g:airline_section_y = ''
 let g:airline_highlighting_cache = 0
 let g:airline_theme = 'gruvbox'
 
@@ -876,8 +875,7 @@ nnoremap <silent> <leader>gw :Gwrite<CR>
 nnoremap <silent> <leader>gb :Gblame<CR>
 nnoremap <silent> <leader>gd :Gdiff<CR>
 nnoremap <silent> <leader>gm :Gmerge<CR>
-command! -nargs=1 MyGit call FastGit(<q-args>)
-cnoreabbrev git MyGit
+command! -nargs=1 Git call FastGit(<q-args>)
 
 " Navigations between tabs
 nnoremap <silent> H gT
