@@ -25,11 +25,10 @@ main () {
         if [[ "$OSTYPE" == linux* ]]; then
             echo "Adding Linux dotfiles"
             rm ~/.zprofile ~/.Xresources ~/.xinitrc ~/.Xmodmap ~/.xbindkeysrc
-            rm -fr ~/.config/dunst ~/.config/i3 ~/.config/polybar ~/.config/ranger ~/.config/rofi ~/.config/termite ~/.config/zathura
+            rm -fr ~/.config/dunst ~/.config/i3 ~/.config/ranger ~/.config/rofi ~/.config/termite ~/.config/zathura
 
             cp -R ~/dotfiles/.Xmodmap ~/.Xmodmap
             cp -R ~/dotfiles/.config/i3 ~/.config/i3
-            cp -R ~/dotfiles/.config/polybar ~/.config/polybar
             cp -R ~/dotfiles/.xinitrc ~/.xinitrc
 
             ln -s ~/dotfiles/.zprofile ~/.zprofile
