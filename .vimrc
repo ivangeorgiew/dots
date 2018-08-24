@@ -524,7 +524,6 @@ function! CloseBuffer()
   " when exiting the Git Status window
   if &ft == 'gitcommit'
     set nopreviewwindow
-    call fugitive#detect(getcwd())
   endif
 
   if tabpagenr('$') > 1
