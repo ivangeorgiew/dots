@@ -806,6 +806,8 @@ function! FastGit(args)
   elseif a:args =~ '^ac '
     let message = substitute(a:args, '^ac ', '', '')
     execute 'silent! Gcommit -m ' . message
+  elseif a:args =~ '^sch'
+    execute 'GitFugitive ' . a:args
   else
     execute 'Dispatch! git ' . a:args
   endif
