@@ -876,6 +876,7 @@ nnoremap <silent> <leader>gb :Gblame<CR>
 nnoremap <silent> <leader>gd :Gdiff<CR>
 nnoremap <silent> <leader>gm :Gmerge<CR>
 command! -nargs=1 Git call FastGit(<q-args>)
+cnoreabbrev git Git
 
 " Navigations between tabs
 nnoremap <silent> H gT

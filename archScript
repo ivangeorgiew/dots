@@ -28,7 +28,7 @@ sudo pacman -S --noconfirm --needed udiskie transmission-gtk ttf-dejavu rofi nod
 sudo pacman -S --noconfirm --needed alsa-firmware alsa-utils alsa-plugins pulseaudio-alsa pulseaudio
 
 # install packages from yaourt
-yaourt -S --noconfirm zsh oh-my-zsh-git bullet-train-oh-my-zsh-theme-git i3lock-fancy-git spotify jdk8
+yaourt -S --noconfirm zsh oh-my-zsh-git bullet-train-oh-my-zsh-theme-git i3lock-fancy-git polybar spotify jdk8
 yaourt -S --noconfirm ttf-font-awesome-4 gtk-theme-arc-grey-git skypeforlinux-stable-bin google-chrome watchman
 
 # set zsh as default shell
