@@ -43,7 +43,7 @@ bindsym $mod+F10 exec --no-startup-id pactl set-sink-volume $audioId -5% #decrea
 bindsym $mod+F11 exec --no-startup-id pactl set-sink-volume $audioId +5% #increase sound volume
 
 # kill focused window
-bindsym $mod+q kill
+bindsym $mod+Shift+q kill
 
 # change focus
 bindsym $mod+$left focus left
@@ -67,8 +67,8 @@ bindsym $mod+Shift+e exec --no-startup-id i3lock-fancy && sleep 1
 bindsym $mod+F1 exec import -window "$(xdotool getwindowfocus -f)" /tmp/$(date +%F_%H%M%S_%N).png
 
 #invisible bindings
-bindsym $mod+s move scratchpad
-bindsym $mod+Shift+s scratchpad show
+# bindsym $mod+s move scratchpad
+# bindsym $mod+Shift+s scratchpad show
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
