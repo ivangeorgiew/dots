@@ -1009,8 +1009,8 @@ cnoremap <expr> %% expand('%:h').'/'
 " Open file for editing "
 nnoremap <leader>fe :e<Space>
 nnoremap <leader>ft :tabe<Space>
-nnoremap <leader>fs :sav!<Space>
 nnoremap <leader>fv :vsplit<Space>
+nmap <leader>fs :sav! %%
 " Rename current file "
 nnoremap <leader>fr :call RenameCurrentFile()<cr>
 " Move current file "
