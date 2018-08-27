@@ -213,8 +213,8 @@ set foldlevel=0
 set foldtext=FoldText()
 
 " Indentations
-set tabstop=2
-set shiftwidth=2
+set tabstop=4
+set shiftwidth=4
 set expandtab
 
 " Numbers
@@ -325,11 +325,7 @@ augroup vimrcEx
   au BufRead,BufNewFile *.md setl textwidth=80
 
   au BufEnter * set formatoptions=rjcl foldtext=FoldText()
-
-  au BufEnter *.js setl tabstop=4 shiftwidth=4 synmaxcol=3000
-  au BufEnter *.feature setl tabstop=4 shiftwidth=4
-  au BufEnter *.scss setl tabstop=4 shiftwidth=4
-  au BufEnter *.json setl tabstop=4 shiftwidth=4
+  au BufEnter *.js setl synmaxcol=3000
 
   " Ask whether to save the session on exit
   au VimLeavePre * call SaveSession()
@@ -445,7 +441,7 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 " enable ycm only in those filetypes
 " let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1, 'cucumber': 1 }
 " remove semantic competion in javascript
-let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1 }
+let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1, 'python': 1 }
 " etc
 let g:ycm_filepath_completion_use_working_dir = 0
 " let g:ycm_semantic_triggers =  {
