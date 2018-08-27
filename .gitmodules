@@ -106,3 +106,6 @@
 [submodule ".vim/bundle/vim-git-log"]
 	path = .vim/bundle/vim-git-log
 	url = https://github.com/ivangeorgiew/vim-git-log.git
+[submodule ".vim/bundle/vim-apathy"]
+	path = .vim/bundle/vim-apathy
+	url = https://github.com/tpope/vim-apathy.git
