@@ -1004,12 +1004,12 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-d> 25jzz
 nnoremap <C-u> 25kzz
 
-" File manipulation "
+" File manipulation
 cnoremap <expr> %% expand('%:h').'/'
-" Open file for editing "
-nnoremap <leader>fe :e<Space>
-nnoremap <leader>ft :tabe<Space>
-nnoremap <leader>fv :vsplit<Space>
+" Open file for editing
+cnoreabbrev te tabe
+cnoreabbrev vs vsplit
+" Copy file content into a new file
 nmap <leader>fs :sav! %%
 " Rename current file "
 nnoremap <leader>fr :call RenameCurrentFile()<cr>
