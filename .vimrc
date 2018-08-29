@@ -539,7 +539,7 @@ function GitStatus()
   if line('$') == 1 && getline(1) == ''
     exec 'bd'
   else
-    exec "normal! \<C-W>j"
+    exec "normal! \<C-W>j\<C-W>T"
   endif
 endfunction
 
@@ -795,18 +795,18 @@ function! JoinSpaceless()
 endfunction
 
 function! FastGit(args)
-  if a:args == 'lg' || a:args == 'log'
-    execute 'silent! GV'
-  elseif a:args == 'ss'
-    call GitStatus()
-  elseif a:args =~ '^ac '
-    let message = substitute(a:args, '^ac ', '', '')
-    execute 'silent! Gcommit -m ' . message
-  elseif a:args =~ '^sch'
-    execute 'GitFugitive ' . a:args
-  else
-    execute 'Dispatch! git ' . a:args
-  endif
+    if a:args == 'lg' || a:args == 'log'
+        execute 'silent! GV'
+    elseif a:args == 'ss'
+        call GitStatus()
+    elseif a:args =~ '^ac '
+        let message = substitute(a:args, '^ac ', '', '')
+        execute 'silent! Gcommit -m ' . message
+    elseif a:args =~ '^sch'
+        execute 'GitFugitive ' . a:args
+    else
+        execute 'Dispatch! git ' . a:args
+    endif
 endfunction
 "FUNCTIONS }}}
 
