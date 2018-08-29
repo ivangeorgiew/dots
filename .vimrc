@@ -601,7 +601,7 @@ function! FileReplaceIt(visual)
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute '%sno@'.expression.'@'.replacement.'@gcI'
+  execute '%sno@'.expression.'@'.replacement.'@gc'
 endfunction
 
 function! VisReplaceIt()
@@ -611,7 +611,7 @@ function! VisReplaceIt()
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute "%sno@\\%V".expression."@".replacement."@gcI"
+  execute "%sno@\\%V".expression."@".replacement."@gc"
 endfunction
 
 function! MassReplaceIt()
@@ -625,9 +625,9 @@ function! MassReplaceIt()
   let replacement = input('Enter replacement:')
   call inputrestore()
   if fullWord == 1
-    execute 'cfdo %sno@\<'.expression.'\>@'.replacement.'@gI | update'
+    execute 'cfdo %sno@\<'.expression.'\>@'.replacement.'@g | update'
   else
-    execute 'cfdo %sno@'.expression.'@'.replacement.'@gI | update'
+    execute 'cfdo %sno@'.expression.'@'.replacement.'@g | update'
   endif
 endfunction
 
@@ -789,7 +789,7 @@ function! JoinSpaceless()
   let leftChar = matchstr(getline('.'), '\%' . (currCol - 1) . 'c.')
   let rightChar = matchstr(getline('.'), '\%' . (currCol + 1) . 'c.')
 
-  if centerChar =~ '\s' && (leftChar =~ '[\(]' || rightChar =~ '[\.]')
+  if centerChar =~ '\s' && (leftChar =~ '[(>]' || rightChar =~ '[\.<]')
     normal! x
   endif
 endfunction
@@ -819,7 +819,7 @@ noremap <silent> <leader>d :call CloseBuffer()<CR>
 noremap <silent> <leader>t :tabclose<CR>
 
 " indent everything
-nnoremap <leader>I ggVG=
+nnoremap <leader>I gg=G
 " copy everything
 nnoremap <leader>Y ggVGy
 " replace everything
@@ -970,20 +970,18 @@ nnoremap <silent> <leader>s :call ToggleWrapscan()<CR>
 " Set marker
 nnoremap * m
 
-" Move to the next word such word
+" Move to the next word
 nnoremap <silent> n n:silent! norm! zv<CR>zz
 nnoremap <silent> N N:silent! norm! zv<CR>zz
-map _ "by:let @/ = '\<' . escape(@b, '\\/.*$^~[]') . '\>'<CR>
-nmap <silent> m viw_n
-vmap <silent> m _n
-nmap <silent> M viw_NN
-vmap <silent> M _NN
+nnoremap <silent> m *:silent! norm! zv<CR>zz
+nnoremap <silent> M #:silent! norm! zv<CR>zz
 
 " Macro mappings
 " @*<CR> to apply macro in * for everyline in visual selection
 vnoremap @ :normal @
 " Repeat 'e' macro if in a normal buffer
-noremap <silent><expr> <CR> empty(&buftype) ? ':normal @e<CR>' : '<CR>'
+nnoremap <silent><expr> <CR> empty(&buftype) ? ':normal @@<CR>' : '<CR>'
+vnoremap <silent><expr> <CR> empty(&buftype) ? ':normal @@<CR>' : '<CR>'
 
 " Mundo (undo history) toggle
 nnoremap <F1> :MundoToggle<CR>
