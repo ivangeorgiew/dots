@@ -539,7 +539,7 @@ function GitStatus()
   if line('$') == 1 && getline(1) == ''
     exec 'bd'
   else
-    exec "normal! \<C-W>j\<C-W>T"
+    exec "normal! \<C-W>j"
   endif
 endfunction
 
@@ -601,7 +601,11 @@ function! FileReplaceIt(visual)
   call inputsave()
   let replacement = input('Enter replacement:')
   call inputrestore()
-  execute '%sno@'.expression.'@'.replacement.'@gc'
+  if a:visual == 0
+      execute '%sno@'.expression.'@'.replacement.'@gc'
+  else
+      execute '%sno@\<'.expression.'\>@'.replacement.'@gc'
+  endif
 endfunction
 
 function! VisReplaceIt()
