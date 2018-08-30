@@ -106,3 +106,6 @@
 [submodule ".vim/bundle/vim-apathy"]
 	path = .vim/bundle/vim-apathy
 	url = https://github.com/tpope/vim-apathy.git
+[submodule ".vim/bundle/YouCompleteMe"]
+	path = .vim/bundle/YouCompleteMe
+	url = https://github.com/ivangeorgiew/YouCompleteMe.git
