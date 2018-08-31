@@ -154,9 +154,9 @@ execute pathogen#helptags()
 
 " Change between block and I-beam cursor
 if system("uname -s") =~ "Linux"
-  let &t_SI = "\<Esc>[6 q"
-  let &t_SR = "\<Esc>[4 q"
-  let &t_EI = "\<Esc>[2 q"
+    let &t_SI = "\<Esc>[6 q"
+    let &t_SR = "\<Esc>[4 q"
+    let &t_EI = "\<Esc>[2 q"
 endif
 
 " set Vim-specific sequences for RGB colors
@@ -248,87 +248,87 @@ set grepprg=ag
 
 "AUGROUP {{{
 if system("uname -s") =~ "Linux"
-  augroup linuxAutoCommands
-    au!
-    " Affects lag
-    au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
-    au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
+    augroup linuxAutoCommands
+        au!
+        " Affects lag
+        au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
+        au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
 
-    " remain with clipboard after closing
-    au VimLeave * call system("xclip -r -o -sel clipboard | xclip -r -sel clipboard")
-  augroup END
+        " remain with clipboard after closing
+        au VimLeave * call system("xclip -r -o -sel clipboard | xclip -r -sel clipboard")
+    augroup END
 endif
 
 augroup syntax
-  au!
+    au!
 
-  "Wrap character color
-  au VimEnter,Colorscheme * hi! NonText term=bold ctermbg=236 guibg=#32302f ctermfg=245 guifg=#928374
+    "Wrap character color
+    au VimEnter,Colorscheme * hi! NonText term=bold ctermbg=236 guibg=#32302f ctermfg=245 guifg=#928374
 
-  " Switch syntax for strange file endings
-  au BufNewFile,BufRead *.ejs setl filetype=html
-  au BufNewFile,BufRead *.babelrc setl filetype=json
-  au BufNewFile,BufRead *.sass setl filetype sass
-  au BufNewFile,BufRead *.eslintrc setl filetype=json
+    " Switch syntax for strange file endings
+    au BufNewFile,BufRead *.ejs setl filetype=html
+    au BufNewFile,BufRead *.babelrc setl filetype=json
+    au BufNewFile,BufRead *.sass setl filetype sass
+    au BufNewFile,BufRead *.eslintrc setl filetype=json
 
-  "Fix some keywords in css and scss
-  au FileType css setlocal iskeyword+=-
-  au FileType scss setlocal iskeyword+=-
+    "Fix some keywords in css and scss
+    au FileType css setlocal iskeyword+=-
+    au FileType scss setlocal iskeyword+=-
 augroup END
 
 augroup UltiSnips
-  au!
+    au!
 
-  au! User UltiSnipsEnterFirstSnippet
-  au User UltiSnipsEnterFirstSnippet call autocomplete#setup_mappings()
-  au! User UltiSnipsExitLastSnippet
-  au User UltiSnipsExitLastSnippet call autocomplete#teardown_mappings()
+    au! User UltiSnipsEnterFirstSnippet
+    au User UltiSnipsEnterFirstSnippet call autocomplete#setup_mappings()
+    au! User UltiSnipsExitLastSnippet
+    au User UltiSnipsExitLastSnippet call autocomplete#teardown_mappings()
 augroup END
 
 augroup folding
-  au!
+    au!
 
-  au FileType vim setl foldmarker={{{,}}} |
-        \ setl foldmethod=marker
+    au FileType vim setl foldmarker={{{,}}} |
+                \ setl foldmethod=marker
 
-  au FileType javascript.jsx setl foldmethod=expr |
-        \ setl foldexpr=FoldExprJS()
+    au FileType javascript.jsx setl foldmethod=expr |
+                \ setl foldexpr=FoldExprJS()
 
-  au FileType cucumber setl foldmethod=expr |
-        \ setl foldexpr=FoldExprCucumber()
+    au FileType cucumber setl foldmethod=expr |
+                \ setl foldexpr=FoldExprCucumber()
 augroup END
 
 augroup highlights
-  au!
+    au!
 
-  au BufEnter * hi! MyError ctermbg=Red guibg=#fb4934
+    au BufEnter * hi! MyError ctermbg=Red guibg=#fb4934
 
-  " au BufEnter * hi! link OverLength MyError
+    " au BufEnter * hi! link OverLength MyError
 
-  " Ale highlights
-  au BufEnter * hi! link ALEError MyError
-  au BufEnter * hi! link ALEWarning MyError
-  au BufEnter * hi! link ALEErrorSign MyError
+    " Ale highlights
+    au BufEnter * hi! link ALEError MyError
+    au BufEnter * hi! link ALEWarning MyError
+    au BufEnter * hi! link ALEErrorSign MyError
 
-  au BufEnter * hi! DiffAdd    term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=142 guifg=#b8bb26
-  au BufEnter * hi! DiffChange term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=142 guifg=#b8bb26
-  au BufEnter * hi! DiffDelete term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=167 guifg=#fb4934
-  au BufEnter * hi! DiffText   term=reverse cterm=reverse  ctermbg=236 gui=reverse  guibg=#32302f ctermfg=208 guifg=#fe8019
+    au BufEnter * hi! DiffAdd    term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=142 guifg=#b8bb26
+    au BufEnter * hi! DiffChange term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=142 guifg=#b8bb26
+    au BufEnter * hi! DiffDelete term=bold cterm=reverse ctermbg=236 gui=reverse guibg=#32302f ctermfg=167 guifg=#fb4934
+    au BufEnter * hi! DiffText   term=reverse cterm=reverse  ctermbg=236 gui=reverse  guibg=#32302f ctermfg=208 guifg=#fe8019
 augroup END
 
 augroup vimrcEx
-  au!
+    au!
 
-  "overwrite some vim-sensible options
-  au BufRead,BufNewFile * setglobal tags=tags
-  au BufRead,BufNewFile *.js setl textwidth=120
-  au BufRead,BufNewFile *.md setl textwidth=80
+    "overwrite some vim-sensible options
+    au BufRead,BufNewFile * setglobal tags=tags
+    au BufRead,BufNewFile *.js setl textwidth=120
+    au BufRead,BufNewFile *.md setl textwidth=80
 
-  au BufEnter * set formatoptions=rjcl foldtext=FoldText()
-  au BufEnter *.js setl synmaxcol=3000
+    au BufEnter * set formatoptions=rjcl foldtext=FoldText()
+    au BufEnter *.js setl synmaxcol=3000
 
-  " Ask whether to save the session on exit
-  au VimLeavePre * call SaveSession()
+    " Ask whether to save the session on exit
+    au VimLeavePre * call SaveSession()
 augroup END
 " AUGROUP }}}
 
@@ -377,16 +377,16 @@ let g:ale_enabled = 1
 let g:ale_linters_explicit = 1
 let g:ale_fix_on_save = 1
 let g:ale_linters = {
-      \'javascript': ['eslint'],
-      \'scss': ['scsslint'],
-      \'json': ['jsonlint']
-\}
+            \'javascript': ['eslint'],
+            \'scss': ['scsslint'],
+            \'json': ['jsonlint']
+            \}
 " eslint fixer removes last fold lines
 " DONT fix with javascript with eslint, since it will make mistakes
 let g:ale_fixers = {
-      \'scss': ['prettier'],
-      \'json': ['prettier']
-\}
+            \'scss': ['prettier'],
+            \'json': ['prettier']
+            \}
 let g:ale_lint_on_enter = 1
 let g:ale_lint_on_save = 1
 let g:ale_lint_on_text_changed = 'always'
@@ -415,7 +415,7 @@ let g:html_indent_tags = 'li\|p'
 
 " Arrow for wrapped text
 if has('linebreak')
-  let &showbreak='⤷ '
+    let &showbreak='⤷ '
 endif
 
 " Rooter
@@ -460,9 +460,9 @@ let g:ycm_show_diagnostics_ui = 1
 " Start vim faster
 " let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
 if system("uname -s") =~ "Linux"
-  let g:ycm_server_python_interpreter = '/usr/bin/python'
+    let g:ycm_server_python_interpreter = '/usr/bin/python'
 else
-  let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
+    let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
 endif
 
 " UltiSnips
@@ -517,285 +517,298 @@ let g:lastplace_open_folds = 0
 
 "FUNCTIONS {{{
 function! CloseBuffer()
-  " when exiting the Git Status window
-  if &ft == 'gitcommit'
-    set nopreviewwindow
-  endif
+    " when exiting the Git Status window
+    if &ft == 'gitcommit'
+        set nopreviewwindow
+    endif
 
-  if tabpagenr('$') > 1
-    execute 'q'
-  else
-    execute 'bd'
-  endif
+    if tabpagenr('$') > 1
+        execute 'q'
+    else
+        execute 'bd'
+    endif
 
-  "add the fugitive commands for the buffer
-  call fugitive#detect(getcwd())
+    "add the fugitive commands for the buffer
+    call fugitive#detect(getcwd())
 endfunction
 
 function GitStatus()
-  exec "Gstatus"
-  exec "normal \<C-W>k"
+    exec "Gstatus"
+    exec "normal \<C-W>k"
 
-  if line('$') == 1 && getline(1) == ''
-    exec 'bd'
-  else
-    exec "normal! \<C-W>j"
-  endif
+    if line('$') == 1 && getline(1) == ''
+        exec 'bd'
+    else
+        exec "normal! \<C-W>j"
+    endif
 endfunction
 
 function! MoveCurrentFile()
-  let old_destination = expand('%:p:h')
-  let filename = expand('%:t')
-  call inputsave()
-  let new_destination = input('New destination: ', expand('%:p:h'), 'file')
-  call inputrestore()
-  if new_destination != '' && new_destination != old_destination
-    exec ':saveas ' . new_destination . '/' . filename
-    exec ':silent !rm ' . old_destination . '/' . filename
-    redraw!
-  endif
+    let old_destination = expand('%:p:h')
+    let filename = expand('%:t')
+    call inputsave()
+    let new_destination = input('New destination: ', expand('%:p:h'), 'file')
+    call inputrestore()
+    if new_destination != '' && new_destination != old_destination
+        exec ':saveas ' . new_destination . '/' . filename
+        exec ':silent !rm ' . old_destination . '/' . filename
+        redraw!
+    endif
 endfunction
 
 function! RenameCurrentFile()
-  let old_name = expand('%')
-  call inputsave()
-  let new_name = input('New file name: ', expand('%:t:r'))
-  call inputrestore()
-  if new_name != '' && new_name != old_name
-    if expand('%:e') != '' && new_name !~ '\.'
-      exec ':saveas ' . expand('%:h'). '/' . new_name . '.' . expand('%:e')
-    else
-      exec ':saveas ' . expand('%:h'). '/' . new_name
+    let old_name = expand('%')
+    call inputsave()
+    let new_name = input('New file name: ', expand('%:t:r'))
+    call inputrestore()
+    if new_name != '' && new_name != old_name
+        if expand('%:e') != '' && new_name !~ '\.'
+            exec ':saveas ' . expand('%:h'). '/' . new_name . '.' . expand('%:e')
+        else
+            exec ':saveas ' . expand('%:h'). '/' . new_name
+        endif
+        call delete(old_name)
+        redraw!
+        exec ':e!'
     endif
-    call delete(old_name)
-    redraw!
-    exec ':e!'
-  endif
 endfunction
 
 function! SaveSession()
-  let dirPath = fnamemodify('%', ':~:h:t')
-  if expand('%:p') =~ "projects"
-    let choice = confirm('Save Session ?',"&Yes\n&No", 1)
-    if choice == 1
-      execute 'mksession! ~/.vim/session/'.dirPath
+    let dirPath = fnamemodify('%', ':~:h:t')
+    if expand('%:p') =~ "projects"
+        let choice = confirm('Save Session ?',"&Yes\n&No", 1)
+        if choice == 1
+            execute 'mksession! ~/.vim/session/'.dirPath
+        endif
     endif
-  endif
 endfunction
 
 function! OpenSession()
-  let dirPath = fnamemodify('%', ':~:h:t')
-  let file = '~/.vim/session/'.dirPath
-  if glob(file)!=#""
-    execute 'source '.file
-  endif
+    let dirPath = fnamemodify('%', ':~:h:t')
+    let file = '~/.vim/session/'.dirPath
+    if glob(file)!=#""
+        execute 'source '.file
+    endif
 endfunction
 
 function! FileReplaceIt(visual)
-  let expression = @b
-  if a:visual == 0
+    let expression = @b
+    if a:visual == 0
+        call inputsave()
+        let expression = input('Enter expression:')
+        call inputrestore()
+    endif
     call inputsave()
-    let expression = input('Enter expression:')
+    let replacement = input('Enter replacement:')
     call inputrestore()
-  endif
-  call inputsave()
-  let replacement = input('Enter replacement:')
-  call inputrestore()
-  if a:visual == 0
-      execute '%sno@'.expression.'@'.replacement.'@gc'
-  else
-      execute '%sno@\<'.expression.'\>@'.replacement.'@gc'
-  endif
+    if a:visual == 0
+        execute '%sno@'.expression.'@'.replacement.'@gc'
+    else
+        execute '%sno@\<'.expression.'\>@'.replacement.'@gc'
+    endif
 endfunction
 
 function! VisReplaceIt()
-  call inputsave()
-  let expression = input('Enter expression:')
-  call inputrestore()
-  call inputsave()
-  let replacement = input('Enter replacement:')
-  call inputrestore()
-  execute "%sno@\\%V".expression."@".replacement."@gc"
+    call inputsave()
+    let expression = input('Enter expression:')
+    call inputrestore()
+    call inputsave()
+    let replacement = input('Enter replacement:')
+    call inputrestore()
+    execute "%sno@\\%V".expression."@".replacement."@gc"
 endfunction
 
 function! MassReplaceIt()
-  call inputsave()
-  let fullWord = confirm('Only full words ?',"&Yes\n&No", 1)
-  call inputrestore()
-  call inputsave()
-  let expression = input('Enter expression:')
-  call inputrestore()
-  call inputsave()
-  let replacement = input('Enter replacement:')
-  call inputrestore()
-  if fullWord == 1
-    execute 'cfdo %sno@\<'.expression.'\>@'.replacement.'@g | update'
-  else
-    execute 'cfdo %sno@'.expression.'@'.replacement.'@g | update'
-  endif
+    call inputsave()
+    let fullWord = confirm('Only full words ?',"&Yes\n&No", 1)
+    call inputrestore()
+    call inputsave()
+    let expression = input('Enter expression:')
+    call inputrestore()
+    call inputsave()
+    let replacement = input('Enter replacement:')
+    call inputrestore()
+    if fullWord == 1
+        execute 'cfdo %sno@\<'.expression.'\>@'.replacement.'@g | update'
+    else
+        execute 'cfdo %sno@'.expression.'@'.replacement.'@g | update'
+    endif
 endfunction
 
 function! PasteMultipleWords()
-  call inputsave()
-  let withCommas = confirm('With commas ?',"&Yes\n&No", 1)
-  call inputrestore()
-  normal! "cp
-  if withCommas == 2
-    execute "normal! mb^"
-    execute "s/, /\r/g"
-    execute "silent normal! V`b="
-    execute "redraw!"
-  endif
+    call inputsave()
+    let withCommas = confirm('With commas ?',"&Yes\n&No", 1)
+    call inputrestore()
+    normal! "cp
+    if withCommas == 2
+        execute "normal! mb^"
+        execute "s/, /\r/g"
+        execute "silent normal! V`b="
+        execute "redraw!"
+    endif
 endfunction
 
 function! ToggleDiff()
-  if &diff
-    execute "windo diffoff"
-  else
-    execute "windo diffthis"
-  endif
+    if &diff
+        execute "windo diffoff"
+    else
+        execute "windo diffthis"
+    endif
 endfunction
 
 function! ToggleWrapscan()
-  if s:wrapscanVariable == 0
-    let s:wrapscanVariable = 1
-    execute "set wrapscan"
-    echo 'Wrapscan Enabled'
-  else
-    let s:wrapscanVariable = 0
-    execute "set nowrapscan"
-    echo 'Wrapscan Disabled'
-  endif
+    if s:wrapscanVariable == 0
+        let s:wrapscanVariable = 1
+        execute "set wrapscan"
+        echo 'Wrapscan Enabled'
+    else
+        let s:wrapscanVariable = 0
+        execute "set nowrapscan"
+        echo 'Wrapscan Disabled'
+    endif
 endfunction
 
 function! s:align()
-  let p = '^\s*|\s.*\s|\s*$'
-  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
-    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
-    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
-    Tabularize/|/l1
-    normal! 0
-    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
-  endif
+    let p = '^\s*|\s.*\s|\s*$'
+    if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+        let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+        let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+        Tabularize/|/l1
+        normal! 0
+        call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+    endif
 endfunction
 
 function! IndentWithI()
-  if len(getline('.')) == 0 && empty(&buftype)
-    return "\"_cc"
-  else
-    return "i"
-  endif
+    if len(getline('.')) == 0 && empty(&buftype)
+        return "\"_cc"
+    else
+        return "i"
+    endif
 endfunction
 
 function! FoldText()
-  return getline(v:foldstart)
+    return getline(v:foldstart)
 endfunction
 
 function! FoldExprCucumber()
-  let l = getline(v:lnum)
-  let nl = getline(v:lnum + 1)
+    let l = getline(v:lnum)
+    let nl = getline(v:lnum + 1)
 
-  if l =~ '^\s*#*\s*\(Scenario\)'
-    return '1>'
-  endif
+    if l =~ '^\s*#*\s*\(Scenario\)'
+        return '1>'
+    endif
 
-  if nl =~ '^\s*$'
-    return '<1'
-  endif
+    if nl =~ '^\s*$'
+        return '<1'
+    endif
 
-  return '='
+    return '='
 endfunction
 
 function! FoldExprJS()
-  let pl = getline(v:lnum - 1)
-  let l = getline(v:lnum)
-  let nl = getline(v:lnum + 1)
+    let pl = getline(v:lnum - 1)
+    let l = getline(v:lnum)
+    let nl = getline(v:lnum + 1)
 
-  if !s:inImportFold && l =~ s:importString
-    let s:inImportFold = 1
-    return '>4'
-  endif
-
-  if s:inImportFold && l =~ s:fromString && nl !~ s:importString
-    return '<4'
-  endif
-
-  if s:inImportFold && pl =~ s:fromString && l !~ s:importString
-    let s:inImportFold = 0
-    return '0'
-  endif
-
-  if l =~ s:marker1
-    let s:inMarker = 1
-    return 'a1'
-  endif
-
-  if l =~ s:marker2
-    let s:inMarker = 0
-    return 's1'
-  endif
-
-  if !s:inMarker && !s:inImportFold
-    " gotta catch comments as well
-    let lind = count(substitute(l, '\([^\/ ].*\)$', '', 'g'), ' ') / s:tabstop + 1
-
-    " Keep the startBracket check last for performance
-    if lind < 4 && l !~ s:nonStarterFolds && l =~ s:startBracket && l !~ s:endBracket
-      let s:prevBracketIndent = s:bracketIndent
-      let s:bracketIndent = lind
-      return 'a1'
+    if !s:inImportFold && l =~ s:importString
+        let s:inImportFold = 1
+        return '>4'
     endif
 
-    " Keep the endBracket check last for performance
-    if lind < 4 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
-      let s:bracketIndent = s:prevBracketIndent
-      let s:prevBracketIndent = s:prevBracketIndent - 1
-      return 's1'
+    if s:inImportFold && l =~ s:fromString && nl !~ s:importString
+        return '<4'
     endif
-  endif
 
-  return '='
+    if s:inImportFold && pl =~ s:fromString && l !~ s:importString
+        let s:inImportFold = 0
+        return '0'
+    endif
+
+    if l =~ s:marker1
+        let s:inMarker = 1
+        return 'a1'
+    endif
+
+    if l =~ s:marker2
+        let s:inMarker = 0
+        return 's1'
+    endif
+
+    if !s:inMarker && !s:inImportFold
+        " gotta catch comments as well
+        let lind = count(substitute(l, '\([^\/ ].*\)$', '', 'g'), ' ') / s:tabstop + 1
+
+        " Keep the startBracket check last for performance
+        if lind < 4 && l !~ s:nonStarterFolds && l =~ s:startBracket && l !~ s:endBracket
+            let s:prevBracketIndent = s:bracketIndent
+            let s:bracketIndent = lind
+            return 'a1'
+        endif
+
+        " Keep the endBracket check last for performance
+        if lind < 4 && lind == s:bracketIndent && l =~ s:endBracket && l !~ s:startBracket
+            let s:bracketIndent = s:prevBracketIndent
+            let s:prevBracketIndent = s:prevBracketIndent - 1
+            return 's1'
+        endif
+    endif
+
+    return '='
 endfunction
 
 function! GoToTag(type, word)
-  if a:type == 'tab'
-    :tabe
-    execute ':tjump ' . a:word
-    :normal zz
-    let l:tagFilename = expand('%:t')
-    if l:tagFilename == ''
-      :tabclose
-      :tabprevious
+    if a:type == 'tab'
+        if taglist(a:word) == []
+            execute "normal! $h\<c-w>gf"
+        else
+            :tabe
+            execute ':tjump ' . a:word
+            :normal zz
+            let l:tagFilename = expand('%:t')
+            if l:tagFilename == ''
+                :tabclose
+                :tabprevious
+            endif
+        endif
     endif
-  endif
 
-  if a:type == 'vsplit'
-    :vnew
-    execute ':tjump ' . a:word
-    :normal zz
-    let l:tagFilename = expand('%:t')
-    if l:tagFilename == ''
-      :bd
+    if a:type == 'vsplit'
+        if taglist(a:word) == []
+            normal! $h
+            execute "vertical wincmd f"
+        else
+            :vnew
+            execute ':tjump ' . a:word
+            :normal zz
+            let l:tagFilename = expand('%:t')
+            if l:tagFilename == ''
+                :bd
+            endif
+        endif
     endif
-  endif
 
-  if a:type == 'current'
-    execute ':tjump ' . a:word
-    :normal zz
-  endif
+    if a:type == 'current'
+        if taglist(a:word) == []
+            execute "normal! $hgf"
+        else
+            execute ':tjump ' . a:word
+            :normal zz
+        endif
+    endif
 endfunction
 
 function! JoinSpaceless()
-  normal! $J
+    normal! $J
 
-  let currCol = col('.')
-  let centerChar = matchstr(getline('.'), '\%' . currCol . 'c.')
-  let leftChar = matchstr(getline('.'), '\%' . (currCol - 1) . 'c.')
-  let rightChar = matchstr(getline('.'), '\%' . (currCol + 1) . 'c.')
+    let currCol = col('.')
+    let centerChar = matchstr(getline('.'), '\%' . currCol . 'c.')
+    let leftChar = matchstr(getline('.'), '\%' . (currCol - 1) . 'c.')
+    let rightChar = matchstr(getline('.'), '\%' . (currCol + 1) . 'c.')
 
-  if centerChar =~ '\s' && (leftChar =~ '[(>]' || rightChar =~ '[\.<]')
-    normal! x
-  endif
+    if centerChar =~ '\s' && (leftChar =~ '[(>]' || rightChar =~ '[\.<]')
+        normal! x
+    endif
 endfunction
 
 function! FastGit(args)
@@ -889,9 +902,6 @@ nnoremap <silent> L gt
 nnoremap <silent> gt lbve"by:call GoToTag('tab', @b)<CR>
 nnoremap <silent> gs lbve"by:call GoToTag('vsplit', @b)<CR>
 nnoremap <silent> go lbve"by:call GoToTag('current', @b)<CR>
-nnoremap <silent> gT <c-w>gf
-nnoremap <silent> gS :vertical wincmd f<CR>
-nnoremap <silent> gO gf
 command! -nargs=1 -complete=tag Gt call GoToTag('tab', <f-args>)
 command! -nargs=1 -complete=tag Gs call GoToTag('vsplit', <f-args>)
 command! -nargs=1 -complete=tag Go call GoToTag('current', <f-args>)
