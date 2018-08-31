@@ -867,6 +867,8 @@ cnoremap <C-L> <Right>
 "diff 2 buffers in vertical split
 nnoremap <silent> <leader>1 :call ToggleDiff()<cr>
 nnoremap <silent> <leader>o :only<CR>
+nnoremap <silent> <leader>[ ]c
+nnoremap <silent> <leader>] [c
 nnoremap <silent> du :diffupdate<CR>
 nnoremap <silent> dh :diffget //2<CR>\|:diffupdate<CR>
 nnoremap <silent> dl :diffget //3<CR>\|:diffupdate<CR>
@@ -1049,7 +1051,7 @@ map <leader><leader> <Esc>
 noremap Q q
 
 " Gutentags update
-nnoremap <silent> gu :GutentagsUpdate!<CR>:redraw!<CR>
+nnoremap <silent> tu :GutentagsUpdate!<CR>:redraw!<CR>
 
 " Join spaceless
 nnoremap <silent> J :call JoinSpaceless()<CR>
