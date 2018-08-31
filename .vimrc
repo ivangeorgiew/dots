@@ -1064,7 +1064,4 @@ nnoremap k gk
 ab teh the
 ab cosnt const
 ab prosp props
-
-" <C-U> does not work in <CTRL-X> mode
-inoremap <C-L> <C-G>u<C-U>
 "MAPPINGS }}}
