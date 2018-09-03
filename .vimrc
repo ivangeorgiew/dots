@@ -324,6 +324,9 @@ augroup vimrcEx
     au BufRead,BufNewFile *.js setl textwidth=120
     au BufRead,BufNewFile *.md setl textwidth=80
 
+    "update tags on branch change using Fugitive
+    au CursorHold,BufWritePost * call UpdateTags()
+
     au BufEnter * set formatoptions=rjcl foldtext=FoldText()
     au BufEnter *.js setl synmaxcol=3000
 
@@ -530,6 +533,24 @@ function! CloseBuffer()
 
     "add the fugitive commands for the buffer
     call fugitive#detect(getcwd())
+endfunction
+
+function! UpdateTags()
+    "update tags on branch change using Fugitive and Gutentags
+    if !exists('*fugitive#head') || !exists(':GutentagsUpdate')
+        return
+    endif
+
+    if !exists('b:git_branch')
+        let b:git_branch = ''
+    endif
+
+    let new_branch = fugitive#head(7)
+
+    if new_branch != '' && b:git_branch != new_branch
+        let b:git_branch = new_branch
+        execute 'GutentagsUpdate!'
+    endif
 endfunction
 
 function GitStatus()
@@ -1005,8 +1026,8 @@ nnoremap <F1> :MundoToggle<CR>
 " Silver searcher
 " -F for no regex, -w for word search
 nnoremap ) :Ag! -F<SPACE>
-vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F -w "<C-r>b"<CR>
-vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! "<C-r>b"<CR>
+vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F -w "<C-r><C-r>b"<CR>
+vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! "<C-r><C-r>b"<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
