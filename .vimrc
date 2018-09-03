@@ -447,6 +447,8 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1, 'python': 1 }
 " etc
 let g:ycm_filepath_completion_use_working_dir = 0
+" removed jsx from the list in order to have working filepath completion in javascript files
+let g:ycm_filepath_blacklist = {}
 " let g:ycm_semantic_triggers =  {
 "   \   'c' : ['->', '.'],
 "   \   'objc' : ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
