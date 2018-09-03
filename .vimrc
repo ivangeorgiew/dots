@@ -436,7 +436,7 @@ let g:gutentags_add_default_project_roots = 0
 " keys
 let g:ycm_key_list_select_completion = ['<C-n>']
 let g:ycm_key_list_previous_completion = ['<C-p>']
-let g:ycm_key_list_stop_completion = ['<C-y>']
+let g:ycm_key_list_stop_completion = []
 let g:ycm_key_invoke_completion = '<C-Space>'
 " completions include
 let g:ycm_collect_identifiers_from_tags_files = 1
@@ -517,8 +517,16 @@ let g:gruvbox_italic = 0
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 
-"vim-lastplace
+" vim-lastplace
 let g:lastplace_open_folds = 0
+
+" Emmet
+let g:user_emmet_mode='a' "enable in all modes
+let g:user_emmet_settings = {
+\    'javascript.jsx': {
+\        'extends': 'jsx'
+\    }
+\}
 "SETTINGS }}}
 
 "FUNCTIONS {{{
