@@ -1026,8 +1026,8 @@ nnoremap <F1> :MundoToggle<CR>
 " Silver searcher
 " -F for no regex, -w for word search
 nnoremap ) :Ag! -F<SPACE>
-vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F -w "<C-r><C-r>b"<CR>
-vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! "<C-r><C-r>b"<CR>
+vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F -w "<C-r>b"<CR>
+vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! "<C-r>b"<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
