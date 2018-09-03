@@ -488,9 +488,10 @@ let g:EasyClipUseCutDefaults = 0
 let g:EasyClipUsePasteToggleDefaults = 0
 
 " auto-pairs settings
-let g:AutoPairsShortcutToggle = 'F8'
+let g:AutoPairsShortcutToggle = '<F8>'
 let g:AutoPairsMapCh = 0
 let g:AutoPairsMultilineClose = 0
+let g:AutoPairsMoveCharacter = ''
 let g:AutoPairsShortcutJump = ''
 let g:AutoPairsShortcutFastWrap = ''
 let g:AutoPairsShortcutBackInsert = ''
@@ -627,7 +628,7 @@ function! ReplaceWord(visual, inRange)
         if a:visual == 0
             execute '%sno@'.expression.'@'.replacement.'@gc'
         elseif a:inRange == 0
-            execute '%sno@\<'.expression.'\>@'.replacement.'@g'
+            execute '%sno@\<'.expression.'\>@'.replacement.'@gc'
         else
             execute "%sno@\\%V".expression."@".replacement."@gc"
         endif
@@ -837,7 +838,7 @@ function! FastGit(args)
     elseif a:args =~ '^ac '
         let message = substitute(a:args, '^ac ', '', '')
         execute 'silent! Gcommit -m ' . message
-    elseif a:args =~ '^sch'
+    elseif a:args =~ '^\(sch \|shs \)'
         execute 'GitFugitive ' . a:args
     else
         execute 'Dispatch! git ' . a:args
