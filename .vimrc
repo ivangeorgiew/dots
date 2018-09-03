@@ -612,32 +612,28 @@ function! OpenSession()
     endif
 endfunction
 
-function! FileReplaceIt(visual)
-    let expression = @b
-    if a:visual == 0
+function! ReplaceWord(visual, inRange)
+    norm! ma
+    try
+        let expression = @b
+        if a:visual == 0 || a:inRange == 1
+            call inputsave()
+            let expression = input('Enter expression:')
+            call inputrestore()
+        endif
         call inputsave()
-        let expression = input('Enter expression:')
+        let replacement = input('Enter replacement:')
         call inputrestore()
-    endif
-    call inputsave()
-    let replacement = input('Enter replacement:')
-    call inputrestore()
-    if a:visual == 0
-        execute ',$sno@'.expression.'@'.replacement.'@gc'
-    else
-        execute ',$sno@\<'.expression.'\>@'.replacement.'@gc'
-    endif
-    execute "1,''-&&"
-endfunction
-
-function! VisReplaceIt()
-    call inputsave()
-    let expression = input('Enter expression:')
-    call inputrestore()
-    call inputsave()
-    let replacement = input('Enter replacement:')
-    call inputrestore()
-    execute "%sno@\\%V".expression."@".replacement."@gc"
+        if a:visual == 0
+            execute '%sno@'.expression.'@'.replacement.'@gc'
+        elseif a:inRange == 0
+            execute '%sno@\<'.expression.'\>@'.replacement.'@g'
+        else
+            execute "%sno@\\%V".expression."@".replacement."@gc"
+        endif
+    finally
+        norm! `a
+    endtry
 endfunction
 
 function! MassReplaceIt()
@@ -929,9 +925,9 @@ command! -nargs=1 -complete=tag Gs call GoToTag('vsplit', <f-args>)
 command! -nargs=1 -complete=tag Go call GoToTag('current', <f-args>)
 
 " Search and replace
-nnoremap <silent> <F2> :call FileReplaceIt(0)<cr>
-vnoremap <silent> <F2> "by:call FileReplaceIt(1)<cr>
-vnoremap <silent> <F3> :<C-u>call VisReplaceIt()<cr>
+nnoremap <silent> <F2> :call ReplaceWord(0, 0)<cr>
+vnoremap <silent> <F2> "by:call ReplaceWord(1, 0)<cr>
+vnoremap <silent> <F3> :<C-u>call ReplaceWord(1, 1)<cr>
 nnoremap <silent> <F12> :call MassReplaceIt()<cr>
 
 " EasyClip
