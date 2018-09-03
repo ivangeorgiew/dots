@@ -623,10 +623,11 @@ function! FileReplaceIt(visual)
     let replacement = input('Enter replacement:')
     call inputrestore()
     if a:visual == 0
-        execute '%sno@'.expression.'@'.replacement.'@gc'
+        execute ',$sno@'.expression.'@'.replacement.'@gc'
     else
-        execute '%sno@\<'.expression.'\>@'.replacement.'@gc'
+        execute ',$sno@\<'.expression.'\>@'.replacement.'@gc'
     endif
+    execute "1,''-&&"
 endfunction
 
 function! VisReplaceIt()
