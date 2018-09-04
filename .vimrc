@@ -215,6 +215,7 @@ set foldtext=FoldText()
 " Indentations
 set tabstop=4
 set shiftwidth=4
+set textwidth=0
 set expandtab
 
 " Numbers
@@ -288,14 +289,9 @@ augroup END
 augroup folding
     au!
 
-    au FileType vim setl foldmarker={{{,}}} |
-                \ setl foldmethod=marker
-
-    au FileType javascript.jsx setl foldmethod=expr |
-                \ setl foldexpr=FoldExprJS()
-
-    au FileType cucumber setl foldmethod=expr |
-                \ setl foldexpr=FoldExprCucumber()
+    au FileType vim setl foldmarker={{{,}}} foldmethod=marker
+    au FileType javascript.jsx setl foldmethod=expr foldexpr=FoldExprJS()
+    au FileType cucumber setl foldmethod=expr foldexpr=FoldExprCucumber()
 augroup END
 
 augroup highlights
@@ -320,15 +316,11 @@ augroup vimrcEx
     au!
 
     "overwrite some vim-sensible options
-    au BufRead,BufNewFile * setglobal tags=tags
-    au BufRead,BufNewFile *.js setl textwidth=120
-    au BufRead,BufNewFile *.md setl textwidth=80
+    au BufEnter * set tags=tags formatoptions=rjcl foldtext=FoldText()
+    au FileType markdown setl textwidth=80 tabstop=2 shiftwidth=2
 
     "update tags on branch change using Fugitive
     au CursorHold,BufWritePost * call UpdateTags()
-
-    au BufEnter * set formatoptions=rjcl foldtext=FoldText()
-    au BufEnter *.js setl synmaxcol=3000
 
     " Ask whether to save the session on exit
     au VimLeavePre * call SaveSession()
@@ -422,8 +414,9 @@ if has('linebreak')
 endif
 
 " Rooter
-let g:rooter_patterns = ['pom.xml']
+let g:rooter_patterns = ['pom.xml', '.git/']
 let g:rooter_silent_chdir = 1
+let g:rooter_use_lcd = 1
 
 " Gutentags settings
 let g:gutentags_project_root = ['package.json']
