@@ -414,7 +414,7 @@ if has('linebreak')
 endif
 
 " Rooter
-let g:rooter_patterns = ['pom.xml', '.git/']
+let g:rooter_patterns = ['pom.xml', '.importjs.js', '.git/']
 let g:rooter_silent_chdir = 1
 let g:rooter_use_lcd = 1
 
