@@ -252,8 +252,8 @@ if system("uname -s") =~ "Linux"
     augroup linuxAutoCommands
         au!
         " Affects lag
-        au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
-        au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
+        " au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
+        " au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
 
         " remain with clipboard after closing
         au VimLeave * call system("xclip -r -o -sel clipboard | xclip -r -sel clipboard")
