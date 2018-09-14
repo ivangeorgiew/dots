@@ -21,6 +21,7 @@ main () {
         ln -s ~/dotfiles/.vim ~/.vim
         ln -s ~/dotfiles/.vimrc ~/.vimrc
         ln -s ~/dotfiles/.zshrc ~/.zshrc
+        ln -s ~/dotfiles/.prettierrc.json ~/.prettierrc
 
         if [[ "$OSTYPE" == linux* ]]; then
             echo "Adding Linux dotfiles"

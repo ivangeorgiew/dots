@@ -322,6 +322,9 @@ augroup vimrcEx
     "update tags on branch change using Fugitive
     au CursorHold,BufWritePost * call UpdateTags()
 
+    "setup project specific settings
+    au BufReadPost,BufNewFile * call SetupEnvironment()
+
     " Ask whether to save the session on exit
     au VimLeavePre * call SaveSession()
 augroup END
@@ -376,12 +379,8 @@ let g:ale_linters = {
             \'scss': ['scsslint'],
             \'json': ['jsonlint']
             \}
-" eslint fixer removes last fold lines
-" DONT fix with javascript with eslint, since it will make mistakes
-let g:ale_fixers = {
-            \'scss': ['prettier'],
-            \'json': ['prettier']
-            \}
+" DONT fix with javascript with eslint, since it will make mistakes on last folds
+" fixers setting are moved to an autocommand
 let g:ale_lint_on_enter = 1
 let g:ale_lint_on_save = 1
 let g:ale_lint_on_text_changed = 'always'
@@ -523,6 +522,23 @@ let g:user_emmet_settings = {
 "SETTINGS }}}
 
 "FUNCTIONS {{{
+function! SetupEnvironment()
+    let l:path = expand('%:p')
+
+    if l:path =~ 'projects/entitlements'
+        let g:ale_fixers = {
+                    \'scss': ['prettier'],
+                    \'json': ['prettier']
+                    \}
+    else
+        let g:ale_fixers = {
+                    \'javascript': ['prettier'],
+                    \'scss': ['prettier'],
+                    \'json': ['prettier']
+                    \}
+    endif
+endfunction
+
 function! CloseBuffer()
     " when exiting the Git Status window
     if &ft == 'gitcommit'
