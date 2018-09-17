@@ -413,7 +413,7 @@ if has('linebreak')
 endif
 
 " Rooter
-let g:rooter_patterns = ['pom.xml', '.importjs.js', '.git/']
+let g:rooter_patterns = ['pom.xml', '.importjs.js']
 let g:rooter_silent_chdir = 1
 let g:rooter_use_lcd = 1
 
@@ -1107,6 +1107,11 @@ nnoremap <silent> J :call JoinSpaceless()<CR>
 " go to next/prev line even if it is wrapped
 nnoremap j gj
 nnoremap k gk
+
+" remap text object selection mappings
+vnoremap a" 2i"
+vnoremap a' 2i'
+vnoremap a` 2i`
 
 " Abbreviations
 ab teh the
