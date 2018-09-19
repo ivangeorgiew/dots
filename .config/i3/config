@@ -17,6 +17,7 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 client.background       #ffffff
 
 exec --no-startup-id feh --bg-scale ~/dotfiles/wallpaper.jpg
+exec_always --no-startup-id xautolock -time 5 -locker "i3lock-fancy"
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 exec --no-startup-id dunst
 exec --no-startup-id termite

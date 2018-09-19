@@ -397,6 +397,7 @@ let g:ctrlp_show_hidden = 1
 " ag is fast enough that CtrlP doesn't need to cache
 let g:ctrlp_use_caching = 0
 let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:20'
+let g:ctrlp_by_filename = 0
 " open file even if already opened
 let g:ctrlp_switch_buffer = ''
 " open multiple files in new tabs and jump to first one
@@ -525,14 +526,14 @@ let g:user_emmet_settings = {
 function! SetupEnvironment()
     let l:path = expand('%:p')
 
-    if l:path =~ 'projects/entitlements'
+    if l:path =~ 'projects/tick42-onboarding-app'
         let g:ale_fixers = {
+                    \'javascript': ['prettier'],
                     \'scss': ['prettier'],
                     \'json': ['prettier']
                     \}
     else
         let g:ale_fixers = {
-                    \'javascript': ['prettier'],
                     \'scss': ['prettier'],
                     \'json': ['prettier']
                     \}
@@ -635,6 +636,9 @@ endfunction
 function! ReplaceWord(visual, inRange)
     norm! ma
     try
+        call inputsave()
+        let fullWord = confirm('Only full words ?',"&Yes\n&No", 1)
+        call inputrestore()
         let expression = @b
         if a:visual == 0 || a:inRange == 1
             call inputsave()
@@ -644,12 +648,24 @@ function! ReplaceWord(visual, inRange)
         call inputsave()
         let replacement = input('Enter replacement:')
         call inputrestore()
-        if a:visual == 0
-            execute '%sno@'.expression.'@'.replacement.'@gc'
-        elseif a:inRange == 0
-            execute '%sno@\<'.expression.'\>@'.replacement.'@gc'
-        else
-            execute "%sno@\\%V".expression."@".replacement."@gc"
+        if a:visual == 0 && a:inRange == 0
+            if fullWord == 1
+                execute '%sno@\<'.expression.'\>@'.replacement.'@g'
+            else
+                execute '%sno@'.expression.'@'.replacement.'@g'
+            endif
+        elseif a:visual == 1 && a:inRange == 0
+            if fullWord == 1
+                execute '%sno@\<'.expression.'\>@'.replacement.'@g'
+            else
+                execute '%sno@'.expression.'@'.replacement.'@g'
+            endif
+        elseif a:visual == 1 && a:inRange == 1
+            if fullWord == 1
+                execute "%sno@\\%V\\<".expression."\\>@".replacement."@g"
+            else
+                execute "%sno@\\%V".expression."@".replacement."@g"
+            endif
         endif
     finally
         norm! `a
