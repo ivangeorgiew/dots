@@ -171,7 +171,7 @@ colorscheme gruvbox
 set shell=bash
 set lazyredraw
 set nocursorcolumn
-set regexpengine=0
+set regexpengine=1
 set synmaxcol=256 "fixes lag from long lines
 " set colorcolumn=120  " slows alot
 " set cursorline " slows and unnecessary
@@ -251,9 +251,10 @@ set grepprg=ag
 if system("uname -s") =~ "Linux"
     augroup linuxAutoCommands
         au!
+
         " Affects lag
-        " au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
-        " au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
+        au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
+        au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
 
         " remain with clipboard after closing
         au VimLeave * call system("xclip -r -o -sel clipboard | xclip -r -sel clipboard")
@@ -650,21 +651,21 @@ function! ReplaceWord(visual, inRange)
         call inputrestore()
         if a:visual == 0 && a:inRange == 0
             if fullWord == 1
-                execute '%sno@\<'.expression.'\>@'.replacement.'@g'
+                execute '%sno@\<'.expression.'\>@'.replacement.'@gc'
             else
-                execute '%sno@'.expression.'@'.replacement.'@g'
+                execute '%sno@'.expression.'@'.replacement.'@gc'
             endif
         elseif a:visual == 1 && a:inRange == 0
             if fullWord == 1
-                execute '%sno@\<'.expression.'\>@'.replacement.'@g'
+                execute '%sno@\<'.expression.'\>@'.replacement.'@gc'
             else
-                execute '%sno@'.expression.'@'.replacement.'@g'
+                execute '%sno@'.expression.'@'.replacement.'@gc'
             endif
         elseif a:visual == 1 && a:inRange == 1
             if fullWord == 1
-                execute "%sno@\\%V\\<".expression."\\>@".replacement."@g"
+                execute "%sno@\\%V\\<".expression."\\>@".replacement."@gc"
             else
-                execute "%sno@\\%V".expression."@".replacement."@g"
+                execute "%sno@\\%V".expression."@".replacement."@gc"
             endif
         endif
     finally
