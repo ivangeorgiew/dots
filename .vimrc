@@ -1029,15 +1029,13 @@ nnoremap <leader>ad :ALEDisable<CR>
 nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
-nnoremap / /\V\c
+nnoremap / /\V
 "search backwards
-nnoremap ? ?\V\c
+nnoremap ? ?\V
 "search in visual selection
-vnoremap <leader>/ <ESC>/\%V\V\c
-"search the copied content
-nnoremap <silent> // :let @/ = '\V\c' . escape(@+, '\\/.*$^~[]')<CR>n
-"search the selected
-vnoremap <silent> // "by:let @/ = '\V\c' . escape(@b, '\\/.*$^~[]')<CR>n
+nnoremap <silent> // :let @/ = '\V' . escape(@+, '\\/.*$^~[]')<CR>n
+"search in the selection
+vnoremap <silent> // <ESC>/\%V\V
 "toggle search highlight
 nnoremap <silent><expr> <leader>l (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 

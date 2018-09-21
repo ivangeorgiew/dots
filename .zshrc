@@ -107,6 +107,9 @@ alias nr='npm run'
 alias dot='cd ~/dotfiles'
 alias ent='cd ~/projects/entitlements/entitlements-web'
 alias ente='cd ~/projects/entitlements/entitlements-web/e2e'
+alias vm=vim
+alias vi=vim
+alias v=vim
 
 unset BROWSER
 export EDITOR='vim'
