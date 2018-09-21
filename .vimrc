@@ -1136,6 +1136,9 @@ nnoremap k gk
 vnoremap a" 2i"
 vnoremap a' 2i'
 vnoremap a` 2i`
+onoremap a" 2i"
+onoremap a' 2i'
+onoremap a` 2i`
 
 " Abbreviations
 ab teh the
