@@ -23,7 +23,7 @@ module.exports = {
     maxLineLength: 120,
     tab: '    ',
     mergableOptions: { globals: false },
-    globals: [ 'module' ],
+    globals: [ 'module', 'expect' ],
     namedExports: {
         'prop-types': [ 'bool', 'number', 'string', 'object', 'array', 'func', 'element', 'any', 'oneOfType', 'oneOf', 'arrayOf', 'objectOf', 'shape' ],
         'react-immutable-proptypes': [ 'list', 'map' ],

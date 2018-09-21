@@ -853,7 +853,7 @@ function! GoToTag(type, word)
     endif
 endfunction
 
-function! JoinSpaceless()
+function! JoinLines()
     normal! $J
 
     let currCol = col('.')
@@ -863,6 +863,16 @@ function! JoinSpaceless()
 
     if centerChar =~ '\s' && (leftChar =~ '[(>]' || rightChar =~ '[\.<]')
         normal! x
+    endif
+endfunction
+
+function! SplitLines()
+    let currChar = matchstr(getline('.'), '\%' . col('.') . 'c.')
+
+    if currChar =~ '\s'
+        execute "normal! s\<CR>"
+    else
+        execute "normal! a\<CR>"
     endif
 endfunction
 
@@ -1006,10 +1016,6 @@ nnoremap <silent> <leader>8 lbve"cy
 nnoremap <silent> <leader>9 :let @c .= ', '<cr>lbve"Cy
 nnoremap <silent> <leader>0 :call PasteMultipleWords()<CR>
 
-" Space to new line in vis selection
-vnoremap K :<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
-nnoremap K mb^v$:<C-u>s@\%V @$%@g<cr>mb:s/$%/\r/g<cr>V`b=:noh<CR>
-
 "ALE
 "jump on next error
 nmap <leader>an <Plug>(ale_next_wrap)
@@ -1051,8 +1057,8 @@ nnoremap <silent> M #:silent! norm! zv<CR>zz
 " @*<CR> to apply macro in * for everyline in visual selection
 vnoremap @ :normal @
 " Repeat 'e' macro if in a normal buffer
-nnoremap <silent><expr> <CR> empty(&buftype) ? ':normal @@<CR>' : '<CR>'
-vnoremap <silent><expr> <CR> empty(&buftype) ? ':normal @@<CR>' : '<CR>'
+nnoremap <silent><expr> <CR> empty(&buftype) ? ':normal @e<CR>' : '<CR>'
+vnoremap <silent><expr> <CR> empty(&buftype) ? ':normal @e<CR>' : '<CR>'
 
 " Mundo (undo history) toggle
 nnoremap <F1> :MundoToggle<CR>
@@ -1119,7 +1125,8 @@ noremap Q q
 nnoremap <silent> tu :GutentagsUpdate!<CR>:redraw!<CR>
 
 " Join spaceless
-nnoremap <silent> J :call JoinSpaceless()<CR>
+nnoremap <silent> J :call JoinLines()<CR>
+nnoremap <silent> K :call SplitLines()<CR>
 
 " go to next/prev line even if it is wrapped
 nnoremap j gj
