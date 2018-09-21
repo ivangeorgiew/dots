@@ -253,8 +253,8 @@ if system("uname -s") =~ "Linux"
         au!
 
         " Affects lag
-        au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
-        au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
+        " au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
+        " au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
 
         " remain with clipboard after closing
         au VimLeave * call system("xclip -r -o -sel clipboard | xclip -r -sel clipboard")
@@ -374,7 +374,7 @@ let g:mundo_close_on_revert = 1
 " ALE configurations
 let g:ale_enabled = 1
 let g:ale_linters_explicit = 1
-let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 0
 let g:ale_linters = {
             \'javascript': ['eslint'],
             \'scss': ['scsslint'],
@@ -415,7 +415,7 @@ if has('linebreak')
 endif
 
 " Rooter
-let g:rooter_patterns = ['pom.xml', '.importjs.js']
+let g:rooter_patterns = ['pom.xml', 'README.md']
 let g:rooter_silent_chdir = 1
 let g:rooter_use_lcd = 1
 
@@ -527,7 +527,9 @@ let g:user_emmet_settings = {
 function! SetupEnvironment()
     let l:path = expand('%:p')
 
-    if l:path =~ 'projects/tick42-onboarding-app'
+    if l:path =~ 'projects/\(tick42-onboarding-app\|js-mortgage-bootstrap\)'
+        au! FileType javascript.jsx setl tabstop=2 shiftwidth=2
+
         let g:ale_fixers = {
                     \'javascript': ['prettier'],
                     \'scss': ['prettier'],
