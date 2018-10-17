@@ -11,31 +11,27 @@ If you use ArchLinux:
 5) `~/dotfiles/archScript`
 6) `~/dotfiles/install`
 7) Change your keyboard layout in .xinitrc
-8) `cd ~` and `git clone https://github.com/powerline/fonts.git --depth=1`
-9) `cd fonts ` and `./install.sh`
-10) `rm -fr fonts`
-11) `startx`
-11) `sudo reboot`
-12) `mkdir ~/.npm-global`
-13) `npm config set prefix '~/.npm-global'`
-14) `npm i -g npm@5.8.0`
-15) `npm i -g node@8.11.2`
-16) `source ~/.zshrc`
-17) `npm i -g import-js`
-18) `rm -fr ~/.npm-global/lib/node_modules/import-js/lib`
-19) `cd ~/` and `git clone https://github.com/ivangeorgiew/import-js.git`
-20) `cp -R lib ~/.npm-global/lib/node_modules/import-js/lib`
-21) `cd ~/.npm-global/lib/node_modules/import-js` and `npm i` and `npm run build`
-22) Configure lxappearance
-23) Find your active network interface: `ifconfig -a`
-24) Update the wlan/eth modules in ~/.config/polybar/config
-25) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
-26) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
-27) Follow the YouCompleteMe instructions: https://github.com/Valloric/YouCompleteMe (install with `path/to/python ./install.py`)
-28) `xdg-settings set default-web-browser google-chrome.desktop`
-29) `ln -s /run/media/YOUR_NAME ~/media`
-30) Install `icaclient` and copy `All_Regions.ini` to `~/.ICAClient/All_Regions.ini`
-31) Increase number of watchers: `echo fs.inotify.max_user_watches=524288 | sudo tee /etc/sysctl.d/40-max-user-watches.conf && sudo sysctl --system`
+8) `~/dotfiles/fonts/install.sh`
+9) `startx`
+10) `sudo reboot`
+11) `mkdir ~/.npm-global`
+12) `npm config set prefix '~/.npm-global'`
+13) `npm i -g npm@5.8.0 node@8.11.2`
+14) `source ~/.zshrc`
+15) `npm i -g import-js`
+16) `rm -fr ~/.npm-global/lib/node_modules/import-js/lib`
+17) `cd ~/` and `git clone https://github.com/ivangeorgiew/import-js.git`
+18) `cp -R lib ~/.npm-global/lib/node_modules/import-js/lib`
+19) `cd ~/.npm-global/lib/node_modules/import-js` and `npm i` and `npm run build`
+20) Find your active network interface: `ifconfig -a`
+21) Update the wlan/eth modules in ~/.config/polybar/config
+22) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
+23) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
+24) Follow the YouCompleteMe instructions: https://github.com/Valloric/YouCompleteMe (install with `path/to/python ./install.py`)
+25) `xdg-settings set default-web-browser google-chrome.desktop`
+26) `ln -s /run/media/YOUR_NAME ~/media`
+27) Install `icaclient` and copy `All_Regions.ini` to `~/.ICAClient/All_Regions.ini`
+28) Increase number of watchers: `echo fs.inotify.max_user_watches=524288 | sudo tee /etc/sysctl.d/40-max-user-watches.conf && sudo sysctl --system`
 
 If you use MacOS:
 1) Install iTerm
