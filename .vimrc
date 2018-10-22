@@ -100,13 +100,6 @@
 " Subvert words
 " :%S/old_word{,s}/new_word{,s}/gc
 
-" auto-pairs
-" There are alot more settings in the github page
-" deleting the first character of a pair deletes the whole pair
-" space and enter adds niceness
-" pressing twice the symbol doest add two pairs (YAY)
-" don't add closing pair when needed
-
 " Folding
 " custom markers for compatibility with WebStorm
 " z; - fold/unfold
@@ -252,7 +245,7 @@ if system("uname -s") =~ "Linux"
     augroup linuxAutoCommands
         au!
 
-        " Affects lag
+        " Relative line numbers - affects lag
         " au BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set relativenumber   | endif
         " au BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set norelativenumber | endif
 
@@ -315,6 +308,9 @@ augroup END
 
 augroup vimrcEx
     au!
+
+    "vim-closer
+    au FileType * let b:closer_flags = '([{;'
 
     "overwrite some vim-sensible options
     au BufEnter * set tags=tags formatoptions=rjcl foldtext=FoldText()
@@ -482,16 +478,6 @@ let g:EasyClipAlwaysMoveCursorToEndOfPaste = 0
 let g:EasyClipUseSubstituteDefaults = 0
 let g:EasyClipUseCutDefaults = 0
 let g:EasyClipUsePasteToggleDefaults = 0
-
-" auto-pairs settings
-let g:AutoPairsShortcutToggle = '<F8>'
-let g:AutoPairsMapCh = 0
-let g:AutoPairsMultilineClose = 0
-let g:AutoPairsMoveCharacter = ''
-let g:AutoPairsShortcutJump = ''
-let g:AutoPairsShortcutFastWrap = ''
-let g:AutoPairsShortcutBackInsert = ''
-let g:AutoPairsCenterLine = 0
 
 " FastFold
 let g:fastfold_savehook = 1
@@ -990,8 +976,8 @@ xmap r <plug>XEasyClipPaste
 nmap <silent> R <plug>SubstituteToEndOfLine
 nmap rr <plug>SubstituteLine
 " change yank buffer
-nmap <C-B> <plug>EasyClipSwapPasteForward
-nmap <C-F> <plug>EasyClipSwapPasteBackwards
+nmap <C-F> <plug>EasyClipSwapPasteForward
+nmap <C-B> <plug>EasyClipSwapPasteBackwards
 " paste from default register in insert mode
 inoremap <silent> <C-E> <C-r>+
 " Paste content before or after line
@@ -1131,6 +1117,10 @@ nnoremap <silent> K :call SplitLines()<CR>
 " go to next/prev line even if it is wrapped
 nnoremap j gj
 nnoremap k gk
+
+" more natural navigation between empty lines
+nnoremap { }
+nnoremap } {
 
 " remap text object selection mappings
 vnoremap a" 2i"

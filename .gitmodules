@@ -70,9 +70,6 @@
 [submodule ".vim/bundle/vitality.vim"]
 	path = .vim/bundle/vitality.vim
 	url = https://github.com/sjl/vitality.vim.git
-[submodule ".vim/bundle/auto-pairs"]
-	path = .vim/bundle/auto-pairs
-	url = https://github.com/jiangmiao/auto-pairs.git
 [submodule ".vim/bundle/FastFold"]
 	path = .vim/bundle/FastFold
 	url = https://github.com/ivangeorgiew/FastFold.git
@@ -115,3 +112,6 @@
 [submodule "fonts"]
 	path = fonts
 	url = https://github.com/powerline/fonts.git
+[submodule ".vim/bundle/vim-closer"]
+	path = .vim/bundle/vim-closer
+	url = https://github.com/rstacruz/vim-closer.git
