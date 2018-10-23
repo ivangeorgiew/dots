@@ -115,3 +115,6 @@
 [submodule ".vim/bundle/vim-closer"]
 	path = .vim/bundle/vim-closer
 	url = https://github.com/rstacruz/vim-closer.git
+[submodule ".vim/bundle/vim-python-pep8-indent"]
+	path = .vim/bundle/vim-python-pep8-indent
+	url = https://github.com/Vimjas/vim-python-pep8-indent.git

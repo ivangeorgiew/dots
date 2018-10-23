@@ -283,6 +283,7 @@ augroup END
 augroup folding
     au!
 
+    au Filetype python setl foldmethod=indent
     au FileType vim setl foldmarker={{{,}}} foldmethod=marker
     au FileType javascript.jsx setl foldmethod=expr foldexpr=FoldExprJS()
     au FileType cucumber setl foldmethod=expr foldexpr=FoldExprCucumber()
@@ -369,7 +370,7 @@ let g:mundo_close_on_revert = 1
 
 " ALE configurations
 let g:ale_enabled = 1
-let g:ale_linters_explicit = 1
+let g:ale_linters_explicit = 0
 let g:ale_fix_on_save = 0
 let g:ale_linters = {
             \'javascript': ['eslint'],
@@ -955,9 +956,9 @@ nnoremap <silent> L gt
 nnoremap <silent> gt lbve"by:call GoToTag('tab', @b)<CR>
 nnoremap <silent> gs lbve"by:call GoToTag('vsplit', @b)<CR>
 nnoremap <silent> go lbve"by:call GoToTag('current', @b)<CR>
-command! -nargs=1 -complete=tag Gt call GoToTag('tab', <f-args>)
-command! -nargs=1 -complete=tag Gs call GoToTag('vsplit', <f-args>)
-command! -nargs=1 -complete=tag Go call GoToTag('current', <f-args>)
+command! -nargs=1 -complete=tag GT call GoToTag('tab', <f-args>)
+command! -nargs=1 -complete=tag GS call GoToTag('vsplit', <f-args>)
+command! -nargs=1 -complete=tag GO call GoToTag('current', <f-args>)
 
 " Search and replace
 nnoremap <silent> <F2> :call ReplaceWord(0, 0)<cr>
