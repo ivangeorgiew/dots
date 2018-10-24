@@ -1,4 +1,4 @@
-setxkbmap -layout us,bg -variant ,phonetic
+setxkbmap -layout us,bg -variant ,phonetic -option 'grp:shifts_toggle'
 xset r rate 180 30
 udiskie &
 /usr/bin/start-pulseaudio-x11

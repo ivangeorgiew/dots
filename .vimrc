@@ -429,37 +429,31 @@ let g:ycm_key_list_select_completion = ['<C-n>']
 let g:ycm_key_list_previous_completion = ['<C-p>']
 let g:ycm_key_list_stop_completion = []
 let g:ycm_key_invoke_completion = '<C-Space>'
-" completions include
 let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 0
 " enable ycm only in those filetypes
 " let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1, 'cucumber': 1 }
-" remove semantic competion in javascript
-let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1, 'python': 1 }
-" etc
-let g:ycm_filepath_completion_use_working_dir = 0
-" removed jsx from the list in order to have working filepath completion in javascript files
-let g:ycm_filepath_blacklist = {}
+" remove semantic competion in from those filetypes
+" let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1, 'python': 1 }
+" custom semantic triggers
 " let g:ycm_semantic_triggers =  {
 "   \   'c' : ['->', '.'],
 "   \   'objc' : ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
 "   \             're!\[.*\]\s'],
 "   \ }
+let g:ycm_filepath_completion_use_working_dir = 0
+" removed jsx from the list in order to have working filepath completion in javascript files
+let g:ycm_filepath_blacklist = {}
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_cache_omnifunc = 1
 let g:ycm_use_ultisnips_completer = 1
 let g:ycm_max_num_candidates = 10
 let g:ycm_max_num_identifier_candidates = 10
-" disable console logs
 let g:ycm_show_diagnostics_ui = 1
+let g:ycm_server_python_interpreter = '/usr/bin/python'
 " Start vim faster
-" let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
-if system("uname -s") =~ "Linux"
-    let g:ycm_server_python_interpreter = '/usr/bin/python'
-else
-    let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
-endif
+let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
 
 " UltiSnips
 " keys
