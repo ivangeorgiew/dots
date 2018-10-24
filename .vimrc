@@ -197,6 +197,7 @@ set notagstack                             " don't add tags manually
 set viminfo='20,s100,h,f0,n~/.vim/.viminfo " viminfo settings
 set scrolloff=10                           " min lines below and above
 set redrawtime=5000                        " increase redraw time for syntax handling
+set signcolumn=no                          " remove the sign column
 
 " Folding
 set foldmethod=manual
@@ -377,7 +378,6 @@ let g:ale_linters = {
             \'scss': ['scsslint'],
             \'json': ['jsonlint']
             \}
-" DONT fix with javascript with eslint, since it will make mistakes on last folds
 " fixers setting are moved to an autocommand
 let g:ale_lint_on_enter = 1
 let g:ale_lint_on_save = 1
@@ -1012,13 +1012,13 @@ nnoremap <leader>ad :ALEDisable<CR>
 nnoremap <leader>al :ALELint<CR>
 
 "Incsearch
-nnoremap / /\V
+nnoremap / /\V\c
 "search backwards
-nnoremap ? ?\V
+nnoremap ? ?\V\c
 "search in visual selection
-nnoremap <silent> // :let @/ = '\V' . escape(@+, '\\/.*$^~[]')<CR>n
+nnoremap <silent> // :let @/ = '\V\c' . escape(@+, '\\/.*$^~[]')<CR>n
 "search in the selection
-vnoremap <silent> // <ESC>/\%V\V
+vnoremap <silent> // <ESC>/\%V\V\c
 "toggle search highlight
 nnoremap <silent><expr> <leader>l (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 
