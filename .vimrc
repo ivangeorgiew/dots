@@ -309,7 +309,8 @@ augroup vimrcEx
     au!
 
     "vim-closer
-    au FileType * let b:closer_flags = '([{'
+    "; is added only when another line in the buffer has ; ending
+    au FileType * let b:closer_flags = '([{;'
 
     "overwrite some vim-sensible options
     au BufEnter * set tags=tags formatoptions=rjcl foldtext=FoldText()
