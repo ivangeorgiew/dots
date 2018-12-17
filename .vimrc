@@ -881,7 +881,7 @@ map <Space> <leader>
 noremap <silent> <leader>q :qall<CR>
 noremap <silent> <leader>w :update<CR>
 noremap <silent> <leader>d :call CloseBuffer()<CR>
-noremap <silent> <leader>t :tabclose<CR>
+noremap <silent> <leader>T :tabclose<CR>
 
 " indent everything
 nnoremap <leader>I gg=G
@@ -983,10 +983,6 @@ nnoremap <leader>ff `[v`]=
 
 " jk to exit insertmode (delete characters to beginning of line if only whitespace)
 inoremap <silent><expr> jk getline('.') =~ '^\s\+$' && empty(&buftype) ? '<ESC>:call setline(line("."), "")<CR>' : '<ESC>'
-
-" Move tab left and right
-nnoremap <silent> th :tabm -1<cr>
-nnoremap <silent> tl :tabm +1<cr>
 
 " Save session
 noremap <silent> <F7> :call SaveSession()<cr>
@@ -1102,8 +1098,12 @@ map <leader><leader> <Esc>
 " ability to end macro inside quicklist
 noremap Q q
 
+" Move tab left and right
+nnoremap <silent> <leader>th :tabm -1<cr>
+nnoremap <silent> <leader>tl :tabm +1<cr>
+
 " Gutentags update
-nnoremap <silent> tu :GutentagsUpdate!<CR>:redraw!<CR>
+nnoremap <silent> <leader>tu :GutentagsUpdate!<CR>:redraw!<CR>
 
 " Join spaceless
 nnoremap <silent> J :call JoinLines()<CR>
