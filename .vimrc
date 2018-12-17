@@ -309,7 +309,7 @@ augroup vimrcEx
     au!
 
     "vim-closer
-    au FileType * let b:closer_flags = '([{;'
+    au FileType * let b:closer_flags = '([{'
 
     "overwrite some vim-sensible options
     au BufEnter * set tags=tags formatoptions=rjcl foldtext=FoldText()
@@ -354,7 +354,6 @@ let s:wrapscanVariable = 1
 
 " Change NERDTree mappings
 let g:NERDTreeMapOpenInTab='<C-t>'
-let g:NERDTreeMapOpenInTabSilent='<C-r>'
 let g:NERDTreeMapOpenVSplit='<C-v>'
 let g:NERDTreeWinSize=30
 let g:NERDTreeShowHidden=1
@@ -369,10 +368,9 @@ let g:mundo_close_on_revert = 1
 " ALE configurations
 let g:ale_enabled = 1
 let g:ale_linters_explicit = 0
-let g:ale_fix_on_save = 0
 let g:ale_linters = {
             \'javascript': ['eslint'],
-            \'scss': ['scsslint'],
+            \'scss': ['stylelint'],
             \'json': ['jsonlint']
             \}
 " fixers setting are moved to an autocommand
@@ -385,8 +383,8 @@ let g:ale_set_signs = 0
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 let g:grep_cmd_opts = '--line-numbers --noheading'
-" Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
 let g:ctrlp_cmd='CtrlP :pwd'
+" Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
 let g:ctrlp_user_command = 'ag --hidden %s -l -g ""'
 let g:ctrlp_show_hidden = 1
 " ag is fast enough that CtrlP doesn't need to cache
@@ -418,7 +416,6 @@ let g:gutentags_project_root = ['package.json']
 let g:gutentags_exclude_project_root = ['/usr/local']
 let g:gutentags_generate_on_empty_buffer = 1
 let g:gutentags_add_default_project_roots = 0
-" let g:gutentags_file_list_command = 'find . -name "**.js*"'
 
 " YouCompleteMe settings
 " keys
@@ -508,13 +505,16 @@ function! SetupEnvironment()
     if l:path =~ 'projects/\(tick42-onboarding-app\|js-mortgage-bootstrap\)'
         au! FileType javascript.jsx setl tabstop=2 shiftwidth=2
 
+        let g:ale_fix_on_save = 1
         let g:ale_fixers = {
                     \'javascript': ['prettier'],
                     \'scss': ['prettier'],
                     \'json': ['prettier']
                     \}
     else
+        let g:ale_fix_on_save = 0
         let g:ale_fixers = {
+                    \'javascript': ['eslint'],
                     \'scss': ['prettier'],
                     \'json': ['prettier']
                     \}
