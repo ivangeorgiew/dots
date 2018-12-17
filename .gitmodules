@@ -118,3 +118,6 @@
 [submodule ".vim/bundle/vim-python-pep8-indent"]
 	path = .vim/bundle/vim-python-pep8-indent
 	url = https://github.com/Vimjas/vim-python-pep8-indent.git
+[submodule ".vim/bundle/vim-endwise"]
+	path = .vim/bundle/vim-endwise
+	url = https://github.com/tpope/vim-endwise.git

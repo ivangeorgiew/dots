@@ -78,7 +78,6 @@
 " YouCompleteMe
 " <C-space> - semantic completion
 " <C-w> - remove word
-" <C-y> - accept completion
 
 " EasyClip - Built-in fixes for incorrect actions
 " Automatically indents - if not correct use <leader>ff
@@ -90,7 +89,6 @@
 " snake_case (crs),
 " MixedCase (crm),
 " camelCase (crc),
-" snake_case (crs),
 " UPPER_CASE (cru),
 " dash-case (cr-),
 " dot.case (cr.),
@@ -104,7 +102,6 @@
 " custom markers for compatibility with WebStorm
 " z; - fold/unfold
 " zl - fold/unfold deeply
-" Z - toggle fold || create fold(vis selection)
 " zj/zk - move between folds
 "COMMENTS }}}
 
