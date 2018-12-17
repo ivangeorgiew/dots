@@ -799,6 +799,7 @@ function! GoToTag(type, word)
         else
             :tabe
             execute ':tjump ' . a:word
+            execute "silent normal! zv"
             :normal zz
             let l:tagFilename = expand('%:t')
             if l:tagFilename == ''
@@ -815,6 +816,7 @@ function! GoToTag(type, word)
         else
             :vnew
             execute ':tjump ' . a:word
+            execute "silent normal! zv"
             :normal zz
             let l:tagFilename = expand('%:t')
             if l:tagFilename == ''
@@ -828,6 +830,7 @@ function! GoToTag(type, word)
             execute "normal! $hgf"
         else
             execute ':tjump ' . a:word
+            execute "silent normal! zv"
             :normal zz
         endif
     endif
@@ -878,7 +881,7 @@ map <Space> <leader>
 noremap <silent> <leader>q :qall<CR>
 noremap <silent> <leader>w :update<CR>
 noremap <silent> <leader>d :call CloseBuffer()<CR>
-noremap <silent> <leader>T :tabclose<CR>
+noremap <silent> <leader>t :tabclose<CR>
 
 " indent everything
 nnoremap <leader>I gg=G
@@ -938,10 +941,6 @@ nnoremap <silent> <leader>gd :Gdiff<CR>
 nnoremap <silent> <leader>gm :Gmerge<CR>
 command! -nargs=1 Git call FastGit(<q-args>)
 cnoreabbrev git Git
-
-" Navigations between tabs
-nnoremap <silent> H gT
-nnoremap <silent> L gt
 
 " Go to file under cursor
 nnoremap <silent> gt lbve"by:call GoToTag('tab', @b)<CR>
@@ -1008,7 +1007,7 @@ nnoremap <leader>al :ALELint<CR>
 nnoremap / /\V\c
 "search backwards
 nnoremap ? ?\V\c
-"search in visual selection
+"search in the previously copied text
 nnoremap <silent> // :let @/ = '\V\c' . escape(@+, '\\/.*$^~[]')<CR>n
 "search in the selection
 vnoremap <silent> // <ESC>/\%V\V\c
@@ -1040,7 +1039,9 @@ nnoremap <F1> :MundoToggle<CR>
 " Silver searcher
 " -F for no regex, -w for word search
 nnoremap ) :Ag! -F<SPACE>
+" search for the visually selected word
 vnoremap <silent> ) "by:let @b = escape(@b, '"')<CR>:Ag! -F -w "<C-r>b"<CR>
+" search for the selected regex
 vnoremap <silent> )) "by:let @b = escape(@b, '"')<CR>:Ag! "<C-r>b"<CR>
 
 " Quicker window movement
@@ -1071,13 +1072,10 @@ nnoremap <silent> <leader>fD :call delete(expand('%')) \| bdelete!<CR>
 nnoremap <silent> <leader>ia :ImportJSWord<CR>:silent! normal! zO<CR>
 nnoremap <silent> <leader>if :ImportJSFix<CR>:silent! normal! zO<CR>
 
-" Make using Ctrl+C do the same as Escape, to trigger autocmd
+" Remove some mappings
 inoremap <C-c> <Esc>
-
-" Remove suspending
+map <leader><leader> <Esc>
 vnoremap <C-z> <Esc>
-
-" Tmux mapping
 map <C-g> <Esc>
 
 " tabular + vim-cucumber mapping
@@ -1089,18 +1087,19 @@ xnoremap <expr> $ mode() == "v" ? "g_" : "$"
 "smart indent when entering insert mode with i on empty lines
 nnoremap <expr> i IndentWithI()
 
-"more sensible mappings
-map <leader><leader> <Esc>
-
 " ability to end macro inside quicklist
 noremap Q q
 
+" Navigations between tabs
+nnoremap <silent> H gT
+nnoremap <silent> L gt
+
 " Move tab left and right
-nnoremap <silent> <leader>th :tabm -1<cr>
-nnoremap <silent> <leader>tl :tabm +1<cr>
+nnoremap <silent> <leader>H :tabm -1<cr>
+nnoremap <silent> <leader>L :tabm +1<cr>
 
 " Gutentags update
-nnoremap <silent> <leader>tu :GutentagsUpdate!<CR>:redraw!<CR>
+nnoremap <silent> <leader>GU :GutentagsUpdate!<CR>:redraw!<CR>
 
 " Join spaceless
 nnoremap <silent> J :call JoinLines()<CR>
