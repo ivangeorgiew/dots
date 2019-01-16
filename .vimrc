@@ -616,12 +616,9 @@ function! OpenSession()
     endif
 endfunction
 
-function! ReplaceWord(visual, inRange)
+function! ReplaceWord(fullWord, visual, inRange)
     norm! ma
     try
-        call inputsave()
-        let fullWord = confirm('Only full words ?',"&Yes\n&No", 1)
-        call inputrestore()
         let expression = @b
         if a:visual == 0 || a:inRange == 1
             call inputsave()
@@ -632,22 +629,22 @@ function! ReplaceWord(visual, inRange)
         let replacement = input('Enter replacement:')
         call inputrestore()
         if a:visual == 0 && a:inRange == 0
-            if fullWord == 1
-                execute '%sno@\<'.expression.'\>@'.replacement.'@gc'
+            if a:fullWord == 1
+                execute '%sno@\<'.expression.'\>@'.replacement.'@g'
             else
-                execute '%sno@'.expression.'@'.replacement.'@gc'
+                execute '%sno@'.expression.'@'.replacement.'@g'
             endif
         elseif a:visual == 1 && a:inRange == 0
-            if fullWord == 1
-                execute '%sno@\<'.expression.'\>@'.replacement.'@gc'
+            if a:fullWord == 1
+                execute '%sno@\<'.expression.'\>@'.replacement.'@g'
             else
-                execute '%sno@'.expression.'@'.replacement.'@gc'
+                execute '%sno@'.expression.'@'.replacement.'@g'
             endif
         elseif a:visual == 1 && a:inRange == 1
-            if fullWord == 1
-                execute "%sno@\\%V\\<".expression."\\>@".replacement."@gc"
+            if a:fullWord == 1
+                execute "%sno@\\%V\\<".expression."\\>@".replacement."@g"
             else
-                execute "%sno@\\%V".expression."@".replacement."@gc"
+                execute "%sno@\\%V".expression."@".replacement."@g"
             endif
         endif
     finally
@@ -953,9 +950,15 @@ command! -nargs=1 -complete=tag GS call GoToTag('vsplit', <f-args>)
 command! -nargs=1 -complete=tag GO call GoToTag('current', <f-args>)
 
 " Search and replace
-nnoremap <silent> <F2> :call ReplaceWord(0, 0)<cr>
-vnoremap <silent> <F2> "by:call ReplaceWord(1, 0)<cr>
-vnoremap <silent> <F3> :<C-u>call ReplaceWord(1, 1)<cr>
+" full words only
+nnoremap <silent> <F2> :call ReplaceWord(1, 0, 0)<cr>
+vnoremap <silent> <F2> "by:call ReplaceWord(1, 1, 0)<cr>
+vnoremap <silent> <F3> :<C-u>call ReplaceWord(1, 1, 1)<cr>
+" all occurances
+nnoremap <silent> <leader><F2> :call ReplaceWord(0, 0, 0)<cr>
+vnoremap <silent> <leader><F2> "by:call ReplaceWord(0, 1, 0)<cr>
+vnoremap <silent> <leader><F3> :<C-u>call ReplaceWord(0, 1, 1)<cr>
+" getting asked since f12 is too far away
 nnoremap <silent> <F12> :call MassReplaceIt()<cr>
 
 " EasyClip
