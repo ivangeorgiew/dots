@@ -39,7 +39,7 @@
     template = ~/dotfiles/.gitmessage
 [user]
     name = Ivan Georgiev
-    email = ivan.georgiev@tick42.com
+    email = ivan_georgiew@yahoo.com
 [diff]
     tool = vimdiff
 [difftool "Kaleidoscope"]
