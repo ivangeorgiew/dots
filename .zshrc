@@ -101,12 +101,10 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias SN='shutdown now'
 alias RT='reboot'
-alias suvim='sudo -E vim'
+alias suv='sudo -E vim'
 alias ns='npm run start'
 alias nr='npm run'
 alias dot='cd ~/dotfiles'
-alias ent='cd ~/projects/entitlements/entitlements-web'
-alias ente='cd ~/projects/entitlements/entitlements-web/e2e'
 alias vm=vim
 alias vi=vim
 alias v=vim
@@ -120,17 +118,14 @@ export NODE_OPTIONS="--max_old_space_size=8192"
 
 # export PATH="$PATH:`yarn global bin`"
 export PATH="$PATH:./node_modules/.bin"
-export PATH=~/.npm-global/bin:$PATH
-export PATH="$PATH:$HOME/.rvm/bin"
+export PATH="$PATH:$HOME/.npm-global/bin"
+export PATH="$PATH:$HOME/.gem/ruby/2.6.0/bin"
 
 export NVM_DIR="$HOME/.nvm"
 alias loadnvm=". /usr/local/opt/nvm/nvm.sh"
 
 # disable C-s freezing
 stty -ixon
-
-# Load RVM into a shell session *as a function*
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
 if [ ! -d "/home/ivangeorgiev/projects" ]; then
     mkdir ~/projects

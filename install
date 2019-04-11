@@ -26,7 +26,7 @@ main () {
         if [[ "$OSTYPE" == linux* ]]; then
             echo "Adding Linux dotfiles"
             rm ~/.zprofile ~/.Xresources ~/.xinitrc ~/.Xmodmap ~/.xbindkeysrc
-            rm -fr ~/.config/dunst ~/.config/i3 ~/.config/polybar ~/.config/ranger ~/.config/rofi ~/.config/termite ~/.config/zathura
+            rm -fr ~/.config/dunst ~/.config/i3 ~/.config/polybar ~/.config/rofi ~/.config/termite
 
             cp -R ~/dotfiles/.Xmodmap ~/.Xmodmap
             cp -R ~/dotfiles/.config/i3 ~/.config/i3
@@ -37,9 +37,7 @@ main () {
             ln -s ~/dotfiles/.Xresources ~/.Xresources
             ln -s ~/dotfiles/.xbindkeysrc ~/.xbindkeysrc
             ln -s ~/dotfiles/.config/dunst ~/.config/dunst
-            ln -s ~/dotfiles/.config/ranger ~/.config/ranger
             ln -s ~/dotfiles/.config/termite ~/.config/termite
-            ln -s ~/dotfiles/.config/zathura ~/.config/zathura
         elif [[ "$OSTYPE" == darwin* ]]; then
             echo "Adding MacOS dotfiles"
         fi

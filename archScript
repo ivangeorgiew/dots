@@ -22,7 +22,7 @@ sudo systemctl enable autologin@tty1.service
 sudo systemctl start autologin@tty1.service
 
 # install packages from pacman
-sudo pacman -S --noconfirm --needed curl vlc git gparted htop screenfetch ranger wget unclutter zip unzip gnome-keyring libsecret
+sudo pacman -S --noconfirm --needed curl vlc git gparted htop screenfetch wget unclutter zip unzip gnome-keyring libsecret
 sudo pacman -S --noconfirm --needed termite keepassx2 gvim feh dunst xautolock xclip xdotool xbindkeys the_silver_searcher scrot
 sudo pacman -S --noconfirm --needed udiskie transmission-gtk ttf-dejavu rofi nodejs npm ctags tmux lxappearance perl-file-mimeinfo
 sudo pacman -S --noconfirm --needed alsa-firmware alsa-utils alsa-plugins pulseaudio-alsa pulseaudio
