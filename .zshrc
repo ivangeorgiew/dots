@@ -105,12 +105,12 @@ alias suv='sudo -E vim'
 alias ns='npm run start'
 alias nr='npm run'
 alias dot='cd ~/dotfiles'
-alias vm=vim
-alias vi=vim
-alias v=vim
+alias vm=nvim
+alias vi=nvim
+alias v=nvim
 
 unset BROWSER
-export EDITOR='vim'
+export EDITOR='nvim'
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LANG=en_us.UTF-8
@@ -126,6 +126,9 @@ alias loadnvm=". /usr/local/opt/nvm/nvm.sh"
 
 # disable C-s freezing
 stty -ixon
+
+# enable vim mode for zsh
+bindkey -v
 
 if [ ! -d "/home/ivangeorgiev/projects" ]; then
     mkdir ~/projects

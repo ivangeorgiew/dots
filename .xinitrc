@@ -1,5 +1,7 @@
 setxkbmap -layout us,bg -variant ,phonetic -option 'grp:shifts_toggle'
 xset r rate 180 30
+xset s off
+xset -dpms
 udiskie &
 /usr/bin/start-pulseaudio-x11
 
@@ -10,5 +12,9 @@ export SSH_AUTH_SOCK
 [[ -f ~/.xbindkeysrc ]] && xbindkeys
 [[ -f ~/.Xmodmap ]] && xmodmap ~/.Xmodmap
 [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
+
+# Custom variables
+xrandr --output DP-0 --mode 1920x1080 -r 144
+xinput --set-prop 11 'libinput Accel Speed' -0.7
 
 exec i3
