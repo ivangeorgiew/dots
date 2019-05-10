@@ -28,10 +28,10 @@ If you use ArchLinux:
 22) `pacmd list-sinks` and change the index in ~/.config/i3/config pactl shortcuts
 23) `cd ~/dotfiles/.vim/bundle && git submodule update --init --recursive`
 24) Follow the YouCompleteMe instructions: https://github.com/Valloric/YouCompleteMe (install with `path/to/python ./install.py`)
-25) `xdg-settings set default-web-browser google-chrome.desktop`
-26) `ln -s /run/media/YOUR_NAME ~/media`
-27) Install `icaclient` and copy `All_Regions.ini` to `~/.ICAClient/All_Regions.ini`
-28) Increase number of watchers: `echo fs.inotify.max_user_watches=524288 | sudo tee /etc/sysctl.d/40-max-user-watches.conf && sudo sysctl --system`
+25) `ln -s /run/media/YOUR_NAME ~/media`
+26) Install `icaclient` and copy `All_Regions.ini` to `~/.ICAClient/All_Regions.ini`
+27) Increase number of watchers: `echo fs.inotify.max_user_watches=524288 | sudo tee /etc/sysctl.d/40-max-user-watches.conf && sudo sysctl --system`
+28) Copy the folder `chrome` from firefoxFiles in `~/.mozilla/firefox/SOME_PROFILE_HERE.dev-edition-default/`
 
 If you use MacOS:
 1) Install iTerm

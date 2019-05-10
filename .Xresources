@@ -4,7 +4,7 @@ Xft.autohint: 0
 Xft.hinting: true
 Xft.hintstyle: hintslight
 Xft.rgba: rgb
-Xft.dpi: 192
+*.dpi: 192
 
 ! -----------------------------------------------------------------------------
 ! File: gruvbox-dark.xresources
@@ -42,4 +42,3 @@ Xft.dpi: 192
 ! LightGrey + White
 *color7:  #a89984
 *color15: #ebdbb2
-*.dpi: 192
