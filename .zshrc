@@ -39,7 +39,7 @@ DISABLE_AUTO_UPDATE="true"
 # export UPDATE_ZSH_DAYS=13
 
 # Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
+DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
 # DISABLE_AUTO_TITLE="true"
@@ -138,3 +138,6 @@ cd ~/projects
 if [ -z "$TMUX" ]; then
     tmux attach -t TMUX || tmux new -s TMUX
 fi
+
+# remove those nasty completion colors
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
