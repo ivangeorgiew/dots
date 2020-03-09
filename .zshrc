@@ -2,11 +2,8 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-if [[ "$OSTYPE" == darwin* ]]; then
-    export ZSH=$HOME/.oh-my-zsh
-elif [[ "$OSTYPE" == linux* ]]; then
-    export ZSH=/usr/share/oh-my-zsh
-fi
+export ZSH=$HOME/.oh-my-zsh
+export TERM="xterm-256color"
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -140,4 +137,4 @@ if [ -z "$TMUX" ]; then
 fi
 
 # remove those nasty completion colors
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+#zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}

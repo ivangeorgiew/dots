@@ -22,28 +22,6 @@ main () {
         ln -s ~/dotfiles/.vimrc ~/.vimrc
         ln -s ~/dotfiles/.zshrc ~/.zshrc
         ln -s ~/dotfiles/.prettierrc.json ~/.prettierrc
-
-        if [[ "$OSTYPE" == linux* ]]; then
-            echo "Adding Linux dotfiles"
-            rm ~/.zprofile ~/.Xresources ~/.xinitrc ~/.Xmodmap ~/.xbindkeysrc
-            rm -fr ~/.config/dunst ~/.config/i3 ~/.config/polybar ~/.config/rofi ~/.config/termite
-
-            cp -R ~/dotfiles/.Xmodmap ~/.Xmodmap
-            cp -R ~/dotfiles/.config/i3 ~/.config/i3
-            cp -R ~/dotfiles/.config/polybar ~/.config/polybar
-            cp -R ~/dotfiles/.xinitrc ~/.xinitrc
-
-            ln -s ~/dotfiles/.zprofile ~/.zprofile
-            ln -s ~/dotfiles/.Xresources ~/.Xresources
-            ln -s ~/dotfiles/.xbindkeysrc ~/.xbindkeysrc
-            ln -s ~/dotfiles/.config/dunst ~/.config/dunst
-            ln -s ~/dotfiles/.config/termite ~/.config/termite
-        elif [[ "$OSTYPE" == darwin* ]]; then
-            echo "Adding MacOS dotfiles"
-        fi
-    else
-        echo "You said no, man"
-    fi
 }
 
 main
