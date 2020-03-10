@@ -175,7 +175,6 @@ set nocompatible                           " Use Vim settings, rather then Vi se
 set nobackup                               " dont make backups
 set nowritebackup                          " dont make backups
 set noswapfile                             " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
-set swapsync=""                            " Don't write swap file to disk
 set showcmd                                " display incomplete commands
 set autowrite                              " Automatically :write before running commands
 set clipboard=unnamedplus,unnamed          " Copy/paste to/from clipboard by default
@@ -185,7 +184,7 @@ set list listchars=tab:»·,trail:·          " show trailing whitespace
 set virtualedit=block                      " allow cursor to move where there is no text in v-block
 set breakindent                            " wrapped line continues on the same indent level
 set timeoutlen=500                         " waittime for second mapping
-set hlsearch                               " hightlight search
+set nohlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=800                         " time after which the CursorHold events will fire
@@ -329,6 +328,10 @@ augroup END
 " AUGROUP }}}
 
 "SETTINGS {{{
+"Python global executables
+let g:python_host_prog="/usr/bin/python2"
+let g:python3_host_prog="/usr/bin/python3"
+
 "JSX for .js files as well
 let g:jsx_ext_required = 0
 
