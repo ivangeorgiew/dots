@@ -71,4 +71,4 @@
     required = true
 [credential]
 	username = ivangeorgiew
-	helper = /usr/lib/git-core/git-credential-libsecret
+	helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
