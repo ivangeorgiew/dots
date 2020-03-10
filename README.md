@@ -32,6 +32,7 @@ If you use ArchLinux:
 26) Install `icaclient` and copy `All_Regions.ini` to `~/.ICAClient/All_Regions.ini`
 27) Increase number of watchers: `echo fs.inotify.max_user_watches=524288 | sudo tee /etc/sysctl.d/40-max-user-watches.conf && sudo sysctl --system`
 28) Copy the folder `chrome` from firefoxFiles in `~/.mozilla/firefox/SOME_PROFILE_HERE.dev-edition-default/`
+29) Replace the `bg` file in `/usr/share/X11/xkb/symbols/bg` for Bulgarian Dvorak
 
 If you use MacOS:
 1) Install iTerm
