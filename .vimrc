@@ -450,7 +450,7 @@ let g:ycm_use_ultisnips_completer = 1
 let g:ycm_max_num_candidates = 10
 let g:ycm_max_num_identifier_candidates = 10
 let g:ycm_show_diagnostics_ui = 1
-let g:ycm_server_python_interpreter = '/usr/bin/python'
+let g:ycm_server_python_interpreter = '/usr/bin/python3'
 " Start vim faster
 let g:ycm_start_autocmd = 'CursorHold,CursorHoldI'
 
