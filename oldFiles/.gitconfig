@@ -1,0 +1,36 @@
+[user]
+    name = Ivan Georgiev
+    email = ivan_georgiew@yahoo.com
+[alias]
+    ac = !git add -A && git commit -m
+    cl = clone
+    ct = checkout
+    df = diff
+    dl = branch -D
+    dr = push origin --delete
+    ma = merge --abort
+    me = merge --ff
+    lg = log --graph --full-history --color \
+        --pretty=format:"%x1b[35m%h%x20%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n%x1b[0m%s%n"
+    lga = log --graph --full-history --all --color \
+        --pretty=format:"%x1b[35m%h%x20%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n%x1b[0m%s%n"
+    ph = push -u
+    pl = pull
+    pre = checkout @{-1}
+    rt = reset HEAD~1
+    sa = submodule add
+    su = !git submodule sync && git submodule update --init --recursive
+    rs = rm --cached
+    ss = status
+    sch = !git branch --all | grep
+    lst = !git branch --sort=committerdate
+    sh = stash
+    sha = "!git stash apply stash@{\"$1\"} #"
+    shs = "!git stash show stash@{\"$1\"} #"
+    fa = fetch --all
+    cp = cherry-pick
+[core]
+    excludesfile = ~/.gitignore
+    autocrlf = input
+[include]
+    path = .gitconfig.local

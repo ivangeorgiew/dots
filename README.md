@@ -1,9 +1,7 @@
 # dotfiles
-My dotfiles, some of which are borrowed from https://github.com/mscoutermarsh/dotfiles.
+In the process of changing the dotfiles
 
-You have to do these things in order:
-
-If you use ArchLinux:
+OLD INSTRUCTIONS:
 1) Install Antergos base
 2) Identify your video card and install the corresponding drivers: `lspci | grep -e VGA -e 3D`
 3) CHOOSE ONE: `pacman -S nvidia` OR `pacman -S xf86-video-ati` OR `pacman -S xf86-video-intel`
@@ -33,21 +31,3 @@ If you use ArchLinux:
 27) Increase number of watchers: `echo fs.inotify.max_user_watches=524288 | sudo tee /etc/sysctl.d/40-max-user-watches.conf && sudo sysctl --system`
 28) Copy the folder `chrome` from firefoxFiles in `~/.mozilla/firefox/SOME_PROFILE_HERE.dev-edition-default/`
 29) Replace the `bg` file in `/usr/share/X11/xkb/symbols/bg` for Bulgarian Dvorak
-
-If you use MacOS:
-1) Install iTerm
-2) Install https://github.com/Lokaltog/powerline-fonts. I use cousine for powerline
-3) Install tmux
-4) Install Xcode full version
-5) Install macvim --with-override-system-vim
-6) Install Node.js
-7) Install zsh
-8) Install oh-my-zsh
-9) Install Exuberant Ctags with brew
-10) Install import-js globally
-11) `git clone https://github.com/ivangeorgiew/dotfiles.git ~/dotfiles`
-12) `cd ~/dotfiles`
-13) If you want to remove any of the plugins in vim/bundle DO IT NOW
-14) `git submodule update --init --recursive`
-15) `./install`
-16) Follow the YouCompleteMe build instructions: https://github.com/Valloric/YouCompleteMe#full-installation-guide

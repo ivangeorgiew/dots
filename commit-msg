@@ -1,6 +1,0 @@
-#!/bin/sh
-TICKET="$(git symbolic-ref HEAD | awk '{match(tolower($1),"amenttl-[0-9]+",a)}END{print toupper(a[0])}')"
-
-if [ -n "$TICKET" ]; then
-  echo -n "$TICKET " | cat - $1 > /tmp/out && mv /tmp/out $1
-fi
