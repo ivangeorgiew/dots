@@ -1,27 +1,21 @@
-#!/usr/bin/env zsh
 # vim:set ts=4 sw=4:
 
-main () {
-    echo "~/dotfiles -> ~/ are you sure? [y/n]: \c"
-    read line
-    if [[ "$line" == y* ]]; then
-        echo "Installing main dotfiles"
-        rm -fr ~/.vim
-        rm ~/.agignore ~/.ctags ~/.gitconfig ~/.gitignore ~/.importjs.js ~/.tmux.conf ~/.vimrc ~/.zshrc
+echo "Installing dotfiles"
+rm -fr ~/.vim
+rm -fr ~/.emacs.d
+rm ~/.agignore ~/.ctags ~/.gitconfig ~/.gitignore ~/.importjs.js ~/.prettierrc.json  ~/.bashrc ~/.bash_profile ~/.inputrc
 
-        mkdir ~/dotfiles/.vim/undo
-        mkdir ~/dotfiles/.vim/session
+mkdir ~/dotfiles/.vim/undo
+mkdir ~/dotfiles/.vim/session
 
-        ln -s ~/dotfiles/.agignore ~/.agignore
-        ln -s ~/dotfiles/.ctags ~/.ctags
-        ln -s ~/dotfiles/.gitconfig ~/.gitconfig
-        ln -s ~/dotfiles/.gitignore ~/.gitignore
-        ln -s ~/dotfiles/.importjs.js ~/.importjs.js
-        ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
-        ln -s ~/dotfiles/.vim ~/.vim
-        ln -s ~/dotfiles/.vimrc ~/.vimrc
-        ln -s ~/dotfiles/.zshrc ~/.zshrc
-        ln -s ~/dotfiles/.prettierrc.json ~/.prettierrc
-}
-
-main
+ln -s ~/dotfiles/.agignore ~/.agignore
+ln -s ~/dotfiles/.ctags ~/.ctags
+ln -s ~/dotfiles/.gitconfig ~/.gitconfig
+ln -s ~/dotfiles/.gitignore ~/.gitignore
+ln -s ~/dotfiles/.importjs.js ~/.importjs.js
+ln -s ~/dotfiles/.prettierrc.json ~/.prettierrc
+ln -s ~/dotfiles/.vim ~/.vim
+ln -s ~/dotfiles/.emacm.d ~/.emacs.d
+ln -s ~/dotfiles/.bashrc ~/.bashrc
+ln -s ~/dotfiles/.inputrc ~/.inputrc
+ln -s ~/dotfiles/.bash_profile ~/.bash_profile
