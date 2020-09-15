@@ -1,8 +1,16 @@
 {
     "printWidth": 120,
-    "proseWrap": "never",
+    "tabWidth": 4,
+    "tabs": false,
     "semi": false,
     "singleQuote": true,
-    "tabWidth": 4,
-    "trailingComma": "none"
+    "quoteProps": "as-needed",
+    "jsxSingleQuote": true,
+    "trailingComma": "none",
+    "bracketSpacing": true,
+    "jsxBracketSameLine": false,
+    "arrowParens": "always",
+    "htmlWhitespaceSensitivity": "css",
+    "proseWrap": "never",
+    "endOfLine": "lf"
 }

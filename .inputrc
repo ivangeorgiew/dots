@@ -1,0 +1,12 @@
+$include /etc/inputrc
+
+set bell-style none
+set completion-ignore-case on
+set completion-map-case on
+set mark-symlinked-directories on
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set visible-stats on
+set menu-complete-display-prefix
+"\e[Z":menu-complete-backward
+Tab:menu-complete
