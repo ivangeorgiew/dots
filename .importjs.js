@@ -11,7 +11,8 @@ module.exports = {
     //     globals: true,
     // }
     // importFunction: 'require',
-    // environments: ['browser', 'node'],
+    // stripFileExtensions: ['.jsx', '.js'],
+    environments: ['browser', 'node'],
     logLevel: 'debug',
     excludes: ['./e2e/node_modules/**', './*.js', './mockData/**', './routes/**', './coverage/**', './tests/**', './build-assets/**'],
     emptyLineBetweenGroups: false,
@@ -19,12 +20,12 @@ module.exports = {
     groupImports: true,
     importDevDependencies: true,
     danglingCommas: false,
-    stripFileExtensions: ['.jsx', '.js'],
     maxLineLength: 120,
     tab: '    ',
     mergableOptions: { globals: false },
     globals: [ 'module', 'expect' ],
     namedExports: {
+        'react': ['useState', 'useEffect', 'useContext', 'useReducer', 'useCallback', 'useMemo', 'useRef', 'useImperativeHandle', 'useLayoutEffect', 'useDebugValue'],
         'prop-types': [ 'bool', 'number', 'string', 'object', 'array', 'func', 'element', 'any', 'oneOfType', 'oneOf', 'arrayOf', 'objectOf', 'shape' ],
         'react-immutable-proptypes': [ 'list', 'map' ],
         'immutable': [ 'fromJS', 'Map', 'List', 'OrderedMap', 'OrderedSet', 'Set', 'is', 'isImmutable' ],

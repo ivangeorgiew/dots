@@ -1,10 +1,6 @@
 # vim:set ts=4 sw=4:
 
 echo "Installing dotfiles"
-rm -fr ~/.vim
-rm -fr ~/.emacs.d
-rm ~/.agignore ~/.ctags ~/.gitconfig ~/.gitignore ~/.importjs.js ~/.prettierrc.json  ~/.bashrc ~/.bash_profile ~/.inputrc
-
 mkdir ~/dotfiles/.vim/undo
 mkdir ~/dotfiles/.vim/session
 
