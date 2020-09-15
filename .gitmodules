@@ -88,3 +88,9 @@
 [submodule ".vim/bundle/vim-import-js"]
 	path = .vim/bundle/vim-import-js
 	url = git@github.com:ivangeorgiew/vim-import-js.git
+[submodule ".vim/bundle/vim-devicons"]
+	path = .vim/bundle/vim-devicons
+	url = https://github.com/ryanoasis/vim-devicons.git
+[submodule ".vim/bundle/vim-polyglot"]
+	path = .vim/bundle/vim-polyglot
+	url = https://github.com/sheerun/vim-polyglot.git
