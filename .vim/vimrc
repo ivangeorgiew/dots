@@ -142,12 +142,15 @@
 execute pathogen#infect()
 execute pathogen#helptags()
 
+syntax on
+filetype plugin indent on
+
 " Change between block and I-beam cursor
-if system("uname -s") =~ "Linux"
-    let &t_SI = "\<Esc>[6 q"
-    let &t_SR = "\<Esc>[4 q"
-    let &t_EI = "\<Esc>[2 q"
-endif
+" if system("uname -s") =~ "Linux"
+"     let &t_SI = "\<Esc>[6 q"
+"     let &t_SR = "\<Esc>[4 q"
+"     let &t_EI = "\<Esc>[2 q"
+" endif
 
 " set Vim-specific sequences for RGB colors
 " let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
@@ -169,6 +172,7 @@ set synmaxcol=256 "fixes lag from long lines
 
 "SET {{{
 " Common
+set encoding=UTF-8
 set smartcase                              " Needed for correct work with CtrlP
 set scroll=10                              " Set scroll lines
 set nocompatible                           " Use Vim settings, rather then Vi settings
@@ -176,7 +180,7 @@ set nobackup                               " dont make backups
 set nowritebackup                          " dont make backups
 set noswapfile                             " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
 set showcmd                                " display incomplete commands
-set autowrite                              " Automatically :write before running commands
+set noautowrite                              " Automatically :write before running commands
 set clipboard=unnamedplus,unnamed          " Copy/paste to/from clipboard by default
 set sessionoptions=curdir,tabpages,winsize " save only this information in session
 set nojoinspaces                           " Only one space when joining lines
@@ -184,7 +188,7 @@ set list listchars=tab:»·,trail:·          " show trailing whitespace
 set virtualedit=block                      " allow cursor to move where there is no text in v-block
 set breakindent                            " wrapped line continues on the same indent level
 set timeoutlen=500                         " waittime for second mapping
-set nohlsearch                               " hightlight search
+set hlsearch                               " hightlight search
 set wrapscan                               " incsearch after end of file
 set noshowmode                             " dont show vim mode
 set updatetime=800                         " time after which the CursorHold events will fire
@@ -235,6 +239,12 @@ set diffopt=vertical,iwhite,filler " vimdiff split direction and ignore whitespa
 
 "Silver searcher
 set grepprg=ag
+
+"Fix highlight issues in certain terminals
+if (&term =~ '^xterm' && &t_Co == 256)
+  set t_ut=
+  set ttyscroll=1
+endif
 "SET }}}
 
 "AUGROUP {{{
@@ -262,6 +272,7 @@ augroup syntax
     au BufNewFile,BufRead *.babelrc setl filetype=json
     au BufNewFile,BufRead *.sass setl filetype sass
     au BufNewFile,BufRead *.eslintrc setl filetype=json
+    au BufNewFile,BufRead *.ts setl filetype=typescript
 
     "Fix some keywords in css and scss
     au FileType css setlocal iskeyword+=-
@@ -282,7 +293,8 @@ augroup folding
 
     au Filetype python setl foldmethod=indent
     au FileType vim setl foldmarker={{{,}}} foldmethod=marker
-    au FileType javascript.jsx setl foldmethod=expr foldexpr=FoldExprJS()
+    " au FileType javascript setl foldmethod=expr foldexpr=FoldExprJS()
+    " au FileType typescriptreact setl foldmethod=expr foldexpr=FoldExprJS()
     au FileType cucumber setl foldmethod=expr foldexpr=FoldExprCucumber()
 augroup END
 
@@ -346,7 +358,7 @@ let s:inMarker = 0
 let s:inImportFold = 0
 let s:comment = '\s*\(\/\/\|\/\*\|\*\/\)'
 let s:importString = '^' . s:comment . '*\s*\(import \)'
-let s:fromString = "\\( from '.*'\\)"
+let s:fromString = "\\s*\\(from\\|import\\)\\s*[\"'].*[\"']"
 let s:marker1 = '^' . s:comment . '.*\( region\)\s*'
 let s:marker2 = '^' . s:comment . '.*\( endregion\)\s*'
 let s:elseStatement = '\( else \)'
@@ -373,18 +385,21 @@ let g:mundo_close_on_revert = 1
 " ALE configurations
 let g:ale_enabled = 1
 let g:ale_linters_explicit = 0
-let g:ale_linters = {
-            \'javascript': ['eslint'],
-            \'scss': ['stylelint'],
-            \'json': ['jsonlint']
-            \}
-" fixers setting are moved to an autocommand
 let g:ale_lint_on_enter = 1
 let g:ale_lint_on_save = 1
 let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_on_insert_leave = 1
 let g:ale_set_highlights = 1
 let g:ale_set_signs = 0
+" Can be moved to SetupEnvironment
+let g:ale_fix_on_save = 1
+let g:ale_fixers = {
+    \'typescriptreact': ['prettier'],
+    \'typescript': ['prettier'],
+    \'javascript': ['prettier'],
+    \'scss': ['prettier'],
+    \'json': ['prettier']
+\}
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher
 let g:grep_cmd_opts = '--line-numbers --noheading'
@@ -408,7 +423,7 @@ let g:html_indent_tags = 'li\|p'
 
 " Arrow for wrapped text
 if has('linebreak')
-    let &showbreak='⤷ '
+    let &showbreak=' ⤷ '
 endif
 
 " Rooter
@@ -431,9 +446,9 @@ let g:ycm_key_invoke_completion = '<C-Space>'
 let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 0
 " enable ycm only in those filetypes
-" let g:ycm_filetype_whitelist = { 'javascript.jsx': 1, 'css': 1, 'scss': 1, 'json': 1, 'cucumber': 1 }
-" remove semantic competion in from those filetypes
-" let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1, 'python': 1 }
+" let g:ycm_filetype_whitelist = { 'javascript': 1, 'css': 1, 'scss': 1, 'json': 1, 'cucumber': 1 }
+" remove semantic completion from those filetypes
+let g:ycm_filetype_specific_completion_to_disable = { 'javascript': 1, 'python': 1 }
 " custom semantic triggers
 " let g:ycm_semantic_triggers =  {
 "   \   'c' : ['->', '.'],
@@ -497,7 +512,7 @@ let g:lastplace_open_folds = 0
 " Emmet
 let g:user_emmet_mode='a' "enable in all modes
 let g:user_emmet_settings = {
-\    'javascript.jsx': {
+\    'javascript': {
 \        'extends': 'jsx'
 \    }
 \}
@@ -507,23 +522,10 @@ let g:user_emmet_settings = {
 function! SetupEnvironment()
     let l:path = expand('%:p')
 
-    if l:path =~ 'projects/\(tick42-onboarding-app\|js-mortgage-bootstrap\)'
-        au! FileType javascript.jsx setl tabstop=2 shiftwidth=2
-
-        let g:ale_fix_on_save = 1
-        let g:ale_fixers = {
-                    \'javascript': ['prettier'],
-                    \'scss': ['prettier'],
-                    \'json': ['prettier']
-                    \}
-    else
-        let g:ale_fix_on_save = 0
-        let g:ale_fixers = {
-                    \'javascript': ['eslint'],
-                    \'scss': ['prettier'],
-                    \'json': ['prettier']
-                    \}
-    endif
+    " if l:path =~ 'projects/\(blabla\|other\)'
+    "     au! FileType javascript setl tabstop=2 shiftwidth=2
+    " else
+    " endif
 endfunction
 
 function! CloseBuffer()
@@ -604,10 +606,10 @@ endfunction
 function! SaveSession()
     let dirPath = fnamemodify('%', ':~:h:t')
     if expand('%:p') =~ "projects"
-        let choice = confirm('Save Session ?',"&Yes\n&No", 1)
-        if choice == 1
+        "let choice = confirm('Save Session ?',"&Yes\n&No", 1)
+        "if choice == 1
             execute 'mksession! ~/.vim/session/'.dirPath
-        endif
+        "endif
     endif
 endfunction
 
@@ -937,6 +939,7 @@ nnoremap <silent> dh :diffget //2<CR>\|:diffupdate<CR>
 nnoremap <silent> dl :diffget //3<CR>\|:diffupdate<CR>
 
 "Git (vim-fugitive) mappings
+nnoremap <silent> <leader>gs :Gstatus<CR>
 nnoremap <silent> <leader>gw :Gwrite<CR>
 nnoremap <silent> <leader>gb :Gblame<CR>
 nnoremap <silent> <leader>gd :Gdiff<CR>
@@ -1114,12 +1117,12 @@ nnoremap <silent> J :call JoinLines()<CR>
 nnoremap <silent> K :call SplitLines()<CR>
 
 " go to next/prev line even if it is wrapped
-nnoremap j gj
-nnoremap k gk
+nnoremap <silent>j gj
+nnoremap <silent>k gk
 
 " more natural navigation between empty lines
-nnoremap { }
-nnoremap } {
+nnoremap <silent>{ }
+nnoremap <silent>} {
 
 " remap text object selection mappings
 vnoremap a" 2i"
