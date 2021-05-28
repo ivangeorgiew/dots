@@ -19,6 +19,8 @@ alias ll="ls -la"
 alias kl="pkill -9" #Force kill a process (hence the 9)
 alias ks="ps aux | grep"
 
+stty -ixon
+
 #Environment variables
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE_HOME="${HOME}/.cache"

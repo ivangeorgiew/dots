@@ -1,8 +1,4 @@
 module.exports = {
-    // aliases: {
-    //     $: 'third-party-libs/jquery',
-    //     _: 'third-party-libs/underscore',
-    // },
     // ignorePackagePrefixes: ['my-company-'],
     // mergableOptions: {
     //     aliases: true,
@@ -12,6 +8,12 @@ module.exports = {
     // }
     // importFunction: 'require',
     // stripFileExtensions: ['.jsx', '.js'],
+    aliases: {
+        $: 'third-party-libs/jquery',
+        _: 'third-party-libs/underscore',
+        bcrypt: 'bcryptjs',
+        jwt: 'jsonwebtoken'
+    },
     environments: ['browser', 'node'],
     logLevel: 'debug',
     excludes: ['./e2e/node_modules/**', './*.js', './mockData/**', './routes/**', './coverage/**', './tests/**', './build-assets/**'],
@@ -23,9 +25,10 @@ module.exports = {
     maxLineLength: 120,
     tab: '    ',
     mergableOptions: { globals: false },
-    globals: [ 'module', 'expect' ],
+    globals: [ 'module', 'expect', 'console' ],
     namedExports: {
-        'react': ['useState', 'useEffect', 'useContext', 'useReducer', 'useCallback', 'useMemo', 'useRef', 'useImperativeHandle', 'useLayoutEffect', 'useDebugValue'],
+        'react-dom': [ 'render' ],
+        'react': ['useState', 'memo', 'useEffect', 'useContext', 'useReducer', 'useCallback', 'useMemo', 'useRef', 'useImperativeHandle', 'useLayoutEffect', 'useDebugValue'],
         'prop-types': [ 'bool', 'number', 'string', 'object', 'array', 'func', 'element', 'any', 'oneOfType', 'oneOf', 'arrayOf', 'objectOf', 'shape' ],
         'react-immutable-proptypes': [ 'list', 'map' ],
         'immutable': [ 'fromJS', 'Map', 'List', 'OrderedMap', 'OrderedSet', 'Set', 'is', 'isImmutable' ],
@@ -37,17 +40,21 @@ module.exports = {
     },
     useRelativePaths({ pathToImportedModule, pathToCurrentFile }) {
         // if (pathToCurrentFile.includes('app') || pathToCurrentFile.includes('e2e')) {
-            return false
+            // return false
         // }
 
-        // return true
+        return true
     },
     declarationKeyword({ pathToImportedModule, pathToCurrentFile }) {
-        // if (pathToCurrentFile.includes('app')) {
-            return 'import'
-        // }
+        if (
+            pathToCurrentFile.includes('server') ||
+            pathToCurrentFile.includes('config/') ||
+            pathToCurrentFile.includes('graphql/')
+        ) {
+            return 'const'
+        }
 
-        // return 'const'
+        return 'import'
     },
     moduleNameFormatter({ moduleName, pathToCurrentFile, pathToImportedModule }) {
         if (moduleName.startsWith('app/js/')) {
