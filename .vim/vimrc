@@ -162,10 +162,10 @@ colorscheme gruvbox
 
 " Fix lag in vim
 set shell=bash
-set lazyredraw
+" set lazyredraw
 set nocursorcolumn
-set regexpengine=1
-set synmaxcol=256 "fixes lag from long lines
+" set regexpengine=1
+" set synmaxcol=256 "fixes lag from long lines
 " set colorcolumn=120  " slows alot
 " set cursorline " slows and unnecessary
 "MISC }}}
@@ -396,7 +396,11 @@ let g:ale_set_signs = 0
 " Can be moved to SetupEnvironment
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {
-    \'*': ['eslint']
+    \'typescriptreact': ['prettier', 'eslint'],
+    \'typescript': ['prettier', 'eslint'],
+    \'javascriptreact': ['prettier', 'eslint'],
+    \'javascript': ['prettier', 'eslint'],
+    \'markdown': ['prettier']
 \}
 
 "The Silver Searcher https://github.com/ggreer/the_silver_searcher

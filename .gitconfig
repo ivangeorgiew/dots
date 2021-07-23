@@ -2,7 +2,8 @@
     name = Ivan Georgiev
     email = ivan_georgiew@yahoo.com
 [alias]
-    ac = !git add -A && git commit -m
+    ad = !git add -A
+    cm = !git commit -m
     cl = clone
     ct = checkout
     df = diff

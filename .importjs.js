@@ -16,13 +16,13 @@ module.exports = {
     },
     environments: ['browser', 'node'],
     logLevel: 'debug',
-    excludes: ['./e2e/node_modules/**', './*.js', './mockData/**', './routes/**', './coverage/**', './tests/**', './build-assets/**'],
+    excludes: ['./**/index.js', './dist/**', './e2e/node_modules/**', './*.js', './mockData/**', './routes/**', './coverage/**', './tests/**', './build-assets/**'],
     emptyLineBetweenGroups: false,
     sortImports: true,
     groupImports: true,
     importDevDependencies: true,
     danglingCommas: false,
-    maxLineLength: 120,
+    maxLineLength: 90,
     tab: '    ',
     mergableOptions: { globals: false },
     globals: [ 'module', 'expect', 'console' ],
@@ -31,7 +31,6 @@ module.exports = {
         'react': ['useState', 'memo', 'useEffect', 'useContext', 'useReducer', 'useCallback', 'useMemo', 'useRef', 'useImperativeHandle', 'useLayoutEffect', 'useDebugValue'],
         'prop-types': [ 'bool', 'number', 'string', 'object', 'array', 'func', 'element', 'any', 'oneOfType', 'oneOf', 'arrayOf', 'objectOf', 'shape' ],
         'react-immutable-proptypes': [ 'list', 'map' ],
-        'immutable': [ 'fromJS', 'Map', 'List', 'OrderedMap', 'OrderedSet', 'Set', 'is', 'isImmutable' ],
         'reselect': [ 'createSelector' ],
         'redux-saga/effects': [ 'all', 'join', 'put', 'call', 'select', 'take', 'race', 'takeLatest', 'takeEvery', 'fork', 'cancel', 'spawn' ],
         'redux-saga': [ 'delay' ],
@@ -46,13 +45,13 @@ module.exports = {
         return true
     },
     declarationKeyword({ pathToImportedModule, pathToCurrentFile }) {
-        if (
-            pathToCurrentFile.includes('server') ||
-            pathToCurrentFile.includes('config/') ||
-            pathToCurrentFile.includes('graphql/')
-        ) {
-            return 'const'
-        }
+        // if (
+        //     pathToCurrentFile.includes('server') ||
+        //     pathToCurrentFile.includes('config/') ||
+        //     pathToCurrentFile.includes('graphql/')
+        // ) {
+        //     return 'const'
+        // }
 
         return 'import'
     },
