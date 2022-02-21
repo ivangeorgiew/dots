@@ -21,7 +21,7 @@ module.exports = {
     sortImports: true,
     groupImports: true,
     importDevDependencies: true,
-    danglingCommas: false,
+    danglingCommas: true,
     maxLineLength: 90,
     tab: '    ',
     mergableOptions: { globals: false },
