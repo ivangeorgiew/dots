@@ -25,7 +25,7 @@
     ss = status
     sch = !git branch --all | grep
     lst = !git branch --sort=committerdate
-    sh = stash
+    sh = stash --keep-index
     sha = "!git stash apply stash@{\"$1\"} #"
     shs = "!git stash show stash@{\"$1\"} #"
     fa = fetch --all
