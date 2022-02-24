@@ -627,8 +627,8 @@ function! RenameCurrentFile()
 endfunction
 
 function! SaveSession()
-    let dirPath = fnamemodify('%', ':~:h:t')
-    execute 'mksession! ~/.vim/session/'.dirPath
+    let sessionName = substitute(getcwd(-1), '/', '_', 'g')
+    execute 'mksession! ~/.vim/session/'.sessionName
 endfunction
 
 function! ExitWatchers()
@@ -638,8 +638,8 @@ function! ExitWatchers()
 endfunction
 
 function! OpenSession()
-    let dirPath = fnamemodify('%', ':~:h:t')
-    let file = '~/.vim/session/'.dirPath
+    let sessionName = substitute(getcwd(-1), '/', '_', 'g')
+    let file = '~/.vim/session/'.sessionName
     if glob(file)!=#""
         execute 'source '.file
     endif

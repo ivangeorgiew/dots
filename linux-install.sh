@@ -16,14 +16,18 @@ exec > >(tee "linux-install.log") 2>&1
 
 # constants
 func_descr="doing something"
-chroot_dir="/mnt/inst"
+chroot_dir="/mnt/test"
 boot_label="BOOT"
 swap_label="swap"
 root_label="root"
 home_label="home"
 
+# proper error handling
+trap 'catch ${?} ${LINENO} ${BASH_COMMAND}' ERR
+
 cleanup() {
     func_descr="cleaning up"
+
     echo -e "\nCleaning up...\n"
     grep -qs "${chroot_dir} " /proc/mounts && umount -R ${chroot_dir}
 
@@ -41,14 +45,13 @@ catch() {
     else
         echo
     fi
+
     return 0
 }
 
-trap 'catch ${?} ${LINENO} ${BASH_COMMAND}' ERR
-
-# reused functions
 read_diskname() {
     func_descr="choosing a disk"
+
     read -u 2 -p "${1}" disk
     while ! [[ -b "/dev/${disk}" ]]; do
         read -u 2 -p "Please enter a valid device: " disk
@@ -58,6 +61,7 @@ read_diskname() {
 
 read_keyword() {
     func_descr="entering a keyword"
+
     read -u 2 -p "${1}" keyword
     while ! [[ ${keyword} =~ ^[a-zA-Z0-9_-]+$ ]]; do
         read -u 2 -p "Please enter a valid keyword: " keyword
@@ -67,6 +71,7 @@ read_keyword() {
 
 read_secret() {
     func_descr="entering a secret keyword"
+
     read -u 2 -sp "${1}" secret && echo 1>&2
     while ! [[ ${secret} =~ ^[a-zA-Z0-9_-]+$ ]]; do
         read -u 2 -sp "Please enter a valid secret keyword: " secret && echo 1>&2
@@ -77,10 +82,12 @@ read_secret() {
 # Actual beginning of the script
 echo -e "\nWelcome to my linux installation script!"
 
+# In case of unclean exit or error in the "cleanup" function
 cleanup
 
 partition() {
     func_descr="partitioning"
+
     read -p "Should we partition? [yes/no]: " should_partition
     [[ ${should_partition} != "yes" ]] && return 0
     echo -e "\nPartitioning...\n"
@@ -88,7 +95,7 @@ partition() {
     lsblk -o name,label,size
     echo
     dev_to_part=`read_diskname "Which disk to partition? [ex: sda]: "`
-    echo "Make 1GB EFI, 12GB swap, 30GB root, rest home."
+    echo "Make 1GB EFI, 10GB swap, rest root"
     read -sp "Press enter to continue..."
     echo
     cfdisk /dev/${dev_to_part}
@@ -98,6 +105,7 @@ partition() {
 
 format() {
     func_descr="formating"
+
     read -p "Should we format? [yes/no]: " should_format
     [[ ${should_format} != "yes" ]] && return 0
     echo -e "\nFormatting...\n"
@@ -120,6 +128,7 @@ format() {
 
 mount_disks() {
     func_descr="mounting disks"
+
     echo -e "\nMounting disks...\n"
 
     [[ -d ${chroot_dir} ]] || mkdir -p ${chroot_dir}
@@ -137,6 +146,7 @@ mount_disks() {
 
 download_linux() {
     func_descr="downloading and extracting linux"
+
     echo -e "\nDownloading and extracting linux...\n"
     [[ -d "${chroot_dir}/root" ]] && return 0
 
@@ -149,9 +159,10 @@ download_linux() {
 
 mount_dirs() {
     func_descr="mounting subdirectories"
+
     echo -e "\nMounting subdirectories...\n"
 
-    for folder in dev sys proc; do
+    for folder in dev sys proc run sys/firmware/efi/efivars; do
         [[ -d ${chroot_dir}/${folder} ]] || mkdir -p ${chroot_dir}/${folder}
         if ! $(grep -qs "${chroot_dir}/${folder} " /proc/mounts); then
             mount -R --make-rslave /${folder} ${chroot_dir}/${folder}
@@ -161,73 +172,74 @@ mount_dirs() {
     return 0
 } && mount_dirs
 
-creating_user() {
-    func_descr="choosing username and password"
-    read -p "Should we create a user? [yes/no]: " should_create_user
-    [[ ${should_create_user} != "yes" ]] && return 0
-    echo -e "\nCreating a user...\n"
+chrooting() {
+    func_descr="executing chroot commands and modifying files"
 
+    read -p "Should we chroot and modify? [yes/no]: " should_chroot
+    [[ ${should_chroot} != "yes" ]] && return 0
+
+    echo -e "\nCreating a new user...\n"
     username=`read_keyword "Enter username: "`
     pass1=`read_secret "Enter password: "`
     pass2=`read_secret "Repeat password: "`
-
     while [[ ${pass1} != ${pass2} ]]; do
         pass1=`read_secret "Passwords don't match or incorrect. Enter password: "`
         pass2=`read_secret "Repeat password: "`
     done
-
-    return 0
-} && creating_user
-
-chrooting() {
-    func_descr="executing chroot commands"
-    echo -e "\nExecuting chroot commands...\n"
-
     if $(id ${username} &> /dev/null); then
-        useradd -m -g users -G wheel,input,video,disk,audio,kvm -s /bin/bash "${username}"
-        yes ${pass1} | passwd ${username} &> /dev/null
+        chroot ${chroot_dir} useradd -m -g users -G wheel,input,video,disk,audio,kvm -s /bin/bash "${username}" && \
+                             yes ${pass1} | passwd ${username} &> /dev/null
+        echo "User ${username} created !!!"
+        unset pass1 pass2
     fi
 
-    chown root:root /
-    chmod 755 /
-    passwd -dl root
+    echo -e "\nModifying resolv.conf for internet...\n"
+    cat > ${chroot_dir}/etc/resolv.conf <<- EOF
+    nameserver 1.1.1.1
+    nameserver 1.0.0.1
+EOF
 
-    echo "Updating linux..."
-    xbps-install -Syu xbps void-repo-nonfree
-    xbps-install -Syu
+    # chroot ${chroot_dir} chown root:root / && \
+    #                      chmod 755 / && \
+    #                      passwd -dl root
 
-    echo "Installing base packages..."
-    xbps-install -Sy base-system grub-x86_64-efi wifi-firmware linux-firmware git
-    xbps-query -s base-voidstrap | grep -qs "voidstrap" && xbps-remove -y base-voidstrap
+    # echo "Updating linux..."
+    # xbps-install -Syu xbps void-repo-nonfree
+    # xbps-install -Syu
 
-    echo "Installing GRUB..."
-    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=void_grub --boot-directory=/boot
+    # echo "Installing base packages..."
+    # xbps-install -Sy base-system grub-x86_64-efi wifi-firmware linux-firmware git
+    # xbps-query -s base-voidstrap | grep -qs "voidstrap" && xbps-remove -y base-voidstrap
 
-    echo "Installing cpu microcode.."
-    if $(cat /proc/cpuinfo | grep -qs "GenuineIntel"); then
-        xbps-install -Sy intel-ucode
-        if $(cat /etc/dracut.conf.d/intel_ucode.conf | grep -qs "early_microcode=yes"); then
-            echo 'early_microcode="yes"' >> /etc/dracut.conf.d/intel_ucode.conf
-        fi
-    else
-        xbps-install -Sy linux-firmware-amd
-    fi
+    # echo "Installing GRUB..."
+    # grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=void_grub --boot-directory=/boot
 
-    echo "Removing old kernels..."
-    vkpurge rm all
+    # echo "Installing cpu microcode.."
+    # if $(cat /proc/cpuinfo | grep -qs "GenuineIntel"); then
+    #     xbps-install -Sy intel-ucode
+    #     if $(cat /etc/dracut.conf.d/intel_ucode.conf | grep -qs "early_microcode=yes"); then
+    #         echo 'early_microcode="yes"' >> /etc/dracut.conf.d/intel_ucode.conf
+    #     fi
+    # else
+    #     xbps-install -Sy linux-firmware-amd
+    # fi
 
-    echo "Reconfiguring files..."
-    xbps-reconfigure -fa
+    # echo "Removing old kernels..."
+    # vkpurge rm all
 
-    echo "Setup runit services..."
-    rm -f /etc/runit/runsvdir/default/agetty-tty{4,5,6}
-    ln -sf /etc/sv/dhcpcd /etc/runit/runsvdir/default/
+    # echo "Reconfiguring files..."
+    # xbps-reconfigure -fa
+
+    # echo "Setup runit services..."
+    # rm -f /etc/runit/runsvdir/default/agetty-tty{4,5,6}
+    # ln -sf /etc/sv/dhcpcd /etc/runit/runsvdir/default/
 
     return 0
 } && chrooting
 
 modify_files() {
     func_descr="modifying configuration files"
+
     read -p "Should we modify the config files? [yes/no]: " should_modify
     [[ ${should_modify} != "yes" ]] && return 0
     echo -e "\nModifying config files...\n"
@@ -248,11 +260,6 @@ modify_files() {
     cat ${chroot_dir}/etc/dhcpcd.conf | grep -qs "nohook resolv.conf" || echo "nohook resolv.conf" >> ${chroot_dir}/etc/dhcpcd.conf
 
     sed -Ei 's/^(.*)GETTY_ARGS=".*"/\1GETTY_ARGS="--autologin ${username} --noclear"/g' ${chroot_dir}/etc/runit/runsvdir/default/agetty-tty1/conf
-
-    cat > ${chroot_dir}/etc/resolv.conf <<- EOF
-    nameserver 1.1.1.1
-    nameserver 1.0.0.1
-EOF
 
     cat > ${chroot_dir}/etc/fstab <<- EOF
     LABEL="${boot_label}"  /boot/efi    vfat        defaults,discard        0       2
