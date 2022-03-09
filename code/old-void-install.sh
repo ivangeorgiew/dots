@@ -1,11 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # A script to install linux by Ivan Georgiev
-
-# switch to root
-if [[ "$(whoami)" != "root" ]]; then
-    sudo su -s "$0"
-    exit
-fi
 
 # trigger error functions and pipes
 set -Euo pipefail
@@ -16,11 +10,11 @@ exec > >(tee "linux-install.log") 2>&1
 
 # constants
 func_descr="doing something"
-chroot_dir="/mnt/test"
-boot_label="BOOT"
-swap_label="swap"
-root_label="root"
-home_label="home"
+chroot_dir="/mnt/void"
+boot_label="VOID-BOOT"
+swap_label="void-swap"
+root_label="void-root"
+home_label="void-home"
 
 # proper error handling
 trap 'catch ${?} ${LINENO} ${BASH_COMMAND}' ERR
@@ -35,8 +29,8 @@ cleanup() {
 }
 
 catch() {
-    echo "Issue with ${func_descr}:"
-    echo "  command \"${3}\" failed with error code ${1} at line ${2}"
+    echo "Error at: ${func_descr}"
+    echo "  Command \"${3}\" failed with error code ${1} at line ${2}"
 
     read -p "Should we proceed with the script? [yes/no]: " should_proceed
     if [[ ${should_proceed} != "yes" ]]; then
@@ -79,11 +73,15 @@ read_secret() {
     return "${secret}"
 }
 
-# Actual beginning of the script
-echo -e "\nWelcome to my linux installation script!"
+# switch to root
+if [[ "$(whoami)" != "root" ]]; then
+    sudo su -s "$0"
+    exit
+fi
 
-# In case of unclean exit or error in the "cleanup" function
-cleanup
+# Actual beginning of the script
+echo "----------------------------------------"
+echo "$(date +%D) - Beginning installation"
 
 partition() {
     func_descr="partitioning"
