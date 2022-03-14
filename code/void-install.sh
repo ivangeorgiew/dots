@@ -9,7 +9,7 @@ readonly CHROOT_DIR="/mnt/void"
 # readonly ROOT_LABEL="void-root"
 
 # on interupt or exit
-trap '{ stty echo; echo; call cleanup; exit 1; }' INT TERM
+trap '{ stty echo; echo; call cleanup; exit 1; }' INT TERM HUP
 
 e() {
     echo "$@" 1>&2
@@ -105,7 +105,7 @@ start() {
         sudo su -s "$0"
         exit 0
     fi
-} && call start
+}
 
 testt() {
     e "Testing..."
@@ -116,6 +116,9 @@ testt() {
     e "Username is: $r2"
     r3=$(read_secret "Enter password: ")
     e "Password is: $r3"
-} && call testt
+}
 
+#functions execution
+call start
+call testt
 call cleanup
