@@ -11,7 +11,6 @@ ln -s ~/dotfiles/.gitignore ~/.gitignore
 ln -s ~/dotfiles/.importjs.js ~/.importjs.js
 ln -s ~/dotfiles/.prettierrc.json ~/.prettierrc
 ln -s ~/dotfiles/.vim ~/.vim
-ln -s ~/dotfiles/.emacm.d ~/.emacs.d
 ln -s ~/dotfiles/.bashrc ~/.bashrc
 ln -s ~/dotfiles/.inputrc ~/.inputrc
 ln -s ~/dotfiles/.bash_profile ~/.bash_profile
