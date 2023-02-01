@@ -35,3 +35,8 @@
     autocrlf = input
 [include]
     path = .gitconfig.local
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[pull]
+	rebase = false

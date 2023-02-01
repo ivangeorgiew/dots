@@ -39,7 +39,7 @@ export LESSHISTFILE="-" #No history file for less
 #export _JAVA_AWT_WM_NONREPARENTING=1 #Fix for Japa applications in dwm
 export EDITOR="vim"
 #export TERMINAL="st"
-#export BROWSER="firefox"
+export BROWSER="/mnt/c/Program\ Files/BraveSoftware/Brave-Browser/Application/brave.exe"
 #export READER="zathura"
 
 # launch ssh-agent for git automatically
@@ -76,3 +76,8 @@ cd ~/projects
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# pnpm
+export PNPM_HOME="/home/kawerte/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+# pnpm end
