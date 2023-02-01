@@ -245,6 +245,9 @@ if (&term =~ '^xterm' && &t_Co == 256)
   set t_ut=
   set ttyscroll=1
 endif
+
+set visualbell
+set t_vb=
 "SET }}}
 
 "AUGROUP {{{
@@ -270,7 +273,7 @@ augroup syntax
     " Switch syntax for strange file endings
     au BufNewFile,BufRead *.ejs setl filetype=html
     au BufNewFile,BufRead *.babelrc setl filetype=json
-    au BufNewFile,BufRead *.sass setl filetype sass
+    au BufNewFile,BufRead *.sass setl filetype=sass
     au BufNewFile,BufRead *.eslintrc setl filetype=json
     au BufNewFile,BufRead *.ts setl filetype=typescript
 
@@ -406,7 +409,8 @@ let g:ale_linters = {
     \'javascriptreact': ['eslint', 'tsserver'],
     \'javascript': ['eslint', 'tsserver'],
     \'json': [],
-    \'markdown': []
+    \'markdown': [],
+    \'cs': []
 \}
 " Can be moved to SetupEnvironment
 let g:ale_fixers = {
