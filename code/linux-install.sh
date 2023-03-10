@@ -2,12 +2,23 @@
 # Error-handled script to install Linux
 # Link to bash cheatsheet: https://devhints.io/bash
 
-# bash script mode without "-e" on purpose
-set -uo pipefail; IFS=$'\n\t'
+# -e is for exiting on error
+# -E is making functions inherit the error trap
+# -u is for error on undefined variable
+# -o pipefail is ending piped commands with an error if one of them does
+set -euo pipefail
+# inherit_errexit is for throwing errors in command substitutions: var=$()
+# failglob is for throwing errors when failed filename expansions
+shopt -s inherit_errexit failglob
+# better word splitting than the default ' \n\t'
+# ("Aaron Johnson" "Brus Wayne") should wield 2 words, not 4
+IFS=$'\n\t'
 
+# constants
 readonly SPACER="----------------------------------------------------------------------"
 readonly KEYWORD_REGEX="^[a-zA-Z0-9_-]{6,}$"
 
+# variables
 HAS_CLEANED=false
 
 # use it for printing without returning result
@@ -28,12 +39,9 @@ ask() {
 
 # cleaning commands before an exit
 cleanup() {
-    set -euo pipefail; IFS=$'\n\t'
-
-    [[ ${HAS_CLEANED} ]] && exit ${?}
+    [[ ${HAS_CLEANED} == true ]] && exit ${?}
     HAS_CLEANED=true
 
-    e
     e "${SPACER}"
     e "Cleaning up..."
     #grep -qs "${CHROOT_DIR} " /proc/mounts && umount -R ${CHROOT_DIR}
@@ -49,7 +57,9 @@ trap cleanup INT TERM HUP EXIT
 call() {
     # executes the function and saves the result if any
     # uses bash strict mode
-    result=$(set -euo pipefail; IFS=$'\n\t'; "${@}")
+    result=$(set -euo pipefail;"${@}" >&1)
+    echo "result: ${result}"
+    echo "end"
     err_code=${?}
     line_num=${BASH_LINENO[0]:-unknown}
     func=${1}
@@ -126,10 +136,7 @@ welcome() {
         exit 1
     fi
 
-    # written like this to detect errors
-    curr_date=$(call date "+%D %T")
-    e "${curr_date}"
-
+    call date "+%D %T"
     e "Welcome to my Linux install script!"
 }
 
@@ -146,8 +153,22 @@ test1() {
     e "Password is: ${r3}"
 }
 
+# write to shell and to logfile
+# exec > >(tee -a "$(cd "${BASH_SOURCE[0]%/*}" && pwd)/linux-install.log") 2>&1
+
 #functions execution
 e "${SPACER}"
-call welcome
+welcome
 e "${SPACER}"
-call test1
+test1
+
+# ask for and verify all the input before actually doing the installation
+# GRUB must be >=2.04 for zstd support
+# use btrfs with -o compress-force=zstd:5,noatime,autodefrag
+# use services.fstrim.enable = true; instead of discard=async just to be safe
+# use swap file
+# test compression rates with "compsize"
+# check out Nix Options for "btrfs". I should enable/configure autoScrub and bees deduplication
+
+# use better kernel than the default with: boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+# use boot.supportedFilesystems = [ "zfs" ];
