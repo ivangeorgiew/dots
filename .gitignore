@@ -12,6 +12,7 @@ tags
 tags.lock
 tags.temp
 package-log.json
+linux-install.log
 .vim/undo/*
 .vim/view/*
 .vim/session/*
