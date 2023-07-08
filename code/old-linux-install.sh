@@ -5,6 +5,12 @@
 set -Euo pipefail
 shopt -s inherit_errexit failglob
 
+# switch to root
+if [[ "$(whoami)" != "root" ]]; then
+    echo "Must be run as root!"
+    exit
+fi
+
 # constants
 FUNC_DESCR="unknown function"
 CHROOT_DIR="/mnt/void"
@@ -36,12 +42,6 @@ catch() {
 
 # proper error handling
 trap 'catch ${BASH_COMMAND} ${LINENO} ${?}' ERR
-
-# switch to root
-if [[ "$(whoami)" != "root" ]]; then
-    sudo su -s "$0"
-    exit
-fi
 
 # write to shell and to logfile
 exec > >(tee -a "$(cd "${BASH_SOURCE[0]%/*}" && pwd)/linux-install.log") 2>&1

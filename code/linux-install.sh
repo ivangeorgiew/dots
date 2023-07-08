@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Error-handled script to install Linux
-# Link to bash cheatsheet: https://devhints.io/bash
+# Script to install Linux
 
 # -e is for exiting on error
 # -E is making functions inherit the error trap
 # -u is for error on undefined variable
-# -o pipefail is ending piped commands with an error if one of them does
+# -o pipefail is ending piped commands with an error if one of them fails
 set -euo pipefail
 # inherit_errexit is for throwing errors in command substitutions: var=$()
 # failglob is for throwing errors when failed filename expansions
