@@ -39,7 +39,7 @@ export LESSHISTFILE="-" #No history file for less
 #export _JAVA_AWT_WM_NONREPARENTING=1 #Fix for Japa applications in dwm
 export EDITOR="vim"
 #export TERMINAL="st"
-export BROWSER="/mnt/c/Program\ Files/BraveSoftware/Brave-Browser/Application/brave.exe"
+export BROWSER="/mnt/c/Program\ Files/Google/Chrome/Application/chrome.exe"
 #export READER="zathura"
 
 # launch ssh-agent for git automatically
