@@ -4,8 +4,10 @@ let
   btrfsOpts = [ "compress-force=zstd:2" "commit=60" "noatime" "ssd" "nodiscard" ];
 in
 {
-  # From the default hardware-configuration.nix
+  # Arch
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+
+  # For AMD cpu
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # Full hardware support
@@ -48,10 +50,7 @@ in
   # regular trimming of the SSD
   services.fstrim = { enable = true; interval = "weekly"; };
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+  # Change to per interface if using systemd-networkd
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.enp30s0.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp3s0f0u10.useDHCP = lib.mkDefault true;
@@ -66,10 +65,10 @@ in
     # Easiest to use and most distros use this by default.
     enable = true;
 
-    #If there are issues with the wifi:
+    #If there are issues with the wifi
     #ethernet.macAddress = "permanent";
     #wifi.macAddress = "permanent";
-    #wifi.scanRandMacAddress = false;
+    wifi.scanRandMacAddress = false;
   };
 
   # Set DNS
