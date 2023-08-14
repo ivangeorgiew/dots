@@ -32,22 +32,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-nvidia": {
-      "locked": {
-        "lastModified": 1691950488,
-        "narHash": "sha256-iUNEeudc4dGjx+HsHccnGiuZUVE/nhjXuQ1DVCsHIUY=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "720e61ed8de116eec48d6baea1d54469b536b985",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-23.05",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1691899779,
@@ -84,7 +68,6 @@
       "inputs": {
         "hardware": "hardware",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-nvidia": "nixpkgs-nvidia",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur"
       }
