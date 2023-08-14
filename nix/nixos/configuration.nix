@@ -1,4 +1,3 @@
-# System configuration
 { inputs, outputs, lib, config, pkgs, ... }:
 {
   nixpkgs =
@@ -7,7 +6,7 @@
     overlays = builtins.attrValues outputs.overlays;
 
     # Allows using unfree programs
-    config.allowUnfree = true
+    config.allowUnfree = true;
   };
 
   nix =
@@ -81,40 +80,6 @@
   {
     EDITOR = "vim";
   };
-
-  # Packages
-  environment.systemPackages = with pkgs;
-  [
-    # Dev tools
-    vim
-    wget
-    curl
-    git
-    unzip
-    gh
-
-    # GUI apps
-    keepassxc
-    google-chrome
-    #kitty
-    #arandr
-
-    # Just use the (browser app + ublock) instead
-    #spotify
-    #nur.repos.instantos.spotify-adblock
-
-    # DE/WM apps
-    #bspwm
-    #sxhkd
-    #nitrogen
-    #polybar
-    #rofi
-    #pavucontrol
-    #killall
-    #lxappearance
-    #dunst
-    #udiskie
-  ];
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05"; # Did you read the comment?
