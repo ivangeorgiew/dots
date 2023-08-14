@@ -9,14 +9,15 @@
     git
     unzip
     gh
+    killall
+    htop
 
     # GUI apps
     keepassxc
     google-chrome
-    #kitty
-    #arandr
+    kitty
 
-    # Just use the (browser app + ublock) instead
+    # Spotify. Browser app + ublock can be used instead
     #spotify
     #nur.repos.instantos.spotify-adblock
 
@@ -27,7 +28,6 @@
     #polybar
     #rofi
     #pavucontrol
-    #killall
     #lxappearance
     #dunst
     #udiskie

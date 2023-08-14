@@ -2,7 +2,7 @@
 { inputs, ... }:
 {
   # Adds my custom packages from the 'pkgs' folder
-  additions = final: _prev: import ../pkgs { pkgs = final; }; 
+  additions = final: _prev: import ./customPkgs { pkgs = final; }; 
 
   # Modifies existing pkgs https://nixos.wiki/wiki/Overlays
   modifications = final: prev:
@@ -20,11 +20,8 @@
     };
   };
 
-  # Add NUR packages via `pkgs.nur`
-  nur-packages = final: _prev:
-  {
-    nur = import inputs.nur { system = final.system; };
-  };
+  # Add NUR packages access via `pkgs.nur`
+  nur-packages = inputs.nur.overlay;
 
   # External overlay example
   #neovim = neovim-nightly-overlay.overlays.default;

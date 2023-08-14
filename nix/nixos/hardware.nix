@@ -58,15 +58,17 @@ in
   # Define your hostname.
   networking.hostName = "mahcomp";
 
-  # Configure networking
+  # Configure NetworkManager
   networking.networkmanager =
   {
     # Use NetworkManager
     enable = true;
 
     #If there are issues with the wifi
-    #ethernet.macAddress = "permanent";
-    #wifi.macAddress = "permanent";
+    ethernet.macAddress = "permanent";
+    wifi.macAddress = "permanent";
+
+    # If the above doesn't fix by itself
     #wifi.scanRandMacAddress = false;
   };
 
