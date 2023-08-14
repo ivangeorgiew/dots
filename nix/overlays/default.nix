@@ -8,7 +8,7 @@
   modifications = final: prev:
   {
     #example = prev.example.overrideAttrs (oldAttrs: rec { ... });
-  }
+  };
 
   # Give access to unstable pkgs via `pkgs.unstable`
   unstable-packages = final: _prev:
@@ -17,14 +17,14 @@
     {
       system = final.system;
       config.allowUnfree = true;
-    }
-  }
+    };
+  };
 
   # Add NUR packages via `pkgs.nur`
   nur-packages = final: _prev:
   {
     nur = import inputs.nur { system = final.system; };
-  }
+  };
 
   # External overlay example
   #neovim = neovim-nightly-overlay.overlays.default;

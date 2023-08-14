@@ -9,7 +9,6 @@
 
   inputs = 
   {
-    system = "x86_64-linux";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-nvidia.url = "github:nixos/nixpkgs/nixos-23.05";
@@ -27,7 +26,7 @@
       "aarch64-linux"
       "aarch64-darwin"
       "i686-linux"
-    ]
+    ];
   in rec
   {
     # Custom packages, to use through `nix build`, `nix shell`, etc.
@@ -47,7 +46,7 @@
     # Configurations
     nixosConfigurations.mahcomp = nixpkgs.lib.nixosSystem
     {
-      inherit system;
+      system = "x86_64-linux";
       specialArgs = { inherit inputs outputs; };
       modules =
       [
@@ -58,6 +57,7 @@
         #inputs.hardware.nixosModules.common-hidpi
         
         ./nixos/hardware.nix
+        ./nixos/packages.nix
         ./nixos/configuration.nix
       ];
     };

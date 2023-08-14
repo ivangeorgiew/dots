@@ -59,16 +59,15 @@ in
   networking.hostName = "mahcomp";
 
   # Configure networking
-  networking.wireless.enable = false; # Alternative to NetworkManager
   networking.networkmanager =
   {
-    # Easiest to use and most distros use this by default.
+    # Use NetworkManager
     enable = true;
 
     #If there are issues with the wifi
     #ethernet.macAddress = "permanent";
     #wifi.macAddress = "permanent";
-    wifi.scanRandMacAddress = false;
+    #wifi.scanRandMacAddress = false;
   };
 
   # Set DNS
