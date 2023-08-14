@@ -1,51 +1,39 @@
-# Install command:
-# nixos-install --no-root-passwd
-
-# List generations:
-# nix-env -p /nix/var/nix/profiles/system --list-generations
-
-# Delete generations:
-# nix-env -p /nix/var/nix/profiles/system --delete-generations (+2 || old || 3 4 5)
-
-# Switch to generation:
-# nix-env -p /nix/var/nix/profiles/system --switch-generation 7
-
-# Actual config start:
-{ config, pkgs, lib, modulesPath, ... }:
-let
-  nurTarball = builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz";
-in
+# System configuration
+{ inputs, outputs, lib, config, pkgs, ... }:
 {
-  # Imports
-  imports = [ ./hardware.nix ];
-
-  nixpkgs.config =
+  nixpkgs =
   {
+    # Add all overlays
+    overlays = builtins.attrValues outputs.overlays;
+
     # Allows using unfree programs
-    allowUnfree = true;
+    config.allowUnfree = true
+  };
 
-    # Adds NUR (AUR but for NixOS)
-    packageOverrides = pkgs:
+  nix =
+  {
+    # Adds each flake input as registry to make nix3 command consistent
+    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+
+    # Adds each flake input to system's legacy channel to make legacy nix commands consistent
+    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+
+    settings =
     {
-      nur = import nurTarball { inherit pkgs; };
+      # Removes duplicate files in the store automatically
+      auto-optimise-store = true;
+
+      # Enable new nix features
+      experimental-features = [ "nix-command" "flakes" ];
     };
-  };
 
-  nix.settings =
-  {
-    # Removes duplicate files in the store automatically
-    auto-optimise-store = true;
-
-    # Enable new nix features
-    experimental-features = [ "nix-command" "flakes" ];
-  };
-
-  # Auto garbage collect
-  nix.gc =
-  {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
+    # Auto garbage collect
+    gc =
+    {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
+    };
   };
 
   # Shorter timers for services
@@ -66,7 +54,7 @@ in
   {
     initialPassword = "123123";
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" ];
+    extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
     packages = with pkgs; [];
   };
 
@@ -128,8 +116,7 @@ in
     #udiskie
   ];
 
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05"; # Did you read the comment?
 }
 
