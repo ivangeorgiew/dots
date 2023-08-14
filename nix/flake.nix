@@ -31,14 +31,14 @@
   {
     # Custom packages, to use through `nix build`, `nix shell`, etc.
     packages = forAllSystems
-    (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
+    (system: import ./customPkgs { pkgs = nixpkgs.legacyPackages.${system}; });
 
     # Development shells to use through `nix develop`
     devShells = forAllSystems
     (system: import ./shell.nix { pkgs = nixpkgs.legacyPackages.${system}; });
 
-    # Overlays
-    overlays = import ./overlays { inherit inputs; };
+    # Package Overlays
+    overlays = import ./overlays.nix { inherit inputs; };
 
     # Modules to share with others 
     nixosModules = import ./modules;
@@ -53,6 +53,7 @@
         # My own overlays
         #outputs.nixosModules.example
 
+        # Checkout the github:nixos/nixos-hardware for more goodies
         # If HiDPI is needed due to monitor
         #inputs.hardware.nixosModules.common-hidpi
         
