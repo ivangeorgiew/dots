@@ -15,6 +15,7 @@
     # GUI apps
     keepassxc
     google-chrome
+    discord
     kitty
 
     # Spotify. Browser app + ublock can be used instead

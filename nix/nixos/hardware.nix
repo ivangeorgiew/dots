@@ -17,7 +17,7 @@ in
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [];
   boot.kernelModules = [ "kvm-amd" ];
-  boot.kernelParams = [ "nvidia_drm.modeset=1" ]; #hopeful fix
+  boot.kernelParams = [];
   boot.blacklistedKernelModules = [ "rtw88_8821cu" ];
   boot.extraModulePackages = with config.boot.kernelPackages; [ rtl8821cu ];
   boot.supportedFilesystems = [ "btrfs" "ntfs" ];

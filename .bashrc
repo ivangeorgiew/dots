@@ -19,6 +19,7 @@ alias ll="ls -la"
 alias kl="pkill -9" #Force kill a process (hence the 9)
 alias ks="ps aux | grep"
 alias nix-up="sudo nixos-rebuild switch --flake .#mahcomp"
+alias nix-bt="sudo nixos-rebuild boot --flake .#mahcomp"
 
 stty -ixon
 
