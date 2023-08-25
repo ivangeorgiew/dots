@@ -30,8 +30,7 @@ in
 
   # Setup boot loader
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub =
-  {
+  boot.loader.grub = {
     device = "nodev";
     efiSupport = true; 
     useOSProber = true;
@@ -62,8 +61,7 @@ in
   networking.hostName = "mahcomp";
 
   # Configure NetworkManager
-  networking.networkmanager =
-  {
+  networking.networkmanager = {
     # Use NetworkManager
     enable = true;
 
@@ -81,8 +79,7 @@ in
   # Sound config for Pipewire
   sound.enable = false; #Disabled for pipewire
   security.rtkit.enable = true; #Optional but recommended
-  services.pipewire =
-  {
+  services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
@@ -91,18 +88,15 @@ in
   };
 
   # X11 settings
-  services.xserver =
-  {
+  services.xserver = {
     # Enable the X11 windowing system.
     enable = true;
 
     # Login manager settings
-    displayManager =
-    {
+    displayManager = {
       sddm.enable = true;
       autoLogin = { enable = true; user = "kawerte"; };
-      setupCommands =
-      ''
+      setupCommands = ''
         ${pkgs.xorg.xrandr}/bin/xrandr --output DP-3 --primary --mode 1920x1080 --rate 60
       '';
     };
@@ -126,8 +120,7 @@ in
   hardware.opengl = { enable = true; driSupport = true; driSupport32Bit = true; };
 
   # Nvidia settings
-  hardware.nvidia =
-  {
+  hardware.nvidia = {
     # Modesetting is required by most Wayland compositors
     modesetting.enable = true;
 
