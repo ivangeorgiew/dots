@@ -1,7 +1,6 @@
 { inputs, outputs, lib, config, pkgs, ... }:
 {
-  nixpkgs =
-  {
+  nixpkgs = {
     # Add all overlays
     overlays = builtins.attrValues outputs.overlays;
 
@@ -9,16 +8,14 @@
     config.allowUnfree = true;
   };
 
-  nix =
-  {
+  nix = {
     # Adds each flake input as registry to make nix3 command consistent
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
 
     # Adds each flake input to system's legacy channel to make legacy nix commands consistent
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
-    settings =
-    {
+    settings = {
       # Removes duplicate files in the store automatically
       auto-optimise-store = true;
 
@@ -27,8 +24,7 @@
     };
 
     # Auto garbage collect
-    gc =
-    {
+    gc = {
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 30d";
@@ -49,16 +45,14 @@
   console = { font = "Lat2-Terminus16"; useXkbConfig = true; };
 
   # User accounts. Don't forget to set a password with ‘passwd’.
-  users.users.ivangeorgiew =
-  {
+  users.users.ivangeorgiew = {
     initialPassword = "123123";
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
   };
 
   # Setup fonts
-  #fonts.fonts = with pkgs;
-  #[
+  #fonts.fonts = with pkgs; [
   #  noto-fonts-emoji
   #  dejavu_fonts
   #  liberation_ttf
@@ -67,16 +61,14 @@
   #];
 
   # Setup QT app style
-  #qt =
-  #{
+  #qt = {
   #  enable = true;
   #  platformTheme = "gtk2";
   #  style = "gtk2";
   #};
 
   # Environment variables
-  environment.variables =
-  {
+  environment.variables = {
     EDITOR = "vim";
   };
 

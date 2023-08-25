@@ -10,8 +10,7 @@
 {
   description = "My NixOS flake config";
 
-  inputs =
-  {
+  inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     hardware.url = "github:nixos/nixos-hardware/master";
@@ -21,8 +20,7 @@
   outputs = inputs@{ self, nixpkgs, nur, ... }:
   let
     inherit (self) outputs;
-    forAllSystems = nixpkgs.lib.genAttrs
-    [
+    forAllSystems = nixpkgs.lib.genAttrs [
       "x86_64-linux"
       "x86_64-darwin"
       "aarch64-linux"
@@ -46,12 +44,10 @@
     nixosModules = import ./modules;
 
     # Configurations
-    nixosConfigurations.mahcomp = nixpkgs.lib.nixosSystem
-    {
+    nixosConfigurations.mahcomp = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs outputs; };
-      modules =
-      [
+      modules = [
         # My own overlays
         #outputs.nixosModules.example
 

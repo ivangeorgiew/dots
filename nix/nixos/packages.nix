@@ -1,7 +1,6 @@
 { pkgs, ... }:
 {
-  environment.systemPackages = with pkgs;
-  [
+  environment.systemPackages = with pkgs; [
     # Dev tools
     vim
     wget
