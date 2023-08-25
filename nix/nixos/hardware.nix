@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   # For some reason, some of the options are not used by nix???
-  btrfsOpts = [ "compress-force=zstd:2" "commit=60" "noatime" "ssd" "nodiscard" ];
+  btrfsOpts = [ "compress-force=zstd" "commit=60" "noatime" "ssd" "nodiscard" ];
 in
 {
   # Arch
@@ -23,7 +23,10 @@ in
   boot.supportedFilesystems = [ "btrfs" "ntfs" ];
 
   # Set linux kernel version. Defaults to LTS
-  boot.kernelPackages = pkgs.linuxPackages_6_4;
+  #boot.kernelPackages = pkgs.linuxPackages_6_4;
+
+  # Hopeful fix for nvidia flashing
+  boot.plymouth.enable = false;
 
   # Setup boot loader
   boot.loader.efi.canTouchEfiVariables = true;
@@ -116,7 +119,7 @@ in
     xkbOptions = "ctrl:swapcaps";
 
     # Enable proprietary Nvidia driver
-    #videoDrivers = [ "nvidia" ];
+    videoDrivers = [ "nvidia" ];
   };
 
   # OpenGL has to be enabled for Nvidia according to wiki
@@ -125,7 +128,7 @@ in
   # Nvidia settings
   hardware.nvidia =
   {
-    # Modesettings is required by most Wayland compositors
+    # Modesetting is required by most Wayland compositors
     modesetting.enable = true;
 
     # Choose driver package
