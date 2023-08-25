@@ -49,12 +49,11 @@
   console = { font = "Lat2-Terminus16"; useXkbConfig = true; };
 
   # User accounts. Don't forget to set a password with ‘passwd’.
-  users.users.kawerte =
+  users.users.ivangeorgiew =
   {
     initialPassword = "123123";
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
-    packages = with pkgs; [];
   };
 
   # Setup fonts
@@ -82,6 +81,6 @@
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  system.stateVersion = "23.05"; # Did you read the comment?
+  system.stateVersion = "23.05"; # Don't touch
 }
 

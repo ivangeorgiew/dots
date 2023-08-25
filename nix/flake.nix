@@ -1,5 +1,8 @@
 # To install from the LiveISO:
-#sudo nixos-install --flake .#mahcomp
+# sudo nixos-install --flake https://github.com/ivangeorgiew#mahcomp
+
+# Initial password is 123123
+# Don't forget to set password for main user with `passwd username`
 
 # To update config:
 #sudo nixos-rebuild switch --flake .#mahcomp
@@ -7,7 +10,7 @@
 {
   description = "My NixOS flake config";
 
-  inputs = 
+  inputs =
   {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -55,7 +58,7 @@
         # Checkout the github:nixos/nixos-hardware for more goodies
         # If HiDPI is needed due to monitor
         #inputs.hardware.nixosModules.common-hidpi
-        
+
         ./nixos/hardware.nix
         ./nixos/packages.nix
         ./nixos/configuration.nix
