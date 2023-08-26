@@ -2,7 +2,7 @@
 # sudo nixos-install --no-root-passwd --flake https://github.com/ivangeorgiew?dir=nix#mahcomp
 
 # Initial password is 123123
-# Don't forget to set password for main user with `passwd username`
+# Don't forget to change passwords for root and main user with `passwd username`
 
 # To update config:
 #sudo nixos-rebuild switch --flake .#mahcomp
