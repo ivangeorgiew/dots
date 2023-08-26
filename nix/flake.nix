@@ -1,5 +1,5 @@
 # To install from the LiveISO:
-# sudo nixos-install --flake https://github.com/ivangeorgiew#mahcomp
+# sudo nixos-install --no-root-passwd --flake https://github.com/ivangeorgiew#mahcomp
 
 # Initial password is 123123
 # Don't forget to set password for main user with `passwd username`
