@@ -152,3 +152,4 @@ install_nix() {
 setup_disk
 mount_disk
 install_nix
+cleanup
