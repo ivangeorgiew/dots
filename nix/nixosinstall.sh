@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+# Setup disk layout before installing Linux
+
+# trigger error functions and pipes
+set -Euo pipefail
+shopt -s inherit_errexit failglob
+
+# switch to root
+if [[ "$(whoami)" != "root" ]]; then
+    echo "Must be run as root!"
+    exit
+fi
+
+FUNC_NAME="unknown"
+MOUNT_DIR="/mnt"
+BOOT_LABEL="NIX_BOOT"
+SWAP_LABEL="NIX_SWAP"
+ROOT_LABEL="NIX_ROOT"
+
+cleanup() {
+    FUNC_NAME="cleanup"
+
+    echo -e "\nCleanup Step\n"
+    grep -qs "${MOUNT_DIR} " /proc/mounts && umount -R ${MOUNT_DIR}
+}
+
+# on interupt or exit
+trap cleanup INT TERM HUP EXIT
+
+catch() {
+    echo " Issue at: ${FUNC_NAME}"
+    echo " Command: ${1}; Line: ${2}; Error Code: ${3}"
+    exit "${3}"
+}
+
+# proper error handling
+trap 'catch ${BASH_COMMAND} ${LINENO} ${?}' ERR
+
+read_diskname() {
+    FUNC_NAME="read_diskname"
+
+    read -u 2 -rp "${1}" disk
+    while ! [[ -b "/dev/${disk}" ]]; do
+        read -u 2 -rp "Please enter a valid device: " disk
+    done
+    return "${disk}"
+}
+
+setup_disk() {
+    FUNC_NAME="setup_disk"
+
+    dev_to_part=$(read_diskname "Select disk [ex: sda]: ")
+
+    read -rp "Should we partition? [yes/no]: " should_partition
+
+    if [[ ${should_partition} == "yes" ]]; then
+        echo -e "\nPartitioning Step\n"
+
+        lsblk -o name,label,size
+        echo
+
+        echo "Make 1GB EFI, (RAM/2)GB swap, rest root"
+        read -srp "Press enter to continue..."
+        echo
+
+        cfdisk /dev/"${dev_to_part}"
+    fi
+
+    read -rp "Should we format? [yes/no]: " should_format
+
+    if [[ ${should_format} == "yes" ]]; then
+        echo -e "\nFormatting Step\n"
+
+        lsblk -o name,label,size
+        echo
+
+        boot_part=$(read_diskname "Enter BOOT partition [ex: sda1]: ")
+        swap_part=$(read_diskname "Enter SWAP partition [ex: sda2]: ")
+        root_part=$(read_diskname "Enter ROOT partition [ex: sda3]: ")
+
+        mkfs.vfat -n ${BOOT_LABEL} -F 32 /dev/"${boot_part}"
+        mkswap -L ${SWAP_LABEL} /dev/"${swap_part}"
+        mkfs.btrfs -L ${ROOT_LABEL} /dev/"${root_part}"
+
+        #re-read the disk
+        blockdev --rereadpt /dev/"${dev_to_part}"
+    fi
+}
+
+mount_disk() {
+    FUNC_NAME="mount_disk"
+
+    echo -e "\nMounting Step\n"
+
+    # enable swap
+    swapon /dev/disk/by-label/${SWAP_LABEL}
+
+    # mount root
+    [[ -d ${MOUNT_DIR} ]] || mkdir -rp ${MOUNT_DIR}
+    grep -qs "${MOUNT_DIR} " /proc/mounts || \
+        mount /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}
+
+    # create btrfs subvolumes
+    if ! btrfs subvolume list / | grep -qs " home"; then
+        btrfs subvolume create ${MOUNT_DIR}/@root
+        btrfs subvolume create ${MOUNT_DIR}/@home
+        btrfs subvolume create ${MOUNT_DIR}/@nix
+        btrfs subvolume create ${MOUNT_DIR}/@log
+    fi
+
+    mount_opts="compress-force=zstd,commit=60,noatime,ssd,nodiscard"
+
+    if grep -qs "${MOUNT_DIR} " /proc/mounts; then
+        umount -R ${MOUNT_DIR}
+    fi
+
+    # mount root
+    mount -o ${mount_opts},subvol=@root /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}
+
+    # create folders
+    [[ -d ${MOUNT_DIR}/home ]] || mkdir -rp ${MOUNT_DIR}/home
+    [[ -d ${MOUNT_DIR}/nix ]] || mkdir -rp ${MOUNT_DIR}/nix
+    [[ -d ${MOUNT_DIR}/var/log ]] || mkdir -rp ${MOUNT_DIR}/var/log
+    [[ -d ${MOUNT_DIR}/boot/efi ]] || mkdir -rp ${MOUNT_DIR}/boot/efi
+
+    # mount subvolumes
+    mount -o ${mount_opts},subvol=@home /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}/home
+    mount -o ${mount_opts},subvol=@nix /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}/nix
+    mount -o ${mount_opts},subvol=@log /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}/var/log
+
+    # mount boot
+    mount /dev/disk/by-label/${BOOT_LABEL} ${MOUNT_DIR}/boot/efi
+}
+
+install_nix() {
+    FUNC_NAME="install_nix"
+
+    echo -e "\nInstall Step\n"
+
+    nixos-install --no-root-passwd --flake https://github.com/ivangeorgiew#mahcomp
+}
+
+# Execution
+setup_disk
+mount_disk
+install_nix
