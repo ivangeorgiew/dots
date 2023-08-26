@@ -119,7 +119,6 @@ mount_disk() {
         btrfs subvolume create ${MOUNT_DIR}/@root
         btrfs subvolume create ${MOUNT_DIR}/@home
         btrfs subvolume create ${MOUNT_DIR}/@nix
-        btrfs subvolume create ${MOUNT_DIR}/@log
     fi
 
     # unmount
@@ -133,16 +132,12 @@ mount_disk() {
     # create folders
     [[ -d ${MOUNT_DIR}/home ]] || mkdir -p ${MOUNT_DIR}/home
     [[ -d ${MOUNT_DIR}/nix ]] || mkdir -p ${MOUNT_DIR}/nix
-    [[ -d ${MOUNT_DIR}/var/log ]] || mkdir -p ${MOUNT_DIR}/var/log
-    [[ -d ${MOUNT_DIR}/boot/efi ]] || mkdir -p ${MOUNT_DIR}/boot/efi
+    [[ -d ${MOUNT_DIR}/boot ]] || mkdir -p ${MOUNT_DIR}/boot
 
-    # mount subvolumes
+    # mount everything else
     mount -o ${mount_opts},subvol=@home /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}/home
     mount -o ${mount_opts},subvol=@nix /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}/nix
-    mount -o ${mount_opts},subvol=@log /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}/var/log
-
-    # mount boot
-    mount /dev/disk/by-label/${BOOT_LABEL} ${MOUNT_DIR}/boot/efi
+    mount /dev/disk/by-label/${BOOT_LABEL} ${MOUNT_DIR}/boot
 }
 
 install_nix() {
