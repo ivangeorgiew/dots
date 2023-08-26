@@ -4,6 +4,7 @@
 # trigger error functions and pipes
 set -Euo pipefail
 shopt -s inherit_errexit failglob
+#IFS=$'\n\t'
 
 # switch to root
 if [[ "$(whoami)" != "root" ]]; then
@@ -18,23 +19,30 @@ SWAP_LABEL="NIX_SWAP"
 ROOT_LABEL="NIX_ROOT"
 
 cleanup() {
-    FUNC_NAME="cleanup"
-
     echo -e "\nCleanup Step\n"
+
     grep -qs "${MOUNT_DIR} " /proc/mounts && umount -R ${MOUNT_DIR}
+
+    if cat /proc/swaps | grep -qs "/dev/"; then
+        swapoff /dev/disk/by-label/${SWAP_LABEL}
+    fi
 }
 
 # on interupt or exit
-trap cleanup INT TERM HUP EXIT
+trap cleanup INT TERM HUP
 
 catch() {
-    echo " Issue at: ${FUNC_NAME}"
-    echo " Command: ${1}; Line: ${2}; Error Code: ${3}"
-    exit "${3}"
+    cleanup
+
+    echo "| Issue at: ${FUNC_NAME}"
+    echo "| Line: ${1} | Error Code: ${2}"
+    echo "| Command: ${BASH_COMMAND}"
+
+    exit "${2}"
 }
 
 # proper error handling
-trap 'catch ${BASH_COMMAND} ${LINENO} ${?}' ERR
+trap 'catch ${LINENO} ${?}' ERR
 
 read_diskname() {
     FUNC_NAME="read_diskname"
@@ -43,11 +51,15 @@ read_diskname() {
     while ! [[ -b "/dev/${disk}" ]]; do
         read -u 2 -rp "Please enter a valid device: " disk
     done
-    return "${disk}"
+
+    echo "${disk}"
 }
 
 setup_disk() {
     FUNC_NAME="setup_disk"
+
+    lsblk -o name,label,size
+    echo
 
     dev_to_part=$(read_diskname "Select disk [ex: sda]: ")
 
@@ -55,9 +67,6 @@ setup_disk() {
 
     if [[ ${should_partition} == "yes" ]]; then
         echo -e "\nPartitioning Step\n"
-
-        lsblk -o name,label,size
-        echo
 
         echo "Make 1GB EFI, (RAM/2)GB swap, rest root"
         read -srp "Press enter to continue..."
@@ -80,10 +89,10 @@ setup_disk() {
 
         mkfs.vfat -n ${BOOT_LABEL} -F 32 /dev/"${boot_part}"
         mkswap -L ${SWAP_LABEL} /dev/"${swap_part}"
-        mkfs.btrfs -L ${ROOT_LABEL} /dev/"${root_part}"
+        mkfs.btrfs -f -L ${ROOT_LABEL} /dev/"${root_part}"
 
         #re-read the disk
-        blockdev --rereadpt /dev/"${dev_to_part}"
+        partprobe /dev/"${dev_to_part}"
     fi
 }
 
@@ -92,36 +101,40 @@ mount_disk() {
 
     echo -e "\nMounting Step\n"
 
+    # unmount just in case
+    grep -qs "${MOUNT_DIR} " /proc/mounts && umount -R ${MOUNT_DIR}
+
     # enable swap
-    swapon /dev/disk/by-label/${SWAP_LABEL}
+    if ! cat /proc/swaps | grep -qs "/dev/"; then
+        swapon /dev/disk/by-label/${SWAP_LABEL}
+    fi
 
     # mount root
-    [[ -d ${MOUNT_DIR} ]] || mkdir -rp ${MOUNT_DIR}
+    [[ -d ${MOUNT_DIR} ]] || mkdir -p ${MOUNT_DIR}
     grep -qs "${MOUNT_DIR} " /proc/mounts || \
-        mount /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}
+        mount -t btrfs /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}
 
     # create btrfs subvolumes
-    if ! btrfs subvolume list / | grep -qs " home"; then
+    if ! btrfs subvolume list /mnt | grep -qs "@home"; then
         btrfs subvolume create ${MOUNT_DIR}/@root
         btrfs subvolume create ${MOUNT_DIR}/@home
         btrfs subvolume create ${MOUNT_DIR}/@nix
         btrfs subvolume create ${MOUNT_DIR}/@log
     fi
 
-    mount_opts="compress-force=zstd,commit=60,noatime,ssd,nodiscard"
+    # unmount
+    grep -qs "${MOUNT_DIR} " /proc/mounts && umount -R ${MOUNT_DIR}
 
-    if grep -qs "${MOUNT_DIR} " /proc/mounts; then
-        umount -R ${MOUNT_DIR}
-    fi
+    mount_opts="compress-force=zstd,commit=60,noatime,ssd,nodiscard"
 
     # mount root
     mount -o ${mount_opts},subvol=@root /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}
 
     # create folders
-    [[ -d ${MOUNT_DIR}/home ]] || mkdir -rp ${MOUNT_DIR}/home
-    [[ -d ${MOUNT_DIR}/nix ]] || mkdir -rp ${MOUNT_DIR}/nix
-    [[ -d ${MOUNT_DIR}/var/log ]] || mkdir -rp ${MOUNT_DIR}/var/log
-    [[ -d ${MOUNT_DIR}/boot/efi ]] || mkdir -rp ${MOUNT_DIR}/boot/efi
+    [[ -d ${MOUNT_DIR}/home ]] || mkdir -p ${MOUNT_DIR}/home
+    [[ -d ${MOUNT_DIR}/nix ]] || mkdir -p ${MOUNT_DIR}/nix
+    [[ -d ${MOUNT_DIR}/var/log ]] || mkdir -p ${MOUNT_DIR}/var/log
+    [[ -d ${MOUNT_DIR}/boot/efi ]] || mkdir -p ${MOUNT_DIR}/boot/efi
 
     # mount subvolumes
     mount -o ${mount_opts},subvol=@home /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}/home
@@ -137,7 +150,7 @@ install_nix() {
 
     echo -e "\nInstall Step\n"
 
-    nixos-install --no-root-passwd --flake https://github.com/ivangeorgiew#mahcomp
+    nixos-install --no-root-passwd --flake "https://github.com/ivangeorgiew?dir=nix#mahcomp"
 }
 
 # Execution
