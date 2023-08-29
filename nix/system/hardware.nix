@@ -23,10 +23,7 @@ in
   boot.supportedFilesystems = [ "btrfs" "ntfs" ];
 
   # Set linux kernel version. Defaults to LTS
-  #boot.kernelPackages = pkgs.linuxPackages_6_4;
-
-  # Hopeful fix for nvidia flashing
-  boot.plymouth.enable = false;
+  boot.kernelPackages = pkgs.linuxPackages_6_4;
 
   # Setup boot loader
   boot.loader.efi.canTouchEfiVariables = true;
@@ -95,9 +92,9 @@ in
     # Login manager settings
     displayManager = {
       sddm.enable = true;
-      autoLogin = { enable = true; user = "kawerte"; };
+      autoLogin = { enable = true; user = "ivangeorgiew"; };
       setupCommands = ''
-        ${pkgs.xorg.xrandr}/bin/xrandr --output DP-3 --primary --mode 1920x1080 --rate 60
+        ${pkgs.xorg.xrandr}/bin/xrandr --output DP-3 --primary --mode 1920x1080 --rate 240
       '';
     };
 
@@ -121,8 +118,11 @@ in
 
   # Nvidia settings
   hardware.nvidia = {
-    # Modesetting is required by most Wayland compositors
+    # Modesetting should be enabled almost always
     modesetting.enable = true;
+
+    # Prevents problems with laptops and screen tearing
+    powerManagement.enable = true;
 
     # Choose driver package
     package = config.boot.kernelPackages.nvidiaPackages.stable;
@@ -132,5 +132,8 @@ in
 
     # Auto installs nvidia-settings
     nvidiaSettings = true;
+
+    # fix G-Sync / Adaptive Sync black screen issue
+    #forceFullCompositionPipeline = true;
   };
 }
