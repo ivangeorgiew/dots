@@ -2,7 +2,7 @@
 # sudo nixos-install --no-root-passwd --flake https://github.com/ivangeorgiew?dir=nix#mahcomp
 
 # Initial password is 123123
-# Don't forget to change passwords for root and main user with `passwd username`
+# Don't forget to change the password main user with `passwd username`
 
 # To update config:
 #sudo nixos-rebuild switch --flake .#mahcomp
@@ -37,10 +37,10 @@
     devShells = forAllSystems
     (system: import ./shell.nix { pkgs = nixpkgs.legacyPackages.${system}; });
 
-    # Package Overlays
+    # Package overlays
     overlays = import ./overlays.nix { inherit inputs; };
 
-    # Modules to share with others 
+    # Modules to share with others
     nixosModules = import ./modules;
 
     # Configurations
@@ -48,16 +48,16 @@
       system = "x86_64-linux";
       specialArgs = { inherit inputs outputs; };
       modules = [
-        # My own overlays
+        # Include a module I made
         #outputs.nixosModules.example
 
         # Checkout the github:nixos/nixos-hardware for more goodies
         # If HiDPI is needed due to monitor
         #inputs.hardware.nixosModules.common-hidpi
 
-        ./nixos/hardware.nix
-        ./nixos/packages.nix
-        ./nixos/configuration.nix
+        ./system/hardware.nix
+        ./system/packages.nix
+        ./system/configuration.nix
       ];
     };
   };
