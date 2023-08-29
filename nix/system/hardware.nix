@@ -134,6 +134,6 @@ in
     nvidiaSettings = true;
 
     # fix G-Sync / Adaptive Sync black screen issue
-    #forceFullCompositionPipeline = true;
+    forceFullCompositionPipeline = true;
   };
 }
