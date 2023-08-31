@@ -10,6 +10,7 @@
     gh
     killall
     htop
+    gh
 
     # GUI apps
     keepassxc

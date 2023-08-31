@@ -6,21 +6,16 @@ GREEN="\[\033[38;5;76m\]"
 RESET="\[$(tput sgr0)\]"
 export PS1="${BLUE}\u${RESET}[${GREEN}\w${RESET}]\n\\$ ${RESET}"
 
-#Aliases for xbps from void
-#alias xu="sudo xbps-install -Su" #Update void
-#alias xi="sudo xbps-install -S" #Install package
-#alias xr="sudo xbps-remove -R" #Remove package and dependencies
-#alias xo="sudo xbps-remove -Oo" #Remove orphan packages
-#alias xs="sudo xbps-query -Rs" #Search package repository
-#alias xS="sudo xbps-query -s" #Search from installed packages
-#alias xl="sudo xbps-query -m" #List explicitly installed packages
+#Aliases
 alias l="ls -l"
 alias ll="ls -la"
-alias kl="pkill -9" #Force kill a process (hence the 9)
-alias ks="ps aux | grep"
-alias nix-up="sudo nixos-rebuild switch --flake ~/dotfiles/nix/#"
-alias nix-bt="sudo nixos-rebuild boot --flake ~/dotfiles/nix/#"
+alias kl="pkill -9" # Force kill a process (hence the 9)
+alias ks="ps aux | grep" # List a process
+alias nix-up="sudo nixos-rebuild switch --flake ~/dotfiles/nix/#" # Change nixos config now
+alias nix-bt="sudo nixos-rebuild boot --flake ~/dotfiles/nix/#" # Change nixos config after boot
+alias p="pnpm"
 
+# Disable the default Ctrl-s and Ctrl-q behaviour
 stty -ixon
 
 #Environment variables
@@ -34,52 +29,11 @@ export PATH="${PATH}:${XDG_BIN_HOME}"
 export HISTCONTROL="ignoreboth:erasedups"
 export LESSHISTFILE="-" #No history file for less
 #export INPUTRC="${XDG_CONFIG_HOME}/.inputrc" #Readline settings (which bash uses)
-
 #export GTK2_RC_FILES="${XDG_CONFIG_HOME}/gtk-2.0/gtkrc-2.0"
 #export QT_QPA_PLATFORMTHEME="gtk2" #Have QT use gtk2 theme
 #export MOZ_USE_XINPUT2="1" #Firefox smooth scrolling/touchpads
 #export _JAVA_AWT_WM_NONREPARENTING=1 #Fix for Japa applications in dwm
 export EDITOR="vim"
-#export TERMINAL="st"
-export BROWSER="/mnt/c/Program\ Files/Google/Chrome/Application/chrome.exe"
+export TERMINAL="kitty"
+export BROWSER="google-chrome-stable"
 #export READER="zathura"
-
-# launch ssh-agent for git automatically
-env=~/.ssh/agent.env
-
-agent_load_env () { test -f "$env" && . "$env" >| /dev/null ; }
-
-agent_start () {
-    (umask 077; ssh-agent >| "$env")
-    . "$env" >| /dev/null ; }
-
-agent_load_env
-
-# agent_run_state: 0=agent running w/ key; 1=agent w/o key; 2= agent not running
-agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
-
-if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
-    agent_start &> /dev/null
-    ssh-add &> /dev/null
-elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
-    ssh-add &> /dev/null
-fi
-
-unset env
-
-alias p="pnpm"
-
-cd ~/projects
-
-# tabtab source for packages
-# uninstall by removing these lines
-[ -f ~/.config/tabtab/bash/__tabtab.bash ] && . ~/.config/tabtab/bash/__tabtab.bash || true
-
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# pnpm
-export PNPM_HOME="/home/kawerte/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
-# pnpm end
