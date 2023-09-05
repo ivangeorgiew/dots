@@ -4,8 +4,13 @@
     # Add all overlays
     overlays = builtins.attrValues outputs.overlays;
 
-    # Allows using unfree programs
-    config.allowUnfree = true;
+    config = {
+      # Allows using unfree programs
+      allowUnfree = true;
+
+      # Temporarily needed insecure packages
+      permittedInsecurePackages = [ "openssl-1.1.1v" ];
+    };
   };
 
   nix = {
@@ -30,19 +35,6 @@
       options = "--delete-older-than 30d";
     };
   };
-
-  # Shorter timers for services
-  systemd.extraConfig = "DefaultTimeoutStartSec=5s\nDefaultTimeoutStopSec=5s";
-
-  # Set your time zone.
-  time.timeZone = "Europe/Sofia";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-  i18n.extraLocaleSettings = { LC_TIME = "en_GB.UTF-8"; };
-
-  # Setup the tty console
-  console = { font = "Lat2-Terminus16"; useXkbConfig = true; };
 
   # User accounts. Don't forget to set a password with ‘passwd’.
   users.users.ivangeorgiew = {
