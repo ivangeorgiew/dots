@@ -17,6 +17,7 @@
     google-chrome
     discord
     kitty
+    viber
 
     # Spotify. Browser app + ublock can be used instead
     #spotify

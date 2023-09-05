@@ -2,6 +2,7 @@
 let
   # For some reason, some of the options are not used by nix???
   btrfsOpts = [ "compress-force=zstd" "commit=60" "noatime" "ssd" "nodiscard" ];
+  xrandrOpts = "--output DP-3 --primary --mode 1920x1080 --rate 240";
 in
 {
   # Arch
@@ -26,14 +27,18 @@ in
   boot.kernelPackages = pkgs.linuxPackages_6_4;
 
   # Setup boot loader
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub = {
-    device = "nodev";
-    efiSupport = true; 
-    useOSProber = true;
-    extraConfig = ''
-      set timeout=-1
-    '';
+  boot.loader = {
+    systemd-boot.enable = false;
+    efi.canTouchEfiVariables = true;
+
+    timeout = null; # no timeout
+
+    grub = {
+      enable = true;
+      device = "nodev";
+      efiSupport = true; 
+      useOSProber = true;
+    };
   };
 
   # Configure partitions
@@ -52,29 +57,38 @@ in
   # regular trimming of the SSD
   services.fstrim = { enable = true; interval = "weekly"; };
 
-  # Change to per interface if using systemd-networkd
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp30s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp3s0f0u10.useDHCP = lib.mkDefault true;
+  networking = {
+    # Change to per interface if using systemd-networkd
+    useDHCP = lib.mkDefault true;
+    #interfaces.enp30s0.useDHCP = lib.mkDefault true;
+    #interfaces.wlp3s0f0u10.useDHCP = lib.mkDefault true;
 
-  # Define your hostname.
-  networking.hostName = "mahcomp";
+    # Define your hostname.
+    hostName = "mahcomp";
 
-  # Configure NetworkManager
-  networking.networkmanager = {
-    # Use NetworkManager
-    enable = true;
+    # Set DNS
+    nameservers = [ "1.1.1.1" "1.0.0.1" ];
 
-    #If there are issues with the wifi
-    ethernet.macAddress = "permanent";
-    wifi.macAddress = "permanent";
+    # Disable IPv6
+    enableIPv6 = false;
 
-    # If the above doesn't fix by itself
-    #wifi.scanRandMacAddress = false;
+    # Don't wait to have an IP
+    dhcpcd.wait = "background";
+    dhcpcd.extraConfig = "noarp"; 
+
+    # Configure NetworkManager
+    networkmanager = {
+      # Use NetworkManager
+      enable = true;
+
+      # Disable wifi powersaving
+      wifi.powersave = false;
+
+      #If there are issues with the wifi
+      ethernet.macAddress = "stable";
+      wifi.macAddress = "stable";
+    };
   };
-
-  # Set DNS
-  networking.nameservers = [ "1.1.1.1" "1.0.0.1" ];
 
   # Sound config for Pipewire
   sound.enable = false; #Disabled for pipewire
@@ -96,9 +110,8 @@ in
     displayManager = {
       sddm.enable = true;
       autoLogin = { enable = true; user = "ivangeorgiew"; };
-      setupCommands = ''
-        ${pkgs.xorg.xrandr}/bin/xrandr --output DP-3 --primary --mode 1920x1080 --rate 240
-      '';
+      setupCommands = "${pkgs.xorg.xrandr}/bin/xrandr ${xrandrOpts}";
+      #defaultSession = "none+bspwm";
     };
 
     # Enable the Plasma 5 Desktop Environment.
@@ -108,9 +121,14 @@ in
     #windowManager.bspwm.enable = true;
 
     # Configure keymap in X11
-    layout = "us";
-    xkbVariant = "dvorak";
-    xkbOptions = "ctrl:swapcaps";
+    extraLayouts.bgd = {
+      description = "Bulgarian";
+      languages = [ "bul" ];
+      symbolsFile = ../xkb/bgd;
+    };
+    layout = "us,bgd";
+    xkbVariant = "dvorak,";
+    xkbOptions = "grp:shifts_toggle,ctrl:swapcaps";
 
     # Enable proprietary Nvidia driver
     videoDrivers = [ "nvidia" ];
@@ -139,4 +157,22 @@ in
     # fix G-Sync / Adaptive Sync black screen issue
     forceFullCompositionPipeline = true;
   };
+
+  systemd = {
+    # Don't wait for NetworkManager
+    services.NetworkManager-wait-online.enable = false;
+
+    # Shorter timers for services
+    extraConfig = "DefaultTimeoutStartSec=5s\nDefaultTimeoutStopSec=5s";
+  };
+
+  # Set your time zone.
+  time.timeZone = "Europe/Sofia";
+
+  # Select internationalisation properties.
+  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.extraLocaleSettings = { LC_TIME = "en_GB.UTF-8"; };
+
+  # Setup the tty console
+  console = { font = "Lat2-Terminus16"; useXkbConfig = true; };
 }
