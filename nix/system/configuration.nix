@@ -47,13 +47,22 @@
   };
 
   # Setup fonts
-  #fonts.fonts = with pkgs; [
-  #  noto-fonts-emoji
-  #  dejavu_fonts
-  #  liberation_ttf
-  #  source-code-pro
-  #  (nerdfonts.override { fonts = [ "JetBrainsMono" "Iosevka" ]; })
-  #];
+  fonts.fonts = with pkgs; [
+    # includes only the icons from nerdfonts
+    (nerdfonts.override { fonts = [ "Symbols" ]; })
+
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    liberation_ttf
+    fira-code
+    fira-code-symbols
+    mplus-outline-fonts.githubRelease
+    dina-font
+    proggyfonts
+    dejavu_fonts
+    source-code-pro
+  ];
 
   # Setup QT app style
   #qt = {
@@ -71,14 +80,14 @@
       EDITOR = "vim";
       TERMINAL = "kitty";
       BROWSER = "google-chrome-stable";
+      PATH = [ XDG_BIN_HOME ];
+      HISTCONTROL = "ignoreboth:erasedups";
+      LESSHISTFILE = "-";
       XDG_CONFIG_HOME = "$HOME/.config";
       XDG_CACHE_HOME = "$HOME/.cache";
       XDG_DATA_HOME = "$HOME/.local/share";
       XDG_BIN_HOME = "$HOME/.local/bin";
       XDG_LIB_HOME = "$HOME/.local/lib";
-      PATH = [ XDG_BIN_HOME ];
-      HISTCONTROL = "ignoreboth:erasedups";
-      LESSHISTFILE = "-";
     };
 
     # Env aliases
