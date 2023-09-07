@@ -55,10 +55,10 @@
       enable = true;
 
       defaultFonts = {
-        #serif = [ "DejaVu Serif" ];
-        #sansSerif = [ "DejaVu Sans" ];
-        #monospace = [ "DejaVu Sans Mono" ];
-        #emoji = [ "Noto Color Emoji" ];
+        serif = [ "DejaVu Serif" ];
+        sansSerif = [ "DejaVu Sans" ];
+        monospace = [ "Fira Code" "DejaVu Sans Mono" ];
+        emoji = [ "NerdFontsSymbolsOnly" "Twitter Color Emoji" "Noto Color Emoji" ];
       };
     };
 
