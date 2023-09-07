@@ -58,7 +58,7 @@
         serif = [ "DejaVu Serif" ];
         sansSerif = [ "DejaVu Sans" ];
         monospace = [ "Fira Code" "DejaVu Sans Mono" ];
-        emoji = [ "NerdFontsSymbolsOnly" "Twitter Color Emoji" "Noto Color Emoji" ];
+        emoji = [ "Symbols Nerd Font" "Twitter Color Emoji" "Noto Color Emoji" ];
       };
     };
 
