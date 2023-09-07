@@ -64,11 +64,11 @@
     EDITOR = "vim";
     TERMINAL = "kitty";
     BROWSER = "google-chrome-stable";
-    XDG_CONFIG_HOME = "${HOME}/.config";
-    XDG_CACHE_HOME = "${HOME}/.cache";
-    XDG_DATA_HOME = "${HOME}/.local/share";
-    XDG_BIN_HOME = "${HOME}/.local/bin";
-    XDG_LIB_HOME = "${HOME}/.local/lib";
+    XDG_CONFIG_HOME = "$HOME/.config";
+    XDG_CACHE_HOME = "$HOME/.cache";
+    XDG_DATA_HOME = "$HOME/.local/share";
+    XDG_BIN_HOME = "$HOME/.local/bin";
+    XDG_LIB_HOME = "$HOME/.local/lib";
     PATH = [ XDG_BIN_HOME ];
     HISTCONTROL = "ignoreboth:erasedups";
     LESSHISTFILE = "-";
