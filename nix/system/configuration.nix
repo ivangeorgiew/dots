@@ -54,15 +54,17 @@
     # Create dir with all fonts for compatibility
     fontDir.enable = true;
 
-    #fontconfig = {
-    #  enable = true;
-    #  defaultFonts = {
-    #    serif = [ "DejaVu Serif" ];
-    #    sansSerif = [ "DejaVu Sans" ];
-    #    monospace = [ "Fira Code" "DejaVu Sans Mono" ];
-    #    emoji = [ "Symbols Nerd Font" "Twitter Color Emoji" "Noto Color Emoji" ];
-    #  };
-    #};
+    fontconfig = {
+      enable = true;
+      includeUserConf = true; # ~/.config/fontconfig/fonts.conf
+
+      defaultFonts = {
+        serif = [ "Noto Serif" ];
+        sansSerif = [ "Noto Sans" ];
+        monospace = [ "Noto Sans Mono" ];
+        emoji = [ "Symbols Nerd Font" "Twitter Color Emoji" "Noto Color Emoji" ];
+      };
+    };
 
     # Font packages
     fonts = with pkgs; [
