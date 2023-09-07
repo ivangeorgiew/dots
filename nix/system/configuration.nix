@@ -69,7 +69,7 @@
     XDG_DATA_HOME = "${HOME}/.local/share";
     XDG_BIN_HOME = "${HOME}/.local/bin";
     XDG_LIB_HOME = "${HOME}/.local/lib";
-    PATH = [ ${XDG_BIN_HOME}" ];
+    PATH = [ XDG_BIN_HOME ];
     HISTCONTROL = "ignoreboth:erasedups";
     LESSHISTFILE = "-";
   };

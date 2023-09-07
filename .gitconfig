@@ -4,6 +4,7 @@
 [alias]
     ad = !git add -A
     cm = !git commit -m
+    ac = !git add -A && git commit -m
     cl = clone
     ct = checkout
     df = diff
