@@ -21,6 +21,7 @@
     # Spotify. Browser app + ublock can be used instead
     #spotify
     #nur.repos.instantos.spotify-adblock
+    nur.repos.nltch.spotify-adblock
 
     # DE/WM apps
     #bspwm
