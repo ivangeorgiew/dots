@@ -36,6 +36,9 @@
     };
   };
 
+  # Default shell for all users
+  users.defaultUserShell = pkgs.fish;
+
   # User accounts. Don't forget to set a password with ‘passwd’.
   users.users.ivangeorgiew = {
     initialPassword = "123123";
@@ -59,30 +62,35 @@
   #  style = "gtk2";
   #};
 
-  # Env variables
-  environment.variables = rec {
-    EDITOR = "vim";
-    TERMINAL = "kitty";
-    BROWSER = "google-chrome-stable";
-    XDG_CONFIG_HOME = "$HOME/.config";
-    XDG_CACHE_HOME = "$HOME/.cache";
-    XDG_DATA_HOME = "$HOME/.local/share";
-    XDG_BIN_HOME = "$HOME/.local/bin";
-    XDG_LIB_HOME = "$HOME/.local/lib";
-    PATH = [ XDG_BIN_HOME ];
-    HISTCONTROL = "ignoreboth:erasedups";
-    LESSHISTFILE = "-";
-  };
+  environment = {
+    # Add shells to /etc/shells
+    shells = with pkgs; [ fish ];
 
-  # Env aliases
-  environment.shellAliases = {
-    l = "ls -l";
-    ll = "ls -la";
-    kl = "pkill -9"; # Force kill a process (hence the 9)
-    ks = "ps aux | grep"; # List a process
-    p = "pnpm";
-    nix-up = "sudo nixos-rebuild switch --flake ~/dotfiles/nix/#"; # Change nixos config now
-    nix-bt = "sudo nixos-rebuild boot --flake ~/dotfiles/nix/#"; # Change nixos config after boot
+    # Env variables
+    variables = rec {
+      EDITOR = "vim";
+      TERMINAL = "kitty";
+      BROWSER = "google-chrome-stable";
+      XDG_CONFIG_HOME = "$HOME/.config";
+      XDG_CACHE_HOME = "$HOME/.cache";
+      XDG_DATA_HOME = "$HOME/.local/share";
+      XDG_BIN_HOME = "$HOME/.local/bin";
+      XDG_LIB_HOME = "$HOME/.local/lib";
+      PATH = [ XDG_BIN_HOME ];
+      HISTCONTROL = "ignoreboth:erasedups";
+      LESSHISTFILE = "-";
+    };
+
+    # Env aliases
+    shellAliases = {
+      l = "ls -l";
+      ll = "ls -la";
+      kl = "pkill -9"; # Force kill a process (hence the 9)
+      ks = "ps aux | grep"; # List a process
+      p = "pnpm";
+      nix-up = "sudo nixos-rebuild switch --flake ~/dotfiles/nix/#"; # Change nixos config now
+      nix-bt = "sudo nixos-rebuild boot --flake ~/dotfiles/nix/#"; # Change nixos config after boot
+    };
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
