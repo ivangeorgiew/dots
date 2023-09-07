@@ -51,34 +51,33 @@
     # Enables common fonts
     enableDefaultFonts = true;
 
-    fontconfig = {
-      enable = true;
+    # Create dir with all fonts for compatibility
+    fontDir.enable = true;
 
-      defaultFonts = {
-        serif = [ "DejaVu Serif" ];
-        sansSerif = [ "DejaVu Sans" ];
-        monospace = [ "Fira Code" "DejaVu Sans Mono" ];
-        emoji = [ "Symbols Nerd Font" "Twitter Color Emoji" "Noto Color Emoji" ];
-      };
-    };
+    #fontconfig = {
+    #  enable = true;
+    #  defaultFonts = {
+    #    serif = [ "DejaVu Serif" ];
+    #    sansSerif = [ "DejaVu Sans" ];
+    #    monospace = [ "Fira Code" "DejaVu Sans Mono" ];
+    #    emoji = [ "Symbols Nerd Font" "Twitter Color Emoji" "Noto Color Emoji" ];
+    #  };
+    #};
 
     # Font packages
     fonts = with pkgs; [
-      # includes only the icons from nerdfonts
-      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+      # Nerd Fonts with icons
+      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Iosevka" "FiraCode" "JetBrainsMono" "SourceCodePro" ]; })
+      #(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
 
-      noto-fonts
-      noto-fonts-cjk
-      noto-fonts-emoji
-      liberation_ttf
-      fira-code
-      fira-code-symbols
-      mplus-outline-fonts.githubRelease
-      dina-font
-      proggyfonts
       dejavu_fonts
-      source-code-pro
+      noto-fonts
+      noto-fonts-emoji
       twitter-color-emoji
+      #fira-code
+      #fira-code-symbols
+      #iosevka
+      #source-code-pro
     ];
   };
 
