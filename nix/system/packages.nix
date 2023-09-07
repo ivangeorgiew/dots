@@ -37,19 +37,28 @@
   programs = {
     fish = {
       enable = true;
-      
-      # Fix for/from https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1659465635
-      loginShellInit =
-        let
-          dquote = str: "\"" + str + "\"";
-          makeBinPathList = map (path: path + "/bin");
-        in ''
-          fish_add_path --move --prepend --path ${lib.concatMapStringsSep " " dquote (makeBinPathList config.environment.profiles)}
-          set fish_user_paths $fish_user_paths
-        '';
 
       # Bash to Fish translation
       useBabelfish = true;
+
+      loginShellInit =
+      let
+        dquote = str: "\"" + str + "\"";
+        makeBinPathList = map (path: path + "/bin");
+      in ''
+        # Fix for/from https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1659465635
+        fish_add_path --move --prepend --path ${lib.concatMapStringsSep " " dquote (makeBinPathList config.environment.profiles)}
+        set fish_user_paths $fish_user_paths
+        
+        #Disable greeting
+        set fish_greeting
+      '';
+    };
+
+    starship = {
+      enable = true;      
+      #settings = {};
+      #interactiveOnly = false;
     };
   };
 }
