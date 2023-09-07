@@ -49,7 +49,7 @@
   # Setup fonts
   fonts.fonts = with pkgs; [
     # includes only the icons from nerdfonts
-    (nerdfonts.override { fonts = [ "Symbols" ]; })
+    (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
 
     noto-fonts
     noto-fonts-cjk
