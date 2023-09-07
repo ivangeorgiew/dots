@@ -47,22 +47,40 @@
   };
 
   # Setup fonts
-  fonts.fonts = with pkgs; [
-    # includes only the icons from nerdfonts
-    (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+  fonts = {
+    # Enables common fonts
+    enableDefaultFonts = true;
 
-    noto-fonts
-    noto-fonts-cjk
-    noto-fonts-emoji
-    liberation_ttf
-    fira-code
-    fira-code-symbols
-    mplus-outline-fonts.githubRelease
-    dina-font
-    proggyfonts
-    dejavu_fonts
-    source-code-pro
-  ];
+    fontconfig = {
+      enable = true;
+
+      defaultFonts = {
+        #serif = [ "DejaVu Serif" ];
+        #sansSerif = [ "DejaVu Sans" ];
+        #monospace = [ "DejaVu Sans Mono" ];
+        #emoji = [ "Noto Color Emoji" ];
+      };
+    };
+
+    # Font packages
+    fonts = with pkgs; [
+      # includes only the icons from nerdfonts
+      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      liberation_ttf
+      fira-code
+      fira-code-symbols
+      mplus-outline-fonts.githubRelease
+      dina-font
+      proggyfonts
+      dejavu_fonts
+      source-code-pro
+      twitter-color-emoji
+    ];
+  };
 
   # Setup QT app style
   #qt = {
