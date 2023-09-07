@@ -69,17 +69,17 @@
     # Font packages
     fonts = with pkgs; [
       # Nerd Fonts with icons
-      #(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Iosevka" "FiraCode" "JetBrainsMono" "SourceCodePro" ]; })
-      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Iosevka" "FiraCode" "JetBrainsMono" "SourceCodePro" ]; })
+      #(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
 
       dejavu_fonts
       noto-fonts
       noto-fonts-emoji
       twitter-color-emoji
-      fira-code
-      fira-code-symbols
-      iosevka
-      source-code-pro
+      #fira-code
+      #fira-code-symbols
+      #iosevka
+      #source-code-pro
     ];
   };
 
