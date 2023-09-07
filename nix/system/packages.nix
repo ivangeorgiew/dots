@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   environment.systemPackages = with pkgs; [
     # Dev tools
@@ -51,7 +51,5 @@
       # Bash to Fish translation
       useBabelfish = true;
     };
-    
-    
   };
 }
