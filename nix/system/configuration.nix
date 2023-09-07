@@ -59,9 +59,30 @@
   #  style = "gtk2";
   #};
 
-  # Environment variables
+  # Env variables
   environment.variables = {
     EDITOR = "vim";
+    TERMINAL = "kitty";
+    BROWSER = "google-chrome-stable";
+    XDG_CONFIG_HOME = "${HOME}/.config";
+    XDG_CACHE_HOME = "${HOME}/.cache";
+    XDG_DATA_HOME = "${HOME}/.local/share";
+    XDG_BIN_HOME = "${HOME}/.local/bin";
+    XDG_LIB_HOME = "${HOME}/.local/lib";
+    PATH = "${PATH}:${XDG_BIN_HOME}";
+    HISTCONTROL = "ignoreboth:erasedups";
+    LESSHISTFILE = "-";
+  };
+
+  # Env aliases
+  environment.shellAliases = {
+    l = "ls -l";
+    ll = "ls -la";
+    kl = "pkill -9"; # Force kill a process (hence the 9)
+    ks = "ps aux | grep"; # List a process
+    p = "pnpm";
+    nix-up = "sudo nixos-rebuild switch --flake ~/dotfiles/nix/#"; # Change nixos config now
+    nix-bt = "sudo nixos-rebuild boot --flake ~/dotfiles/nix/#"; # Change nixos config after boot
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
