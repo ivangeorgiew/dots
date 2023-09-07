@@ -31,7 +31,7 @@ in
     systemd-boot.enable = false;
     efi.canTouchEfiVariables = true;
 
-    timeout = null; # no timeout
+    timeout = 15; # null to disable
 
     grub = {
       enable = true;
