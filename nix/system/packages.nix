@@ -41,6 +41,11 @@
       # Bash to Fish translation
       useBabelfish = true;
 
+      interactiveShellInit = ''
+        #Disable greeting
+        set fish_greeting
+      '';
+
       loginShellInit =
       let
         dquote = str: "\"" + str + "\"";
@@ -49,9 +54,6 @@
         # Fix for/from https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1659465635
         fish_add_path --move --prepend --path ${lib.concatMapStringsSep " " dquote (makeBinPathList config.environment.profiles)}
         set fish_user_paths $fish_user_paths
-        
-        #Disable greeting
-        set fish_greeting
       '';
     };
 
