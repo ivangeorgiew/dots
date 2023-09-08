@@ -55,7 +55,6 @@
         # If HiDPI is needed due to monitor
         #inputs.hardware.nixosModules.common-hidpi
 
-        ./system/hardware.nix
         ./system/packages.nix
         ./system/configuration.nix
       ];
