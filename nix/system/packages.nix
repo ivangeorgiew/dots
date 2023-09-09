@@ -1,15 +1,16 @@
 { config, pkgs, lib, ... }:
 {
+  # Packages
   environment.systemPackages = with pkgs; [
     # Dev tools
     vim
     wget
     curl
     git
-    unzip
     gh
+    unzip
     killall
-    htop
+    btop
 
     # GUI apps
     keepassxc
@@ -19,8 +20,6 @@
     viber
 
     # Spotify. Browser app + ublock can be used instead
-    #spotify
-    #nur.repos.instantos.spotify-adblock
     nur.repos.nltch.spotify-adblock
 
     # DE/WM apps
@@ -35,6 +34,7 @@
     #udiskie
   ];
 
+  # Package Configs
   programs = {
     fish = {
       enable = true;
