@@ -12,19 +12,16 @@
     killall
     btop
     fzf
-
-    # fish shell plugins
     fishPlugins.colored-man-pages # self-descriptive
     fishPlugins.done # get notification when long process finishes
 
     # GUI apps
     keepassxc
     google-chrome
+    firefox-bin
     discord
     kitty
     viber
-
-    # Spotify. Browser app + ublock can be used instead
     nur.repos.nltch.spotify-adblock
 
     # DE/WM apps
@@ -41,11 +38,11 @@
 
   # Package Configs
   programs = {
+    # Interactive shell
     fish = {
       enable = true;
 
-      # Bash to Fish translation
-      useBabelfish = true;
+      useBabelfish = true; # Bash to Fish translation
 
       interactiveShellInit = ''
         #Disable greeting
@@ -63,6 +60,7 @@
       '';
     };
 
+    # Shell prompt
     starship = {
       enable = true;      
       #settings = {};
