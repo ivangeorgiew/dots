@@ -16,7 +16,6 @@
     # fish shell plugins
     fishPlugins.colored-man-pages # self-descriptive
     fishPlugins.done # get notification when long process finishes
-    fishPlugins.fzf # fzf completions
 
     # GUI apps
     keepassxc
