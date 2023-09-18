@@ -2,9 +2,61 @@
 let
   # For some reason, some of the options are not used by nix???
   btrfsOpts = [ "compress-force=zstd" "commit=60" "noatime" "ssd" "nodiscard" ];
-  xrandrOpts = "--output DP-3 --primary --mode 1920x1080 --rate 240";
+  username = "ivangeorgiew";
 in
 {
+  # Arch
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+
+  # For AMD cpu
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  # Full hardware support
+  hardware.enableAllFirmware = true;
+
+  # Kernel related settings. Fixes for WiFi
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+  boot.initrd.kernelModules = [];
+  boot.kernelModules = [ "kvm-amd" ];
+  boot.kernelParams = [];
+  boot.blacklistedKernelModules = [ "rtw88_8821cu" ];
+  boot.extraModulePackages = with config.boot.kernelPackages; [ rtl8821cu ];
+  boot.supportedFilesystems = [ "btrfs" "ntfs" ];
+
+  # Set linux kernel version. Defaults to LTS
+  boot.kernelPackages = pkgs.linuxPackages_6_4;
+
+  # Setup boot loader
+  boot.loader = {
+    systemd-boot.enable = false;
+    efi.canTouchEfiVariables = true;
+
+    timeout = 10; # null to disable
+
+    grub = {
+      enable = true;
+      device = "nodev";
+      efiSupport = true; 
+      useOSProber = true;
+    };
+  };
+
+  # Configure partitions
+  fileSystems."/" = { device = "/dev/disk/by-label/NIX_ROOT"; fsType = "btrfs"; options = btrfsOpts ++ [ "subvol=@root" ]; };
+  fileSystems."/home" = { device = "/dev/disk/by-label/NIX_ROOT"; fsType = "btrfs"; options = btrfsOpts ++ [ "subvol=@home" ]; };
+  fileSystems."/nix" = { device = "/dev/disk/by-label/NIX_ROOT"; fsType = "btrfs"; options = btrfsOpts ++ [ "subvol=@nix" ]; };
+  fileSystems."/boot" = { device = "/dev/disk/by-label/NIX_BOOT"; fsType = "vfat"; };
+  swapDevices = [ { device = "/dev/disk/by-label/NIX_SWAP"; } ];
+
+  # Enable zram
+  zramSwap.enable = true;
+
+  # Regular btrfs scrub
+  services.btrfs.autoScrub.enable = true;
+
+  # regular trimming of the SSD
+  services.fstrim = { enable = true; interval = "weekly"; };
+
   nixpkgs = {
     # Add all overlays
     overlays = builtins.attrValues outputs.overlays;
@@ -14,38 +66,30 @@ in
       allowUnfree = true;
 
       # Temporarily needed insecure packages
-      permittedInsecurePackages = [ "openssl-1.1.1v" ];
+      #permittedInsecurePackages = [ "openssl-1.1.1v" ];
     };
   };
 
   nix = {
-    # Adds each flake input as registry to make nix3 command consistent
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
-
-    # Adds each flake input to system's legacy channel to make legacy nix commands consistent
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
-
-    settings = {
-      # Removes duplicate files in the store automatically
-      auto-optimise-store = true;
-
-      # Enable new nix features
-      experimental-features = [ "nix-command" "flakes" ];
-    };
-
     # Auto garbage collect
     gc = {
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 30d";
     };
+
+    # Adds each flake input as registry to make nix3 command consistent
+    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+
+    # Adds each flake input to system's legacy channel to make legacy nix commands consistent
+    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
   };
 
   # Default shell for all users
   users.defaultUserShell = pkgs.fish;
 
   # User accounts. Don't forget to set a password with ‘passwd’.
-  users.users.ivangeorgiew = {
+  users.users[username] = {
     initialPassword = "123123";
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
@@ -100,8 +144,9 @@ in
     shells = with pkgs; [ fish ];
 
     # Env variables
-    variables = rec {
+    sessionVariables = rec {
       EDITOR = "vim";
+      VISUAL = "vim";
       TERMINAL = "kitty";
       BROWSER = "google-chrome-stable";
       PATH = [ XDG_BIN_HOME ];
@@ -120,7 +165,7 @@ in
       ll = "ls -la";
       kl = "pkill -9"; # Force kill a process (hence the 9)
       ks = "ps aux | grep"; # List a process
-      p = "pnpm";
+      p = "pnpm"; # Launch pnpm node package manager
       nix-up = "sudo nixos-rebuild switch --flake ~/dotfiles/nix/#"; # Change nixos config now
       nix-bt = "sudo nixos-rebuild boot --flake ~/dotfiles/nix/#"; # Change nixos config after boot
     };
@@ -144,58 +189,6 @@ in
   # Setup the tty console
   console = { font = "Lat2-Terminus16"; useXkbConfig = true; };
 
-  # Arch
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-
-  # For AMD cpu
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
-  # Full hardware support
-  hardware.enableAllFirmware = true;
-
-  # Kernel related settings. Fixes for WiFi
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-  boot.initrd.kernelModules = [];
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.kernelParams = [];
-  boot.blacklistedKernelModules = [ "rtw88_8821cu" ];
-  boot.extraModulePackages = with config.boot.kernelPackages; [ rtl8821cu ];
-  boot.supportedFilesystems = [ "btrfs" "ntfs" ];
-
-  # Set linux kernel version. Defaults to LTS
-  boot.kernelPackages = pkgs.linuxPackages_6_4;
-
-  # Setup boot loader
-  boot.loader = {
-    systemd-boot.enable = false;
-    efi.canTouchEfiVariables = true;
-
-    timeout = 15; # null to disable
-
-    grub = {
-      enable = true;
-      device = "nodev";
-      efiSupport = true; 
-      useOSProber = true;
-    };
-  };
-
-  # Configure partitions
-  fileSystems."/" = { device = "/dev/disk/by-label/NIX_ROOT"; fsType = "btrfs"; options = btrfsOpts ++ [ "subvol=@root" ]; };
-  fileSystems."/home" = { device = "/dev/disk/by-label/NIX_ROOT"; fsType = "btrfs"; options = btrfsOpts ++ [ "subvol=@home" ]; };
-  fileSystems."/nix" = { device = "/dev/disk/by-label/NIX_ROOT"; fsType = "btrfs"; options = btrfsOpts ++ [ "subvol=@nix" ]; };
-  fileSystems."/boot" = { device = "/dev/disk/by-label/NIX_BOOT"; fsType = "vfat"; };
-  swapDevices = [ { device = "/dev/disk/by-label/NIX_SWAP"; } ];
-
-  # Enable zram
-  zramSwap.enable = true;
-
-  # Regular btrfs scrub
-  services.btrfs.autoScrub.enable = true;
-
-  # regular trimming of the SSD
-  services.fstrim = { enable = true; interval = "weekly"; };
-
   networking = {
     # Change to per interface if using systemd-networkd
     useDHCP = lib.mkDefault true;
@@ -217,7 +210,6 @@ in
 
     # Configure NetworkManager
     networkmanager = {
-      # Use NetworkManager
       enable = true;
 
       # Disable wifi powersaving
@@ -227,6 +219,14 @@ in
       ethernet.macAddress = "stable";
       wifi.macAddress = "stable";
     };
+
+    hosts = {
+      # blocked websites
+      "127.0.0.1" = [
+        "9gag.com"
+        "online-go.com"
+      ];
+    }
   };
 
   # Sound config for Pipewire
@@ -240,24 +240,8 @@ in
     jack.enable = true; #Can be disabled
   };
 
-  # X11 settings
   services.xserver = {
-    # Enable the X11 windowing system.
-    enable = true;
-
-    # Login manager settings
-    displayManager = {
-      sddm.enable = true;
-      autoLogin = { enable = true; user = "ivangeorgiew"; };
-      setupCommands = "${pkgs.xorg.xrandr}/bin/xrandr ${xrandrOpts}";
-      #defaultSession = "none+bspwm";
-    };
-
-    # Enable the Plasma 5 Desktop Environment.
-    desktopManager.plasma5.enable = true;
-
-    # Enable bspwm
-    #windowManager.bspwm.enable = true;
+    displayManager.autoLogin = { enable = true; user = username; };
 
     # Configure keymap in X11
     extraLayouts.bgd = {

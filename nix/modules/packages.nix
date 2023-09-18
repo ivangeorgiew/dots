@@ -23,17 +23,6 @@
     kitty
     viber
     nur.repos.nltch.spotify-adblock
-
-    # DE/WM apps
-    #bspwm
-    #sxhkd
-    #nitrogen
-    #polybar
-    #rofi
-    #pavucontrol
-    #lxappearance
-    #dunst
-    #udiskie
   ];
 
   # Package Configs
