@@ -2,7 +2,7 @@
 { inputs, ... }:
 {
   # Adds my custom packages from the 'pkgs' folder
-  additions = final: _prev: import ./customPkgs { pkgs = final; }; 
+  additions = final: _prev: import ./pkgs { pkgs = final; }; 
 
   # Modifies existing pkgs https://nixos.wiki/wiki/Overlays
   modifications = final: prev: {
