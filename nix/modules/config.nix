@@ -66,7 +66,7 @@ in
       allowUnfree = true;
 
       # Temporarily needed insecure packages
-      #permittedInsecurePackages = [ "openssl-1.1.1v" ];
+      permittedInsecurePackages = [ "openssl-1.1.1v" ];
     };
   };
 
@@ -83,13 +83,37 @@ in
 
     # Adds each flake input to system's legacy channel to make legacy nix commands consistent
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+
+    # various settings
+    settings = {
+      # Removes duplicate files in the store automatically
+      auto-optimise-store = true;
+
+      # Enable new nix features
+      experimental-features = [ "nix-command" "flakes" ];
+
+      # Users which have rights to modify binary caches and other stuff
+      trusted-users = [ "root" "@wheel" ];
+
+      # Binary caches
+      substituters = [
+        "https://cache.nixos.org"
+        "https://hyprland.cachix.org" 
+      ];
+
+      # Public keys for the above caches
+      trusted-public-keys = [
+        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" 
+      ];
+    };
   };
 
   # Default shell for all users
   users.defaultUserShell = pkgs.fish;
 
   # User accounts. Don't forget to set a password with ‘passwd’.
-  users.users[username] = {
+  users.users."${username}" = {
     initialPassword = "123123";
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
@@ -226,7 +250,7 @@ in
         "9gag.com"
         "online-go.com"
       ];
-    }
+    };
   };
 
   # Sound config for Pipewire

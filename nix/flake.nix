@@ -11,30 +11,6 @@
 {
   description = "My NixOS flake config";
 
-  # Equivalent of nix.settings
-  nixConfig = {
-    # Removes duplicate files in the store automatically
-    auto-optimise-store = true;
-
-    # Enable new nix features
-    experimental-features = [ "nix-command" "flakes" ];
-
-    # Users which have rights to modify binary caches and other stuff
-    trusted-users = [ "root", "@wheel" ];
-
-    # Binary caches
-    substituters = [
-      "https://cache.nixos.org"
-      "https://hyprland.cachix.org" 
-    ];
-
-    # Public keys for the above caches
-    trusted-public-keys = [
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" 
-    ];
-  };
-
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
