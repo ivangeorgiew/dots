@@ -13,7 +13,7 @@ in
       # SDDM/GDM settings
       sddm.enable = true;
       setupCommands = "${pkgs.xorg.xrandr}/bin/xrandr ${xrandrOpts}";
-      defaultSession = "none+bspwm";
+      #defaultSession = "none+bspwm";
     };
 
     # Enables KDE Plasma
@@ -55,7 +55,7 @@ in
       package = inputs.hyprland.packages.${pkgs.system}.hyprland;
       
       # Better nvidia support
-      enableNvidiaPatches = true;      
+      nvidiaPatches = true;      
 
       # Xwayland settings
       xwayland = {
