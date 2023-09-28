@@ -1,4 +1,4 @@
-# Defines overlays
+# Adds/modifies `pkgs` properties (Ex: adds `pkgs.nur`, modifies `pkgs.hyprland`)
 { inputs, ... }:
 {
   # Adds my custom packages from the 'pkgs' folder
@@ -9,17 +9,20 @@
     #example = prev.example.overrideAttrs (oldAttrs: rec { ... });
   };
 
-  # Give access to unstable pkgs via `pkgs.unstable`
-  unstable-packages = final: _prev: {
+  # Adds `pkgs.unstable`
+  unstable = final: _prev: {
     unstable = import inputs.nixpkgs-unstable {
       system = final.system;
       config.allowUnfree = true;
     };
   };
 
-  # Add NUR packages access via `pkgs.nur`
-  nur-packages = inputs.nur.overlay;
+  # NUR packages https://github.com/nix-community/NUR/blob/master/flake.nix
+  nur = inputs.nur.overlay;
 
-  # External overlay example
-  #neovim = neovim-nightly-overlay.overlays.default;
+  # Hyprland packages https://github.com/hyprwm/Hyprland/blob/main/nix/overlays.nix
+  hyprland = inputs.hyprland.overlays.default;
+
+  # Neovim nightly https://github.com/nix-community/neovim-nightly-overlay
+  #neovim = inputs.neovim-nightly-overlay.overlay;
 }

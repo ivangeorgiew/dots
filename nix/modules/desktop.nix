@@ -52,7 +52,9 @@ in
   programs = {
     hyprland = {
       enable = false;
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+
+      # Substituted by the hyprland overlay
+      package = pkgs.hyprland;
       
       # Better nvidia support
       nvidiaPatches = true;      

@@ -84,7 +84,6 @@ in
     # Adds each flake input to system's legacy channel to make legacy nix commands consistent
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
-    # various settings
     settings = {
       # Removes duplicate files in the store automatically
       auto-optimise-store = true;

@@ -4,6 +4,9 @@
 # Initial password is 123123
 # Don't forget to change the password main user with `passwd username`
 
+# To update package versions:
+# sudo nix flake update
+
 # To update config:
 # sudo nixos-rebuild switch --flake .#mahcomp
 
@@ -22,7 +25,8 @@
   outputs = inputs@{ self, nixpkgs, nur, ... }:
   let
     inherit (self) outputs;
-    forAllSystems = nixpkgs.lib.genAttrs [
+    inherit (nixpkgs) lib;
+    forAllSystems = lib.genAttrs [
       "x86_64-linux"
       "x86_64-darwin"
       "aarch64-linux"
@@ -46,11 +50,11 @@
     nixosModules = import ./modules;
 
     # Configurations
-    nixosConfigurations.mahcomp = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.mahcomp = lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs outputs; };
 
-      # Include all my modules and a list of others
+      # Combine all my modules with other ones
       modules = (builtins.attrValues outputs.nixosModules) ++ [
         # If HiDPI is needed due to monitor (github.com/nixos/nixos-hardware)
         #inputs.hardware.nixosModules.common-hidpi
