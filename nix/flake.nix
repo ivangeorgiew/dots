@@ -47,7 +47,7 @@
     overlays = import ./overlays.nix { inherit inputs; };
 
     # Modules
-    nixosModules = import ./modules;
+    nixosModules = import ./modules { inherit lib; };
 
     # Configurations
     nixosConfigurations.mahcomp = lib.nixosSystem {
