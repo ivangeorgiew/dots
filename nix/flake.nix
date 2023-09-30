@@ -10,7 +10,6 @@
 # To update config:
 # sudo nixos-rebuild switch --flake .#mahcomp
 
-# Initially based on https://github.com/Misterio77/nix-starter-configs
 {
   description = "My NixOS flake config";
 

@@ -192,6 +192,8 @@ in
       p = "pnpm"; # Launch pnpm node package manager
       nix-up = "sudo nixos-rebuild switch --flake ~/dotfiles/nix/#"; # Change nixos config now
       nix-bt = "sudo nixos-rebuild boot --flake ~/dotfiles/nix/#"; # Change nixos config after boot
+      nix-gens = "sudo nix profile history --profile /nix/var/nix/profiles/system";
+      nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 30d";
     };
   };
 
