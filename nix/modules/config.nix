@@ -116,7 +116,7 @@ in
   users.users."${username}" = {
     initialPassword = "123123";
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
+    extraGroups = [ "wheel" "networkmanager" "video" "audio" "libvirtd" ];
   };
 
   # Setup fonts

@@ -19,6 +19,7 @@
     hardware.url = "github:nixos/nixos-hardware/master";
     nur.url = "github:nix-community/nur/master";
     hyprland.url = "github:hyprwm/Hyprland";
+    xdg-desktop-portal-hyprland.url = "github:hyprwm/xdg-desktop-portal-hyprland";
   };
 
   outputs = inputs@{ self, nixpkgs, nur, ... }:
