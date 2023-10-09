@@ -3,7 +3,7 @@
 { lib }:
 builtins.listToAttrs
   (builtins.map
-    (file: { name = (lib.strings.removeSuffix ".nix" "${file}"); value = import (./. + "/${file}"); })
+    (name: { name = (lib.strings.removeSuffix ".nix" "${name}"); value = import (./. + "/${name}"); })
     (builtins.filter
-      (file: file != "default.nix")
+      (name: name != "default.nix")
       (builtins.attrNames (builtins.readDir ./.))))

@@ -2,7 +2,7 @@
 # sudo nixos-install --no-root-passwd --flake https://github.com/ivangeorgiew?dir=nix#mahcomp
 
 # Initial password is 123123
-# Don't forget to change the password main user with `passwd username`
+# Don't forget to change the passwords of main user and root with `passwd username`
 
 # To update package versions:
 # sudo nix flake update
@@ -19,13 +19,19 @@
     hardware.url = "github:nixos/nixos-hardware/master";
     nur.url = "github:nix-community/nur/master";
     hyprland.url = "github:hyprwm/Hyprland";
-    xdg-desktop-portal-hyprland.url = "github:hyprwm/xdg-desktop-portal-hyprland";
+    nix-colors.url = "github:misterio77/nix-colors";
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, nur, ... }:
+  outputs = inputs@{ self, nixpkgs, ... }:
   let
     inherit (self) outputs;
     inherit (nixpkgs) lib;
+
     forAllSystems = lib.genAttrs [
       "x86_64-linux"
       "x86_64-darwin"
@@ -33,6 +39,8 @@
       "aarch64-darwin"
       "i686-linux"
     ];
+
+    username = "ivangeorgiew";
   in rec
   {
     # Custom packages, to use through `nix build`, `nix shell`, etc.
@@ -46,19 +54,16 @@
     # Package overlays
     overlays = import ./overlays.nix { inherit inputs; };
 
-    # Modules
+    # NixOS Modules
     nixosModules = import ./modules { inherit lib; };
 
     # Configurations
     nixosConfigurations.mahcomp = lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = { inherit inputs outputs; };
+      specialArgs = { inherit inputs outputs username; };
 
-      # Combine all my modules with other ones
-      modules = (builtins.attrValues outputs.nixosModules) ++ [
-        # If HiDPI is needed due to monitor (github.com/nixos/nixos-hardware)
-        #inputs.hardware.nixosModules.common-hidpi
-      ];
+      # All of my nixos modules
+      modules = builtins.attrValues outputs.nixosModules;
     };
   };
 }
