@@ -1,6 +1,9 @@
+# hyprland config is in modules/home.nix !!!
+
 { inputs, outputs, lib, config, pkgs, ... }:
 let
   xrandrOpts = "--output DP-3 --primary --mode 1920x1080 --rate 240";
+  xdg-hyprland-package = inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
 in
 {
   # Bad naming. Manages all the DE/WM settings, not only X11
@@ -27,7 +30,7 @@ in
     enable = true;
     extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
-      xdg-desktop-portal-hyprland
+      xdg-hyprland-package    
     ];
   };
 
@@ -61,25 +64,6 @@ in
     ];
   };
 
-  # Package configs
-  programs = {
-    # for gnome related things
-    dconf.enable = true;
-
-    hyprland = {
-      enable = true;
-
-      # Hyprland's own flake package
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-      
-      # Better nvidia support
-      nvidiaPatches = true;      
-
-      # Xwayland settings
-      xwayland = {
-        enable = true;
-        #hidpi = true;
-      };
-    };
-  };
+  # for gnome related things
+  programs.dconf.enable = true;
 }
