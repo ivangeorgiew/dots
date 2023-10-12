@@ -1,10 +1,7 @@
+# Env variables and aliases
 { inputs, outputs, lib, config, pkgs, username, ... }:
 {
   environment = {
-    # Add shells to /etc/shells
-    shells = with pkgs; [ fish ];
-
-    # variables
     sessionVariables = rec {
       TERMINAL = "kitty";
       BROWSER = "google-chrome-stable";
@@ -19,7 +16,6 @@
       XDG_STATE_HOME = "$HOME/.local/state"
     };
 
-    # aliases
     shellAliases = {
       l = "ls -l";
       ll = "ls -la";
