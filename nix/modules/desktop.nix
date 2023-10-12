@@ -1,8 +1,6 @@
-# hyprland config is in modules/home.nix !!!
-
 { inputs, outputs, lib, config, pkgs, ... }:
 let
-  xrandrOpts = "--output DP-3 --primary --mode 1920x1080 --rate 240";
+  hyprland-package = inputs.hyprland.packages.${pkgs.system}.hyprland-nvidia;
   xdg-hyprland-package = inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
 in
 {
@@ -17,25 +15,44 @@ in
     gnome.gnome-keyring.enable = true;
 
     # Enables KDE Plasma
-    desktopManager.plasma5.enable = false;
+    #desktopManager.plasma5.enable = true;
 
     # Wayland handler for input devices (mouse, touchpad, etc.)
     libinput = {
       enable = true;
       mouse.accelProfile = "flat"; # disables mouse acceleration
     };
+
+    # Enable proprietary Nvidia driver
+    videoDrivers = [ "nvidia" ];
   };
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk
-      xdg-hyprland-package    
-    ];
+  # OpenGL has to be enabled for Nvidia according to wiki
+  hardware.opengl = { enable = true; driSupport = true; driSupport32Bit = true; };
+
+  # Nvidia settings
+  hardware.nvidia = {
+    # Modesetting should be enabled almost always
+    modesetting.enable = true;
+
+    # Prevents problems with laptops and screen tearing
+    powerManagement.enable = true;
+
+    # Choose driver package
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+
+    # Use the open source version
+    open = false;
+
+    # Auto installs nvidia-settings
+    nvidiaSettings = true;
+
+    # fix G-Sync / Adaptive Sync black screen issue
+    forceFullCompositionPipeline = true;
   };
 
+  # Env variables and packages
   environment = {
-    # Env variables
     sessionVariables = {
       # Wayland specific variables
       GBM_BACKEND = "nvidia-drm"; # Could crash Firefox
@@ -50,7 +67,6 @@ in
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     };
 
-    # Packages
     systemPackages = with pkgs; [
       swww # animated wallpapers for wayland
       dunst # notifications
@@ -61,9 +77,24 @@ in
       ffmpeg_6 # for audio and video
       wl-clipboard # copy/paste on wayland
       pavucontrol # audio control
+      polkit_gnome # for some apps to not crash
+      qtwayland # requirement for qt5/6
     ];
   };
 
-  # for gnome related things
-  programs.dconf.enable = true;
+  # https://github.com/NixOS/nixpkgs/blob/nixos-23.05/nixos/modules/programs/hyprland.nix#L59
+  # It sets a bunch of necessary things
+  programs.hyprland = {
+    enable = true;
+    package = hyprland-package;
+  };
+
+  # More recent version of hyprland's xdg portal
+  xdg.portal = {
+    enable = true;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+      xdg-hyprland-package
+    ];
+  };
 }

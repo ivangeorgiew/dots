@@ -85,7 +85,6 @@
 
   # Sound config for Pipewire
   sound.enable = false; #Disabled for pipewire
-  security.rtkit.enable = true; #Optional but recommended
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -93,6 +92,12 @@
     pulse.enable = true;
     wireplumber.enable = true;
     jack.enable = true; #Can be disabled
+  };
+
+  # Some apps might break without those
+  security = {
+      polkit.enable = true;
+      rtkit.enable = true;
   };
 
   services.xserver = {
