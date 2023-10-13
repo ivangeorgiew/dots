@@ -32,6 +32,7 @@
     inherit (self) outputs;
     inherit (nixpkgs) lib;
 
+    username = "ivangeorgiew";
     forAllSystems = lib.genAttrs [
       "x86_64-linux"
       "x86_64-darwin"
@@ -39,8 +40,6 @@
       "aarch64-darwin"
       "i686-linux"
     ];
-
-    username = "ivangeorgiew";
   in rec
   {
     # Custom packages, to use through `nix build`, `nix shell`, etc.
@@ -61,8 +60,6 @@
     nixosConfigurations.mahcomp = lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs outputs username; };
-
-      # All of my nixos modules
       modules = builtins.attrValues outputs.nixosModules;
     };
   };

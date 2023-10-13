@@ -96,8 +96,8 @@
 
   # Some apps might break without those
   security = {
-      polkit.enable = true;
-      rtkit.enable = true;
+    polkit.enable = true;
+    rtkit.enable = true;
   };
 
   services.xserver = {
