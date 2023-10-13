@@ -37,6 +37,40 @@
       # reload systemd units when config changes
       systemd.user.startServices = "sd-switch";
 
+      # GTK apps theming
+      gtk = {
+        enable = true;
+
+        cursorTheme = {
+          name = "macOS-BigSur";
+          package = pkgs.apple-cursor;
+          size = 24; # set also in modules/desktop.nix -> XCURSOR_SIZE
+        };
+
+        iconTheme = {
+          name = "Papirus-Dark";
+          package = pkgs.papirus-folders;
+        };
+
+        # https://github.com/catppuccin/gtk
+        theme = {
+          name = "Catppuccin-Mocha-Compact-Blue-Dark";
+          package = pkgs.catppuccin-gtk.override {
+            variant = "mocha";
+            size = "compact";
+            accents = [ "blue" ];
+            tweaks = [ "rimless" "black" ];
+          };
+        };
+      };
+
+      # QT apps theming
+      qt = {
+        enable = true;
+        platformTheme = "qtct";
+        style.name = "adwaita-dark";
+      };
+
       # Let home-manager install and manage itself
       programs.home-manager.enable = true;
     };
