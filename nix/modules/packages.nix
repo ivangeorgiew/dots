@@ -17,6 +17,7 @@
     unzip
     starship # prompt
     stow # symlink dotfiles
+    python3
     wget
 
     # GUI apps

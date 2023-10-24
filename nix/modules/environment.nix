@@ -22,8 +22,9 @@
       kl = "pkill -9"; # Force kill a process (hence the 9)
       ks = "ps aux | grep"; # List a process
       p = "pnpm"; # Launch pnpm node package manager
-      nix-up = "sudo nixos-rebuild switch --flake ~/dotfiles/nix/#"; # Change nixos config now
-      nix-bt = "sudo nixos-rebuild boot --flake ~/dotfiles/nix/#"; # Change nixos config after boot
+      nix-update = "sudo nix flake update"
+      nix-switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
+      nix-boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
       nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
       nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 30d"; # Garbage collect nixos
     };
