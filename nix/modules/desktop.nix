@@ -75,25 +75,31 @@ in
     };
 
     systemPackages = with pkgs; [
-      swww # animated wallpapers for wayland
-      dunst # notifications
       bemenu # dmenu for wayland
-      pcmanfm # GUI file manager
-      grim # screenshots for wayland
-      slurp # needed by `grim`
+      dunst # notifications
       ffmpeg_6 # for audio and video
-      wl-clipboard # copy/paste on wayland
+      grim # screenshots for wayland
       pavucontrol # audio control
+      pcmanfm # GUI file manager
       polkit_gnome # for some apps to not crash
       qtwayland # requirement for qt5/6
+      rofi-wayland # app launcher
+      slurp # needed by `grim`
+      swaybg # wallpapers for wayland
+      wl-clipboard # copy/paste on wayland
     ];
   };
 
-  # https://github.com/NixOS/nixpkgs/blob/nixos-23.05/nixos/modules/programs/hyprland.nix#L59
-  # It sets a bunch of necessary things
-  programs.hyprland = {
-    enable = true;
-    package = hyprland-package;
+  programs = {
+    # Enabling sets a bunch of necessary things
+    # https://github.com/NixOS/nixpkgs/blob/nixos-23.05/nixos/modules/programs/hyprland.nix#L59
+    hyprland = {
+      enable = true;
+      package = hyprland-package;
+    };
+
+    # status bar for hyprland
+    waybar.enable = true;
   };
 
   # More recent version of hyprland's xdg portal
