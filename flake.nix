@@ -55,17 +55,17 @@
   {
     # Custom packages, to use through `nix build`, `nix shell`, etc.
     packages = forAllSystems
-    (system: import ./pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
+    (system: import ./nix/pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
 
     # Development shells to use through `nix develop`
     devShells = forAllSystems
-    (system: import ./shell.nix { pkgs = nixpkgs.legacyPackages.${system}; });
+    (system: import ./nix/shell.nix { pkgs = nixpkgs.legacyPackages.${system}; });
 
     # Package overlays
-    overlays = import ./overlays.nix { inherit inputs; };
+    overlays = import ./nix/overlays.nix { inherit inputs; };
 
     # NixOS Modules
-    nixosModules = import ./modules { inherit lib; };
+    nixosModules = import ./nix/modules { inherit lib; };
 
     # Configurations
     nixosConfigurations.mahcomp = lib.nixosSystem {
