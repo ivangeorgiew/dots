@@ -10,9 +10,6 @@
     extraSpecialArgs = { inherit inputs outputs username; };
 
     users."${username}" = _: {
-      # Add my dot files
-      imports = [ ../../homeDots ];
-
       # Basic info
       home = {
         inherit username;
@@ -44,7 +41,7 @@
         cursorTheme = {
           name = "macOS-BigSur";
           package = pkgs.apple-cursor;
-          size = 24; # set also in modules/desktop.nix -> XCURSOR_SIZE
+          size = 24;
         };
 
         iconTheme = {

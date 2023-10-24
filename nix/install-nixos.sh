@@ -145,7 +145,7 @@ install_nix() {
 
     echo -e "\nInstall Step\n"
 
-    nixos-install --no-root-passwd --flake "github:ivangeorgiew/dotfiles?dir=nix#mahcomp"
+    nixos-install --no-root-passwd --flake "github:ivangeorgiew/dotfiles#mahcomp"
 }
 
 # Execution

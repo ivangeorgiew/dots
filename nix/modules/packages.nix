@@ -11,16 +11,18 @@
     gh
     git
     killall
-    nitch
+    nitch # like neofetch
     nerdfix # removes obsolete nerd font icons
     unzip
     starship # prompt
+    stow # symlink dotfiles
     wget
 
     # GUI apps
     discord
-    firefox-bin
-    google-chrome
+    unstable.firefox-bin
+    unstable.google-chrome
+    unstable.brave
     keepassxc
     kitty
     nur.repos.nltch.spotify-adblock
