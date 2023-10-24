@@ -3,15 +3,16 @@
   # Add packages
   environment.systemPackages = with pkgs; [
     # CLI apps
-    btop
+    btop # system monitor
     curl
+    cava # audio visualizer
     fishPlugins.colored-man-pages
     fishPlugins.done # get notification when long process finishes
-    fzf
-    gh
+    fzf # fuzzy file searcher
+    gh # github authenticator
     git
     killall
-    nitch # like neofetch
+    nitch # alternative to neofetch
     nerdfix # removes obsolete nerd font icons
     unzip
     starship # prompt
