@@ -75,15 +75,15 @@ in
     };
 
     systemPackages = with pkgs; [
-      bemenu # dmenu for wayland
       dunst # notifications
       ffmpeg_6 # for audio and video
       grim # screenshots for wayland
       pavucontrol # audio control
+      playerctl # controls media players
       pcmanfm # GUI file manager
-      polkit_gnome # for some apps to not crash
+      polkit_gnome # some apps require it
       qtwayland # requirement for qt5/6
-      rofi-wayland # app launcher
+      rofi-wayland # app launcher for wayland
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       wl-clipboard # copy/paste on wayland
