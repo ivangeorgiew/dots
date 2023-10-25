@@ -87,6 +87,7 @@ in
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       wl-clipboard # copy/paste on wayland
+      wf-recorder # screen recording
     ];
   };
 
