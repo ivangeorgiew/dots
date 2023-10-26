@@ -48,6 +48,9 @@
       interactiveShellInit = ''
         #Disable greeting
         set fish_greeting
+
+        # Display system info
+        nitch
       '';
 
       loginShellInit =
