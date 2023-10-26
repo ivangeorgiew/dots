@@ -1,7 +1,4 @@
 { inputs, outputs, lib, config, pkgs, ... }:
-let
-  hyprland-package = inputs.hyprland.packages.${pkgs.system}.hyprland-nvidia;
-in
 {
   services = {
     # Bad naming. Manages all the DE/WM settings, not only X11
@@ -90,7 +87,6 @@ in
       swaybg # wallpapers for wayland
       wl-clipboard # copy/paste on wayland
       wf-recorder # screen recording
-      #xdg-desktop-portal-gtk
     ];
   };
 
@@ -99,7 +95,7 @@ in
     # https://github.com/NixOS/nixpkgs/blob/nixos-23.05/nixos/modules/programs/hyprland.nix#L59
     hyprland = {
       enable = true;
-      package = hyprland-package;
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland-nvidia;
     };
 
     # status bar for hyprland

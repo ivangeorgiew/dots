@@ -16,7 +16,8 @@
     nerdfix # removes obsolete nerd font icons
     unzip
     stow # symlink dotfiles
-    python3
+    (python310.withPackages(ps: with ps; [ requests pygobject3 ]))
+    gobject-introspection # for some python scripts
     wget
 
     # GUI apps
