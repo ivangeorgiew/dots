@@ -1,30 +1,31 @@
 { inputs, outputs, lib, config, pkgs, ... }:
 let
   hyprland-package = inputs.hyprland.packages.${pkgs.system}.hyprland-nvidia;
-  xdg-hyprland-package = inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
 in
 {
-  # Bad naming. Manages all the DE/WM settings, not only X11
-  services.xserver = {
-    enable = true;
+  services = {
+    # Bad naming. Manages all the DE/WM settings, not only X11
+    xserver = {
+      enable = true;
 
-    # Enable Gnome login manager
-    displayManager.gdm.enable = true;
+      # Enable Gnome login manager
+      displayManager.gdm.enable = true;
+
+      # Enables KDE Plasma
+      # desktopManager.plasma5.enable = true;
+
+      # Wayland handler for input devices (mouse, touchpad, etc.)
+      libinput = {
+        enable = true;
+        mouse.accelProfile = "flat"; # disables mouse acceleration
+      };
+
+      # Enable proprietary Nvidia driver
+      videoDrivers = [ "nvidia" ];
+    };
 
     # gnome keyring daemon (passwords/credentials)
     gnome.gnome-keyring.enable = true;
-
-    # Enables KDE Plasma
-    # desktopManager.plasma5.enable = true;
-
-    # Wayland handler for input devices (mouse, touchpad, etc.)
-    libinput = {
-      enable = true;
-      mouse.accelProfile = "flat"; # disables mouse acceleration
-    };
-
-    # Enable proprietary Nvidia driver
-    videoDrivers = [ "nvidia" ];
   };
 
   # OpenGL has to be enabled for Nvidia according to wiki
@@ -82,12 +83,14 @@ in
       playerctl # controls media players
       pcmanfm # GUI file manager
       polkit_gnome # some apps require it
-      qtwayland # requirement for qt5/6
+      libsForQt5.qt5.qtwayland # requirement for qt5
+      qt6.qtwayland # requirement for qt6
       rofi-wayland # app launcher for wayland
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       wl-clipboard # copy/paste on wayland
       wf-recorder # screen recording
+      #xdg-desktop-portal-gtk
     ];
   };
 
@@ -103,12 +106,9 @@ in
     waybar.enable = true;
   };
 
-  # More recent version of hyprland's xdg portal
+  # hyprland portal is auto added from programs.hyprland.enable
   xdg.portal = {
     enable = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gtk
-      xdg-hyprland-package
-    ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 }

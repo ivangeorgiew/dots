@@ -5,7 +5,7 @@
 
   # global home-manager settings
   home-manager = {
-    useGlobalPackages = true;
+    useGlobalPkgs = true;
     useUserPackages = false;
     extraSpecialArgs = { inherit inputs outputs username; };
 
@@ -20,16 +20,8 @@
         sessionPath = [ "$HOME/.local/bin" ];
       }; 
 
-      nixpkgs = {
-        # Set the same overlays as for the nixos config
-        overlays = outputs.overlays;
-
-        config = {
-          # Fix for https://github.com/nix-community/home-manager/issues/2942
-          allowUnfreePredicate = _: true;
-          allowUnfree = true;
-        };
-      };
+      # Let home-manager install and manage itself
+      programs.home-manager.enable = true;
 
       # reload systemd units when config changes
       systemd.user.startServices = "sd-switch";
@@ -64,12 +56,9 @@
       # QT apps theming
       qt = {
         enable = true;
-        platformTheme = "qtct";
+        platformTheme = "gtk";
         style.name = "adwaita-dark";
       };
-
-      # Let home-manager install and manage itself
-      programs.home-manager.enable = true;
     };
   };
 }

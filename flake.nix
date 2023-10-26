@@ -4,31 +4,18 @@
 # Initial password is 123123
 # Don't forget to change the passwords of main user and root with `passwd username`
 
-# To update package versions:
-# sudo nix flake update
-
-# To update config:
-# sudo nixos-rebuild switch --flake .#mahcomp
-
+# Extra commands are shell aliases
 {
   description = "My NixOS flake config";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    nur = {
-      url = "github:nix-community/nur/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nur.url = "github:nix-community/nur/master";
+    hyprland.url = "github:hyprwm/Hyprland";
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-23.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

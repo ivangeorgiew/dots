@@ -15,9 +15,6 @@
     # Set DNS
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
 
-    # Disable IPv6
-    enableIPv6 = false;
-
     # Don't wait to have an IP
     dhcpcd.wait = "background";
     dhcpcd.extraConfig = "noarp"; 

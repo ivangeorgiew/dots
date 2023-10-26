@@ -33,9 +33,9 @@
     # Javascript
     nodejs
     typescript
-    tailwindcss
     nodePackages.npm
     unstable.nodePackages_latest.pnpm
+    unstable.nodePackages_latest.tailwindcss
   ];
 
   # Config/add packages
@@ -68,7 +68,6 @@
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
-      vimdiffAlias = true;
     };
   };
 }
