@@ -15,7 +15,6 @@
     nitch # alternative to neofetch
     nerdfix # removes obsolete nerd font icons
     unzip
-    starship # prompt
     stow # symlink dotfiles
     python3
     wget
@@ -61,6 +60,9 @@
         set fish_user_paths $fish_user_paths
       '';
     };
+    
+    # prompt
+    starship.enable = true;
 
     # IDE/Text editor
     neovim = {
