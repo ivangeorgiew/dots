@@ -1,13 +1,9 @@
-# Env variables and aliases
 { inputs, outputs, lib, config, pkgs, username, ... }:
-let
-  browser = "brave-browser";
-in
 {
   environment = {
     sessionVariables = rec {
       TERMINAL = "kitty";
-      BROWSER = "${browser}";
+      BROWSER = "brave";
       HISTCONTROL = "ignoreboth:erasedups";
       LESSHISTFILE = "-";
       PATH = [ XDG_BIN_HOME ];
@@ -39,7 +35,7 @@ in
     };
   };
 
-  xdg.mime.defaultApplications = {
+  xdg.mime.defaultApplications = let browser = "brave-browser"; in {
     "text/html" = "${browser}.desktop";
     "x-scheme-handler/http" = "${browser}.desktop";
     "x-scheme-handler/https" = "${browser}.desktop";
