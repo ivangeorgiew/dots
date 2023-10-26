@@ -9,7 +9,7 @@
       allowUnfree = true;
 
       # Temporarily needed insecure packages
-      permittedInsecurePackages = [ "openssl-1.1.1v" ];
+      permittedInsecurePackages = [ "openssl-1.1.1w" ];
     };
   };
 
