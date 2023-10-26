@@ -1,10 +1,10 @@
 {
-    "height": 40, // Waybar height (to be removed for auto height)
+    // "height": 10, // Waybar height (to be removed for auto height)
     "layer": "top", // Waybar at top layer
-    "modules-left": ["custom/launcher", "cpu", "memory", "custom/weather", "wlr/workspaces"],
+    "modules-left": ["custom/launcher", "cpu", "memory", "custom/weather", "hyprland/workspaces"],
     "modules-right": ["tray", "network", "audio", "custom/lock", "clock", "custom/power-menu"],
 
-    "wlr/workspaces": {
+    "hyprland/workspaces": {
       "format": "{icon}",
       "on-click": "activate",
       "format-icons": {
@@ -107,7 +107,7 @@
     },
 
     "custom/power-menu": {
-        "format": " ⏻ ",
+        "format": "⏻",
         "on-click": "bash ~/.config/waybar/scripts/power-menu/powermenu.sh &",
     }, 
 
