@@ -103,7 +103,10 @@ in
     };
 
     # status bar for hyprland
-    waybar.enable = true;
+    waybar = {
+      enable = true;
+      package = pkgs.unstable.waybar;
+    };
   };
 
   # hyprland portal is auto added from programs.hyprland.enable
