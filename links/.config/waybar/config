@@ -1,8 +1,7 @@
 {
-    // "height": 10, // Waybar height (to be removed for auto height)
     "layer": "top", // Waybar at top layer
     "modules-left": ["custom/launcher", "cpu", "memory", "custom/weather", "hyprland/workspaces"],
-    "modules-right": ["tray", "network", "audio", "custom/lock", "clock", "custom/power-menu"],
+    "modules-right": ["tray", "network", "pulseaudio", "custom/spotify", "clock", "custom/lock", "custom/power-menu"],
 
     "hyprland/workspaces": {
       "format": "{icon}",
@@ -56,7 +55,7 @@
         "format-icons": ["󰤯","󰤟","󰤢","󰤥","󰤨"],
     },
 
-    "audio": {
+    "pulseaudio": {
         "format": "{icon}",
         "format-muted": "󰸈",
         "format-icons": {
