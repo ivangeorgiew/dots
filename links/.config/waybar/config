@@ -12,14 +12,7 @@
       "custom/playerlabel"
     ],
 
-    "modules-right": [
-      "tray",
-      "pulseaudio",
-      "network",
-      "clock",
-      "custom/lock",
-      "custom/power-menu"
-    ],
+    "modules-right": [ "tray", "pulseaudio", "network", "clock", "custom/power-menu" ],
 
     "hyprland/workspaces": {
       "format": "{icon}",
@@ -110,24 +103,24 @@
 
    "custom/lock": {
        "tooltip" : false,
-       "on-click": "swaylock -i ~/.config/wall.png",
+       "on-click": "swaylock -f -i ~/.config/wall.png",
        "format" : "",
     },
 
     "custom/playerctl#backward": {
       "format": "󰙣 ",
       "tooltip": false,
-      "on-click": "playerctl previous"
+      "on-click": "playerctl -p spotify previous"
     },
 
     "custom/playerctl#foward": {
       "format": "󰙡 ",
       "tooltip": false,
-      "on-click": "playerctl next"
+      "on-click": "playerctl -p spotify next"
     },
 
     "custom/playerctl#play": {
-      "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+      "exec": "playerctl -p spotify -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
       "format": "{icon}",
       "tooltip": false,
       "format-icons": {
@@ -135,14 +128,12 @@
         "Playing": "<span>󰏥 </span>",
         "Stopped": "<span> </span>"
       },
-      "on-click": "playerctl play-pause",
-      "on-scroll-down": "playerctl volume .05-",
-      "on-scroll-up": "playerctl volume .05+",
+      "on-click": "playerctl -p spotify play-pause",
       "return-type": "json"
     },
 
     "custom/playerlabel": {
-      "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+      "exec": "playerctl -p spotify -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
       "format": "<span>󰎈 {} 󰎈</span>",
       "tooltip": false,
       "max-length": 80,
