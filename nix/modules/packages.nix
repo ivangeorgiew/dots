@@ -4,18 +4,19 @@
   environment.systemPackages = with pkgs; [
     # CLI apps and tools
     btop # system monitor
-    curl
     cava # audio visualizer
+    curl
     fishPlugins.colored-man-pages
     fishPlugins.done # get notification when long process finishes
     fzf # fuzzy file searcher
     gh # github authenticator
     git
+    jq # json processor
     killall
-    nitch # alternative to neofetch
     nerdfix # removes obsolete nerd font icons
-    unzip
+    nitch # alternative to neofetch
     stow # symlink dotfiles
+    unzip
     wget
 
     # GUI apps
