@@ -6,6 +6,7 @@
     btop # system monitor
     cava # audio visualizer
     curl
+    cmatrix # cool effect
     fishPlugins.colored-man-pages
     fishPlugins.done # get notification when long process finishes
     fzf # fuzzy file searcher
@@ -15,6 +16,7 @@
     killall
     nerdfix # removes obsolete nerd font icons
     nitch # alternative to neofetch
+    pulseaudio # for pactl only
     stow # symlink dotfiles
     unzip
     wget

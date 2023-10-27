@@ -35,7 +35,7 @@
       },
       "active-only": false,
       "on-click": "activate",
-      "persistent_workspaces": { "*": 5 }
+      "persistent_workspaces": { "*": 4 }
     },
 
     "hyprland/window": {
@@ -82,12 +82,14 @@
     },
 
     "pulseaudio": {
-        "format": "{icon}",
-        "format-muted": "󰸈",
+        "format": "{volume}% {icon}",
+        "format-muted": "{volume}% 󰸈",
         "format-icons": {
             "default": ["", "", "󰕾"]
         },
-        "on-click": "pavucontrol &"
+        "scroll-step": 5.0,
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-click-right": "pavucontrol &"
     },
 
     "battery": {
@@ -159,13 +161,13 @@
     "custom/reboot": {
       "format": "",
       "tooltip": false,
-      "on-click": "systemctl reboot"
+      "on-click": "bash ~/.config/waybar/scripts/reboot.sh"
     },
 
     "custom/shutdown": {
       "format": "⏻",
       "tooltip": false,
-      "on-click": "systemctl poweroff",
+      "on-click": "bash ~/.config/waybar/scripts/shutdown.sh",
     }, 
 
     "custom/launcher": {
