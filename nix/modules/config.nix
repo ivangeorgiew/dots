@@ -100,19 +100,26 @@
     rtkit.enable = true;
   };
 
-  services.xserver = {
-    # Enable autologin on boot
-    displayManager.autoLogin = { enable = true; user = username; };
+  services = {
+    xserver = {
+      # Enable autologin on boot
+      displayManager.autoLogin = { enable = true; user = username; };
 
-    # Configure keymap in X11
-    extraLayouts.bgd = {
-      description = "Bulgarian";
-      languages = [ "bul" ];
-      symbolsFile = ../xkb/bgd;
+      # Configure keymap in X11
+      extraLayouts.bgd = {
+        description = "Bulgarian";
+        languages = [ "bul" ];
+        symbolsFile = ../xkb/bgd;
+      };
+      layout = "us,bgd";
+      xkbVariant = "dvorak,";
+      xkbOptions = "grp:shifts_toggle,ctrl:swapcaps";
     };
-    layout = "us,bgd";
-    xkbVariant = "dvorak,";
-    xkbOptions = "grp:shifts_toggle,ctrl:swapcaps";
+
+    # for auto mounting of disks
+    gvfs.enable = true;
+    udisks2.enable = true;
+    devmon.enable = true;
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

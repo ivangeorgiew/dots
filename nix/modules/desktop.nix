@@ -79,6 +79,7 @@
       pavucontrol # audio control
       playerctl # controls media players
       pcmanfm # GUI file manager
+      lxde.lxmenu-data # list of installed apps when opening a file
       polkit_gnome # some apps require it
       libsForQt5.qt5.qtwayland # requirement for qt5
       qt6.qtwayland # requirement for qt6
