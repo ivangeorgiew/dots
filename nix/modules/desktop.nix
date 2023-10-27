@@ -88,6 +88,11 @@
       wl-clipboard # copy/paste on wayland
       wf-recorder # screen recording
     ];
+
+    shellAliases = {
+      reboot = "echo 'Use the buttons'";
+      shutdown = "echo 'Use the buttons'";
+    };
   };
 
   programs = {
