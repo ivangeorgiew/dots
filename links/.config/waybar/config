@@ -3,7 +3,13 @@
 
     "position": "top",
 
-    "modules-left": ["custom/launcher", "cpu", "memory", "custom/weather", "hyprland/workspaces"],
+    "modules-left": [
+      "custom/launcher",
+      "cpu",
+      "memory",
+      "custom/weather",
+      "hyprland/workspaces"
+    ],
 
     "modules-center": [
       "custom/playerctl#backward",
@@ -12,7 +18,14 @@
       "custom/playerlabel"
     ],
 
-    "modules-right": [ "tray", "pulseaudio", "network", "clock", "custom/power-menu" ],
+    "modules-right": [
+      "tray",
+      "pulseaudio",
+      "network",
+      "clock",
+      "custom/reboot",
+      "custom/shutdown"
+    ],
 
     "hyprland/workspaces": {
       "format": "{icon}",
@@ -141,13 +154,20 @@
       "return-type": "json"
     },
 
-    "custom/power-menu": {
-        "format": "⏻",
-        "on-click": "bash ~/.config/waybar/scripts/power-menu/powermenu.sh &",
+    "custom/reboot": {
+      "format": "",
+      "tooltip": false,
+      "on-click": "systemctl reboot"
+    },
+
+    "custom/shutdown": {
+      "format": "⏻",
+      "tooltip": false,
+      "on-click": "systemctl poweroff",
     }, 
 
     "custom/launcher": {
-        "format": "󱄅",
-        "on-click": "rofi -show drun &",
+      "format": "󱄅",
+      "on-click": "rofi -show drun &",
     },
 }

@@ -10,7 +10,7 @@ host=`hostname`
 
 # Options
 shutdown=''
-reboot=''
+reboot=''
 lock=''
 suspend=' '
 logout=' '
