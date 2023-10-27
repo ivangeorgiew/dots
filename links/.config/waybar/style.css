@@ -31,7 +31,6 @@ window#waybar.hidden {
 #idle_inhibitor,
 #custom-power-menu,
 #custom-launcher,
-#custom-spotify,
 #custom-weather,
 #custom-weather.severe,
 #custom-weather.sunnyDay,
@@ -94,14 +93,17 @@ window#waybar.hidden {
 #battery,
 #pulseaudio,
 #network {
+  font-size: 20px;
   background-color: #252733;
-
   padding: 0px 15px 0px 15px;
+}
+
+#network {
+  margin-left: 10px;
 }
 
 #pulseaudio {
   color: #81A1C1;
-  margin-left: 7px;
 }
 
 #pulseaudio.muted {
@@ -219,11 +221,15 @@ label:focus {
   color: #2d3436;
 }
 
-#custom-spotify {
-  color: #abb2bf;
-}
-
 #custom-weather {
   color: #81A1C1;
   font-family: Iosevka Nerd Font;
+}
+
+#custom-playerctl {
+  font-size: 25px;
+}
+
+#custom-playerlabel {
+  font-size: 15px;
 }

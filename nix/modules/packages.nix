@@ -2,7 +2,7 @@
 {
   # Add packages
   environment.systemPackages = with pkgs; [
-    # CLI apps
+    # CLI apps and tools
     btop # system monitor
     curl
     cava # audio visualizer
