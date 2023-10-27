@@ -18,6 +18,7 @@
     nitch # alternative to neofetch
     pulseaudio # for pactl only
     stow # symlink dotfiles
+    shared-mime-info # common mime types
     unzip
     wget
 
