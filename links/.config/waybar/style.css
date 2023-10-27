@@ -94,7 +94,7 @@ window#waybar.hidden {
 #battery,
 #pulseaudio,
 #network {
-  font-size: 20px;
+  font-size: 15px;
   background-color: #252733;
   padding: 0px 15px 0px 15px;
 }
@@ -177,6 +177,7 @@ window#waybar.hidden {
   color: #ffffff;
   font-family: Iosevka Nerd Font;
   font-weight: bold;
+  font-size: 15px;
 }
 
 #custom-reboot {
