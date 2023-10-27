@@ -1,7 +1,25 @@
 {
     "layer": "top", // Waybar at top layer
+
+    "position": "top",
+
     "modules-left": ["custom/launcher", "cpu", "memory", "custom/weather", "hyprland/workspaces"],
-    "modules-right": ["tray", "network", "pulseaudio", "custom/spotify", "clock", "custom/lock", "custom/power-menu"],
+
+    "modules-center": [
+      "custom/playerctl#backward",
+      "custom/playerctl#play",
+      "custom/playerctl#foward",
+      "custom/playerlabel"
+    ],
+
+    "modules-right": [
+      "tray",
+      "pulseaudio",
+      "network",
+      "clock",
+      "custom/lock",
+      "custom/power-menu"
+    ],
 
     "hyprland/workspaces": {
       "format": "{icon}",
@@ -13,30 +31,30 @@
     },
 
     "hyprland/window": {
-        "format": "{}"
+      "format": "{}"
     },
 
     "tray": {
-        "spacing": 10
+      "spacing": 10
     },
 
     "clock": {
-        "format": "{:%H:%M %b %d %Y}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+      "format": "{:%H:%M %b %d %Y}",
+      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
     },
 
     "cpu": {
       "interval": 10,
-      "format": " {}%",
+      "format": "  {}%",
       "max-length": 10,
       "on-click": "",
     },
 
     "memory": {
-        "interval": 30,
-        "format": " {}%",
-        "format-alt":" {used:0.1f}GB",
-        "max-length": 10,
+      "interval": 30,
+      "format": "  {}%",
+      "format-alt":" {used:0.1f}GB",
+      "max-length": 10,
     },
 
     "backlight": {
@@ -96,13 +114,40 @@
        "format" : "",
     },
 
-   "custom/spotify": {
-        "exec": "python3 ~/.config/waybar/scripts/mediaplayer.py --player spotify",
-        "format": " {}",
-        "return-type": "json",
-        "on-click": "playerctl play-pause",
-        "on-double-click-right": "playerctl next",
-        "on-scroll-down": "playerctl previous",
+    "custom/playerctl#backward": {
+      "format": "󰙣 ",
+      "tooltip": false,
+      "on-click": "playerctl previous"
+    },
+
+    "custom/playerctl#foward": {
+      "format": "󰙡 ",
+      "tooltip": false,
+      "on-click": "playerctl next"
+    },
+
+    "custom/playerctl#play": {
+      "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+      "format": "{icon}",
+      "tooltip": false,
+      "format-icons": {
+        "Paused": "<span> </span>",
+        "Playing": "<span>󰏥 </span>",
+        "Stopped": "<span> </span>"
+      },
+      "on-click": "playerctl play-pause",
+      "on-scroll-down": "playerctl volume .05-",
+      "on-scroll-up": "playerctl volume .05+",
+      "return-type": "json"
+    },
+
+    "custom/playerlabel": {
+      "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+      "format": "<span>󰎈 {} 󰎈</span>",
+      "tooltip": false,
+      "max-length": 80,
+      "on-click": "",
+      "return-type": "json"
     },
 
     "custom/power-menu": {
