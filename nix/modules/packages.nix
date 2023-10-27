@@ -31,6 +31,7 @@
     nur.repos.nltch.spotify-adblock
     viber
     vlc
+    qbittorrent
 
     # Python
     (python310.withPackages(ps: with ps; [ requests pygobject3 ]))

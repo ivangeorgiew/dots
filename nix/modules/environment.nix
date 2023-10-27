@@ -41,5 +41,6 @@
     "x-scheme-handler/https" = "${browser}.desktop";
     "x-scheme-handler/about" = "${browser}.desktop";
     "x-scheme-handler/unknown" = "${browser}.desktop";
+    "x-scheme-handler/magnet" = "org.qbittorrent.qBittorrent.desktop";
   };
 }
