@@ -2,14 +2,12 @@
   font-family: Material Design Icons, JetBrainsMono Nerd Font, Iosevka Nerd Font;
   font-size: 15px;
   margin-top: 1px;
-  border-radius: 10px;
+  border-radius: 0px;
 }
 
 window#waybar {
   background-color: rgba(26, 27, 38, 0);
   color: #ffffff;
-  transition-property: background-color;
-  transition-duration: 0.5s;
 }
 
 window#waybar.hidden {
