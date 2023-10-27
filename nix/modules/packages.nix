@@ -16,8 +16,6 @@
     nerdfix # removes obsolete nerd font icons
     unzip
     stow # symlink dotfiles
-    (python310.withPackages(ps: with ps; [ requests pygobject3 ]))
-    gobject-introspection # for some python scripts
     wget
 
     # GUI apps
@@ -29,6 +27,11 @@
     kitty
     nur.repos.nltch.spotify-adblock
     viber
+    vlc
+
+    # Python
+    (python310.withPackages(ps: with ps; [ requests pygobject3 ]))
+    gobject-introspection # for some python scripts
 
     # Javascript
     nodejs

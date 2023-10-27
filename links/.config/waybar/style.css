@@ -29,7 +29,8 @@ window#waybar.hidden {
 #custom-lock,
 #workspaces,
 #idle_inhibitor,
-#custom-power-menu,
+#custom-shutdown,
+#custom-reboot,
 #custom-launcher,
 #custom-weather,
 #custom-weather.severe,
@@ -173,12 +174,18 @@ window#waybar.hidden {
 }
 
 #clock {
-  color: #81A1C1;
+  color: #ffffff;
   font-family: Iosevka Nerd Font;
   font-weight: bold;
 }
 
-#custom-power-menu {
+#custom-reboot {
+  color: #fab387;
+  padding: 0 18px 0 15px;
+  margin-right: 5px;
+}
+
+#custom-shutdown {
   color: #e78284;
   padding: 0 18px 0 15px;
   margin-right: 10px;
@@ -222,8 +229,7 @@ label:focus {
 }
 
 #custom-weather {
-  color: #81A1C1;
-  font-family: Iosevka Nerd Font;
+  color: #fff;
 }
 
 #custom-playerctl {
