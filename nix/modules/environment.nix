@@ -35,12 +35,20 @@
     };
   };
 
-  xdg.mime.defaultApplications = let browser = "brave-browser"; in {
-    "text/html" = "${browser}.desktop";
-    "x-scheme-handler/http" = "${browser}.desktop";
-    "x-scheme-handler/https" = "${browser}.desktop";
-    "x-scheme-handler/about" = "${browser}.desktop";
-    "x-scheme-handler/unknown" = "${browser}.desktop";
-    "x-scheme-handler/magnet" = "org.qbittorrent.qBittorrent.desktop";
-  };
+  xdg.mime =
+    let
+      browser = "brave-browser.desktop";
+      torrent = "deluge.desktop";
+    in {
+      defaultApplications = {
+        "text/html" = "${browser}";
+        "x-scheme-handler/http" = "${browser}";
+        "x-scheme-handler/https" = "${browser}";
+        "x-scheme-handler/about" = "${browser}";
+        "x-scheme-handler/unknown" = "${browser}";
+
+        "x-scheme-handler/magnet" = "${torrent}";
+        "application/x-bittorrent" = "${torrent}";
+      };
+    };
 }

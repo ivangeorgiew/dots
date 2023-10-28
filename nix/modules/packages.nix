@@ -18,11 +18,12 @@
     nitch # alternative to neofetch
     pulseaudio # for pactl only
     stow # symlink dotfiles
-    shared-mime-info # common mime types
+    shared-mime-info # add new custom mime types (check arch wiki)
     unzip
     wget
 
     # GUI apps
+    deluge
     discord
     unstable.firefox-bin
     unstable.google-chrome
@@ -32,7 +33,6 @@
     nur.repos.nltch.spotify-adblock
     viber
     vlc
-    qbittorrent
 
     # Python
     (python310.withPackages(ps: with ps; [ requests pygobject3 ]))
@@ -75,6 +75,9 @@
     
     # prompt
     starship.enable = true;
+
+    # GUI file manager
+    thunar.enable = true;
 
     # IDE/Text editor
     neovim = {

@@ -78,9 +78,7 @@
       grim # screenshots for wayland
       pavucontrol # audio control
       playerctl # controls media players
-      pcmanfm # GUI file manager
-      lxde.lxmenu-data # list of installed apps when opening a file
-      lxqt.lxqt-policykit # some apps require polkit
+      libsForQt5.polkit-kde-agent # some apps require polkit
       libsForQt5.qt5.qtwayland # requirement for qt5
       qt6.qtwayland # requirement for qt6
       rofi-wayland # app launcher for wayland
@@ -115,5 +113,18 @@
   xdg.portal = {
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
+
+  # Polkit unit service
+  # to start it use `systemctl --user start polkit_gnome`
+  systemd.user.services.my-polkit-agent = {
+    description = "starts polkit agent";
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.libsForQt5.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+      TimeoutStopSec = 10;
+    };
   };
 }
