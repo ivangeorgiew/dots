@@ -103,7 +103,7 @@
   services = {
     xserver = {
       # Enable autologin on boot
-      displayManager.autoLogin = { enable = true; user = username; };
+      displayManager.autoLogin = { enable = false; user = username; };
 
       # Configure keymap in X11
       extraLayouts.bgd = {
