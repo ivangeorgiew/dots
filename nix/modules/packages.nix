@@ -10,6 +10,7 @@
     fishPlugins.colored-man-pages
     fishPlugins.done # get notification when long process finishes
     fzf # fuzzy file searcher
+    glibc
     gh # github authenticator
     git
     jq # json processor
@@ -23,7 +24,6 @@
     wget
 
     # GUI apps
-    deluge
     discord
     unstable.firefox-bin
     unstable.google-chrome
@@ -33,6 +33,7 @@
     nur.repos.nltch.spotify-adblock
     viber
     vlc
+    qbittorrent
 
     # Python
     (python310.withPackages(ps: with ps; [ requests pygobject3 ]))
@@ -75,9 +76,6 @@
     
     # prompt
     starship.enable = true;
-
-    # GUI file manager
-    thunar.enable = true;
 
     # IDE/Text editor
     neovim = {

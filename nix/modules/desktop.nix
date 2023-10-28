@@ -8,9 +8,6 @@
       # Enable Gnome login manager
       displayManager.gdm.enable = true;
 
-      # Enables KDE Plasma
-      # desktopManager.plasma5.enable = true;
-
       # Wayland handler for input devices (mouse, touchpad, etc.)
       libinput = {
         enable = true;
@@ -24,6 +21,9 @@
     # gnome keyring daemon (passwords/credentials)
     gnome.gnome-keyring.enable = true;
   };
+
+  # enable the keyring at login
+  security.pam.services.gdm.enableGnomeKeyring = true;
 
   # OpenGL has to be enabled for Nvidia according to wiki
   hardware.opengl = { enable = true; driSupport = true; driSupport32Bit = true; };
@@ -58,7 +58,7 @@
       LIBVA_DRIVER_NAME = "nvidia";
       NIXOS_OZONE_WL = "1";
       QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-      QT_QPA_PLATFORM = "xcb"; # Fixes Viber. Switch to "wayland;xcb" in the future
+      QT_QPA_PLATFORM = "wayland;xcb"; # Fixes Viber. Switch to "wayland;xcb" in the future
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       SDL_VIDEODRIVER = "wayland"; # might cause issues with older games
       WLR_DRM_NO_ATOMIC = "1"; # set if you have flickering issue
@@ -91,6 +91,7 @@
     shellAliases = {
       reboot = "echo 'Use the buttons'";
       shutdown = "echo 'Use the buttons'";
+      viber = "QT_QPA_PLATFORM=xcb ${pkgs.viber}/bin/viber";
     };
   };
 
@@ -107,6 +108,12 @@
       enable = true;
       package = pkgs.unstable.waybar;
     };
+
+    # GUI file manager
+    thunar.enable = true;
+
+    # app for gnome-keyring passwords management
+    seahorse.enable = true;
   };
 
   # hyprland portal is auto added from programs.hyprland.enable

@@ -38,7 +38,7 @@
   xdg.mime =
     let
       browser = "brave-browser.desktop";
-      torrent = "deluge.desktop";
+      torrent = "org.qbittorrent.qBittorrent.desktop";
     in {
       defaultApplications = {
         "text/html" = "${browser}";
