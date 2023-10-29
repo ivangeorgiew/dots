@@ -23,6 +23,7 @@
       "pulseaudio",
       "network",
       "clock",
+      "custom/logout",
       "custom/reboot",
       "custom/shutdown"
     ],
@@ -158,16 +159,22 @@
       "return-type": "json"
     },
 
+    "custom/logout": {
+      "format": "",
+      "tooltip": false,
+      "on-click": "~/.config/waybar/scripts/killall.sh && kill -9 -1"
+    },
+
     "custom/reboot": {
       "format": "",
       "tooltip": false,
-      "on-click": "bash ~/.config/waybar/scripts/reboot.sh"
+      "on-click": "~/.config/waybar/scripts/killall.sh && systemctl reboot"
     },
 
     "custom/shutdown": {
       "format": "⏻",
       "tooltip": false,
-      "on-click": "bash ~/.config/waybar/scripts/shutdown.sh",
+      "on-click": "~/.config/waybar/scripts/killall.sh && systemctl poweroff",
     }, 
 
     "custom/launcher": {
