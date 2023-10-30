@@ -19,7 +19,4 @@
 
   # NUR packages https://github.com/nix-community/NUR/blob/master/flake.nix
   nur = inputs.nur.overlay;
-
-  # Neovim nightly https://github.com/nix-community/neovim-nightly-overlay
-  #neovim = inputs.neovim-nightly-overlay.overlay;
 }

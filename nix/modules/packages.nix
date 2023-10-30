@@ -74,12 +74,17 @@
       '';
     };
     
-    # prompt
+    # shell prompt
     starship.enable = true;
 
     # IDE/Text editor
     neovim = {
       enable = true;
+      package = pkgs.unstable.neovim-unwrapped;
+      withRuby = true;
+      withPython3 = true;
+      withNodeJs = true;
+
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
