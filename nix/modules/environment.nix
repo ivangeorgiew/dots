@@ -32,6 +32,11 @@
       nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
       nix-roll = "sudo nix profile rollback --to"; # Rollback to a generation
       nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 14d && nix store gc"; # Garbage collect nixos
+
+      # different prebuilt neovim configs
+      nvim-lazy = "NVIM_APPNAME=LazyVim nvim";
+      nvim-kick = "NVIM_APPNAME=kickstart.nvim nvim";
+      nvim-chad = "NVIM_APPNAME=NvChad nvim";
     };
   };
 

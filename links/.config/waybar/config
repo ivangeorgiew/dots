@@ -88,6 +88,7 @@
         "format-icons": {
             "default": ["", "", "󰕾"]
         },
+        "tooltip": false,
         "scroll-step": 5.0,
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
         "on-click-right": "pavucontrol &"
@@ -118,12 +119,6 @@
       "restart-interval": 300,
       "return-type": "json",
     },   
-
-   "custom/lock": {
-       "tooltip" : false,
-       "on-click": "swaylock -f -i ~/.config/wall.png",
-       "format" : "",
-    },
 
     "custom/playerctl#backward": {
       "format": "󰙣 ",
