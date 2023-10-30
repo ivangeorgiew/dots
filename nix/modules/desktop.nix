@@ -1,4 +1,11 @@
 { inputs, outputs, lib, config, pkgs, ... }:
+let
+  hyprland-package = inputs.hyprland.packages.${pkgs.system}.hyprland-nvidia;
+
+  # Currently the latest version is broken (v1.2.3), so I use v0.3.1
+  #inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
+  xdg-hyprland-package = pkgs.xdg-desktop-portal-hyprland;
+in
 {
   services = {
     # Bad naming. Manages all the DE/WM settings, not only X11
@@ -100,7 +107,7 @@
     # https://github.com/NixOS/nixpkgs/blob/nixos-23.05/nixos/modules/programs/hyprland.nix#L59
     hyprland = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland-nvidia;
+      package = hyprland-package;
     };
 
     # status bar for hyprland
@@ -119,7 +126,10 @@
   # hyprland portal is auto added from programs.hyprland.enable
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = lib.mkForce [
+      pkgs.xdg-desktop-portal-gtk
+      xdg-hyprland-package # newest hyprland portal
+    ];
   };
 
   # Polkit unit service

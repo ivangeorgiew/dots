@@ -24,7 +24,7 @@
     wget
 
     # GUI apps
-    discord
+    webcord
     unstable.firefox-bin
     unstable.google-chrome
     unstable.brave
