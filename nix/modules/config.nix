@@ -9,7 +9,10 @@
       allowUnfree = true;
 
       # Temporarily needed insecure packages
-      permittedInsecurePackages = [ "openssl-1.1.1w" ];
+      permittedInsecurePackages = [
+        "openssl-1.1.1w" # for viber
+        "electron-24.8.6" # for webcord
+      ];
     };
   };
 

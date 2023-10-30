@@ -26,6 +26,9 @@
       # reload systemd units when config changes
       systemd.user.startServices = "sd-switch";
 
+      # enable fontconfig
+      fonts.fontconfig.enable = true;
+
       # GTK apps theming
       gtk = {
         enable = true;
