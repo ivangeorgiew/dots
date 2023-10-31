@@ -1,11 +1,4 @@
 { inputs, outputs, lib, config, pkgs, ... }:
-let
-  hyprland-package = inputs.hyprland.packages.${pkgs.system}.hyprland-nvidia;
-
-  # Currently the latest version is broken (v1.2.3), so I use v0.3.1
-  #inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
-  xdg-hyprland-package = pkgs.xdg-desktop-portal-hyprland;
-in
 {
   services = {
     # Bad naming. Manages all the DE/WM settings, not only X11
@@ -28,9 +21,6 @@ in
     # gnome keyring daemon (passwords/credentials)
     gnome.gnome-keyring.enable = true;
   };
-
-  # enable the keyring at login
-  security.pam.services.gdm.enableGnomeKeyring = true;
 
   # OpenGL has to be enabled for Nvidia according to wiki
   hardware.opengl = { enable = true; driSupport = true; driSupport32Bit = true; };
@@ -85,7 +75,7 @@ in
       grim # screenshots for wayland
       pavucontrol # audio control
       playerctl # controls media players
-      libsForQt5.polkit-kde-agent # some apps require polkit
+      polkit_gnome # some apps require polkit
       libsForQt5.qt5.qtwayland # requirement for qt5
       qt6.qtwayland # requirement for qt6
       rofi-wayland # app launcher for wayland
@@ -107,7 +97,7 @@ in
     # https://github.com/NixOS/nixpkgs/blob/nixos-23.05/nixos/modules/programs/hyprland.nix#L59
     hyprland = {
       enable = true;
-      package = hyprland-package;
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland-nvidia;
     };
 
     # status bar for hyprland
@@ -123,22 +113,20 @@ in
     seahorse.enable = true;
   };
 
-  # hyprland portal is auto added from programs.hyprland.enable
+  # Currently the latest xdg-desktop-portal-hyprland is broken (v1.2.3), so I use v0.3.1
+  # which is auto added from `programs.hyprland.enable`
   xdg.portal = {
     enable = true;
-    extraPortals = lib.mkForce [
-      pkgs.xdg-desktop-portal-gtk
-      xdg-hyprland-package # newest hyprland portal
-    ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
   # Polkit unit service
-  # to start it use `systemctl --user start polkit_gnome`
+  # to start it use `systemctl --user start my-polkit-agent`
   systemd.user.services.my-polkit-agent = {
     description = "starts polkit agent";
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${pkgs.libsForQt5.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
       Restart = "on-failure";
       RestartSec = 1;
       TimeoutStopSec = 10;
