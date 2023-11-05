@@ -5,21 +5,27 @@
     # CLI apps and tools
     btop # system monitor
     cava # audio visualizer
-    curl
     cmatrix # cool effect
+    curl
+    fd # better alternative to find
     fishPlugins.colored-man-pages
     fishPlugins.done # get notification when long process finishes
     fzf # fuzzy file searcher
-    glibc
+    gcc # c compiler
     gh # github authenticator
     git
+    glibc
+    gnumake # make command
     jq # json processor
     killall
+    lazygit # terminal UI for git commands
     nerdfix # removes obsolete nerd font icons
     nitch # alternative to neofetch
     pulseaudio # for pactl only
-    stow # symlink dotfiles
+    ripgrep # newest Silver Searcher + grep
     shared-mime-info # add new custom mime types (check arch wiki)
+    stow # symlink dotfiles
+    tree-sitter # needed by neovim
     unzip
     wget
 
@@ -41,10 +47,10 @@
 
     # Javascript
     nodejs
-    typescript
     nodePackages.npm
     unstable.nodePackages_latest.pnpm
     unstable.nodePackages_latest.tailwindcss
+    unstable.nodePackages_latest.typescript
   ];
 
   # Config/add packages
