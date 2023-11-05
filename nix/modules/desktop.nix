@@ -76,6 +76,7 @@
       pavucontrol # audio control
       playerctl # controls media players
       polkit_gnome # some apps require polkit
+      libsForQt5.gwenview # image viewer
       libsForQt5.qt5.qtwayland # requirement for qt5
       qt6.qtwayland # requirement for qt6
       rofi-wayland # app launcher for wayland

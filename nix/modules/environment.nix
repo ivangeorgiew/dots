@@ -44,6 +44,7 @@
     let
       browser = "brave-browser.desktop";
       torrent = "org.qbittorrent.qBittorrent.desktop";
+      imgviewer = "org.kde.gwenview.desktop";
     in {
       defaultApplications = {
         "text/html" = "${browser}";
@@ -54,6 +55,13 @@
 
         "x-scheme-handler/magnet" = "${torrent}";
         "application/x-bittorrent" = "${torrent}";
+
+        "image/jpeg" = "${imgviewer}";
+        "image/png" = "${imgviewer}";
+        "image/gif" = "${imgviewer}";
+        "image/bmp" = "${imgviewer}";
+        "image/svg+xml" = "${imgviewer}";
+        "image/tiff" = "${imgviewer}";
       };
     };
 }
