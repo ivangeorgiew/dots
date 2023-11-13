@@ -25,6 +25,8 @@
       ll = "ls -la";
       kl = "pkill -9"; # Force kill a process (hence the 9)
       ks = "ps aux | grep"; # List a process
+      rm = "rm -fri"; # Ask for each file before deleting
+      rmf = "rm -fr"; # Delete without asking
       p = "pnpm"; # Launch pnpm node package manager
       nix-switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
       nix-boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
@@ -32,11 +34,6 @@
       nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
       nix-roll = "sudo nix profile rollback --to"; # Rollback to a generation
       nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 14d && nix store gc"; # Garbage collect nixos
-
-      # different prebuilt neovim configs
-      nvim-lazy = "NVIM_APPNAME=LazyVim nvim";
-      nvim-kick = "NVIM_APPNAME=kickstart.nvim nvim";
-      nvim-chad = "NVIM_APPNAME=NvChad nvim";
     };
   };
 
