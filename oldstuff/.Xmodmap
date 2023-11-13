@@ -1,0 +1,7 @@
+clear lock
+clear control
+clear Mod4
+keycode 66 = Control_R NoSymbol Control_R
+keycode 133 =
+keycode 134 = Control_R NoSymbol Control_R
+add control = Caps_Lock Control_R
