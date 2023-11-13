@@ -20,6 +20,8 @@ window#waybar.hidden {
 
 #clock,
 #cpu,
+#temperature,
+#custom-gpu,
 #memory,
 #custom-media,
 #tray,
@@ -53,6 +55,10 @@ window#waybar.hidden {
 }
 
 #cpu {
+  color: #ecd3a0;
+}
+
+#temperature, #custom-gpu {
   color: #fb958b;
 }
 
