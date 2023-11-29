@@ -14,6 +14,11 @@
     nur.url = "github:nix-community/nur/master";
     hyprland.url = "github:hyprwm/Hyprland";
 
+    neovim-nightly = {
+      url = "github:neovim/neovim?dir=contrib";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-23.05";
       inputs.nixpkgs.follows = "nixpkgs";
