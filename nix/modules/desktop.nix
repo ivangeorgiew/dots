@@ -98,7 +98,7 @@
     # https://github.com/NixOS/nixpkgs/blob/nixos-23.05/nixos/modules/programs/hyprland.nix#L59
     hyprland = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland-nvidia;
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     };
 
     # status bar for hyprland

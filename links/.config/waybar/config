@@ -5,10 +5,9 @@
 
     "modules-left": [
       "custom/launcher",
-      "cpu",
-      "memory",
       "temperature",
       "custom/gpu",
+      "custom/weather",
       "hyprland/workspaces"
     ],
 
@@ -23,7 +22,6 @@
       "tray",
       "pulseaudio",
       "network",
-      "custom/weather",
       "clock",
       "custom/logout",
       "custom/reboot",
@@ -165,7 +163,7 @@
       "exec": "playerctl -p spotify -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
       "format": "<span>󰎈 {} 󰎈</span>",
       "tooltip": false,
-      "max-length": 80,
+      "max-length": 60,
       "on-click": "",
       "return-type": "json"
     },

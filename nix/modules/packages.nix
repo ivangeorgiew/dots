@@ -27,6 +27,7 @@
     stow # symlink dotfiles
     tree-sitter # needed by neovim
     unzip
+    unstable.libvterm-neovim # needed by neovim
     wget
 
     # GUI apps
@@ -69,24 +70,24 @@
         nitch
       '';
 
-      loginShellInit =
-      let
-        dquote = str: "\"" + str + "\"";
-        makeBinPathList = map (path: path + "/bin");
-      in ''
-        # Fix for/from https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1659465635
-        fish_add_path --move --prepend --path ${lib.concatMapStringsSep " " dquote (makeBinPathList config.environment.profiles)}
-        set fish_user_paths $fish_user_paths
-      '';
+      #loginShellInit =
+      #let
+      #  dquote = str: "\"" + str + "\"";
+      #  makeBinPathList = map (path: path + "/bin");
+      #in ''
+      #  # Fix for/from https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1659465635
+      #  fish_add_path --move --prepend --path ${lib.concatMapStringsSep " " dquote (makeBinPathList config.environment.profiles)}
+      #  set fish_user_paths $fish_user_paths
+      #'';
     };
-    
+
     # shell prompt
     starship.enable = true;
 
     # IDE/Text editor
     neovim = {
       enable = true;
-      package = pkgs.unstable.neovim-unwrapped;
+      package = pkgs.neovim; # overlayed neovim-nightly
       withRuby = true;
       withPython3 = true;
       withNodeJs = true;

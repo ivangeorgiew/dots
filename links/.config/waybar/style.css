@@ -58,7 +58,11 @@ window#waybar.hidden {
   color: #ecd3a0;
 }
 
-#temperature, #custom-gpu {
+#temperature {
+  color: #ecd3a0;
+}
+
+#custom-gpu {
   color: #fb958b;
 }
 

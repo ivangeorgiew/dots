@@ -19,4 +19,8 @@
 
   # NUR packages https://github.com/nix-community/NUR/blob/master/flake.nix
   nur = inputs.nur.overlay;
+
+  neovim-nightly = final: prev: {
+    neovim = inputs.neovim-nightly.packages.${prev.system}.neovim;
+  };
 }

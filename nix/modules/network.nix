@@ -34,7 +34,6 @@
     hosts = {
       # blocked websites
       "127.0.0.1" = [
-        "9gag.com"
         "online-go.com"
       ];
     };
