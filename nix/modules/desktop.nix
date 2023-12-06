@@ -55,7 +55,7 @@
       LIBVA_DRIVER_NAME = "nvidia";
       NIXOS_OZONE_WL = "1";
       QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-      QT_QPA_PLATFORM = "wayland;xcb"; # Fixes Viber. Switch to "wayland;xcb" in the future
+      QT_QPA_PLATFORM = "wayland;xcb";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       SDL_VIDEODRIVER = "wayland"; # might cause issues with older games
       WLR_DRM_NO_ATOMIC = "1"; # set if you have flickering issue
