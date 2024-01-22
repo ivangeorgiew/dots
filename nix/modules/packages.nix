@@ -31,7 +31,7 @@
     wget
 
     # GUI apps
-    webcord
+    unstable.vesktop
     unstable.firefox-bin
     unstable.google-chrome
     unstable.brave
