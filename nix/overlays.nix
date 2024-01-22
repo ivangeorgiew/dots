@@ -7,6 +7,9 @@
   # Modifies existing pkgs https://nixos.wiki/wiki/Overlays
   modifications = final: prev: {
     #example = prev.example.overrideAttrs (oldAttrs: rec { ... });
+
+    #replaces the default package
+    neovim = inputs.neovim-nightly.packages.${prev.system}.neovim;
   };
 
   # Adds `pkgs.unstable`
@@ -19,8 +22,4 @@
 
   # NUR packages https://github.com/nix-community/NUR/blob/master/flake.nix
   nur = inputs.nur.overlay;
-
-  neovim-nightly = final: prev: {
-    neovim = inputs.neovim-nightly.packages.${prev.system}.neovim;
-  };
 }

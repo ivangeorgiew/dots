@@ -64,7 +64,7 @@
       XDG_CURRENT_DESKTOP = "Hyprland";
       XDG_SESSION_DESKTOP = "Hyprland";
       XDG_SESSION_TYPE = "wayland";
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia"; # Could cause issues with Discord and Zoom 
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia"; # Could cause issues with Discord and Zoom
       __GL_GSYNC_ALLOWED = "1";
       __GL_VRR_ALLOWED = "1";
     };
@@ -114,11 +114,14 @@
     seahorse.enable = true;
   };
 
-  # Currently the latest xdg-desktop-portal-hyprland is broken (v1.2.3), so I use v0.3.1
-  # which is auto added from `programs.hyprland.enable`
+  # Replace the auto added stable hyprland portal from `programs.hyprland.enable`
+  # with the one from unstable nixpkgs channel (currently v1.3.1)
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = lib.mkForce [
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.unstable.xdg-desktop-portal-hyprland
+    ];
   };
 
   # Polkit unit service
