@@ -1,37 +1,53 @@
-local function augroup(name)
-  return vim.api.nvim_create_augroup("my_" .. name, { clear = true })
+local au = function(group_name, events, opts)
+  opts.group = vim.api.nvim_create_augroup(group_name, { clear = true })
+
+  vim.api.nvim_create_autocmd(events, opts)
 end
 
--- Check if we need to reload the file when it changed
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-  group = augroup("checktime"),
-  command = "checktime",
-})
+au(
+  "reload_file_on_change",
+  { "FocusGained", "TermClose", "TermLeave" },
+  { command = "checktime" }
+)
 
--- Highlight on yank
-vim.api.nvim_create_autocmd("TextYankPost", {
-  group = augroup("highlight_yank"),
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-})
+au(
+  "highlight_on_yank",
+  "TextYankPost",
+  { callback = function() vim.highlight.on_yank() end, }
+)
 
--- resize splits if window got resized
-vim.api.nvim_create_autocmd({ "VimResized" }, {
-  group = augroup("resize_splits"),
-  callback = function()
-    local current_tab = vim.fn.tabpagenr()
-    vim.cmd("tabdo wincmd =")
-    vim.cmd("tabnext " .. current_tab)
-  end,
-})
+au(
+  "resize_splits_on_window_resize",
+  "VimResized",
+  {
+    callback = function()
+      local current_tab = vim.fn.tabpagenr()
+      vim.cmd("tabdo wincmd =")
+      vim.cmd("tabnext " .. current_tab)
+    end,
+  }
+)
 
--- wrap and check for spell in text filetypes
-vim.api.nvim_create_autocmd("FileType", {
-  group = augroup("wrap_spell"),
-  pattern = { "gitcommit", "markdown" },
-  callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.spell = true
-  end,
-})
+au(
+  "wrap_and_spell_in_text_files",
+  "FileType",
+  {
+    pattern = { "gitcommit", "markdown" },
+    callback = function()
+      vim.opt_local.wrap = true
+      vim.opt_local.spell = true
+    end,
+  }
+)
+
+au(
+  "set_buffer_options",
+  "BufEnter",
+  {
+    callback = function()
+      local o = vim.opt
+
+      o.formatoptions = "tcrqlj" -- formatting options
+    end
+  }
+)

@@ -1,4 +1,10 @@
--- see `:help vim.o` for more
+-- see `:h vim.g` for more
+local g = vim.g
+
+g.mapleader = " "
+g.maplocalleader = " "
+
+-- see `:h vim.o` for more
 local o = vim.opt
 
 o.tabstop = 2 -- amount of spaces on tab
@@ -15,7 +21,6 @@ o.confirm = true -- popup to save file after some commands
 o.diffopt = "vertical,iwhite,filler" -- vimdiff split direction and ignore whitespace
 o.foldlevel = 0 -- close all folds by default
 o.foldmethod = "marker" -- default fold method
-o.formatoptions = "tcrqlj" -- formatting options
 o.grepformat = "%f:%l:%c:%m" -- format for grep command
 o.grepprg = "rg --vimgrep" -- use silver_searcher for grep
 o.hlsearch = true -- highlighting search results
@@ -43,7 +48,6 @@ o.termguicolors = true -- enables 24-bit RGB colors
 o.textwidth = 0 -- max line char length
 o.timeoutlen = 500 -- time in ms to wait for mapped sequence
 o.undofile = true -- whether to use undo file
-o.undolevels = 10000 -- how many undos are saved
 o.updatetime = 500 -- writes swap file to disk every X ms
 o.virtualedit = "block" -- be able to place the cursor anywhere during vis block mode
 o.wildmode = "longest:full,full" -- command line completion
