@@ -1,12 +1,9 @@
-{ inputs, outputs, lib, config, pkgs, ... }:
+{ inputs, outputs, lib, config, pkgs, username, ... }:
 {
   services = {
     # Bad naming. Manages all the DE/WM settings, not only X11
     xserver = {
       enable = true;
-
-      # Enable Gnome login manager
-      displayManager.gdm.enable = true;
 
       # Wayland handler for input devices (mouse, touchpad, etc.)
       libinput = {
@@ -18,12 +15,51 @@
       videoDrivers = [ "nvidia" ];
     };
 
+    # greetd display manager
+    greetd = {
+      enable = true;
+
+      settings = rec {
+        default_session = {
+          command = "${lib.getExe config.programs.hyprland.package}";
+          user = username;
+        };
+        initial_session = default_session;
+      };
+    };
+
     # gnome keyring daemon (passwords/credentials)
     gnome.gnome-keyring.enable = true;
+
+    # needed for GNOME services outside of GNOME Desktop
+    dbus.packages = with pkgs; [
+      gcr
+      gnome.gnome-settings-daemon
+    ];
   };
 
+  # swaylock
+  # https://discourse.nixos.org/t/swaylock-wont-unlock/27275
+  security.pam.services.swaylock = { };
+  security.pam.services.swaylock.fprintAuth = false;
+
   # OpenGL has to be enabled for Nvidia according to wiki
-  hardware.opengl = { enable = true; driSupport = true; driSupport32Bit = true; };
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;
+
+    extraPackages = with pkgs; [
+      libva
+      vaapiVdpau
+      libvdpau-va-gl
+    ];
+
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      vaapiVdpau
+      libvdpau-va-gl
+    ];
+  };
 
   # Nvidia settings
   hardware.nvidia = {
@@ -82,6 +118,7 @@
       rofi-wayland # app launcher for wayland
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
+      swaylock # lock screen
       wl-clipboard # copy/paste on wayland
       wf-recorder # screen recording
     ];
@@ -112,14 +149,26 @@
 
     # app for gnome-keyring passwords management
     seahorse.enable = true;
+
+    # so that home-manager gtk stuff work
+    dconf.enable = true;
   };
 
-  # Replace the auto added stable hyprland portal from `programs.hyprland.enable`
-  # with the one from unstable nixpkgs channel (currently v1.3.1)
   xdg.portal = {
     enable = true;
+
+    # for the `xdg-open` command to use portals
+    xdgOpenUsePortal = true;
+
+    config = {
+      common.default = [ "gtk" ];
+      hyprland.default = [ "gtk" "hyprland" ];
+    };
+
+    # Replace the auto added stable hyprland portal from `programs.hyprland.enable`
+    # with the one from unstable nixpkgs channel (currently v1.3.1)
     extraPortals = lib.mkForce [
-      pkgs.xdg-desktop-portal-gtk
+      pkgs.unstable.xdg-desktop-portal-gtk
       pkgs.unstable.xdg-desktop-portal-hyprland
     ];
   };
