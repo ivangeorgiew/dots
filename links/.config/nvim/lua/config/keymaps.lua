@@ -37,7 +37,7 @@ map({ "x", "o" }, "N", "'nN'[v:searchforward]",          { desc = "Prev search r
 
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 
-map("n", "<C-q>",      "<cmd>qa<cr>",       { desc = "Quit" })
+map("n", "<leader>q",  "<cmd>qa<cr>",       { desc = "Quit" })
 map("n", "<leader>d",  "<cmd>close<cr>",    { desc = "Close window" })
 map("n", "<leader>t",  "<cmd>tabclose<cr>", { desc = "Close tab" })
 
