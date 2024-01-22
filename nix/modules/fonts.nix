@@ -3,7 +3,7 @@
   # Setup fonts
   fonts = {
     # Enables common fonts
-    enableDefaultFonts = true;
+    enableDefaultPackages = true;
 
     # Create dir with all fonts for compatibility
     fontDir.enable = true;
@@ -20,7 +20,7 @@
     };
 
     # Font packages
-    fonts = with pkgs; [
+    packages = with pkgs; [
       # Nerd Fonts with icons
       (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Iosevka" "FiraCode" "JetBrainsMono" "SourceCodePro" ]; })
       #(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
