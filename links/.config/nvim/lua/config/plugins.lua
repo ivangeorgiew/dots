@@ -46,7 +46,7 @@ require("lazy").setup({
 
   checker = {
     -- auto check for plugin updates
-    enabled = true,
+    enabled = false,
   },
 
   performance = {
