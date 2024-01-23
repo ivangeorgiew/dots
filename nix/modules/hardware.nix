@@ -25,7 +25,7 @@ in
   boot.supportedFilesystems = [ "btrfs" "ntfs" ];
 
   # Set linux kernel version. Defaults to LTS
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_1;
+  #boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_1;
 
   # Setup boot loader
   boot.loader = {
