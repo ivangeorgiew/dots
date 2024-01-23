@@ -41,7 +41,7 @@
 
       # Binary caches
       substituters = [
-        "https://cache.nixos.org?priority=10"
+        "https://cache.nixos.org"
         "https://hyprland.cachix.org"
         "https://nix-community.cachix.org"
       ];
@@ -106,9 +106,6 @@
 
   services = {
     xserver = {
-      # Enable autologin on boot
-      #displayManager.autoLogin = { enable = true; user = username; };
-
       # Configure keymap in X11
       extraLayouts.bgd = {
         description = "Bulgarian";

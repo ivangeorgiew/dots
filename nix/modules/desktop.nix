@@ -5,8 +5,16 @@
     xserver = {
       enable = true;
 
-      # Gnome display manager (login)
-      #displayManager.gdm.enable = true;
+      displayManager = {
+        # whether to autologin
+        autoLogin = { enable = false; user = username; };
+
+        # Gnome display manager (login)
+        gdm.enable = false;
+
+        # disable the default login manager
+        lightdm.enable = false;
+      };
 
       # Wayland handler for input devices (mouse, touchpad, etc.)
       libinput = {
@@ -22,14 +30,11 @@
     greetd = {
       enable = true;
 
-      settings = rec {
+      settings = {
         default_session = {
-          command = "${lib.getExe config.programs.hyprland.package}";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --user-menu --time --cmd Hyprland";
           user = username;
         };
-
-        # Whether to auto login
-        #initial_session = default_session;
       };
     };
 
@@ -146,6 +151,9 @@
     hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+
+      # use latest xdg-desktop-portal-hyprland (currently v1.3.1)
+      portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
     };
 
     # status bar for hyprland
@@ -162,9 +170,6 @@
 
     # so that home-manager gtk stuff work
     dconf.enable = true;
-
-    # for greetd login manager
-    regreet.enable = true;
   };
 
   xdg.portal = {
@@ -178,12 +183,7 @@
       hyprland.default = [ "gtk" "hyprland" ];
     };
 
-    # Replace the auto added stable hyprland portal from `programs.hyprland.enable`
-    # with the one from unstable nixpkgs channel (currently v1.3.1)
-    extraPortals = lib.mkForce [
-      pkgs.unstable.xdg-desktop-portal-gtk
-      pkgs.unstable.xdg-desktop-portal-hyprland
-    ];
+    extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
   };
 
   # Polkit unit service
