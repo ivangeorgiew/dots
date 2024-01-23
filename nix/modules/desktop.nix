@@ -6,10 +6,7 @@
       enable = true;
 
       # Gnome display manager (login)
-      displayManager.gdm = {
-        enable = true;
-        autoSuspend = false;
-      };
+      #displayManager.gdm.enable = true;
 
       # Wayland handler for input devices (mouse, touchpad, etc.)
       libinput = {
@@ -19,6 +16,21 @@
 
       # Enable proprietary Nvidia driver
       videoDrivers = [ "nvidia" ];
+    };
+
+    # greetd display manager
+    greetd = {
+      enable = true;
+
+      settings = rec {
+        default_session = {
+          command = "${lib.getExe config.programs.hyprland.package}";
+          user = username;
+        };
+
+        # Whether to auto login
+        #initial_session = default_session;
+      };
     };
 
     # gnome keyring daemon (passwords/credentials)
@@ -42,6 +54,9 @@
     driSupport = true;
     driSupport32Bit = true;
 
+    # fixes some applications (but maybe can break others?)
+    setLdLibraryPath = true;
+
     extraPackages = with pkgs; [
       libva
       vaapiVdpau
@@ -49,6 +64,7 @@
     ];
 
     extraPackages32 = with pkgs.pkgsi686Linux; [
+      libva
       vaapiVdpau
       libvdpau-va-gl
     ];
@@ -63,7 +79,7 @@
     powerManagement.enable = true;
 
     # Choose driver package
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.latest;
 
     # Use the open source version
     open = false;
@@ -112,6 +128,7 @@
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       swaylock # lock screen
+      vulkan-tools # to debug issues with vulkan
       wl-clipboard # copy/paste on wayland
       wf-recorder # screen recording
     ];
@@ -145,6 +162,9 @@
 
     # so that home-manager gtk stuff work
     dconf.enable = true;
+
+    # for greetd login manager
+    regreet.enable = true;
   };
 
   xdg.portal = {
