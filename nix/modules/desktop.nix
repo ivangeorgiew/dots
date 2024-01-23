@@ -5,6 +5,12 @@
     xserver = {
       enable = true;
 
+      # Gnome display manager (login)
+      displayManager.gdm = {
+        enable = true;
+        autoSuspend = false;
+      };
+
       # Wayland handler for input devices (mouse, touchpad, etc.)
       libinput = {
         enable = true;
@@ -13,19 +19,6 @@
 
       # Enable proprietary Nvidia driver
       videoDrivers = [ "nvidia" ];
-    };
-
-    # greetd display manager
-    greetd = {
-      enable = true;
-
-      settings = rec {
-        default_session = {
-          command = "${lib.getExe config.programs.hyprland.package}";
-          user = username;
-        };
-        initial_session = default_session;
-      };
     };
 
     # gnome keyring daemon (passwords/credentials)

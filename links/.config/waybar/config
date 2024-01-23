@@ -36,7 +36,7 @@
       },
       "active-only": false,
       "on-click": "activate",
-      "persistent_workspaces": { "*": 4 }
+      "persistent-workspaces": { "*": 4 }
     },
 
     "hyprland/window": {
@@ -44,7 +44,8 @@
     },
 
     "tray": {
-      "spacing": 10
+      "spacing": 10,
+      "show-passive-items": true
     },
 
     "clock": {
@@ -171,19 +172,19 @@
     "custom/logout": {
       "format": "",
       "tooltip": false,
-      "on-click": "~/.config/waybar/scripts/killall.sh && kill -9 -1"
+      "on-double-click": "~/.config/waybar/scripts/killall.sh && kill -9 -1"
     },
 
     "custom/reboot": {
       "format": "",
       "tooltip": false,
-      "on-click": "~/.config/waybar/scripts/killall.sh && systemctl reboot"
+      "on-double-click": "~/.config/waybar/scripts/killall.sh && systemctl reboot"
     },
 
     "custom/shutdown": {
       "format": "⏻",
       "tooltip": false,
-      "on-click": "~/.config/waybar/scripts/killall.sh && systemctl poweroff",
+      "on-double-click": "~/.config/waybar/scripts/killall.sh && systemctl poweroff",
     }, 
 
     "custom/launcher": {
