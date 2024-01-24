@@ -27,14 +27,14 @@
     stow # symlink dotfiles
     tree-sitter # needed by neovim
     unzip
-    unstable.libvterm-neovim # needed by neovim
+    libvterm-neovim # needed by neovim
     wget
 
     # GUI apps
-    unstable.vesktop
-    unstable.firefox-bin
-    unstable.google-chrome
-    unstable.brave
+    vesktop
+    firefox-bin
+    google-chrome
+    brave
     keepassxc
     kitty
     nur.repos.nltch.spotify-adblock
@@ -49,9 +49,9 @@
     # Javascript
     nodejs
     nodePackages.npm
-    unstable.nodePackages_latest.pnpm
-    unstable.nodePackages_latest.tailwindcss
-    unstable.nodePackages_latest.typescript
+    nodePackages_latest.pnpm
+    nodePackages_latest.tailwindcss
+    nodePackages_latest.typescript
   ];
 
   # Config/add packages

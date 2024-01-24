@@ -154,7 +154,7 @@
       package = inputs.hyprland.packages.${pkgs.system}.hyprland;
 
       # use latest xdg-desktop-portal-hyprland (currently v1.3.1)
-      portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
+      #portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
     };
 
     # GUI file manager
