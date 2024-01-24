@@ -21,12 +21,12 @@
     lazygit # terminal UI for git commands
     nerdfix # removes obsolete nerd font icons
     nitch # alternative to neofetch
+    p7zip # archiving and compression
     pulseaudio # for pactl only
-    ripgrep # newest Silver Searcher + grep
+    ripgrep # newest silver searcher + grep
     shared-mime-info # add new custom mime types (check arch wiki)
     stow # symlink dotfiles
     tree-sitter # needed by neovim
-    unzip
     libvterm-neovim # needed by neovim
     wget
 
@@ -41,6 +41,7 @@
     viber
     vlc
     qbittorrent
+    libsForQt5.ark
 
     # Python
     (python310.withPackages(ps: with ps; [ requests pygobject3 ]))
