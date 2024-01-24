@@ -120,6 +120,7 @@
     };
 
     systemPackages = with pkgs; [
+      waybar # status bar
       dunst # notifications
       ffmpeg_6 # for audio and video
       grim # screenshots for wayland
@@ -154,12 +155,6 @@
 
       # use latest xdg-desktop-portal-hyprland (currently v1.3.1)
       portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
-    };
-
-    # status bar for hyprland
-    waybar = {
-      enable = true;
-      package = pkgs.unstable.waybar;
     };
 
     # GUI file manager

@@ -7,7 +7,7 @@
       "custom/launcher",
       "temperature",
       "custom/gpu",
-      "network",
+      "custom/weather",
       "hyprland/workspaces"
     ],
 
@@ -19,8 +19,9 @@
     ],
 
     "modules-right": [
-      "custom/weather",
+      "tray",
       "pulseaudio",
+      "network",
       "clock",
       "custom/logout",
       "custom/reboot",
