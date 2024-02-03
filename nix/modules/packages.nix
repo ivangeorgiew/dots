@@ -42,6 +42,7 @@
     vlc
     qbittorrent
     libsForQt5.ark
+    mpv
 
     # Python
     (python310.withPackages(ps: with ps; [ requests pygobject3 ]))

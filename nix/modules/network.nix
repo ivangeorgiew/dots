@@ -35,6 +35,7 @@
       # blocked websites
       "127.0.0.1" = [
         "online-go.com"
+        "9gag.com"
       ];
     };
   };

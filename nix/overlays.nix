@@ -12,13 +12,13 @@
     neovim = inputs.neovim-nightly.packages.${prev.system}.neovim;
   };
 
-  # Adds `pkgs.unstable`
-  #unstable = final: _prev: {
-  #  unstable = import inputs.nixpkgs-unstable {
-  #    system = final.system;
-  #    config.allowUnfree = true;
-  #  };
-  #};
+  # Adds `pkgs.stable`
+  stable = final: _prev: {
+    stable = import inputs.nixpkgs-stable {
+      system = final.system;
+      config.allowUnfree = true;
+    };
+  };
 
   # NUR packages https://github.com/nix-community/NUR/blob/master/flake.nix
   nur = inputs.nur.overlay;
