@@ -31,18 +31,17 @@
     wget
 
     # GUI apps
-    vesktop
-    firefox-bin
-    google-chrome
-    brave
-    keepassxc
-    kitty
-    nur.repos.nltch.spotify-adblock
+    vesktop # discord + additions
+    firefox-bin # browser
+    google-chrome # browser
+    brave # browser
+    keepassxc # password manager
+    kitty # terminal
+    nur.repos.nltch.spotify-adblock # spotify
     viber
-    vlc
-    qbittorrent
-    libsForQt5.ark
-    mpv
+    qbittorrent # torrent downloading
+    libsForQt5.ark # 7-zip alternative
+    mpv # video player
 
     # Python
     (python310.withPackages(ps: with ps; [ requests pygobject3 ]))
