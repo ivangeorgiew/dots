@@ -48,7 +48,7 @@
     ];
   };
 
-  # swaylock
+  # swaylock fix
   # https://discourse.nixos.org/t/swaylock-wont-unlock/27275
   security.pam.services.swaylock = { };
   security.pam.services.swaylock.fprintAuth = false;
@@ -60,7 +60,7 @@
     driSupport32Bit = true;
 
     # fixes some applications (but maybe can break others?)
-    setLdLibraryPath = true;
+    #setLdLibraryPath = true;
 
     extraPackages = with pkgs; [
       libva
@@ -80,11 +80,15 @@
     # Modesetting should be enabled almost always
     modesetting.enable = true;
 
-    # Prevents problems with laptops and screen tearing
-    powerManagement.enable = true;
+    # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
+    powerManagement.enable = false;
+
+    # Fine-grained power management. Turns off GPU when not in use.
+    # Experimental and only works on modern Nvidia GPUs (Turing or newer).
+    powerManagement.finegrained = false;
 
     # Choose driver package
-    package = config.boot.kernelPackages.nvidiaPackages.latest;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
 
     # Use the open source version
     open = false;
@@ -93,6 +97,7 @@
     nvidiaSettings = true;
 
     # fix G-Sync / Adaptive Sync black screen issue
+    # disable if it's not needed because of worse performance
     #forceFullCompositionPipeline = true;
   };
 
@@ -137,6 +142,7 @@
       vulkan-tools # to debug issues with vulkan
       wl-clipboard # copy/paste on wayland
       wf-recorder # screen recording
+      mpvpaper # video wallpaper
     ];
 
     shellAliases = {
@@ -173,11 +179,7 @@
     # for the `xdg-open` command to use portals
     xdgOpenUsePortal = true;
 
-    config = {
-      common.default = [ "gtk" ];
-      hyprland.default = [ "gtk" "hyprland" ];
-    };
-
+    # add extra portals (hyprland portal is auto added)
     extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
   };
 
