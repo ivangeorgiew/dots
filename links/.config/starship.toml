@@ -15,6 +15,7 @@ format = '\[[$symbol($version)]($style)\]'
 
 [cmd_duration]
 format = '\[[⏱ $duration]($style)\]'
+disabled = true
 
 [cobol]
 format = '\[[$symbol($version)]($style)\]'
