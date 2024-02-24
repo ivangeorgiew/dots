@@ -18,6 +18,8 @@
     gnumake # make command
     jq # json processor
     killall
+    ffmpeg # for audio and video
+    pavucontrol # audio control
     lazygit # terminal UI for git commands
     nerdfix # removes obsolete nerd font icons
     nitch # alternative to neofetch
@@ -38,9 +40,10 @@
     keepassxc # password manager
     kitty # terminal
     nur.repos.nltch.spotify-adblock # spotify
-    viber
+    viber # chat app
     qbittorrent # torrent downloading
     libsForQt5.ark # 7-zip alternative
+    celluloid # mpv with GUI (video player)
     mpv # video player
 
     # Python
