@@ -127,9 +127,7 @@
     systemPackages = with pkgs; [
       waybar # status bar
       dunst # notifications
-      ffmpeg_6 # for audio and video
       grim # screenshots for wayland
-      pavucontrol # audio control
       playerctl # controls media players
       polkit_gnome # some apps require polkit
       libsForQt5.gwenview # image viewer
