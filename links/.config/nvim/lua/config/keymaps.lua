@@ -14,7 +14,6 @@ local toggle_diff = function()
   end
 end
 
-map("i", "jk",    "<esc>", { desc = "Exit insert mode" })
 map("i", "<C-c>", "<esc>", { desc = "Exit insert mode" })
 
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down", expr = true })
