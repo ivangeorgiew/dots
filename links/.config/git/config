@@ -3,6 +3,7 @@
     email = ivan_georgiew@yahoo.com
 [alias]
     ad = !git add -A
+    rt = reset
     cm = !git commit -m
     ac = !git add -A && git commit -m
     cl = clone
