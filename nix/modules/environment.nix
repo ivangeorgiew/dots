@@ -3,7 +3,7 @@
   environment = {
     sessionVariables = rec {
       TERMINAL = "kitty";
-      BROWSER = "brave";
+      BROWSER = "floorp";
       HISTCONTROL = "ignoreboth:erasedups";
       LESSHISTFILE = "-";
       PATH = [ XDG_BIN_HOME ];
@@ -38,8 +38,9 @@
   };
 
   xdg.mime =
+    # list from /run/current-system/sw/share/applications
     let
-      browser = "brave-browser.desktop";
+      browser = "floorp.desktop";
       torrent = "org.qbittorrent.qBittorrent.desktop";
       imgviewer = "org.kde.gwenview.desktop";
     in {

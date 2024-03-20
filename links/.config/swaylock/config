@@ -1,0 +1,12 @@
+image=~/.config/wall.png
+
+ignore-empty-password
+
+clock
+
+indicator
+indicator-caps-lock
+indicator-radius=120
+indicator-thickness=10
+
+effect-blur=12x12

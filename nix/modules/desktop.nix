@@ -136,7 +136,7 @@
       rofi-wayland # app launcher for wayland
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
-      swaylock # lock screen
+      swaylock-effects # lock screen
       vulkan-tools # to debug issues with vulkan
       wl-clipboard # copy/paste on wayland
       wf-recorder # screen recording

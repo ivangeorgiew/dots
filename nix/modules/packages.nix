@@ -37,6 +37,7 @@
     firefox-bin # browser
     google-chrome # browser
     brave # browser
+    floorp # browser
     keepassxc # password manager
     kitty # terminal
     nur.repos.nltch.spotify-adblock # spotify

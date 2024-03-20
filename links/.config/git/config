@@ -20,7 +20,7 @@
     ph = push -u
     pl = pull
     pre = checkout @{-1}
-    rt = reset HEAD~1
+    rt1 = reset HEAD~1
     sa = submodule add
     su = !git submodule sync && git submodule update --init --recursive
     rs = rm --cached
