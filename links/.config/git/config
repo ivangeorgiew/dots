@@ -2,15 +2,15 @@
     name = Ivan Georgiev
     email = ivan_georgiew@yahoo.com
 [alias]
-    ad = !git add -A
-    rt = reset
-    cm = !git commit -m
-    ac = !git add -A && git commit -m
+    ad = !git add -A ; add all files to be commited
+    rt = reset ; remove an added file (or all files)
+    cm = !git commit -m ; commit the added files
+    ac = !git add -A && git commit -m ; add all files and commit them
     cl = clone
-    ct = checkout
-    df = diff
-    dl = branch -D
-    dr = push origin --delete
+    ct = checkout ; switch between branches
+    df = diff ; show current changes
+    dl = branch -D ; delete local branch
+    dr = push origin --delete ; delete remote branch
     ma = merge --abort
     me = merge --ff
     lg = log --graph --full-history --color \
@@ -19,21 +19,20 @@
         --pretty=format:"%x1b[35m%h%x20%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n%x1b[0m%s%n"
     ph = push -u
     pl = pull
-    pre = checkout @{-1}
-    rt1 = reset HEAD~1
+    pre = checkout @{-1} ; go to previous branch/commit
+    rt1 = reset HEAD~1 ; go back 1 commit and show changes as unstaged
     sa = submodule add
     su = !git submodule sync && git submodule update --init --recursive
-    rs = rm --cached
+    rs = rm --cached ; remove added files
     ss = status
-    sch = !git branch --all | grep
-    lst = !git branch --sort=committerdate
-    sh = stash --keep-index
-    sha = "!git stash apply stash@{\"$1\"} #"
-    shs = "!git stash show stash@{\"$1\"} #"
+    sch = !git branch --all | grep ; search branch names
+    lst = !git branch --sort=committerdate ; sort branches by commit date
+    sh = stash --keep-index ; stash changes
+    sha = "!git stash apply stash@{\"$1\"} #" ; apply stash with a number
+    shs = "!git stash show stash@{\"$1\"} #" ; show stash with a number
     fa = fetch --all
-    cp = cherry-pick
+    cp = cherry-pick ; apply 1 or more commits from another branch to current one
 [core]
-    excludesfile = ~/.gitignore
     autocrlf = input
 [include]
     path = .gitconfig.local
