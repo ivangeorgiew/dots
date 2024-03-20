@@ -172,7 +172,7 @@
     "custom/logout": {
       "format": "",
       "tooltip": false,
-      "on-double-click": "~/.config/waybar/scripts/killall.sh && kill -9 -1"
+      "on-double-click": "swaylock"
     },
 
     "custom/reboot": {
