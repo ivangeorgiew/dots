@@ -1,53 +1,57 @@
-local genericTieUp = function (onTry, onError, shouldCall)
-    if type(onTry) ~= "function" then
-        error("onTry must be function, instead got " .. type(onTry))
-    end
+local tieUp = function (descr, onTry, onError)
+  local descrType = type(descr)
+  local onTryType = type(onTry)
+  local onErrorType = type(onError)
 
-    local catch = function (err)
-        print("ERROR:", err)
+  -- pass 2 as second argument to error in order to blame the caller
 
-        if type(onError) == "function" then
-            return onError(err)
-        elseif type(onError) ~= "nil" then
-            error("onError must be function, instead got " .. type(onError))
-        end
-    end
+  if descrType ~= "string" then
+    error("descr must be string, instead got " .. descrType, 2)
+  end
 
-    if shouldCall == true then
-        return xpcall(onTry, catch)
-    else
-        return function (...)
-            return xpcall(onTry, catch, table.unpack({...}))
-        end
+  if onTryType ~= "function" then
+    error("onTry must be function, instead got " .. onTryType, 2)
+  end
+
+  if onErrorType ~= "function" and onErrorType ~= "nil" then
+    error("onError must be function or nil, instead got " .. onErrorType, 2)
+  end
+
+  local catch = function(args)
+    return function (err)
+      print("\nError in [" .. descr .. "]:\n" .. err .. "\n")
+
+      if type(onError) == "function" then
+        return onError(err, args)
+      end
     end
+  end
+
+  return function (...)
+    local args = table.unpack({...})
+    local isIntact, result = xpcall(onTry, catch(args), args)
+
+    return not isIntact, result;
+  end
 end
 
-local callTiedUp = function (onTry, onError)
-    return genericTieUp(onTry, onError, true)
-end
+--[[
+local hasError, result = tieUp(
+  "test function",
+  function (a)
+    print ("function called with " .. a)
 
-local tieUp = function (onTry, onError)
-    return genericTieUp(onTry, onError, false)
-end
+    return 100/nil
+  end,
+  function ()
+    print("Invoked the onError function\n")
 
-callTiedUp(
-    function ()
-        print ("callTiedUp called")
-        n = n/nil
-    end,
-    function ()
-        print("Invoked my function on error\n")
-    end
-)
+    return "result from onError"
+  end
+)(5)
 
-local myfunc = tieUp(
-    function (a)
-        print ("function called with " .. a)
-        n = n/nil
-    end,
-    function ()
-        print("Invoked my function on error\n")
-    end
-)
+print("hasError: " .. tostring(hasError))
+print("result: " .. tostring(result))
+--]]
 
-myfunc(5)
+return tieUp
