@@ -46,6 +46,9 @@
     celluloid # mpv with GUI (video player)
     mpv # video player
 
+    #Lua
+    lua
+
     # Python
     (python310.withPackages(ps: with ps; [ requests pygobject3 ]))
     gobject-introspection # for some python scripts
