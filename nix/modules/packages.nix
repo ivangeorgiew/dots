@@ -6,31 +6,30 @@
     btop # system monitor
     cava # audio visualizer
     cmatrix # cool effect
-    curl
+    curl # download files
     fd # better alternative to find
     fishPlugins.colored-man-pages
     fishPlugins.done # get notification when long process finishes
     fzf # fuzzy file searcher
     gcc # c compiler
     gh # github authenticator
-    git
-    glibc
+    git # obvious
+    glibc # need by some programs
     gnumake # make command
     jq # json processor
-    killall
+    killall # kill a running process
     ffmpeg # for audio and video
     pavucontrol # audio control
     lazygit # terminal UI for git commands
     nerdfix # removes obsolete nerd font icons
     nitch # alternative to neofetch
     p7zip # archiving and compression
-    pulseaudio # for pactl only
     ripgrep # newest silver searcher + grep
     shared-mime-info # add new custom mime types (check arch wiki)
     stow # symlink dotfiles
     tree-sitter # needed by neovim
     libvterm-neovim # needed by neovim
-    wget
+    wget # download files
 
     # GUI apps
     vesktop # discord + additions
