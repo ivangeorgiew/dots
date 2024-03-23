@@ -105,16 +105,16 @@
   };
 
   services = {
-    xserver = {
-      # Configure keymap in X11
+    # Configure keymaps
+    xserver.xkb = {
       extraLayouts.bgd = {
         description = "Bulgarian";
         languages = [ "bul" ];
         symbolsFile = ../xkb/bgd;
       };
       layout = "us,bgd";
-      xkbVariant = "dvorak,";
-      xkbOptions = "grp:shifts_toggle,ctrl:swapcaps";
+      variant = "dvorak,";
+      options = "grp:shifts_toggle,ctrl:swapcaps";
     };
 
     # for auto mounting of disks

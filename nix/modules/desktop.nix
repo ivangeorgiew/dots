@@ -104,6 +104,7 @@
   # Wayland packages and env variables
   environment = {
     sessionVariables = {
+      KEYBOARD_NAME = "kingston-hyperx-alloy-fps-pro-mechanical-gaming-keyboard"; # output of `hyprctl devices` for waybar module
       CLUTTER_BACKEND = "wayland";
       GBM_BACKEND = "nvidia-drm"; # Could crash Firefox
       GDK_BACKEND = "wayland,x11";

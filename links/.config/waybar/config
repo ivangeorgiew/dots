@@ -7,6 +7,7 @@
       "custom/launcher",
       "temperature",
       "custom/gpu",
+      "network",
       "custom/weather",
       "hyprland/workspaces"
     ],
@@ -21,7 +22,7 @@
     "modules-right": [
       "tray",
       "pulseaudio",
-      "network",
+      "custom/keyboard",
       "clock",
       "custom/logout",
       "custom/reboot",
@@ -49,7 +50,7 @@
     },
 
     "clock": {
-      "format": "{:%H:%M %b %d %Y}",
+      "format": "  {:%H:%M %b %d %Y}",
       "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
     },
 
@@ -98,7 +99,7 @@
     },
 
     "pulseaudio": {
-        "format": "{volume}% {icon}",
+        "format": "{icon} {volume}%",
         "format-muted": "{volume}% 󰸈",
         "format-icons": {
             "default": ["", "", "󰕾"]
@@ -133,7 +134,15 @@
       "exec": "python3 ~/.config/waybar/scripts/weather.py",
       "restart-interval": 300,
       "return-type": "json",
-    },   
+    },
+
+    "custom/keyboard": {
+      "exec": "hyprctl devices | grep -A2 \"$KEYBOARD_NAME$\" | tail -1 | sed 's/.*: //;s/ .*//' | cut -c 1-3 | tr '[A-Z]' '[a-z]'",
+      "on-click": "hyprctl switchxkblayout $KEYBOARD_NAME next",
+      "format": "󰗊 {}",
+      "interval": 1,
+      "tooltip": false
+    },
 
     "custom/playerctl#backward": {
       "format": "󰙣 ",
