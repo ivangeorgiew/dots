@@ -98,8 +98,8 @@ map("n", "du", "<cmd>diffupdate<cr>", { desc = "Update diff" })
 
 map("i", "<C-e>",  "<C-r>*", { desc = "Paste in insert mode" })
 
-map("n", "m", "<cmd>hls<cr>*", { desc = "Go to next occurance of the word" })
-map("n", "M", "<cmd>hls<cr>#", { desc = "Go to prev occurance of the word" })
+map("n", "m", "<cmd>set hls<cr>*", { desc = "Go to next occurance of the word" })
+map("n", "M", "<cmd>set hls<cr>#", { desc = "Go to prev occurance of the word" })
 
 map({ "n", "v" }, "<cr>", "empty(&buftype) ? ':normal @e<cr>' : '<cr>'", { desc = "Apply macro", expr = true })
 
