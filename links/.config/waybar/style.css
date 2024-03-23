@@ -28,9 +28,9 @@ window#waybar.hidden {
 #mode,
 #network,
 #pulseaudio,
-#custom-lock,
 #workspaces,
 #idle_inhibitor,
+#custom-keyboard,
 #custom-shutdown,
 #custom-reboot,
 #custom-logout,
@@ -97,6 +97,10 @@ window#waybar.hidden {
 
   color: #7a95c9;
   font-size: 20px
+}
+
+#custom-keyboard {
+  color: #a1c999;
 }
 
 #network {
@@ -169,14 +173,14 @@ window#waybar.hidden {
 }
 
 #clock {
-  color: #a1c999;
+  color: #fff;
   font-family: Iosevka Nerd Font;
   font-weight: bold;
   font-size: 15px;
 }
 
 #custom-logout {
-  color: #ecd3a0;
+  color: #7a95c9;
   padding: 0 18px 0 15px;
   margin-right: 5px;
   font-size: 18px;
