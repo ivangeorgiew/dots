@@ -8,6 +8,7 @@
     cmatrix # cool effect
     curl # download files
     fd # better alternative to find
+    ffmpeg # for audio and video
     fishPlugins.colored-man-pages
     fishPlugins.done # get notification when long process finishes
     fzf # fuzzy file searcher
@@ -18,33 +19,33 @@
     gnumake # make command
     jq # json processor
     killall # kill a running process
-    ffmpeg # for audio and video
-    pavucontrol # audio control
     lazygit # terminal UI for git commands
+    libvterm-neovim # needed by neovim
     nerdfix # removes obsolete nerd font icons
     nitch # alternative to neofetch
     p7zip # archiving and compression
+    pavucontrol # audio control
     ripgrep # newest silver searcher + grep
     shared-mime-info # add new custom mime types (check arch wiki)
     stow # symlink dotfiles
     tree-sitter # needed by neovim
-    libvterm-neovim # needed by neovim
     wget # download files
 
     # GUI apps
-    vesktop # discord + additions
-    firefox-bin # browser
-    google-chrome # browser
     brave # browser
+    celluloid # mpv with GUI (video player)
+    firefox-bin # browser
     floorp # browser
+    gedit # basic text editor GUI
+    google-chrome # browser
     keepassxc # password manager
     kitty # terminal
-    nur.repos.nltch.spotify-adblock # spotify
-    viber # chat app
-    qbittorrent # torrent downloading
     libsForQt5.ark # 7-zip alternative
-    celluloid # mpv with GUI (video player)
     mpv # video player
+    nur.repos.nltch.spotify-adblock # spotify
+    qbittorrent # torrent downloading
+    vesktop # discord + additions
+    viber # chat app
 
     #Lua
     lua
