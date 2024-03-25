@@ -1,4 +1,4 @@
-local validate = function(descr, params, spec)
+local validate_args = function(descr, params, spec)
   local err_msg = ""
 
   for k, t in ipairs(spec) do
@@ -34,10 +34,10 @@ local validate = function(descr, params, spec)
   end
 end
 
-local tie_up = function (descr, spec, on_try, on_catch)
+local tie = function (descr, spec, on_try, on_catch)
   local val_descr = type(descr) == "string" and descr or "unknown"
 
-  validate(val_descr, { descr, spec, on_try, on_catch }, { "string", "table", "function", { "function", "nil" } })
+  validate_args(val_descr, { descr, spec, on_try, on_catch }, { "string", "table", "function", { "function", "nil" } })
 
   local catch = function(valid_args, params)
     return function(err)
@@ -55,7 +55,7 @@ local tie_up = function (descr, spec, on_try, on_catch)
     local params = {...}
     local u = unpack
 
-    local is_valid = xpcall(validate, catch(false, u(params)), descr, params, spec)
+    local is_valid = xpcall(validate_args, catch(false, u(params)), descr, params, spec)
 
     if is_valid then
       local _, result = xpcall(on_try, catch(true, u(params)), u(params))
@@ -65,4 +65,42 @@ local tie_up = function (descr, spec, on_try, on_catch)
   end
 end
 
-return tie_up
+local map = tie(
+  "create mapping",
+  { { "string", "table" }, "string", { "string", "function" }, "table" },
+  function(modes, lhs, rhs, opts)
+    -- too lazy to write out spec for args right now
+
+    if type(opts) == "table" and opts.silent == nil then
+      opts.silent = true
+    end
+
+    if type(rhs) == "function" then
+      rhs = tie(opts.desc, {}, rhs)
+    end
+
+    vim.keymap.set(modes, lhs, rhs, opts)
+  end
+)
+
+local au = tie(
+  "create augroup",
+  { "string", { "string", "table" }, "table"},
+  function(group_name, events, opts)
+    opts.group = vim.api.nvim_create_augroup(group_name, { clear = true })
+
+    if type(opts.callback) == "function" then
+      opts.callback = tie(group_name, {}, opts.callback)
+    end
+
+    vim.api.nvim_create_autocmd(events, opts)
+  end
+)
+
+local M = {}
+
+M.tie = tie;
+M.map = map;
+M.au = au;
+
+return M
