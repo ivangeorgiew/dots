@@ -1,18 +1,5 @@
-local tie_up = require("tie_up")
-
-local au = tie_up(
-  "create augroup",
-  { "string", { "string", "table" }, "table"},
-  function(group_name, events, opts)
-    opts.group = vim.api.nvim_create_augroup(group_name, { clear = true })
-
-    if type(opts.callback) == "function" then
-      opts.callback = tie_up(group_name, {}, opts.callback)
-    end
-
-    vim.api.nvim_create_autocmd(events, opts)
-  end
-)
+local tie = require("utils").tie
+local au = require("utils").au
 
 au(
   "reload_file_on_change",

@@ -1,24 +1,8 @@
-local tie_up = require("tie_up")
-
-local map = tie_up(
-  "create mapping",
-  { { "string", "table" }, "string", { "string", "function" }, "table" },
-  function(modes, lhs, rhs, opts)
-    -- too lazy to write out spec for args right now
-
-    if type(opts) == "table" and opts.silent == nil then
-      opts.silent = true
-    end
-
-    if type(rhs) == "function" then
-      rhs = tie_up(opts.desc, {}, rhs)
-    end
-
-    vim.keymap.set(modes, lhs, rhs, opts)
-  end
-)
+local tie = require("utils").tie
+local map = require("utils").map
 
 -- delete mappings
+
 map("n", "Z", "<nop>", { desc = "Nothing" })
 map("n", "ZZ", "<nop>", { desc = "Nothing" })
 
