@@ -8,7 +8,7 @@
     ac = !git add -A && git commit -m ; add all files and commit them
     cl = clone
     ct = checkout ; switch between branches
-    df = diff ; show current changes
+    df = diff HEAD; show current changes
     dl = branch -D ; delete local branch
     dr = push origin --delete ; delete remote branch
     ma = merge --abort
