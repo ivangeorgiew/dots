@@ -53,6 +53,9 @@
   security.pam.services.swaylock = { };
   security.pam.services.swaylock.fprintAuth = false;
 
+  # auto-unlock gnome-keyring with greetd login
+  security.pam.services.greetd.enableGnomeKeyring = true;
+
   # OpenGL has to be enabled for Nvidia according to wiki
   hardware.opengl = {
     enable = true;
