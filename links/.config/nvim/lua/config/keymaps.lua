@@ -29,11 +29,13 @@ map("n", "<C-l>", "<C-w>l", { desc = "Go to right window", remap = true })
 map("n", "<C-d>", "<C-d>zz", { desc = "Move screen down" })
 map("n", "<C-u>", "<C-u>zz", { desc = "Move screen up" })
 
-map("n", "<C-Up>",    "<cmd>resize +2<cr>",          { desc = "Increase window height" })
-map("n", "<C-Down>",  "<cmd>resize -2<cr>",          { desc = "Decrease window height" })
-map("n", "<C-Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
-map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+map("n", "<S-Up>",    "<cmd>resize +2<cr>",          { desc = "Increase window height" })
+map("n", "<S-Down>",  "<cmd>resize -2<cr>",          { desc = "Decrease window height" })
+map("n", "<S-Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
+map("n", "<S-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 
+map("n", "<C-Up>",   ":m -2<CR>==",      { desc = "Move selected lines up"   })
+map("n", "<C-Down>", ":m +1<CR>==",      { desc = "Move selected lines down" })
 map("v", "<C-Up>",   ":m '<-2<CR>gv=gv", { desc = "Move selected lines up"   })
 map("v", "<C-Down>", ":m '>+1<CR>gv=gv", { desc = "Move selected lines down" })
 
@@ -48,14 +50,14 @@ map("n", "<leader>q",  "<cmd>qa<cr>",       { desc = "Quit" })
 map("n", "<leader>d",  "<cmd>close<cr>",    { desc = "Close window" })
 map("n", "<leader>t",  "<cmd>tabclose<cr>", { desc = "Close tab" })
 
-map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Open Location list" })
-map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Open Quickfix list" })
-map("n", "[q",         "<cmd>cprev<cr>", { desc = "Previous quickfix item" })
-map("n", "]q",         "<cmd>cnext<cr>", { desc = "Next quickfix item" })
-
-map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Open Diagnostics" })
+map("n", "[q", "<cmd>cnext<cr>", { desc = "Next quickfix item" })
+map("n", "]q", "<cmd>cprev<cr>", { desc = "Previous quickfix item" })
+map("n", "[l", "<cmd>lnext<cr>", { desc = "Next location item" })
+map("n", "]l", "<cmd>lprev<cr>", { desc = "Previous location item" })
 map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous error/warning" })
 map("n", "]d", vim.diagnostic.goto_next, { desc = "Next error/warning" })
+
+map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Open Diagnostics" })
 
 map("n", "<leader>I", "gg=G", { desc = "Reindent whole file" })
 map("n", "<leader>Y", "ggyG", { desc = "Copy whole file" })
@@ -89,7 +91,7 @@ map({ "n", "v" }, "<cr>", "empty(&buftype) ? ':normal @e<cr>' : '<cr>'", { desc 
 
 map("v", "$", "g_", { desc = "Go until end of line" })
 
-map("n", "Q", "q", { desc = "Start/end macro" }) -- for buffers where q is bound to something
+map("n", "Q", "q", { desc = "Start/end macro" })
 
 map("n", "<S-h>", "gT", { desc = "Switch to left tab" })
 map("n", "<S-l>", "gt", { desc = "Switch to right tab" })
@@ -98,8 +100,8 @@ map("n", "<leader><S-l>", "<cmd>tabm +1<cr>", { desc = "Move tab to the right" }
 
 map("n", "<leader>o", "<cmd>only<cr>",  { desc = "Leave only the current window" })
 
-map("n", "<leader>j", "o<esc>", { desc = "Make a new line below" })
-map("n", "<leader>k", "O<esc>", { desc = "Make a new line above" })
+map("n", "zj", "o<esc>k", { desc = "Make a new line below" })
+map("n", "zk", "O<esc>j", { desc = "Make a new line above" })
 
 map("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Search and replace word under cursor", silent = false })
 map("v", "<leader>s", [["ay:%s/<C-r>a/<C-r>a/gI<Left><Left><Left>]],          { desc = "Search and replace visual selection",  silent = false })
