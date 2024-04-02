@@ -3,9 +3,9 @@
     email = ivan_georgiew@yahoo.com
 [alias]
     ad = !git add -A ; add all files to be commited
-    rt = reset ; remove an added file (or all files)
     cm = !git commit -m ; commit the added files
     ac = !git add -A && git commit -m ; add all files and commit them
+    rs = restore --staged ; remove file/s from added list
     cl = clone
     ct = checkout ; switch between branches
     df = diff HEAD; show current changes
@@ -20,10 +20,9 @@
     ph = push -u
     pl = pull
     pre = checkout @{-1} ; go to previous branch/commit
-    rt1 = reset HEAD~1 ; go back 1 commit and show changes as unstaged
+    rt = reset HEAD~1 ; go back 1 commit and show changes as unstaged
     sa = submodule add
     su = !git submodule sync && git submodule update --init --recursive
-    rs = rm --cached ; remove added files
     ss = status
     sch = !git branch --all | grep ; search branch names
     lst = !git branch --sort=committerdate ; sort branches by commit date
