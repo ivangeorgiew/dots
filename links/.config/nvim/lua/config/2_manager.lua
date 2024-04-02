@@ -17,7 +17,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- see more at https://github.com/folke/lazy.nvim#%EF%B8%8F-configuration
 require("lazy").setup({
-  -- auto add all my plugins from `lua/plugins/modules/*.lua`
+  -- auto add all my plugins from `lua/plugins/*.lua`
   spec = "plugins",
 
   defaults = {
