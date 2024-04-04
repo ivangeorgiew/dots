@@ -28,7 +28,7 @@ require("lazy").setup({
 
   dev = {
     -- path to local plugins
-    path = vim.fn.stdpath("config") .. "localPlugins",
+    path = vim.fn.stdpath("config") .. "local_plugins",
 
     -- if plugin matches one of the string patterns, use local
     patterns = {},
@@ -40,6 +40,8 @@ require("lazy").setup({
   ui = {
     border = "rounded", -- border of LazyVim window
   },
+
+  custom_keys = {}, -- keybinds when LazyVim is open
 
   install = {
     -- auto install missing plugins on vim startup

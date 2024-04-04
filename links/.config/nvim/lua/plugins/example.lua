@@ -3,6 +3,7 @@
 if true then return {} end
 
 -- For a full list of options for plugins: https://github.com/folke/lazy.nvim#-plugin-spec
+
 -- `event`, `cmd`, `ft` and `keys` specify when a plugin should be loaded if it is lazy
 
 return {
@@ -13,7 +14,7 @@ return {
     priority = 1000, -- make sure to load this before all the other start plugins
     config = function()
       -- load the colorscheme here
-      vim.cmd([[colorscheme tokyonight]])
+      vim.cmd("colorscheme tokyonight")
     end,
   },
 
