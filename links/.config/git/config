@@ -5,10 +5,12 @@
     ad = !git add -A ; add all files to be commited
     cm = !git commit -m ; commit the added files
     ac = !git add -A && git commit -m ; add all files and commit them
-    rs = restore --staged ; remove file/s from added list
+    re = restore --staged ; remove file/s from added list
     cl = clone
     ct = checkout ; switch between branches
-    df = diff HEAD; show current changes
+    df = diff; show only unstaged changes
+    dfs = diff --staged; show only staged changes
+    dfa = diff HEAD; show staged + unstaged changes
     dl = branch -D ; delete local branch
     dr = push origin --delete ; delete remote branch
     ma = merge --abort
