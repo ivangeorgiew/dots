@@ -26,18 +26,18 @@ map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window", remap = true })
 map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window", remap = true })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right window", remap = true })
 
-map("n", "<C-d>", "<C-d>zz", { desc = "Move screen down" })
-map("n", "<C-u>", "<C-u>zz", { desc = "Move screen up" })
+map("n", "<C-d>", "20jzz", { desc = "Move screen down" })
+map("n", "<C-u>", "20kzz", { desc = "Move screen up" })
 
 map("n", "<S-Up>",    "<cmd>resize +2<cr>",          { desc = "Increase window height" })
 map("n", "<S-Down>",  "<cmd>resize -2<cr>",          { desc = "Decrease window height" })
 map("n", "<S-Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 map("n", "<S-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 
-map("n", "<C-Up>",   ":m -2<CR>==",      { desc = "Move selected lines up"   })
-map("n", "<C-Down>", ":m +1<CR>==",      { desc = "Move selected lines down" })
-map("v", "<C-Up>",   ":m '<-2<CR>gv=gv", { desc = "Move selected lines up"   })
-map("v", "<C-Down>", ":m '>+1<CR>gv=gv", { desc = "Move selected lines down" })
+map("n", "<C-Up>",   "<cmd>m -2<cr>==",      { desc = "Move selected lines up"   })
+map("n", "<C-Down>", "<cmd>m +1<cr>==",      { desc = "Move selected lines down" })
+map("v", "<C-Up>",   "<cmd>m '<-2<cr>gv=gv", { desc = "Move selected lines up"   })
+map("v", "<C-Down>", "<cmd>m '>+1<cr>gv=gv", { desc = "Move selected lines down" })
 
 map("n",          "n", "'Nn'[v:searchforward].'zv'",     { desc = "Next search result", expr = true })
 map("n",          "N", "'nN'[v:searchforward].'zv'",     { desc = "Prev search result", expr = true })
@@ -70,7 +70,7 @@ map({ "v", "o" }, [[a"]], [[2i"]], { desc = [[Select all in ""]] })
 map({ "v", "o" }, [[a']], [[2i']], { desc = [[Select all in '']] })
 map({ "v", "o" }, [[a`]], [[2i`]], { desc = [[Select all in ``]] })
 
-map("n", "<leader>l", function() vim.o.hls = not vim.o.hls end, { desc = "Toggle highlight search" })
+map("n", "<leader>l", "<cmd>let @/ = ''<cr>", { desc = "Clear last search" })
 map("n", "<leader>h", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle line wrap" })
 
 map("c", "<C-a>", "<Home>",    { desc = "Go to the beginning", silent = false })
@@ -87,7 +87,7 @@ map("i", "<C-e>",  "<C-r>*", { desc = "Paste in insert mode" })
 map("n", "m", "<cmd>set hls<cr>*", { desc = "Go to next occurance of the word" })
 map("n", "M", "<cmd>set hls<cr>#", { desc = "Go to prev occurance of the word" })
 
-map({ "n", "v" }, "<cr>", "empty(&buftype) ? ':normal @e<cr>' : '<cr>'", { desc = "Apply macro", expr = true })
+map({ "n", "v" }, "<cr>", "empty(&buftype) ? '<cmd>normal @e<cr>' : '<cr>'", { desc = "Apply macro", expr = true })
 
 map("v", "$", "g_", { desc = "Go until end of line" })
 
