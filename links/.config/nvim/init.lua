@@ -1,4 +1,4 @@
-local tie = require("utils").tie
+local tie = require("tie")
 
 tie("require config files", {}, function()
   local configs = vim.fn.readdir(vim.fn.stdpath("config") .. "/lua/config", [[v:val =~ "\.lua$"]])
