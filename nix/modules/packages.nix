@@ -11,6 +11,7 @@
     ffmpeg # for audio and video
     fishPlugins.colored-man-pages
     fishPlugins.done # get notification when long process finishes
+    fswatch # file change monitor required by some programs
     fzf # fuzzy file searcher
     gcc # c compiler
     gh # github authenticator
@@ -29,6 +30,7 @@
     shared-mime-info # add new custom mime types (check arch wiki)
     stow # symlink dotfiles
     tree-sitter # needed by neovim
+    unzip # required by some programs
     wget # download files
 
     # GUI apps
@@ -76,6 +78,13 @@
 
         # Display system info
         nitch
+
+        # Start in the projects folder
+        if not test -d projects
+          mkdir projects
+        end
+
+        cd projects
       '';
 
       #loginShellInit =
