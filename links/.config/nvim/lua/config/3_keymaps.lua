@@ -1,4 +1,3 @@
-local tie = require("utils").tie
 local map = require("utils").map
 
 -- delete mappings

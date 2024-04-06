@@ -1,4 +1,3 @@
-local tie = require("utils").tie
 local au = require("utils").au
 
 au(
