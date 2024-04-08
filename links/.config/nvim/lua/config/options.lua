@@ -4,7 +4,7 @@ local g = vim.g
 g.mapleader = " "
 g.maplocalleader = " "
 
--- see `:h vim.o` for more
+-- see `:h vim.opt` for more
 local o = vim.opt
 
 o.tabstop = 2 -- amount of spaces on tab

@@ -1,4 +1,4 @@
-local tie = require('tie')
+local tie = require('utils').tie
 
 -- autoinvoked by the ':checkhealth' command
 return {

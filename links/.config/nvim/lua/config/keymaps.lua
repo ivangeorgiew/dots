@@ -1,3 +1,4 @@
+local tie = require("utils").tie
 local map = require("utils").map
 
 -- delete mappings
@@ -9,8 +10,8 @@ map("n", "ZZ", "<nop>", { desc = "Nothing" })
 
 map("i", "<C-c>", "<esc>", { desc = "Exit insert mode" })
 
-map({ "n" }, "DD", "dd", { desc = "Cut line" })
-map({ "n" }, "dd", [["_dd]],  { desc = "Delete line" })
+map("n", "DD", "dd", { desc = "Cut line" })
+map("n", "dd", [["_dd]],  { desc = "Delete line" })
 map({ "n", "v" }, "D", "d", { desc = "Cut" })
 map({ "n", "v" }, "d", [["_d]],  { desc = "Delete" })
 map({ "n", "v" }, "s", [["_s]],  { desc = "Substitute" })
@@ -20,10 +21,10 @@ map({ "n", "v" }, "x", [["_x]],  { desc = "Delete character" })
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down", expr = true })
 map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up", expr = true })
 
-map("n", "<C-h>", "<C-w>h", { desc = "Go to left window",  remap = true })
-map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window", remap = true })
-map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window", remap = true })
-map("n", "<C-l>", "<C-w>l", { desc = "Go to right window", remap = true })
+map("n", "<C-h>", "<C-w>h", { desc = "Go to left split"  })
+map("n", "<C-l>", "<C-w>l", { desc = "Go to right split" })
+map("n", "<C-k>", "<C-w>k", { desc = "Go to upper split" })
+map("n", "<C-j>", "<C-w>j", { desc = "Go to lower split" })
 
 map("n", "<C-d>", "20jzz", { desc = "Move screen down" })
 map("n", "<C-u>", "20kzz", { desc = "Move screen up" })
