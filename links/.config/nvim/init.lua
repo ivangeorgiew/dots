@@ -1,9 +1,16 @@
-local tie = require("tie")
+local tie = require("utils").tie
 
 tie("require config files", {}, function()
-  local configs = vim.fn.readdir(vim.fn.stdpath("config") .. "/lua/config", [[v:val =~ "\.lua$"]])
+  --local configs = vim.fn.readdir(vim.fn.stdpath("config") .. "/lua/config", [[v:val =~ "\.lua$"]])
+  --table.sort(configs)
 
-  table.sort(configs)
+  local configs = {
+    "options",
+    "manager",
+    "usercmds",
+    "autocmds",
+    "keymaps",
+  }
 
   for _, file in ipairs(configs) do
     local descr = "requiring " .. file .. ".lua"

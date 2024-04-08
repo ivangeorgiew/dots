@@ -7,6 +7,7 @@
     cava # audio visualizer
     cmatrix # cool effect
     curl # download files
+    dash # fastest shell
     fd # better alternative to find
     ffmpeg # for audio and video
     fishPlugins.colored-man-pages
@@ -26,6 +27,7 @@
     nitch # alternative to neofetch
     p7zip # archiving and compression
     pavucontrol # audio control
+    pstree # prints tree of pids
     ripgrep # newest silver searcher + grep
     shared-mime-info # add new custom mime types (check arch wiki)
     stow # symlink dotfiles
@@ -80,11 +82,11 @@
         nitch
 
         # Start in the projects folder
-        if not test -d projects
-          mkdir projects
+        if not test -d ~/projects
+          mkdir ~/projects
         end
 
-        cd projects
+        cd ~/projects
       '';
 
       #loginShellInit =

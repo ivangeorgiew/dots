@@ -1,22 +1,22 @@
 local au = require("utils").au
 
 au(
-  "reload_file_on_change",
+  "reload file on change",
   { "FocusGained", "TermClose", "TermLeave" },
   { command = "checktime" }
 )
 
 au(
-  "highlight_on_yank",
+  "highlight on yank",
   "TextYankPost",
-  { callback = function() vim.highlight.on_yank() end, }
+  { callback = function(e) vim.highlight.on_yank() end, }
 )
 
 au(
-  "resize_splits_on_window_resize",
+  "resize splits on window resize",
   "VimResized",
   {
-    callback = function()
+    callback = function(e)
       local current_tab = vim.fn.tabpagenr()
       vim.cmd("tabdo wincmd =")
       vim.cmd("tabnext " .. current_tab)
@@ -25,11 +25,11 @@ au(
 )
 
 au(
-  "wrap_and_spell_in_text_files",
+  "wrap and spell in text files",
   "FileType",
   {
     pattern = { "gitcommit", "markdown" },
-    callback = function()
+    callback = function(e)
       vim.opt_local.wrap = true
       vim.opt_local.spell = true
     end,
@@ -37,13 +37,11 @@ au(
 )
 
 au(
-  "set_buffer_options",
+  "set buffer options",
   "BufEnter",
   {
-    callback = function()
-      local o = vim.opt
-
-      o.formatoptions = "tcrqlj" -- formatting options
+    callback = function(e)
+      vim.opt.formatoptions = "tcrqlj" -- formatting options
     end
   }
 )

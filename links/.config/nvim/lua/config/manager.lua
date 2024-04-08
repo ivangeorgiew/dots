@@ -1,6 +1,6 @@
 -- setup plugin manager
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 local uv = require("utils").uv
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 if not uv.fs_stat(lazypath) then
   print("Installing lazy.nvim...")
@@ -56,11 +56,19 @@ require("lazy").setup({
     enabled = false,
   },
 
+  change_detection = {
+    -- whether to detect plugin config changes
+    enabled = true,
+
+    -- get a notification when plugin configs are updated
+    notify = false,
+  },
+
   performance = {
     rtp = {
       disabled_plugins = {
         "gzip",
-        "matchit",
+        --"matchit",
         "matchparen",
         "netrwPlugin",
         "tarPlugin",
