@@ -1,8 +1,8 @@
-local validate_args = function(descr, params, spec)
+local validate_args = function(descr, args, spec)
   local err_msg = ""
 
   for k, t in ipairs(spec) do
-    local arg_type = type(params[k])
+    local arg_type = type(args[k])
 
     if type(t) == "string" then
       if arg_type ~= t and t ~= "any" then
@@ -34,32 +34,58 @@ local validate_args = function(descr, params, spec)
   end
 end
 
-local tie = function (descr, spec, on_try, on_catch)
+local tie = function(descr, spec, on_try, on_catch)
   local val_descr = type(descr) == "string" and descr or "unknown"
+  local tie_args = { descr, spec, on_try, on_catch }
+  local tie_spec = { "string", "table", "function", { "function", "nil" } }
 
-  validate_args(val_descr, { descr, spec, on_try, on_catch }, { "string", "table", "function", { "function", "nil" } })
+  -- will throw error if args are invalid
+  validate_args(val_descr, tie_args, tie_spec)
 
-  local inner_catch = function(params)
+  local inner_catch = function(args)
     return function(err)
-      print("Issue at [" .. descr .. "]: " .. err)
+      vim.notify("Issue at [" .. descr .. "]: " .. err, vim.log.levels.ERROR)
 
       if type(on_catch) == "function" then
-        return on_catch(err, params)
+        return on_catch(err, args)
       end
     end
   end
 
   return function(...)
-    local params = {...}
-    local u = unpack
+    local args = {...}
 
-    validate_args(descr, params, spec)
+    -- will throw error if args are invalid
+    validate_args(descr, args, spec)
 
-    local _, result = xpcall(on_try, inner_catch(params), u(params))
+    local _, result = xpcall(on_try, inner_catch(args), unpack(args))
 
     return result;
   end
 end
+
+-- substitute print() with the customisable vim.notify()
+_G._print = _G.print
+_G.print = tie(
+  "print",
+  {},
+  function(...)
+    local args = {...}
+    local print_safe_args = {}
+
+    for i=1, #args do
+      table.insert(print_safe_args, tostring(args[i]))
+    end
+
+    vim.notify(table.concat(print_safe_args, ' '), vim.log.levels.INFO)
+  end,
+  function(e, args)
+    _print(unpack(args))
+  end
+)
+
+-- don't substitute error(), because you lose the traceback
+-- and function termination functionality
 
 local map = tie(
   "create mapping",
