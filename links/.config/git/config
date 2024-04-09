@@ -5,7 +5,7 @@
     ad = !git add -A ; add all files to be commited
     cm = !git commit -m ; commit the added files
     ac = !git add -A && git commit -m ; add all files and commit them
-    re = restore --staged ; remove file/s from added list
+    rs = restore --staged ; remove file/s from added list
     cl = clone
     ct = checkout ; switch between branches
     df = diff; show only unstaged changes

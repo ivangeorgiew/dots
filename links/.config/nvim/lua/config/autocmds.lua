@@ -18,6 +18,7 @@ au(
   {
     callback = function(e)
       local current_tab = vim.fn.tabpagenr()
+
       vim.cmd("tabdo wincmd =")
       vim.cmd("tabnext " .. current_tab)
     end,
@@ -30,8 +31,10 @@ au(
   {
     pattern = { "gitcommit", "markdown" },
     callback = function(e)
-      vim.opt_local.wrap = true
-      vim.opt_local.spell = true
+      local l = vim.opt_local
+
+      l.wrap = true
+      l.spell = true
     end,
   }
 )
