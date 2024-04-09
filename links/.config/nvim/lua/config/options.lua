@@ -16,7 +16,7 @@ o.autowriteall = true -- smart auto-save on some commands
 o.backup = false -- toggle backup file
 o.breakindent = true -- wrapped line continues on the same indent level
 o.clipboard = "unnamedplus,unnamed" -- combine OS and Neovim clipboard
-o.cmdheight = 0 -- hide the command line, when not typing a command
+o.cmdheight = 0 -- if set to 0, hides the command line, when not typing a command
 o.complete = ".,t" -- where to get completions from
 o.completeopt = "menu,menuone,noselect,longest" -- completion options
 o.confirm = true -- popup to save file after some commands
@@ -38,7 +38,7 @@ o.pumheight = 10 -- max entries in a popup
 o.redrawtime = 5000 -- increase redraw time for syntax handling
 o.relativenumber = true -- relative line numbers
 o.scrolloff = 10 -- min lines below and above
-o.shortmess:append({ W = true, I = true, c = true, C = true }) -- skip some unnecessary messages
+o.shortmess = "aoOsScCtTWI" -- skip some unnecessary messages
 o.showbreak = " ⤷ " -- arrow for wrapped text
 o.showcmd = false -- whether to show partial command on last line
 o.showmode = false -- don't show vim typing mode

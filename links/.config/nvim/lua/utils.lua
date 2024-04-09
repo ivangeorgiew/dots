@@ -29,7 +29,7 @@ local validate_args = function(descr, params, spec)
 
     if err_msg ~= "" then
       -- second argument is for the traceback
-      error(err_msg, 4)
+      error("Spec Error at [" .. descr .. "]: " .. err_msg, 3)
     end
   end
 end
@@ -39,14 +39,12 @@ local tie = function (descr, spec, on_try, on_catch)
 
   validate_args(val_descr, { descr, spec, on_try, on_catch }, { "string", "table", "function", { "function", "nil" } })
 
-  local catch = function(are_args_valid, params)
+  local inner_catch = function(params)
     return function(err)
-      local err_msg_start = are_args_valid and "Error in" or "Spec Error for"
-
-      print(err_msg_start .. " [" .. descr .. "]: " .. err)
+      print("Issue at [" .. descr .. "]: " .. err)
 
       if type(on_catch) == "function" then
-        return on_catch(err, are_args_valid, params)
+        return on_catch(err, params)
       end
     end
   end
@@ -55,13 +53,11 @@ local tie = function (descr, spec, on_try, on_catch)
     local params = {...}
     local u = unpack
 
-    local is_valid = xpcall(validate_args, catch(false, u(params)), descr, params, spec)
+    validate_args(descr, params, spec)
 
-    if is_valid then
-      local _, result = xpcall(on_try, catch(true, u(params)), u(params))
+    local _, result = xpcall(on_try, inner_catch(params), u(params))
 
-      return result;
-    end
+    return result;
   end
 end
 
@@ -91,7 +87,7 @@ local au = tie(
 
     if type(opts.callback) == "function" and opts.should_tie ~= false then
       -- type `:h nvim_create_autocmd` to see all the args for `callback`
-      opts.callback = tie(group_name, { { "nil", "table" } }, opts.callback)
+      opts.callback = tie(group_name, { "table" }, opts.callback)
     end
 
     vim.api.nvim_create_autocmd(events, opts)
