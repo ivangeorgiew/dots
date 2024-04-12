@@ -1,3 +1,5 @@
+local RETHROW = "__tie_rethrow__"
+
 local validate_args = function(descr, args, spec)
   local err_msg = ""
 
@@ -44,11 +46,26 @@ local tie = function(descr, spec, on_try, on_catch)
 
   local inner_catch = function(args)
     return function(err)
-      vim.notify("Issue at [" .. descr .. "]: " .. err, vim.log.levels.ERROR)
+      local result, catch_was_valid
+      local is_res_err = false
 
       if type(on_catch) == "function" then
-        return on_catch(err, args)
+        catch_was_valid, result = pcall(on_catch, err, args)
       end
+
+      if result == RETHROW then
+        result = "\nWhile calling [" .. descr .. "]:\n  " .. err
+        is_res_err = true
+      else
+        vim.notify("Issue at [" .. descr .. "]:\n  " .. err, vim.log.levels.ERROR)
+
+        if not catch_was_valid then
+          result = "\nWhile catching error for [" .. descr .. "]:\n  " .. result
+          is_res_err = true
+        end
+      end
+
+      return { value = result, is_res_err = is_res_err }
     end
   end
 
@@ -58,9 +75,17 @@ local tie = function(descr, spec, on_try, on_catch)
     -- will throw error if args are invalid
     validate_args(descr, args, spec)
 
-    local _, result = xpcall(on_try, inner_catch(args), unpack(args))
+    local was_valid, result = xpcall(on_try, inner_catch(args), unpack(args))
 
-    return result;
+    if not was_valid then
+      if result.is_res_err then
+        error(result.value, 2)
+      else
+        return result.value
+      end
+    end
+
+    return result
   end
 end
 
@@ -101,11 +126,13 @@ local map = tie(
       rhs = tie(opts.desc, {}, rhs)
     end
 
+    if opts.should_tie ~= nil then opts.should_tie = nil end
+
     vim.keymap.set(modes, lhs, rhs, opts)
   end
 )
 
-local au = tie(
+local create_au = tie(
   "create augroup",
   { "string", { "string", "table" }, "table"},
   function(group_name, events, opts)
@@ -115,6 +142,8 @@ local au = tie(
       -- type `:h nvim_create_autocmd` to see all the args for `callback`
       opts.callback = tie(group_name, { "table" }, opts.callback)
     end
+
+    if opts.should_tie ~= nil then opts.should_tie = nil end
 
     vim.api.nvim_create_autocmd(events, opts)
   end
@@ -140,9 +169,10 @@ local create_cmd = tie(
 
 local M = {}
 
+M.RETHROW = RETHROW
 M.tie = tie
 M.map = map
-M.au = au
+M.create_au = create_au
 M.create_cmd = create_cmd
 M.uv = vim.uv or vim.loop
 

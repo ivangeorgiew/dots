@@ -33,10 +33,10 @@ o.laststatus = 3 -- when to show statusline
 o.list = true -- show hidden chars (tabs, trailing space, etc)
 o.listchars="tab:»·,trail:·" -- chars to use for hidden symbols
 o.mouse = "" -- disable mouse
-o.number = false -- line numbers
+o.number = true -- line numbers
 o.pumheight = 10 -- max entries in a popup
 o.redrawtime = 5000 -- increase redraw time for syntax handling
-o.relativenumber = true -- relative line numbers
+o.relativenumber = false -- relative line numbers
 o.scrolloff = 10 -- min lines below and above
 --o.shortmess = "aoOsScCtTWI" -- skip some unnecessary messages
 o.shortmess:append({ W = true, I = true, c = true, C = true }) -- skip some unnecessary messages
