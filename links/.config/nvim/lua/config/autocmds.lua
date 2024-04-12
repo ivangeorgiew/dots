@@ -1,18 +1,18 @@
-local au = require("utils").au
+local create_au = require("utils").create_au
 
-au(
+create_au(
   "reload file on change",
   { "FocusGained", "TermClose", "TermLeave" },
   { command = "checktime" }
 )
 
-au(
+create_au(
   "highlight on yank",
   "TextYankPost",
   { callback = function(e) vim.highlight.on_yank() end, }
 )
 
-au(
+create_au(
   "resize splits on window resize",
   "VimResized",
   {
@@ -25,7 +25,7 @@ au(
   }
 )
 
-au(
+create_au(
   "wrap and spell in text files",
   "FileType",
   {
@@ -39,7 +39,7 @@ au(
   }
 )
 
-au(
+create_au(
   "set buffer options",
   "BufEnter",
   {
