@@ -3,8 +3,6 @@
 
 # Initial password is 123123
 # Don't forget to change the passwords of main user and root with `passwd username`
-
-# Extra commands are shell aliases
 {
   description = "My NixOS flake config";
 

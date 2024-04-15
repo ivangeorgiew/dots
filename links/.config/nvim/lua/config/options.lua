@@ -3,6 +3,8 @@ local g = vim.g
 
 g.mapleader = " "
 g.maplocalleader = " "
+g.loaded_ruby_provider = 0
+g.node_host_prog = "~/.npm-global/bin/neovim-node-host"
 
 -- see `:h vim.opt` for more
 local o = vim.opt
