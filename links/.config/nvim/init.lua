@@ -1,3 +1,4 @@
+-- For neovim's lua API info -> https://neovim.io/doc/user/lua-guide.html
 local tie = require("utils").tie
 
 tie("require config files", {}, function()
