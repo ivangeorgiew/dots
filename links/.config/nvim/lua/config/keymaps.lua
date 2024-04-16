@@ -46,21 +46,19 @@ map({ "x", "o" }, "N", "'nN'[v:searchforward]",          { desc = "Prev search r
 
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 
-map("n", "<leader>q",  "<cmd>qa<cr>",       { desc = "Quit" })
-map("n", "<leader>d",  "<cmd>close<cr>",    { desc = "Close window" })
-map("n", "<leader>t",  "<cmd>tabclose<cr>", { desc = "Close tab" })
+map("n", "<leader>qa",  "<cmd>qa<cr>",       { desc = "Quit All" })
+map("n", "<leader>qw",  "<cmd>close<cr>",    { desc = "Quit Window" })
+map("n", "<leader>qt",  "<cmd>tabclose<cr>", { desc = "Quit Tab" })
 
-map("n", "[q", "<cmd>cnext<cr>", { desc = "Next quickfix item" })
-map("n", "]q", "<cmd>cprev<cr>", { desc = "Previous quickfix item" })
-map("n", "[l", "<cmd>lnext<cr>", { desc = "Next location item" })
-map("n", "]l", "<cmd>lprev<cr>", { desc = "Previous location item" })
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous error/warning" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Next error/warning" })
+map("n", "<leader>dp", vim.diagnostic.goto_prev,  { desc = "Prev diagnostics item" })
+map("n", "<leader>dn", vim.diagnostic.goto_next,  { desc = "Next diagnostics item" })
+map("n", "<leader>do", vim.diagnostic.open_float, { desc = "Open diagnostics" })
+map("n", "<leader>dq", vim.diagnostic.setloclist, { desc = "Open diagnostics quickfix list" })
 
-map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Open Diagnostics" })
+map("n", "<leader>I", "gg=G<c-o>", { desc = "Indent whole file" })
+map("n", "<leader>Y", "ggyG<c-o>", { desc = "Yank whole file" })
 
-map("n", "<leader>I", "gg=G", { desc = "Reindent whole file" })
-map("n", "<leader>Y", "ggyG", { desc = "Copy whole file" })
+map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 map("n", "z;", "zA", { desc = "Open fold recursively" })
 
@@ -71,6 +69,7 @@ map({ "v", "o" }, [[a']], [[2i']], { desc = [[Select all in '']] })
 map({ "v", "o" }, [[a`]], [[2i`]], { desc = [[Select all in ``]] })
 
 map("n", "<leader>l", "<cmd>let @/ = ''<cr>", { desc = "Clear last search" })
+
 map("n", "<leader>h", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle line wrap" })
 
 map("c", "<C-a>", "<Home>",    { desc = "Go to the beginning", silent = false })

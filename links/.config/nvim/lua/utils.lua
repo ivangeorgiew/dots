@@ -158,7 +158,7 @@ local create_cmd = tie(
 
       if type(opts.desc == "string") then desc = opts.desc end
 
-      command = tie(desc, {}, command)
+      command = tie(desc, { "table" }, command)
     end
 
     if opts.should_tie ~= nil then opts.should_tie = nil end

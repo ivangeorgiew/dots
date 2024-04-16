@@ -3,7 +3,10 @@ local g = vim.g
 
 g.mapleader = " "
 g.maplocalleader = " "
+
+-- provider related settings
 g.loaded_ruby_provider = 0
+g.loaded_perl_provider = 0
 g.node_host_prog = "~/.npm-global/bin/neovim-node-host"
 
 -- see `:h vim.opt` for more
@@ -17,7 +20,7 @@ o.autoindent = true -- copy indent level from previous line
 o.autowriteall = true -- smart auto-save on some commands
 o.backup = false -- toggle backup file
 o.breakindent = true -- wrapped line continues on the same indent level
-o.clipboard = "unnamedplus,unnamed" -- combine OS and Neovim clipboard
+o.clipboard = "unnamedplus" -- combine OS and Neovim clipboard
 o.cmdheight = 0 -- if set to 0, hides the command line, when not typing a command
 o.complete = ".,t" -- where to get completions from
 o.completeopt = "menu,menuone,noselect,longest" -- completion options
@@ -25,15 +28,15 @@ o.confirm = true -- popup to save file after some commands
 o.diffopt = "vertical,iwhite,filler" -- vimdiff split direction and ignore whitespace
 o.foldlevel = 0 -- close all folds by default
 o.foldmethod = "marker" -- default fold method
-o.grepformat = "%f:%l:%c:%m" -- format for grep command
-o.grepprg = "rg --vimgrep" -- use silver_searcher for grep
+o.grepformat = "%f:%l:%m" -- format for grep command
+o.grepprg = "rg --no-heading -. -n -S -F" -- faster alternative to grep
 o.hlsearch = true -- highlighting search results
-o.ignorecase = false -- see smartcase option
+o.ignorecase = true -- see smartcase option
 o.inccommand = "split" -- include partial off-screen matches for search and replace
 o.incsearch = true -- show where the pattern is as you search for it
 o.laststatus = 3 -- when to show statusline
 o.list = true -- show hidden chars (tabs, trailing space, etc)
-o.listchars="tab:»·,trail:·" -- chars to use for hidden symbols
+o.listchars = { tab = '»·', trail = '·', nbsp = '␣' } -- chars to use for hidden symbols
 o.mouse = "" -- disable mouse
 o.number = true -- line numbers
 o.pumheight = 10 -- max entries in a popup
@@ -57,7 +60,7 @@ o.termguicolors = true -- enables 24-bit RGB colors
 o.textwidth = 0 -- max line char length
 o.timeoutlen = 500 -- time in ms to wait for mapped sequence
 o.undofile = true -- whether to use undo file
-o.updatetime = 500 -- used for CursorHold and swap file
+o.updatetime = 250 -- used for CursorHold and swap file
 o.virtualedit = "block" -- be able to place the cursor anywhere during vis block mode
 o.wildignore:append({"*/node_modules/*"}) -- ignore node_modules folders for completion stuff
 o.wildmode = "longest:full,full" -- command line completion
