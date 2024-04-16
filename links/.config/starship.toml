@@ -89,6 +89,9 @@ format = '\[[$symbol$branch]($style)\]'
 [java]
 format = '\[[$symbol($version)]($style)\]'
 
+[jobs]
+disabled = true
+
 [julia]
 format = '\[[$symbol($version)]($style)\]'
 
