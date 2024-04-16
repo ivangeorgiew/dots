@@ -7,6 +7,7 @@
       cava # audio visualizer
       cmatrix # cool effect
       curl # download files
+      ncdu # windirstat for linux (sort dirs by size)
       dash # fastest shell
       fd # better alternative to find
       ffmpeg # for audio and video
@@ -93,7 +94,7 @@
       nix-update = "sudo nix flake update ~/dots/#"; # Update the versions of packages
       nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
       nix-roll = "sudo nix profile rollback --to"; # Rollback to a generation
-      nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 14d && nix store gc"; # Garbage collect nixos
+      nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 1d && nix store gc"; # Garbage collect nixos
     };
   };
 
