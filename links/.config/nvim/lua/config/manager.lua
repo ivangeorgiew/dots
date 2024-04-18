@@ -1,3 +1,6 @@
+-- Lazy Settings: https://github.com/folke/lazy.nvim#%EF%B8%8F-configuration
+-- Plugin Settings: https://github.com/folke/lazy.nvim?tab=readme-ov-file#examples
+
 -- setup plugin manager
 local uv = require("utils").uv
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -15,7 +18,6 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
--- see more at https://github.com/folke/lazy.nvim#%EF%B8%8F-configuration
 require("lazy").setup({
   -- auto add all my plugins from `lua/plugins/*.lua`
   spec = "plugins",
