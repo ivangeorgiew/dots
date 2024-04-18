@@ -1,6 +1,23 @@
 local tie = require("utils").tie
 local map = require("utils").map
 
+-- no need to use tie(), map() already does it
+local toggle_search_high = function()
+  local curr_search = vim.fn.getreg("/")
+
+  if type(vim.g.prev_search) ~= "string" then
+    vim.g.prev_search = ""
+  end
+
+  if curr_search == "" then
+    vim.fn.setreg("/", vim.g.prev_search)
+  else
+    vim.fn.setreg("/", "")
+  end
+
+  vim.g.prev_search = curr_search
+end
+
 -- delete mappings
 
 map("n", "Z", "<nop>", { desc = "Nothing" })
@@ -44,16 +61,24 @@ map("n",          "N", "'nN'[v:searchforward].'zv'",     { desc = "Prev search r
 map({ "x", "o" }, "n", "'Nn'[v:searchforward]",          { desc = "Next search result", expr = true })
 map({ "x", "o" }, "N", "'nN'[v:searchforward]",          { desc = "Prev search result", expr = true })
 
+map("n", "[q", "<cmd>cprev<cr>", { desc = "Prev Quickfix item" })
+map("n", "]q", "<cmd>cnext<cr>", { desc = "Next Quickfix item" })
+
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 
 map("n", "<leader>qa",  "<cmd>qa<cr>",       { desc = "Quit All" })
 map("n", "<leader>qw",  "<cmd>close<cr>",    { desc = "Quit Window" })
 map("n", "<leader>qt",  "<cmd>tabclose<cr>", { desc = "Quit Tab" })
+map("n", "<leader>qq",  "<cmd>cclose<cr>",   { desc = "Quit Quickfix List" })
+map("n", "<leader>ql",  "<cmd>lclose<cr>",   { desc = "Quit Location List" })
 
 map("n", "<leader>dp", vim.diagnostic.goto_prev,  { desc = "Prev diagnostics item" })
 map("n", "<leader>dn", vim.diagnostic.goto_next,  { desc = "Next diagnostics item" })
 map("n", "<leader>do", vim.diagnostic.open_float, { desc = "Open diagnostics" })
 map("n", "<leader>dq", vim.diagnostic.setloclist, { desc = "Open diagnostics quickfix list" })
+
+map( "n", "<leader>ts", toggle_search_high, { desc = "Toggle Search highlight" })
+map("n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle Wrapping of lines" })
 
 map("n", "<leader>I", "gg=G<c-o>", { desc = "Indent whole file" })
 map("n", "<leader>Y", "ggyG<c-o>", { desc = "Yank whole file" })
@@ -67,10 +92,6 @@ map("n", "X", "<C-a>", { desc = "Increment number under cursor" })
 map({ "v", "o" }, [[a"]], [[2i"]], { desc = [[Select all in ""]] })
 map({ "v", "o" }, [[a']], [[2i']], { desc = [[Select all in '']] })
 map({ "v", "o" }, [[a`]], [[2i`]], { desc = [[Select all in ``]] })
-
-map("n", "<leader>l", "<cmd>let @/ = ''<cr>", { desc = "Clear last search" })
-
-map("n", "<leader>h", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle line wrap" })
 
 map("c", "<C-a>", "<Home>",    { desc = "Go to the beginning", silent = false })
 map("c", "<C-b>", "<S-Left>",  { desc = "Go a word to the left", silent = false })
@@ -104,6 +125,8 @@ map("n", "zk", "O<esc>j", { desc = "Make a new line above" })
 
 map("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Search and replace word under cursor", silent = false })
 map("v", "<leader>s", [["ay:%s/<C-r>a/<C-r>a/gI<Left><Left><Left>]],          { desc = "Search and replace visual selection",  silent = false })
+
+-- TODO: add keymap for restarting neovim with previous current session
 
 -- abbreviations
 
