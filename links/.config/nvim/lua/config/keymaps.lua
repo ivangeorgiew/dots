@@ -27,6 +27,10 @@ map("n", "ZZ", "<nop>", { desc = "Nothing" })
 
 map("i", "<C-c>", "<esc>", { desc = "Exit insert mode" })
 
+-- TODO: add keymap for restarting neovim with current session
+
+-- TODO: remove the below mappings when plugin is added
+
 map("n", "DD", "dd", { desc = "Cut line" })
 map("n", "dd", [["_dd]],  { desc = "Delete line" })
 map({ "n", "v" }, "D", "d", { desc = "Cut" })
@@ -61,8 +65,12 @@ map("n",          "N", "'nN'[v:searchforward].'zv'",     { desc = "Prev search r
 map({ "x", "o" }, "n", "'Nn'[v:searchforward]",          { desc = "Next search result", expr = true })
 map({ "x", "o" }, "N", "'nN'[v:searchforward]",          { desc = "Prev search result", expr = true })
 
-map("n", "[q", "<cmd>cprev<cr>", { desc = "Prev Quickfix item" })
-map("n", "]q", "<cmd>cnext<cr>", { desc = "Next Quickfix item" })
+map("n", "<leader>pq", "<cmd>cprev<cr>", { desc = "Prev Quickfix item" })
+map("n", "<leader>nq", "<cmd>cnext<cr>", { desc = "Next Quickfix item" })
+map("n", "<leader>pl", "<cmd>lprev<cr>", { desc = "Prev Loclist item" })
+map("n", "<leader>nl", "<cmd>lnext<cr>", { desc = "Next Loclist item" })
+map("n", "<leader>pd", vim.diagnostic.goto_prev, { desc = "Prev diagnostics item" })
+map("n", "<leader>nd", vim.diagnostic.goto_next, { desc = "Next diagnostics item" })
 
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 
@@ -72,13 +80,9 @@ map("n", "<leader>qt",  "<cmd>tabclose<cr>", { desc = "Quit Tab" })
 map("n", "<leader>qq",  "<cmd>cclose<cr>",   { desc = "Quit Quickfix List" })
 map("n", "<leader>ql",  "<cmd>lclose<cr>",   { desc = "Quit Location List" })
 
-map("n", "<leader>dp", vim.diagnostic.goto_prev,  { desc = "Prev diagnostics item" })
-map("n", "<leader>dn", vim.diagnostic.goto_next,  { desc = "Next diagnostics item" })
-map("n", "<leader>do", vim.diagnostic.open_float, { desc = "Open diagnostics" })
-map("n", "<leader>dq", vim.diagnostic.setloclist, { desc = "Open diagnostics quickfix list" })
-
-map( "n", "<leader>ts", toggle_search_high, { desc = "Toggle Search highlight" })
+map("n", "<leader>ts", toggle_search_high, { desc = "Toggle Search highlight" })
 map("n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle Wrapping of lines" })
+map("n", "<leader>td", vim.diagnostic.open_float, { desc = "Toggle diagnostics" }) -- close with hjkl movement
 
 map("n", "<leader>I", "gg=G<c-o>", { desc = "Indent whole file" })
 map("n", "<leader>Y", "ggyG<c-o>", { desc = "Yank whole file" })
@@ -125,8 +129,6 @@ map("n", "zk", "O<esc>j", { desc = "Make a new line above" })
 
 map("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Search and replace word under cursor", silent = false })
 map("v", "<leader>s", [["ay:%s/<C-r>a/<C-r>a/gI<Left><Left><Left>]],          { desc = "Search and replace visual selection",  silent = false })
-
--- TODO: add keymap for restarting neovim with previous current session
 
 -- abbreviations
 
