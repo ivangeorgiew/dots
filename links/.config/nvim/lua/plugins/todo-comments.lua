@@ -29,7 +29,7 @@ local opts = {
     multiline_pattern = "^ ", -- lua pattern to match the next multiline from the start of the matched keyword
     multiline_context = 10, -- extra lines that will be re-evaluated when changing a line
     before = "", -- "fg" or "bg" or empty
-    keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
+    keyword = "bg", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
     after = "fg", -- "fg" or "bg" or empty
     -- pattern can be a string, or a table of regexes that will be checked
     pattern = [[.*<(KEYWORDS):]], -- pattern or table of patterns, used for highlightng (vim regex)
@@ -68,7 +68,7 @@ local opts = {
 return {
   "folke/todo-comments.nvim",
   dependencies = { "nvim-lua/plenary.nvim" },
-  event = "VeryLazy",
+  event = "BufReadPost",
   config = function()
     require("todo-comments").setup(opts)
 
