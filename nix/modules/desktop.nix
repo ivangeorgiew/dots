@@ -147,7 +147,6 @@
     shellAliases = {
       reboot = "echo 'Use the buttons'";
       shutdown = "echo 'Use the buttons'";
-      viber = "QT_QPA_PLATFORM=xcb ${pkgs.viber}/bin/viber";
     };
   };
 
