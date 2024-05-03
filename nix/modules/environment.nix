@@ -95,8 +95,8 @@
       nix-update = "nix_update"; # Update only specific flake inputs
       nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
       nix-roll = "sudo nix profile rollback --profile /nix/var/nix/profiles/system --to"; # Rollback to a generation
-      nix-wipe = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system"; # Remove generations except the current one
-      nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 30d && nix store gc"; # Garbage collect nixos
+      nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system && nix store gc"; # Garbage collect nixos
+      nix-edit = "nix edit -f \"<nixpkgs>\""; # Check the source code of a package
     };
   };
 
