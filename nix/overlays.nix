@@ -15,6 +15,8 @@
       };
     });
 
+    vesktop = prev.vesktop.override { withSystemVencord = false; };
+
     neovim = inputs.neovim-nightly.packages.${prev.system}.neovim;
   };
 
