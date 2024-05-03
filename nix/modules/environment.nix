@@ -91,7 +91,8 @@
       p = "pnpm"; # Launch pnpm node package manager
       nix-switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
       nix-boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
-      nix-update = "sudo nix flake update ~/dots/#"; # Update the versions of packages
+      nix-update-all = "sudo nix flake update ~/dots/#"; # Update the versions of packages
+      nix-update = "nix_update"; # Update only specific flake inputs
       nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
       nix-roll = "sudo nix profile rollback --profile /nix/var/nix/profiles/system --to"; # Rollback to a generation
       nix-wipe = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system"; # Remove generations except the current one
@@ -112,6 +113,12 @@
         npm_global_dir = "~/.npm-global";
         npm_packages = "npm pnpm neovim tailwindcss typescript";
       in ''
+        function nix_update
+          if count $argv > /dev/null
+            sudo nix flake lock --update-input (string join " --update-input " $argv) ~/dots/#
+          end
+        end
+
         #Disable greeting
         set fish_greeting
 
@@ -126,13 +133,6 @@
 
         # install npm global packages
         nohup npm i -g ${npm_packages} </dev/null &>/dev/null &
-
-        # Start in the projects folder
-        if not test -d ~/projects
-          mkdir ~/projects
-        end
-
-        cd ~/projects
       '';
 
       #loginShellInit =
