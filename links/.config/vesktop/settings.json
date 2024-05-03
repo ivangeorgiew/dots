@@ -1,0 +1,10 @@
+{
+    "minimizeToTray": true,
+    "discordBranch": "stable",
+    "splashColor": "rgb(196, 201, 206)",
+    "splashBackground": "rgb(0, 0, 0)",
+    "hardwareAcceleration": true,
+    "staticTitle": true,
+    "enableMenu": true,
+    "checkUpdates": false
+}
