@@ -157,7 +157,7 @@
     },
 
     "custom/playerctl#play": {
-      "exec": "playerctl -p spotify -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+      "exec": "playerctl -p spotify metadata -F -f '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}'",
       "format": "{icon}",
       "tooltip": false,
       "format-icons": {

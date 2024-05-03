@@ -2,13 +2,19 @@
 { inputs, ... }:
 {
   # Adds my custom packages from the 'pkgs' folder
-  additions = final: _prev: import ./pkgs { pkgs = final; }; 
+  additions = final: _prev: { my-pkgs = import ./pkgs { pkgs = final; }; };
 
   # Modifies existing pkgs https://nixos.wiki/wiki/Overlays
   modifications = final: prev: {
-    #example = prev.example.overrideAttrs (oldAttrs: rec { ... });
+    mpvpaper = prev.mpvpaper.overrideAttrs (oldAttrs: {
+      src = prev.fetchFromGitHub {
+        owner = "GhostNaN";
+        repo = "mpvpaper";
+        rev = "d8164bb6bd2960d2f7f6a9573e086d07d440f037";
+        sha256 = "sha256-/A2C6T7gP+VGON3Peaz2Y4rNC63UT+zYr4RNM2gdLUY=";
+      };
+    });
 
-    #replaces the default package
     neovim = inputs.neovim-nightly.packages.${prev.system}.neovim;
   };
 
