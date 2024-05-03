@@ -93,8 +93,9 @@
       nix-boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
       nix-update = "sudo nix flake update ~/dots/#"; # Update the versions of packages
       nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
-      nix-roll = "sudo nix profile rollback --to"; # Rollback to a generation
-      nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 1d && nix store gc"; # Garbage collect nixos
+      nix-roll = "sudo nix profile rollback --profile /nix/var/nix/profiles/system --to"; # Rollback to a generation
+      nix-wipe = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system"; # Remove generations except the current one
+      nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 30d && nix store gc"; # Garbage collect nixos
     };
   };
 
