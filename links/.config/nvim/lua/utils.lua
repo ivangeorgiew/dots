@@ -89,9 +89,7 @@ local tie = function(descr, spec, on_try, on_catch)
   end
 end
 
--- substitute print() with the customisable vim.notify()
-_G._print = _G.print
-_G.print = tie(
+local local_print = tie(
   "print",
   {},
   function(...)
@@ -107,6 +105,13 @@ _G.print = tie(
   function(e, args)
     _print(unpack(args))
   end
+)
+
+local table_extend = tie(
+  "extend table",
+  { "table", "table" },
+  function(a, b) return vim.tbl_deep_extend("force", a, b) end,
+  function() return RETHROW end
 )
 
 -- don't substitute error(), because you lose the traceback
@@ -167,9 +172,13 @@ local create_cmd = tie(
   end
 )
 
+_G._print = _G.print
+_G.print = local_print
+_G.table_extend = table_extend
+_G.RETHROW = RETHROW
+
 local M = {}
 
-M.RETHROW = RETHROW
 M.tie = tie
 M.map = map
 M.create_au = create_au

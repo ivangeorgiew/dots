@@ -77,12 +77,12 @@ map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 map("n", "<leader>qa",  "<cmd>qa<cr>",       { desc = "Quit All" })
 map("n", "<leader>qw",  "<cmd>close<cr>",    { desc = "Quit Window" })
 map("n", "<leader>qt",  "<cmd>tabclose<cr>", { desc = "Quit Tab" })
-map("n", "<leader>qq",  "<cmd>cclose<cr>",   { desc = "Quit Quickfix List" })
-map("n", "<leader>ql",  "<cmd>lclose<cr>",   { desc = "Quit Location List" })
 
 map("n", "<leader>ts", toggle_search_high, { desc = "Toggle Search highlight" })
 map("n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle Wrapping of lines" })
 map("n", "<leader>td", vim.diagnostic.open_float, { desc = "Toggle diagnostics" }) -- close with hjkl movement
+map("n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.quickfix')) ? ':copen<cr>' : ':cclose<cr>'", { desc = "Toggle Quickfix list", expr = true })
+map("n", "<leader>tl", "empty(filter(getwininfo(), 'v:val.loclist'))  ? ':lopen<cr>' : ':lclose<cr>'", { desc = "Toggle Location list", expr = true })
 
 map("n", "<leader>I", "gg=G<c-o>", { desc = "Indent whole file" })
 map("n", "<leader>Y", "ggyG<c-o>", { desc = "Yank whole file" })
