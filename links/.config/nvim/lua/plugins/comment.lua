@@ -10,15 +10,14 @@ local opts = {
   pre_hook = nil, -- Function to call before (un)comment
   post_hook = nil, -- Function to call after (un)comment
 }
-local modes = { "n", "v" }
 
 return {
   "numToStr/Comment.nvim",
   keys = {
-    { "gcc", mode = modes },
-    { "gbc", mode = modes },
-    { "gc",  mode = modes },
-    { "gb",  mode = modes },
+    { "gcc", mode = "n" },
+    { "gbc", mode = "n" },
+    { "gc",  mode = { "n", "v" } },
+    { "gb",  mode = { "n", "v" } },
   },
   --event = "VeryLazy",
   config = tie(
