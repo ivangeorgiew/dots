@@ -6,7 +6,7 @@
     #interfaces.enp30s0.useDHCP = lib.mkDefault true;
     #interfaces.wlp3s0f0u10.useDHCP = lib.mkDefault true;
 
-    # Disable IPv6
+    # Toggles IPv6
     enableIPv6 = false;
 
     # Define your hostname.
@@ -14,6 +14,9 @@
 
     # Set DNS
     nameservers = [ "1.1.1.1" "1.0.0.1" ];
+
+    # Toggles the firewall
+    firewall.enable = false;
 
     # Don't wait to have an IP
     dhcpcd.wait = "background";
