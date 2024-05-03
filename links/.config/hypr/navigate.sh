@@ -2,7 +2,7 @@
 
 dir="$1"
 window_pid=$(hyprctl activewindow | rg 'pid: ' | sed 's/.*: //;')
-process_pids=$(pstree -p $window_pid | sed 's/^[^0-9]*//g;s/ .*/ /g' | tr '\n' ' ')
+process_pids=$(pstree -p $window_pid | sed 's/^[^1-9]*//g;s/ .*/ /g' | tr '\n' ' ')
 
 # loop through all the child processes
 for pp in $process_pids; do
