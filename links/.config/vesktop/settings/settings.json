@@ -1,7 +1,7 @@
 {
     "notifyAboutUpdates": true,
     "autoUpdate": false,
-    "autoUpdateNotification": true,
+    "autoUpdateNotification": false,
     "useQuickCss": true,
     "themeLinks": [],
     "enabledThemes": [],
@@ -44,7 +44,8 @@
             "enabled": false
         },
         "NoTrack": {
-            "enabled": true
+            "enabled": true,
+            "disableAnalytics": true
         },
         "Settings": {
             "enabled": true,
@@ -501,6 +502,12 @@
         },
         "UnlockedAvatarZoom": {
             "enabled": false
+        },
+        "ImageLink": {
+            "enabled": false
+        },
+        "PauseInvitesForever": {
+            "enabled": false
         }
     },
     "notifications": {
@@ -513,6 +520,6 @@
         "authenticated": false,
         "url": "https://api.vencord.dev/",
         "settingsSync": false,
-        "settingsSyncVersion": 1714754718720
+        "settingsSyncVersion": 1714973934717
     }
 }

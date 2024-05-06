@@ -18,7 +18,7 @@
 
         # add local executables to PATH
         sessionPath = [ "$HOME/.local/bin" ];
-      }; 
+      };
 
       # Let home-manager install and manage itself
       programs.home-manager.enable = true;
