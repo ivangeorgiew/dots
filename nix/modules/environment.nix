@@ -39,6 +39,7 @@
       # GUI apps
       brave # browser
       celluloid # mpv with GUI (video player)
+      easyeffects # sound effects
       firefox-bin # browser
       floorp # browser
       gedit # basic text editor GUI
@@ -88,6 +89,7 @@
       ks = "ps aux | grep"; # List a process
       rm = "rm -rI"; # Ask for each file before deleting
       mkdir = "mkdir -p"; # Make dirs recursively
+      cp = "cp -r"; # Copy recursively
       p = "pnpm"; # Launch pnpm node package manager
       nix-switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
       nix-boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
