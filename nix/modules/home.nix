@@ -18,12 +18,20 @@
 
         # add local executables to PATH
         sessionPath = [ "$HOME/.local/bin" ];
+
+        pointerCursor = {
+          name = "macOS-BigSur";
+          package = pkgs.apple-cursor;
+          size = 24;
+          gtk.enable = true;
+          x11.enable = true;
+        };
       };
 
       # Let home-manager install and manage itself
       programs.home-manager.enable = true;
 
-      # reload systemd units when config changes
+      # reload systemd units when configuration changes
       systemd.user.startServices = "sd-switch";
 
       # enable fontconfig
@@ -33,33 +41,29 @@
       gtk = {
         enable = true;
 
-        cursorTheme = {
-          name = "macOS-BigSur";
-          package = pkgs.apple-cursor;
-          size = 24;
+        gtk2.configLocation = "/home/${username}/.config/gtk-2.0/gtkrc";
+
+        font = {
+          name = "Inter";
+          package = (pkgs.google-fonts.override { fonts = ["Inter"]; });
+          size = 12;
         };
 
         iconTheme = {
-          name = "Papirus-Dark";
-          package = pkgs.papirus-folders;
+          name = "Adwaita";
+          package = pkgs.gnome.adwaita-icon-theme;
         };
 
-        # https://github.com/catppuccin/gtk
         theme = {
-          name = "Catppuccin-Mocha-Compact-Blue-Dark";
-          package = pkgs.catppuccin-gtk.override {
-            variant = "mocha";
-            size = "compact";
-            accents = [ "blue" ];
-            tweaks = [ "rimless" "black" ];
-          };
+          name = "adw-gtk3-dark";
+          package = pkgs.adw-gtk3;
         };
       };
 
       # QT apps theming
       qt = {
         enable = true;
-        platformTheme = "gtk";
+        platformTheme.name = "adwaita";
         style.name = "adwaita-dark";
       };
     };
