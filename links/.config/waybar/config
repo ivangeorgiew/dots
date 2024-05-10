@@ -40,10 +40,6 @@
       "persistent-workspaces": { "*": 4 }
     },
 
-    "hyprland/window": {
-      "format": "{}"
-    },
-
     "tray": {
       "spacing": 10,
       "show-passive-items": true
