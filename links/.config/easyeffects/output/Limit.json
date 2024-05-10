@@ -2,7 +2,7 @@
     "output": {
         "blocklist": [],
         "compressor#0": {
-            "attack": 5.0,
+            "attack": 10.0,
             "boost-amount": 6.0,
             "boost-threshold": -72.0,
             "bypass": false,
@@ -10,14 +10,14 @@
             "hpf-frequency": 10.0,
             "hpf-mode": "off",
             "input-gain": 0.0,
-            "knee": -6.0,
+            "knee": 0.0,
             "lpf-frequency": 20000.0,
             "lpf-mode": "off",
-            "makeup": -10.0,
+            "makeup": 5.0,
             "mode": "Downward",
             "output-gain": 0.0,
-            "ratio": 5.0,
-            "release": 5.0,
+            "ratio": 3.0,
+            "release": 10.0,
             "release-threshold": -100.0,
             "sidechain": {
                 "lookahead": 0.0,
