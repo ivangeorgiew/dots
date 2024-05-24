@@ -29,7 +29,7 @@
                 "type": "Feed-forward"
             },
             "stereo-split": false,
-            "threshold": -40.0,
+            "threshold": -30.0,
             "wet": 0.0
         },
         "plugins_order": [
