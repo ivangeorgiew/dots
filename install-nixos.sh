@@ -133,6 +133,8 @@ mount_disk() {
     [[ -d ${MOUNT_DIR}/home ]] || mkdir -p ${MOUNT_DIR}/home
     [[ -d ${MOUNT_DIR}/nix ]] || mkdir -p ${MOUNT_DIR}/nix
     [[ -d ${MOUNT_DIR}/boot ]] || mkdir -p ${MOUNT_DIR}/boot
+    [[ -d ${MOUNT_DIR}/run/media/c ]] || mkdir -p ${MOUNT_DIR}/run/media/c
+    [[ -d ${MOUNT_DIR}/run/media/d ]] || mkdir -p ${MOUNT_DIR}/run/media/d
 
     # mount everything else
     mount -o ${mount_opts},subvol=@home /dev/disk/by-label/${ROOT_LABEL} ${MOUNT_DIR}/home
