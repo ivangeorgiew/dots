@@ -26,7 +26,7 @@
             "enabled": false
         },
         "MessageAccessoriesAPI": {
-            "enabled": false
+            "enabled": true
         },
         "MessageDecorationsAPI": {
             "enabled": false
@@ -272,9 +272,6 @@
         "OpenInApp": {
             "enabled": false
         },
-        "Party mode 🎉": {
-            "enabled": false
-        },
         "PermissionFreeWill": {
             "enabled": false
         },
@@ -336,9 +333,6 @@
             "enabled": false
         },
         "ServerListIndicators": {
-            "enabled": false
-        },
-        "ServerProfile": {
             "enabled": false
         },
         "ShikiCodeblocks": {
@@ -508,6 +502,18 @@
         },
         "PauseInvitesForever": {
             "enabled": false
+        },
+        "PartyMode": {
+            "enabled": false
+        },
+        "ServerInfo": {
+            "enabled": false
+        },
+        "MessageUpdaterAPI": {
+            "enabled": false
+        },
+        "UserSettingsAPI": {
+            "enabled": true
         }
     },
     "notifications": {
@@ -520,6 +526,6 @@
         "authenticated": false,
         "url": "https://api.vencord.dev/",
         "settingsSync": false,
-        "settingsSyncVersion": 1714973934717
+        "settingsSyncVersion": 1720329589202
     }
 }

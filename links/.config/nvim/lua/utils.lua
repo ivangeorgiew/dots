@@ -89,6 +89,9 @@ local tie = function(descr, spec, on_try, on_catch)
   end
 end
 
+-- don't substitute error(), because you lose the traceback
+-- and function termination functionality
+
 local local_print = tie(
   "print",
   {},
@@ -113,9 +116,6 @@ local table_extend = tie(
   function(a, b) return vim.tbl_deep_extend("force", a, b) end,
   function() return RETHROW end
 )
-
--- don't substitute error(), because you lose the traceback
--- and function termination functionality
 
 local map = tie(
   "create mapping",
