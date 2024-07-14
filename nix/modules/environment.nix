@@ -39,7 +39,7 @@
       # GUI apps
       brave # browser
       celluloid # mpv with GUI (video player)
-      easyeffects # sound effects
+      #easyeffects # sound effects
       firefox-bin # browser
       floorp # browser
       gedit # basic text editor GUI
