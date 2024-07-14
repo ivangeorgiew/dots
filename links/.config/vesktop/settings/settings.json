@@ -2,7 +2,7 @@
     "notifyAboutUpdates": true,
     "autoUpdate": false,
     "autoUpdateNotification": false,
-    "useQuickCss": true,
+    "useQuickCss": false,
     "themeLinks": [],
     "enabledThemes": [],
     "enableReactDevtools": false,
@@ -514,6 +514,69 @@
         },
         "UserSettingsAPI": {
             "enabled": true
+        },
+        "AppleMusicRichPresence": {
+            "enabled": false
+        },
+        "AutomodContext": {
+            "enabled": false
+        },
+        "ConsoleJanitor": {
+            "enabled": false
+        },
+        "CopyEmojiMarkdown": {
+            "enabled": false
+        },
+        "CtrlEnterSend": {
+            "enabled": false
+        },
+        "CustomIdle": {
+            "enabled": false
+        },
+        "DontRoundMyTimestamps": {
+            "enabled": false
+        },
+        "MaskedLinkPaste": {
+            "enabled": false
+        },
+        "MessageLatency": {
+            "enabled": false
+        },
+        "NoDefaultHangStatus": {
+            "enabled": false
+        },
+        "NoOnboardingDelay": {
+            "enabled": false
+        },
+        "NoServerEmojis": {
+            "enabled": false
+        },
+        "ReplaceGoogleSearch": {
+            "enabled": false
+        },
+        "ReplyTimestamp": {
+            "enabled": false
+        },
+        "Summaries": {
+            "enabled": false
+        },
+        "ShowAllRoles": {
+            "enabled": false
+        },
+        "ShowTimeoutDuration": {
+            "enabled": false
+        },
+        "ValidReply": {
+            "enabled": false
+        },
+        "VoiceDownload": {
+            "enabled": false
+        },
+        "WatchTogetherAdblock": {
+            "enabled": false
+        },
+        "WebScreenShareFixes": {
+            "enabled": true
         }
     },
     "notifications": {
@@ -526,6 +589,6 @@
         "authenticated": false,
         "url": "https://api.vencord.dev/",
         "settingsSync": false,
-        "settingsSyncVersion": 1720329589202
+        "settingsSyncVersion": 1720956409847
     }
 }

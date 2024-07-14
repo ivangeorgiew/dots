@@ -124,6 +124,9 @@
 
     # file manager thumbnail support for images
     tumbler.enable = true;
+
+    # toggles flatpak
+    flatpak.enable = true;
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

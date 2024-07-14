@@ -83,8 +83,7 @@
     };
 
     shellAliases = {
-      l = "ls -l";
-      ll = "ls -lah1";
+      ll = "ls -lah1"; # List files and directories
       kl = "pkill -9"; # Force kill a process (hence the 9)
       ks = "ps aux | grep"; # List a process
       rm = "rm -rI"; # Ask for each file before deleting
