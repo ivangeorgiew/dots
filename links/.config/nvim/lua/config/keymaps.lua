@@ -2,7 +2,7 @@ local tie = require("utils").tie
 local map = require("utils").map
 
 -- no need to use tie(), map() already does it
-local toggle_search_high = function()
+local toggle_search_hl = function()
   local curr_search = vim.fn.getreg("/")
 
   if type(vim.g.prev_search) ~= "string" then
@@ -27,10 +27,8 @@ map("n", "ZZ", "<nop>", { desc = "Nothing" })
 
 map("i", "<C-c>", "<esc>", { desc = "Exit insert mode" })
 
--- TODO: add keymap for restarting neovim with current session
-
 -- TODO: remove the below mappings when plugin is added
-
+map("v", "p", "P", { desc = "Replace" })
 map("n", "DD", "dd", { desc = "Cut line" })
 map("n", "dd", [["_dd]],  { desc = "Delete line" })
 map({ "n", "v" }, "D", "d", { desc = "Cut" })
@@ -78,7 +76,7 @@ map("n", "<leader>qa",  "<cmd>qa<cr>",       { desc = "Quit All" })
 map("n", "<leader>qw",  "<cmd>close<cr>",    { desc = "Quit Window" })
 map("n", "<leader>qt",  "<cmd>tabclose<cr>", { desc = "Quit Tab" })
 
-map("n", "<leader>ts", toggle_search_high, { desc = "Toggle Search highlight" })
+map("n", "<leader>ts", toggle_search_hl, { desc = "Toggle Search highlight" })
 map("n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle Wrapping of lines" })
 map("n", "<leader>td", vim.diagnostic.open_float, { desc = "Toggle diagnostics" }) -- close with hjkl movement
 map("n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.quickfix')) ? ':copen<cr>' : ':cclose<cr>'", { desc = "Toggle Quickfix list", expr = true })

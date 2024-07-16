@@ -12,26 +12,26 @@ return {
     },
     --event = "VeryLazy",
     config = tie(
-    "config for Comment",
-    {},
-    function()
-      require("Comment").setup({
-        padding = true, -- Add a space b/w comment and the line
-        sticky = true, -- Whether the cursor should stay at its position
-        ignore = "^$", -- Lines to be ignored while (un)comment
-        mappings = { basic = true, extra = false, }, -- Toggles keybindings creation
-        toggler = { line = "gcc", block = "gbc", }, -- LHS of toggle mappings in NORMAL mode
-        opleader = { line = "gc", block = "gb", }, -- LHS of operator-pending mappings in NORMAL and VISUAL mode
-        extra = { above = "gcO", below = "gco", eol = "gcA", }, -- LHS of extra mappings
-        pre_hook = nil, -- Function to call before (un)comment
-        post_hook = nil, -- Function to call after (un)comment
-      })
+      "configure Comment.nvim",
+      {},
+      function()
+        require("Comment").setup({
+          padding = true, -- Add a space b/w comment and the line
+          sticky = true, -- Whether the cursor should stay at its position
+          ignore = "^$", -- Lines to be ignored while (un)comment
+          mappings = { basic = true, extra = false, }, -- Toggles keybindings creation
+          toggler = { line = "gcc", block = "gbc", }, -- LHS of toggle mappings in NORMAL mode
+          opleader = { line = "gc", block = "gb", }, -- LHS of operator-pending mappings in NORMAL and VISUAL mode
+          extra = { above = "gcO", below = "gco", eol = "gcA", }, -- LHS of extra mappings
+          pre_hook = nil, -- Function to call before (un)comment
+          post_hook = nil, -- Function to call after (un)comment
+        })
 
-      local ft = require("Comment/ft")
+        -- local ft = require("Comment/ft")
 
-      -- can add/modify commentstrings by filetype
-      -- ft.javascript = { "//%s", "/*%s*/" }
-    end
+        -- can add/modify commentstrings by filetype
+        -- ft.javascript = { "//%s", "/*%s*/" }
+      end
     )
   },
   {
@@ -40,7 +40,7 @@ return {
     event = "BufReadPost",
     config = function()
       require("todo-comments").setup({
-        signs = false, -- show icons in the signs column
+        signs = true, -- show icons in the signs column
         sign_priority = 8, -- sign priority
         -- keywords recognized as todo comments
         keywords = {

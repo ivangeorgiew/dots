@@ -57,7 +57,7 @@ local tie = function(descr, spec, on_try, on_catch)
         result = "\nWhile calling [" .. descr .. "]:\n  " .. err
         is_res_err = true
       else
-        vim.notify("Issue at [" .. descr .. "]:\n  " .. err, vim.log.levels.ERROR)
+        vim.notify("Error at [" .. descr .. "]:\n  " .. err, vim.log.levels.ERROR)
 
         if not catch_was_valid then
           result = "\nWhile catching error for [" .. descr .. "]:\n  " .. result

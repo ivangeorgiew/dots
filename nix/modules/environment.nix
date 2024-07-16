@@ -112,7 +112,7 @@
       interactiveShellInit =
       let
         npm_global_dir = "~/.npm-global";
-        npm_packages = "npm pnpm neovim tailwindcss typescript";
+        npm_packages = "npm pnpm neovim typescript";
       in ''
         function nix_update
           if count $argv > /dev/null
