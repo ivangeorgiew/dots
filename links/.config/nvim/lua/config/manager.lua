@@ -2,10 +2,9 @@
 -- Plugin Settings: https://github.com/folke/lazy.nvim?tab=readme-ov-file#examples
 
 -- setup plugin manager
-local uv = require("utils").uv
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-if not uv.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   print("Installing lazy.nvim...")
 
   vim.fn.system({

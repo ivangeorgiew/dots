@@ -27,9 +27,8 @@ return {
           post_hook = nil, -- Function to call after (un)comment
         })
 
-        -- local ft = require("Comment/ft")
-
         -- can add/modify commentstrings by filetype
+        -- local ft = require("Comment/ft")
         -- ft.javascript = { "//%s", "/*%s*/" }
       end
     )

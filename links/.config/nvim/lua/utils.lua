@@ -1,3 +1,24 @@
+-- NOTE: Useful API used in this or other files:
+-- vim.g
+-- vim.o or vim.opt
+-- table_extend()
+-- vim.api.nvim_create_augroup()
+-- vim.api.nvim_create_autocmd()
+-- vim.api.nvim_create_user_command(name, command, opts)
+-- vim.keymap.set(modes, lhs, rhs, opts)
+-- vim.notify()
+-- vim.cmd()
+
+-- NOTE: Call builtin vim function
+-- vim.call(reg_recording)
+
+-- NOTE: Execute function after time:
+-- vim.defer_fn(some_func, 500)
+
+-- NOTE: Enter keys as if the user typed them (useful for partial commands):
+-- local ctrlc = vim.api.nvim_replace_termcodes("<C-c>", true, false, true)
+-- vim.api.nvim_feedkeys(ctrlc .. ":'<,'>", "n", false)
+
 local RETHROW = "__tie_rethrow__"
 
 local validate_args = function(descr, args, spec)
@@ -121,9 +142,11 @@ local map = tie(
   "create mapping",
   { { "string", "table" }, "string", { "string", "function" }, "table" },
   function(modes, lhs, rhs, opts)
-    -- too lazy to write out spec for args right now
+    local should_silence = type(modes) == "table" or (
+      modes ~= "ca" and modes ~= "!a" and modes ~= "c"
+    )
 
-    if opts.silent == nil then
+    if opts.silent == nil and should_silence then
       opts.silent = true
     end
 
@@ -177,12 +200,9 @@ _G.print = local_print
 _G.table_extend = table_extend
 _G.RETHROW = RETHROW
 
-local M = {}
-
-M.tie = tie
-M.map = map
-M.create_au = create_au
-M.create_cmd = create_cmd
-M.uv = vim.uv or vim.loop
-
-return M
+return {
+  tie = tie,
+  map = map,
+  create_au = create_au,
+  create_cmd = create_cmd,
+}

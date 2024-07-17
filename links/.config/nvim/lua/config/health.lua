@@ -6,7 +6,6 @@ return {
     "checking health",
     {},
     function()
-      local uv = require('utils').uv
       local h = vim.health
       local ver_str = string.format("%s.%s.%s", vim.version().major, vim.version().minor, vim.version().patch)
 
