@@ -7,7 +7,6 @@
       cava # audio visualizer
       cmatrix # cool effect
       curl # download files
-      ncdu # windirstat for linux (sort dirs by size)
       dash # fastest shell
       fd # better alternative to find
       ffmpeg # for audio and video
@@ -24,6 +23,7 @@
       killall # kill a running process
       lazygit # terminal UI for git commands
       libvterm-neovim # needed by neovim
+      ncdu # windirstat for linux (sort dirs by size)
       nerdfix # removes obsolete nerd font icons
       nitch # alternative to neofetch
       p7zip # archiving and compression
@@ -37,9 +37,9 @@
       wget # download files
 
       # GUI apps
+      easyeffects # sound effects
       brave # browser
       celluloid # mpv with GUI (video player)
-      #easyeffects # sound effects
       firefox-bin # browser
       floorp # browser
       gedit # basic text editor GUI
@@ -53,15 +53,11 @@
       vesktop # discord + additions
       viber # chat app
 
-      #Lua
-      lua
-
-      # Python
-      (python310.withPackages(ps: with ps; [ requests pygobject3 ]))
+      #Language specific
+      (python310.withPackages(ps: with ps; [ requests pygobject3 ])) # python
       gobject-introspection # for some python scripts
-
-      # Javascript
-      nodejs
+      lua
+      nodejs # javascript
     ];
 
     sessionVariables = rec {
@@ -120,7 +116,7 @@
           end
         end
 
-        #Disable greeting
+        # Disable greeting
         set fish_greeting
 
         # Display system info

@@ -81,7 +81,7 @@ map("n", "<leader>nl", ":lnext<cr>", { desc = "Next Loclist item" })
 map("n", "<leader>pd", vim.diagnostic.goto_prev, { desc = "Prev diagnostics item" })
 map("n", "<leader>nd", vim.diagnostic.goto_next, { desc = "Next diagnostics item" })
 
-map({ "i", "x", "n", "s" }, "<C-s>", ":w<cr><esc>", { desc = "Save file" })
+map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 
 map("n", "<leader>qa",  ":qa<cr>",       { desc = "Quit All" })
 map("n", "<leader>qw",  ":close<cr>",    { desc = "Quit Window" })
@@ -115,10 +115,10 @@ map("c", "<C-l>", "<Right>",   { desc = "Go right" })
 map("n", "<leader>1", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" })
 map("n", "du", ":diffupdate<cr>", { desc = "Update diff" })
 
-map("i", "<C-e>",  [[<C-r>"]], { desc = "Paste in insert mode" })
+map("i", "<C-v>",  [[<C-r>"]], { desc = "Paste in insert mode" })
 
-map("n", "m", ":set hls<cr>*", { desc = "Go to next occurance of the word" })
-map("n", "M", ":set hls<cr>#", { desc = "Go to prev occurance of the word" })
+map("n", "m", "*", { desc = "Go to next occurance of the word" })
+map("n", "M", "#", { desc = "Go to prev occurance of the word" })
 
 map("v", "$", "g_", { desc = "Go until end of line" })
 
