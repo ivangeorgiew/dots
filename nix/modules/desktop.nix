@@ -136,6 +136,7 @@
       qt6.qtwayland # requirement for qt6
       rofi-wayland # app launcher for wayland
       slurp # needed by `grim`
+      swappy # similar to MS Paint
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
       vulkan-tools # to debug issues with vulkan
