@@ -115,7 +115,7 @@ map("c", "<C-l>", "<Right>",   { desc = "Go right" })
 map("n", "<leader>1", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" })
 map("n", "du", ":diffupdate<cr>", { desc = "Update diff" })
 
-map("i", "<C-v>",  [[<C-r>"]], { desc = "Paste in insert mode" })
+map("i", "<C-v>",  [[<C-r>+]], { desc = "Paste in insert mode" })
 
 map("n", "m", "*", { desc = "Go to next occurance of the word" })
 map("n", "M", "#", { desc = "Go to prev occurance of the word" })

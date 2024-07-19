@@ -8,6 +8,7 @@
       cmatrix # cool effect
       curl # download files
       dash # fastest shell
+      devbox # version manager (npm, pnpm, go, python, etc)
       fd # better alternative to find
       ffmpeg # for audio and video
       fishPlugins.colored-man-pages
@@ -53,11 +54,12 @@
       vesktop # discord + additions
       viber # chat app
 
-      #Language specific
-      (python310.withPackages(ps: with ps; [ requests pygobject3 ])) # python
+      # Language specific
+      (python310.withPackages(ps: with ps; [ requests pygobject3 ]))
       gobject-introspection # for some python scripts
+      go
       lua
-      nodejs # javascript
+      nodejs
     ];
 
     sessionVariables = rec {
@@ -120,16 +122,22 @@
         set fish_greeting
 
         # Display system info
-        nitch
+        # nitch
 
-        # set the path for npm global packages
-        npm set prefix ${npm_global_dir}
+        # Hook direnv
+        direnv hook fish | source
 
-        # add the npm globals to PATH
-        fish_add_path --path ${npm_global_dir}/bin
+        # Setup npm if available
+        if command -q npm
+          # set the path for npm global packages
+          npm set prefix ${npm_global_dir}
 
-        # install npm global packages
-        nohup npm i -g ${npm_packages} </dev/null &>/dev/null &
+          # add the npm globals to PATH
+          fish_add_path --path ${npm_global_dir}/bin
+
+          # install/update npm global packages
+          nohup npm i -g ${npm_packages} </dev/null &>/dev/null &
+        end
       '';
 
       #loginShellInit =
@@ -157,6 +165,19 @@
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
+    };
+
+    direnv = {
+      enable = true;
+      silent = true; # toggles direnv logging
+      loadInNixShell = true; # load direnv in `nix develop`
+      # package = pkgs.direnv;
+      # direnvrcExtra = ''; # extra config
+
+      nix-direnv = {
+        enable = true; # better implementation
+        # package = pkgs.nix-direnv;
+      };
     };
   };
 

@@ -21,6 +21,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # can add specific package version by getting info from https://www.nixhub.io/
+    # pkgs-nodejs_20_9.url = "github:nixos/nixpkgs/a71323f68d4377d12c04a5410e214495ec598d4c";
+    # then use: inputs.pkgs-nodejs_20_9.legacyPackages.${system}.nodejs_20
   };
 
   outputs = inputs@{ self, nixpkgs, ... }:
@@ -29,22 +33,19 @@
     inherit (nixpkgs) lib;
 
     username = "ivangeorgiew";
-    forAllSystems = lib.genAttrs [
-      "x86_64-linux"
-      "x86_64-darwin"
-      "aarch64-linux"
-      "aarch64-darwin"
-      "i686-linux"
-    ];
-  in rec
+    forAllSystems = (func:
+      nixpkgs.lib.genAttrs [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ]
+      (system: func nixpkgs.legacyPackages.${system})
+    );
+  in
   {
     # Custom packages, to use through `nix build`, `nix shell`, etc.
     packages = forAllSystems
-    (system: import ./nix/pkgs { pkgs = nixpkgs.legacyPackages.${system}; });
+    (pkgs: import ./nix/pkgs { inherit pkgs; });
 
     # Development shells to use through `nix develop`
     devShells = forAllSystems
-    (system: import ./nix/shell.nix { pkgs = nixpkgs.legacyPackages.${system}; });
+    (pkgs: import ./nix/shell.nix { inherit pkgs; });
 
     # Package overlays
     overlays = import ./nix/overlays.nix { inherit inputs; };

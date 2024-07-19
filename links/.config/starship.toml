@@ -1,3 +1,6 @@
+# Whether there is a new line between each prompt
+add_newline = false
+
 # Which palette to use
 palette = "catppuccin_mocha"
 
@@ -114,7 +117,8 @@ format = '\[[$symbol$project]($style)\]'
 format = '\[[$symbol($version)]($style)\]'
 
 [nix_shell]
-format = '\[[$symbol$state( \($name\))]($style)\]'
+symbol = '❄️ '
+format = '\[[$symbol($name)]($style)\]'
 
 [nodejs]
 format = '\[[$symbol($version)]($style)\]'
