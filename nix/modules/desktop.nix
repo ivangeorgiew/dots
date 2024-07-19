@@ -126,23 +126,22 @@
     };
 
     systemPackages = with pkgs; [
-      waybar # status bar
       dunst # notifications
       grim # screenshots for wayland
+      kdePackages.qtwayland # requirement for qt6
+      libsForQt5.qt5.qtwayland # requirement for qt5
+      mpvpaper # video wallpaper
       playerctl # controls media players
       polkit_gnome # some apps require polkit
-      libsForQt5.gwenview # image viewer
-      libsForQt5.qt5.qtwayland # requirement for qt5
-      qt6.qtwayland # requirement for qt6
       rofi-wayland # app launcher for wayland
       slurp # needed by `grim`
       swappy # similar to MS Paint
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
       vulkan-tools # to debug issues with vulkan
-      wl-clipboard # copy/paste on wayland
+      waybar # status bar
       wf-recorder # screen recording
-      mpvpaper # video wallpaper
+      wl-clipboard # copy/paste on wayland
     ];
 
     shellAliases = {

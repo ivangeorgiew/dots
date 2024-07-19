@@ -59,13 +59,6 @@
           package = pkgs.adw-gtk3;
         };
       };
-
-      # QT apps theming
-      qt = {
-        enable = true;
-        platformTheme.name = "adwaita";
-        style.name = "adwaita-dark";
-      };
     };
   };
 }

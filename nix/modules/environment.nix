@@ -38,9 +38,9 @@
       wget # download files
 
       # GUI apps
-      easyeffects # sound effects
       brave # browser
       celluloid # mpv with GUI (video player)
+      easyeffects # sound effects
       firefox-bin # browser
       floorp # browser
       gedit # basic text editor GUI
@@ -48,6 +48,7 @@
       keepassxc # password manager
       kitty # terminal
       libsForQt5.ark # 7-zip alternative
+      libsForQt5.gwenview # image viewer
       mpv # video player
       nur.repos.nltch.spotify-adblock # spotify
       qbittorrent # torrent downloading
@@ -182,28 +183,35 @@
 
   # Associate programs with file extensions
   xdg.mime =
-    # list from /run/current-system/sw/share/applications
-    let
-      browser = "floorp.desktop";
-      torrent = "org.qbittorrent.qBittorrent.desktop";
-      imgviewer = "org.kde.gwenview.desktop";
-    in {
-      defaultApplications = {
-        "text/html" = "${browser}";
-        "x-scheme-handler/http" = "${browser}";
-        "x-scheme-handler/https" = "${browser}";
-        "x-scheme-handler/about" = "${browser}";
-        "x-scheme-handler/unknown" = "${browser}";
+  # list from /run/current-system/sw/share/applications
+  let
+    browser = "floorp.desktop";
+    torrent = "org.qbittorrent.qBittorrent.desktop";
+    imgviewer = "org.kde.gwenview.desktop";
+  in {
+    defaultApplications = {
+      "text/html" = "${browser}";
+      "x-scheme-handler/http" = "${browser}";
+      "x-scheme-handler/https" = "${browser}";
+      "x-scheme-handler/about" = "${browser}";
+      "x-scheme-handler/unknown" = "${browser}";
 
-        "x-scheme-handler/magnet" = "${torrent}";
-        "application/x-bittorrent" = "${torrent}";
+      "x-scheme-handler/magnet" = "${torrent}";
+      "application/x-bittorrent" = "${torrent}";
 
-        "image/jpeg" = "${imgviewer}";
-        "image/png" = "${imgviewer}";
-        "image/gif" = "${imgviewer}";
-        "image/bmp" = "${imgviewer}";
-        "image/svg+xml" = "${imgviewer}";
-        "image/tiff" = "${imgviewer}";
-      };
+      "image/jpeg" = "${imgviewer}";
+      "image/png" = "${imgviewer}";
+      "image/gif" = "${imgviewer}";
+      "image/bmp" = "${imgviewer}";
+      "image/svg+xml" = "${imgviewer}";
+      "image/tiff" = "${imgviewer}";
     };
+  };
+
+  # QT apps theming
+  qt = {
+    enable = true;
+    platformTheme = "gnome";
+    style = "adwaita-dark";
+  };
 }
