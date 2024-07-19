@@ -3,6 +3,9 @@
 
 # Initial password is 123123
 # Don't forget to change the passwords of main user and root with `passwd username`
+
+# Initially based on https://github.com/Misterio77/nix-starter-configs/tree/main/standard
+
 {
   description = "My NixOS flake config";
 

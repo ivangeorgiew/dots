@@ -44,7 +44,7 @@ create_au(
   "BufEnter",
   {
     callback = function(e)
-      vim.opt.formatoptions = "tcrqlj" -- formatting options
+      vim.opt.formatoptions = "tcrqnlj" -- formatting options
     end
   }
 )

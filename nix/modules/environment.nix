@@ -91,11 +91,10 @@
       nix-switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
       nix-boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
       nix-update-all = "sudo nix flake update ~/dots/#"; # Update the versions of packages
-      nix-update = "nix_update"; # Update only specific flake inputs
+      nix-update = "update_nix_inputs"; # Update only specific flake inputs
       nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
       nix-roll = "sudo nix profile rollback --profile /nix/var/nix/profiles/system --to"; # Rollback to a generation
       nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system && nix store gc"; # Garbage collect nixos
-      nix-edit = "nix edit -f \"<nixpkgs>\""; # Check the source code of a package
     };
   };
 
@@ -112,7 +111,7 @@
         npm_global_dir = "~/.npm-global";
         npm_packages = "npm pnpm neovim typescript";
       in ''
-        function nix_update
+        function update_nix_inputs
           if count $argv > /dev/null
             sudo nix flake lock --update-input (string join " --update-input " $argv) ~/dots/#
           end

@@ -142,11 +142,9 @@ local map = tie(
   "create mapping",
   { { "string", "table" }, "string", { "string", "function" }, "table" },
   function(modes, lhs, rhs, opts)
-    local should_silence = type(modes) == "table" or (
-      modes ~= "ca" and modes ~= "!a" and modes ~= "c"
-    )
+    local isnt_abbrev = type(modes) == "table" or (modes ~= "ca" and modes ~= "!a")
 
-    if opts.silent == nil and should_silence then
+    if opts.silent == nil and isnt_abbrev then
       opts.silent = true
     end
 

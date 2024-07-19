@@ -51,6 +51,9 @@ map("i", "<C-c>", "<esc>", { desc = "Exit insert mode" })
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down", expr = true })
 map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up", expr = true })
 
+map("v", "<", "<gv", { desc = "Indent left" })
+map("v", ">", ">gv", { desc = "Indent right" })
+
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left split"  })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right split" })
 map("n", "<C-k>", "<C-w>k", { desc = "Go to upper split" })
@@ -73,6 +76,9 @@ map("n",          "n", "'Nn'[v:searchforward].'zv'",     { desc = "Next search r
 map("n",          "N", "'nN'[v:searchforward].'zv'",     { desc = "Prev search result", expr = true })
 map({ "x", "o" }, "n", "'Nn'[v:searchforward]",          { desc = "Next search result", expr = true })
 map({ "x", "o" }, "N", "'nN'[v:searchforward]",          { desc = "Prev search result", expr = true })
+
+map("n", "<leader>k", "K", { desc = "Keywordprg" })
+map("n", "<leader>l", ":Lazy<cr>", { desc = "Open lazy.nvim" })
 
 map("n", "<leader>pq", ":cprev<cr>", { desc = "Prev Quickfix item" })
 map("n", "<leader>nq", ":cnext<cr>", { desc = "Next Quickfix item" })
@@ -106,16 +112,16 @@ map({ "v", "o" }, [[a"]], [[2i"]], { desc = [[Select all in ""]] })
 map({ "v", "o" }, [[a']], [[2i']], { desc = [[Select all in '']] })
 map({ "v", "o" }, [[a`]], [[2i`]], { desc = [[Select all in ``]] })
 
-map("c", "<C-a>", "<Home>",    { desc = "Go to the beginning" })
-map("c", "<C-b>", "<S-Left>",  { desc = "Go a word to the left" })
-map("c", "<C-f>", "<S-Right>", { desc = "Go a word to the right" })
-map("c", "<C-h>", "<Left>",    { desc = "Go left" })
-map("c", "<C-l>", "<Right>",   { desc = "Go right" })
+map("c", "<C-a>", "<Home>",    { desc = "Go to the beginning", silent = false })
+map("c", "<C-b>", "<S-Left>",  { desc = "Go a word to the left", silent = false })
+map("c", "<C-f>", "<S-Right>", { desc = "Go a word to the right", silent = false })
+map("c", "<C-h>", "<Left>",    { desc = "Go left", silent = false })
+map("c", "<C-l>", "<Right>",   { desc = "Go right", silent = false })
 
 map("n", "<leader>1", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" })
 map("n", "du", ":diffupdate<cr>", { desc = "Update diff" })
 
-map("i", "<C-v>",  [[<C-r>+]], { desc = "Paste in insert mode" })
+map({ "i", "c" }, "<C-v>",  [[<C-r>+]], { desc = "Paste in insert mode", silent = false })
 
 map("n", "m", "*", { desc = "Go to next occurance of the word" })
 map("n", "M", "#", { desc = "Go to prev occurance of the word" })
