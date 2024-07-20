@@ -1,8 +1,13 @@
 { inputs, outputs, lib, config, pkgs, username, ... }:
+let
+  iconTheme = "Papirus-Dark";
+  themeName = "adw-gtk3-dark";
+in
 {
   environment = {
     systemPackages = with pkgs; [
-      # CLI apps and tools
+      # CLI apps, tools and requirements
+      adw-gtk3 # used for GTK theming
       btop # system monitor
       cava # audio visualizer
       cmatrix # cool effect
@@ -28,6 +33,7 @@
       nerdfix # removes obsolete nerd font icons
       nitch # alternative to neofetch
       p7zip # archiving and compression
+      papirus-icon-theme # icons for GTK
       pavucontrol # audio control
       pstree # prints tree of pids
       ripgrep # newest silver searcher + grep
@@ -44,6 +50,7 @@
       firefox-bin # browser
       floorp # browser
       gedit # basic text editor GUI
+      gnome.dconf-editor # to check GTK theming values
       google-chrome # browser
       keepassxc # password manager
       kitty # terminal
@@ -97,6 +104,24 @@
       nix-roll = "sudo nix profile rollback --profile /nix/var/nix/profiles/system --to"; # Rollback to a generation
       nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system && nix store gc"; # Garbage collect nixos
     };
+
+    etc = {
+      # GTK theming
+      "gtk-2.0/gtkrc".text = ''
+        gtk-icon-theme-name = "${iconTheme}"
+        gtk-theme-name = "${themeName}"
+      '';
+      "gtk-3.0/settings.ini".text = ''
+        [Settings]
+        gtk-icon-theme-name=${iconTheme}
+        gtk-theme-name=${themeName}
+      '';
+      "gtk-4.0/settings.ini".text = ''
+        [Settings]
+        gtk-icon-theme-name=${iconTheme}
+        gtk-theme-name=${themeName}
+      '';
+    };
   };
 
   # Config/add packages
@@ -139,16 +164,6 @@
           nohup npm i -g ${npm_packages} </dev/null &>/dev/null &
         end
       '';
-
-      #loginShellInit =
-      #let
-      #  dquote = str: "\"" + str + "\"";
-      #  makeBinPathList = map (path: path + "/bin");
-      #in ''
-      #  # Fix for/from https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1659465635
-      #  fish_add_path --move --prepend --path ${lib.concatMapStringsSep " " dquote (makeBinPathList config.environment.profiles)}
-      #  set fish_user_paths $fish_user_paths
-      #'';
     };
 
     # shell prompt
@@ -167,6 +182,8 @@
       vimAlias = true;
     };
 
+    # combined with devbox or a flake shell, autoloads
+    # packages and env variables when entering directories
     direnv = {
       enable = true;
       silent = true; # toggles direnv logging
@@ -179,6 +196,29 @@
         # package = pkgs.nix-direnv;
       };
     };
+
+    # GTK theming
+    dconf = {
+      enable = true;
+
+      # check different values with dconf-editor
+      # example config: https://github.com/Electrostasy/dots/blob/c62895040a8474bba8c4d48828665cfc1791c711/profiles/system/gnome/default.nix#L123-L287
+      profiles.user.databases = [{
+        settings = {
+          "org/gnome/desktop/interface" = {
+            gtk-theme = themeName;
+            icon-theme = iconTheme;
+          };
+        };
+      }];
+    };
+  };
+
+  # QT apps theming
+  qt = {
+    enable = true;
+    platformTheme = "gnome";
+    style = "adwaita-dark";
   };
 
   # Associate programs with file extensions
@@ -206,12 +246,5 @@
       "image/svg+xml" = "${imgviewer}";
       "image/tiff" = "${imgviewer}";
     };
-  };
-
-  # QT apps theming
-  qt = {
-    enable = true;
-    platformTheme = "gnome";
-    style = "adwaita-dark";
   };
 }

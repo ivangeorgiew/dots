@@ -17,12 +17,12 @@
 
     vesktop = prev.vesktop.override { withSystemVencord = false; };
 
-    neovim = inputs.neovim-nightly.packages.${prev.system}.neovim;
+    neovim = inputs.neovim-nightly.packages.${prev.system}.default;
   };
 
-  # Adds `pkgs.stable`
-  stable = final: _prev: {
-    stable = import inputs.nixpkgs-stable {
+  # Adds `pkgs.unstable`
+  unstable = final: _prev: {
+    unstable = import inputs.nixpkgs-unstable {
       system = final.system;
       config.allowUnfree = true;
     };

@@ -6,9 +6,6 @@
       enable = true;
 
       displayManager = {
-        # whether to autologin
-        autoLogin = { enable = false; user = username; };
-
         # Gnome display manager (login)
         gdm.enable = false;
 
@@ -16,14 +13,19 @@
         lightdm.enable = false;
       };
 
-      # Wayland handler for input devices (mouse, touchpad, etc.)
-      libinput = {
-        enable = true;
-        mouse.accelProfile = "flat"; # disables mouse acceleration
-      };
-
       # Enable proprietary Nvidia driver
       videoDrivers = [ "nvidia" ];
+    };
+
+    # Wayland handler for input devices (mouse, touchpad, etc.)
+    libinput = {
+      enable = true;
+      mouse.accelProfile = "flat"; # disables mouse acceleration
+    };
+
+    displayManager = {
+      # whether to autologin
+      autoLogin = { enable = false; user = username; };
     };
 
     # greetd display manager
@@ -116,7 +118,6 @@
       SDL_VIDEODRIVER = "wayland"; # might cause issues with older games
       WLR_DRM_NO_ATOMIC = "1"; # set if you have flickering issue
       WLR_NO_HARDWARE_CURSORS = "1";
-      XCURSOR_SIZE = "24"; # set also in modules/home.nix -> gtk.cursorTheme.size
       XDG_CURRENT_DESKTOP = "Hyprland";
       XDG_SESSION_DESKTOP = "Hyprland";
       XDG_SESSION_TYPE = "wayland";
@@ -166,9 +167,6 @@
 
     # app for gnome-keyring passwords management
     seahorse.enable = true;
-
-    # so that home-manager gtk stuff work
-    dconf.enable = true;
   };
 
   xdg.portal = {
