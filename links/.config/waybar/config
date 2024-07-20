@@ -96,7 +96,7 @@
 
     "pulseaudio": {
         "format": "{icon} {volume}%",
-        "format-muted": "{volume}% 󰸈",
+        "format-muted": "󰸈 {volume}%",
         "format-icons": {
             "default": ["", "", "󰕾"]
         },
@@ -141,13 +141,13 @@
     },
 
     "custom/playerctl#backward": {
-      "format": "󰙣 ",
+      "format": " ",
       "tooltip": false,
       "on-click": "playerctl -p spotify previous"
     },
 
     "custom/playerctl#foward": {
-      "format": "󰙡 ",
+      "format": " ",
       "tooltip": false,
       "on-click": "playerctl -p spotify next"
     },
@@ -157,9 +157,9 @@
       "format": "{icon}",
       "tooltip": false,
       "format-icons": {
-        "Paused": "<span> </span>",
-        "Playing": "<span>󰏥 </span>",
-        "Stopped": "<span> </span>"
+        "Paused": "<span> </span>",
+        "Playing": "<span> </span>",
+        "Stopped": "<span> </span>"
       },
       "on-click": "playerctl -p spotify play-pause",
       "return-type": "json"

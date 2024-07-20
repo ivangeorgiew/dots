@@ -6,5 +6,9 @@
     "hardwareAcceleration": true,
     "staticTitle": true,
     "enableMenu": true,
-    "checkUpdates": false
+    "checkUpdates": false,
+    "spellCheckLanguages": [
+        "en-US",
+        "en"
+    ]
 }

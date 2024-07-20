@@ -51,9 +51,6 @@ map("i", "<C-c>", "<esc>", { desc = "Exit insert mode" })
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down", expr = true })
 map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up", expr = true })
 
-map("v", "<", "<gv", { desc = "Indent left" })
-map("v", ">", ">gv", { desc = "Indent right" })
-
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left split"  })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right split" })
 map("n", "<C-k>", "<C-w>k", { desc = "Go to upper split" })
