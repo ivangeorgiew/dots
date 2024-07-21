@@ -20,7 +20,7 @@
     gc = {
       automatic = true;
       dates = "weekly";
-      options = "--delete-older-than 30d";
+      options = "--delete-older-than 7d";
     };
 
     # Adds each flake input as registry to make nix3 command consistent

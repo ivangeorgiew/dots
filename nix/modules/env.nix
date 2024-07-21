@@ -139,7 +139,8 @@ in
       in ''
         function update_nix_inputs
           if count $argv > /dev/null
-            sudo nix flake lock --update-input (string join " --update-input " $argv) ~/dots/#
+            set -l a (string join " --update-input " $argv)
+            eval "sudo nix flake lock --update-input $a ~/dots/#"
           end
         end
 
