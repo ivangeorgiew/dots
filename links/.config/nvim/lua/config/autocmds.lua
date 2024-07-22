@@ -1,5 +1,3 @@
-local create_au = require("utils").create_au
-
 create_au(
   "reload file on change",
   { "FocusGained", "TermClose", "TermLeave" },

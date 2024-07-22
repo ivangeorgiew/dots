@@ -1,5 +1,3 @@
-local create_cmd = require("utils").create_cmd
-
 create_cmd(
   "Navigate",
   function(t)

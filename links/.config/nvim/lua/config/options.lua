@@ -1,6 +1,8 @@
 -- see `:h vim.g` for more
 local g = vim.g
 
+g.colorscheme = "tokyonight" -- one of those in plugins/colorsheme.lua
+
 g.mapleader = " "
 g.maplocalleader = " "
 

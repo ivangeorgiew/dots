@@ -1,5 +1,6 @@
 -- For neovim's lua API info -> https://neovim.io/doc/user/lua-guide.html
-local tie = require("utils").tie
+
+require("utils") -- load utils
 
 tie("require config files", {}, function()
   --local configs = vim.fn.readdir(vim.fn.stdpath("config") .. "/lua/config", [[v:val =~ "\.lua$"]])

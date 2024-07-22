@@ -1,6 +1,3 @@
-local tie = require("utils").tie
-local map = require("utils").map
-
 return {
   {
     "numToStr/Comment.nvim",

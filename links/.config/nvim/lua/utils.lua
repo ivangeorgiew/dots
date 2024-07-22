@@ -197,10 +197,7 @@ _G._print = _G.print
 _G.print = local_print
 _G.table_extend = table_extend
 _G.RETHROW = RETHROW
-
-return {
-  tie = tie,
-  map = map,
-  create_au = create_au,
-  create_cmd = create_cmd,
-}
+_G.tie = tie
+_G.map = map
+_G.create_au = create_au
+_G.create_cmd = create_cmd

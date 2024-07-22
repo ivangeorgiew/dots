@@ -1,6 +1,3 @@
-local tie = require("utils").tie
-local map = require("utils").map
-
 -- no need to use tie(), map() already does it
 local toggle_search_hl = function()
   local curr_search = vim.fn.getreg("/")
@@ -75,7 +72,10 @@ map({ "x", "o" }, "n", "'Nn'[v:searchforward]",          { desc = "Next search r
 map({ "x", "o" }, "N", "'nN'[v:searchforward]",          { desc = "Prev search result", expr = true })
 
 map("n", "<leader>k", "K", { desc = "Keywordprg" })
+
 map("n", "<leader>l", ":Lazy<cr>", { desc = "Open lazy.nvim" })
+
+map("n", "<leader>do", vim.diagnostic.open_float, { desc = "Show diagnostics in a window" })
 
 map("n", "<leader>pq", ":cprev<cr>", { desc = "Prev Quickfix item" })
 map("n", "<leader>nq", ":cnext<cr>", { desc = "Next Quickfix item" })
@@ -116,7 +116,7 @@ map("c", "<C-h>", "<Left>",    { desc = "Go left", silent = false })
 map("c", "<C-l>", "<Right>",   { desc = "Go right", silent = false })
 
 map("n", "<leader>1", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" })
-map("n", "du", ":diffupdate<cr>", { desc = "Update diff" })
+map("n", "du", ":diffupdate<cr>", { desc = "Update diff" }) -- "do" for diff obtain and "dp" for diff put
 
 map({ "i", "c" }, "<C-v>",  [[<C-r>+]], { desc = "Paste in insert mode", silent = false })
 
