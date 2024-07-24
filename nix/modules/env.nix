@@ -8,7 +8,9 @@ in
     systemPackages = with pkgs; [
       # CLI apps, tools and requirements
       adw-gtk3 # used for GTK theming
+      bat # better alternative to cat
       btop # system monitor
+      babelfish # translate bash scripts to fish
       cava # audio visualizer
       cmatrix # cool effect
       curl # download files
@@ -39,6 +41,7 @@ in
       ripgrep # newest silver searcher + grep
       shared-mime-info # add new custom mime types (check arch wiki)
       stow # symlink dotfiles
+      tree # print folder tree structure
       tree-sitter # needed by neovim
       unzip # required by some programs
       wget # download files
@@ -58,17 +61,25 @@ in
       libsForQt5.gwenview # image viewer
       mpv # video player
       nur.repos.nltch.spotify-adblock # spotify
+      pinta # MS Paint for linux
       qbittorrent # torrent downloading
+      unstable.viber # chat app
       vesktop # discord + additions
-      viber # chat app
 
-      # Language specific
-      (python310.withPackages(ps: with ps; [ requests pygobject3 ]))
+      # Languages and Package Managers
+      (python310.withPackages(ps: with ps; [ requests pygobject3 pip ]))
       gobject-introspection # for some python scripts
       go
-      lua
+      lua51Packages.lua
+      luarocks
       nodejs
+      # cargo
+      # php83Packages.composer
+      # php
+      # julia-bin
     ];
+
+    localBinInPath = true; # add ~/.local/bin to PATH
 
     sessionVariables = rec {
       TERMINAL = "kitty";
@@ -90,12 +101,13 @@ in
 
     shellAliases = {
       ll = "ls -lah1"; # List files and directories
-      kl = "pkill -9"; # Force kill a process (hence the 9)
-      ks = "ps aux | grep"; # List a process
       rm = "rm -rI"; # Ask for each file before deleting
       mkdir = "mkdir -p"; # Make dirs recursively
       cp = "cp -r"; # Copy recursively
-      p = "pnpm"; # Launch pnpm node package manager
+      cat = "bat"; # Show file contents
+      p = "pnpm"; # use pnpm
+      ps_search = "ps aux | rg"; # List a process
+      ps_kill = "pkill -9"; # Force kill a process (hence the 9)
       nix-switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
       nix-boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
       nix-update-all = "sudo nix flake update ~/dots/#"; # Update the versions of packages
@@ -135,7 +147,7 @@ in
       interactiveShellInit =
       let
         npm_global_dir = "~/.npm-global";
-        npm_packages = "npm pnpm neovim typescript";
+        npm_packages = "npm pnpm neovim";
       in ''
         function update_nix_inputs
           if count $argv > /dev/null
@@ -156,10 +168,10 @@ in
         # Setup npm if available
         if command -q npm
           # set the path for npm global packages
-          npm set prefix ${npm_global_dir}
+          npm set prefix ${npm_global_dir} &
 
           # add the npm globals to PATH
-          fish_add_path --path ${npm_global_dir}/bin
+          fish_add_path --path ${npm_global_dir}/bin &
 
           # install/update npm global packages
           nohup npm i -g ${npm_packages} </dev/null &>/dev/null &
@@ -181,6 +193,23 @@ in
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
+    };
+
+    # java = {
+    #   enable = true;
+    #   # package = pkgs.jdk; # can be substituted to oracle version
+    # };
+
+    # fix dynamically linked binaries
+    # for example: things installed from mason.nvim
+    # might need to set:
+    # environment.shellInit = ''
+    #   export NIX_LD=${pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"}
+    # ''
+    nix-ld = {
+      enable = true;
+      # package = pkgs.nix-ld;
+      # libraries = []; # extra libraries to include
     };
 
     # combined with devbox or a flake shell, autoloads
