@@ -1,8 +1,18 @@
 -- Search for packages: https://mason-registry.dev/registry/list
 
+-- TODO: read ":h mason" and add helper plugins like mason-lspconfig
+
 return {
   "williamboman/mason.nvim",
   event = "VeryLazy",
+  cmd = {
+    "Mason",
+    "MasonUpdate",
+    "MasonInstall",
+    "MasonUninstall",
+    "MasonUninstallAll",
+    "MasonLog",
+  },
   opts = {
     ---@since 1.0.0
     -- The directory in which to install packages.

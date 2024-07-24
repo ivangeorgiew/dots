@@ -1,8 +1,9 @@
+-- TODO: add more colorschemes?
+
 return {
   {
     "folke/tokyonight.nvim",
-    enabled = tie("enable theme", {}, function() return vim.g.colorscheme == "tokyonight" end),
-    lazy = false,
+    lazy = not (vim.g.colorscheme == "tokyonight"),
     priority = 1000, -- load before all other plugins start
 
     -- pass setup options manually instead of using `opts`
@@ -62,8 +63,7 @@ return {
 
   {
     "rebelot/kanagawa.nvim",
-    enabled = tie("enable theme", {}, function() return vim.g.colorscheme == "kanagawa" end),
-    lazy = false,
+    lazy = not (vim.g.colorscheme == "kanagawa"),
     priority = 1000, -- load before all other plugins start
 
     -- pass setup options manually instead of using `opts`
@@ -74,7 +74,7 @@ return {
       function()
         require('kanagawa').setup({
           compile = false,             -- enable compiling the colorscheme
-          undercurl = true,            -- enable undercurls
+          undercurl = false,            -- enable undercurls
           commentStyle = { italic = true },
           functionStyle = {},
           keywordStyle = { italic = false },
@@ -99,7 +99,7 @@ return {
           ),
           theme = "dragon", -- when 'background' option is not set
           background = {
-            dark = "wave", -- try "dragon" !
+            dark = "wave", -- try "dragon" or "lotus"
             light = "lotus"
           },
         })

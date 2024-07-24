@@ -65,7 +65,7 @@ return {
           multiline_context = 10, -- extra lines that will be re-evaluated when changing a line
           before = "", -- "fg" or "bg" or empty
           keyword = "bg", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
-          after = "fg", -- "fg" or "bg" or empty
+          after = "", -- "fg" or "bg" or empty
           -- pattern can be a string, or a table of regexes that will be checked
           pattern = [[.*<(KEYWORDS):]], -- pattern or table of patterns, used for highlightng (vim regex)
           -- pattern = { [[.*<(KEYWORDS)\s*:]], [[.*\@(KEYWORDS)\s*]] }, -- pattern used for highlightng (vim regex)
@@ -100,8 +100,12 @@ return {
         },
       })
 
-      map("n", "<leader>pt", require("todo-comments").jump_prev, { desc = "Prev Todo (or other special) comment" })
-      map("n", "<leader>nt", require("todo-comments").jump_next, { desc = "Next Todo (or other special) comment" })
+      create_map("n", "<leader>pt", require("todo-comments").jump_prev, { desc = "Prev Todo (or other special) comment" })
+      create_map("n", "<leader>nt", require("todo-comments").jump_next, { desc = "Next Todo (or other special) comment" })
+
+      -- TODO: check :h todo-comments.nvim-todo-comments-usage
+      -- TODO: integrate with Telescope.nvim (:TodoTelescope)
+      -- TODO: integrate with Trouble.nvim (:TodoTrouble)
     end
   }
 }

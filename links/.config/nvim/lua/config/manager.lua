@@ -1,5 +1,5 @@
 -- Lazy Settings: https://lazy.folke.io/configuration
--- Plugin Settings: https://lazy.folke.io/spec/examples
+-- Plugin Settings: https://lazy.folke.io/spec
 
 -- setup plugin manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"

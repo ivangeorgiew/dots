@@ -1,13 +1,11 @@
 -- NOTE: Useful API used in this or other files:
--- vim.g
--- vim.o or vim.opt
--- table_extend()
--- vim.api.nvim_create_augroup()
--- vim.api.nvim_create_autocmd()
--- vim.api.nvim_create_user_command(name, command, opts)
--- vim.keymap.set(modes, lhs, rhs, opts)
--- vim.notify()
--- vim.cmd()
+-- vim.g - set or get global variable
+-- vim.o or vim.opt - set option
+-- vim.notify() - better print
+-- vim.cmd() - execute command
+-- vim.tbl_contains() - check if lua table contains a value
+-- vim.tbl_deep_extend() -- extend lua table
+-- vim.ui.input({ prompt = "Name: " }, function(input) end) -- get input and use it
 
 -- NOTE: Call builtin vim function
 -- vim.call(reg_recording)
@@ -67,26 +65,28 @@ local tie = function(descr, spec, on_try, on_catch)
 
   local inner_catch = function(args)
     return function(err)
-      local result, catch_was_valid
-      local is_res_err = false
+      local value
+      local catch_was_valid = true
+      local is_error = false
+
+      -- vim.log.levels.ERROR screws up the message
+      vim.notify("Error at [" .. descr .. "]:\n  " .. err, vim.log.levels.WARN)
 
       if type(on_catch) == "function" then
-        catch_was_valid, result = pcall(on_catch, err, args)
+        local on_catch_args = { descr = descr, err = err, args = args }
+
+        catch_was_valid, value = pcall(on_catch, on_catch_args)
       end
 
-      if result == RETHROW then
-        result = "\nWhile calling [" .. descr .. "]:\n  " .. err
-        is_res_err = true
-      else
-        vim.notify("Error at [" .. descr .. "]:\n  " .. err, vim.log.levels.ERROR)
-
-        if not catch_was_valid then
-          result = "\nWhile catching error for [" .. descr .. "]:\n  " .. result
-          is_res_err = true
-        end
+      if value == RETHROW then
+        value = "\nWhile calling [" .. descr .. "]:\n  " .. err
+        is_error = true
+      elseif not catch_was_valid then
+        value = "\nWhile catching error for [" .. descr .. "]:\n  " .. value
+        is_error = true
       end
 
-      return { value = result, is_res_err = is_res_err }
+      return { value = value, is_error = is_error }
     end
   end
 
@@ -99,7 +99,7 @@ local tie = function(descr, spec, on_try, on_catch)
     local was_valid, result = xpcall(on_try, inner_catch(args), unpack(args))
 
     if not was_valid then
-      if result.is_res_err then
+      if result.is_error then
         error(result.value, 2)
       else
         return result.value
@@ -126,19 +126,12 @@ local local_print = tie(
 
     vim.notify(table.concat(print_safe_args, ' '), vim.log.levels.INFO)
   end,
-  function(e, args)
-    _print(unpack(args))
+  function(props)
+    _print(unpack(props.args))
   end
 )
 
-local table_extend = tie(
-  "extend table",
-  { "table", "table" },
-  function(a, b) return vim.tbl_deep_extend("force", a, b) end,
-  function() return RETHROW end
-)
-
-local map = tie(
+local create_map = tie(
   "create mapping",
   { { "string", "table" }, "string", { "string", "function" }, "table" },
   function(modes, lhs, rhs, opts)
@@ -148,11 +141,9 @@ local map = tie(
       opts.silent = true
     end
 
-    if type(rhs) == "function" and opts.should_tie ~= false then
+    if type(rhs) == "function" then
       rhs = tie(opts.desc, {}, rhs)
     end
-
-    if opts.should_tie ~= nil then opts.should_tie = nil end
 
     vim.keymap.set(modes, lhs, rhs, opts)
   end
@@ -164,14 +155,15 @@ local create_au = tie(
   function(group_name, events, opts)
     opts.group = vim.api.nvim_create_augroup(group_name, { clear = true })
 
-    if type(opts.callback) == "function" and opts.should_tie ~= false then
+    if type(opts.callback) == "function" then
       -- type `:h nvim_create_autocmd` to see all the args for `callback`
       opts.callback = tie(group_name, { "table" }, opts.callback)
     end
 
-    if opts.should_tie ~= nil then opts.should_tie = nil end
-
     vim.api.nvim_create_autocmd(events, opts)
+  end,
+  function(props)
+    vim.api.nvim_del_augroup_by_name(group_name)
   end
 )
 
@@ -179,7 +171,7 @@ local create_cmd = tie(
   "create user command",
   { "string", { "string", "function" }, "table"},
   function(name, command, opts)
-    if type(command) == "function" and opts.should_tie ~= false then
+    if type(command) == "function" then
       local desc = name
 
       if type(opts.desc == "string") then desc = opts.desc end
@@ -187,17 +179,14 @@ local create_cmd = tie(
       command = tie(desc, { "table" }, command)
     end
 
-    if opts.should_tie ~= nil then opts.should_tie = nil end
-
     vim.api.nvim_create_user_command(name, command, opts)
   end
 )
 
 _G._print = _G.print
 _G.print = local_print
-_G.table_extend = table_extend
 _G.RETHROW = RETHROW
 _G.tie = tie
-_G.map = map
+_G.create_map = create_map
 _G.create_au = create_au
 _G.create_cmd = create_cmd
