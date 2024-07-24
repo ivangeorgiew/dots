@@ -168,10 +168,12 @@ in
         # Setup npm if available
         if command -q npm
           # set the path for npm global packages
-          npm set prefix ${npm_global_dir} &
+          if not grep -q ".npm-global" ~/.npmrc
+            npm set prefix ${npm_global_dir}
+          end
 
           # add the npm globals to PATH
-          fish_add_path --path ${npm_global_dir}/bin &
+          fish_add_path --path ${npm_global_dir}/bin
 
           # install/update npm global packages
           nohup npm i -g ${npm_packages} </dev/null &>/dev/null &
