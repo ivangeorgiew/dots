@@ -9,9 +9,9 @@ tie("require config files", {}, function()
   local configs = {
     "options",
     "manager",
-    "keymaps",
     "usercmds",
     "autocmds",
+    "keymaps",
   }
 
   for _, file in ipairs(configs) do

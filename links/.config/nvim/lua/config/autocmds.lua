@@ -11,6 +11,18 @@ create_au(
 )
 
 create_au(
+  "delete ending space",
+  { "BufWritePre", "BufReadPost" },
+  {
+    callback = function(e)
+      vim.cmd("normal! ms")
+      vim.cmd([[silent! %s/\s\+$//]])
+      vim.cmd("normal! `s")
+    end,
+  }
+)
+
+create_au(
   "resize splits on window resize",
   "VimResized",
   {

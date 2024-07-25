@@ -33,10 +33,10 @@ create_map({ "i", "n" }, "<C-s>", "<cmd>w<bar>noh<cr><esc>", { desc = "Save file
 create_map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down", expr = true })
 create_map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up", expr = true })
 
-create_map("n", "<C-h>", "<C-w>h", { desc = "Go to left split"  })
-create_map("n", "<C-l>", "<C-w>l", { desc = "Go to right split" })
-create_map("n", "<C-k>", "<C-w>k", { desc = "Go to upper split" })
-create_map("n", "<C-j>", "<C-w>j", { desc = "Go to lower split" })
+create_map({ "n", "v" }, "<C-h>", "<cmd>Navigate h<cr>", { desc = "Go to left split"  })
+create_map({ "n", "v" }, "<C-l>", "<cmd>Navigate l<cr>", { desc = "Go to right split" })
+create_map({ "n", "v" }, "<C-k>", "<cmd>Navigate k<cr>", { desc = "Go to upper split" })
+create_map({ "n", "v" }, "<C-j>", "<cmd>Navigate j<cr>", { desc = "Go to lower split" })
 
 create_map("n", "<C-d>", "20jzz", { desc = "Move screen down" })
 create_map("n", "<C-u>", "20kzz", { desc = "Move screen up" })
