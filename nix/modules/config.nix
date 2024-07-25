@@ -10,7 +10,7 @@
 
       # Temporarily needed insecure packages
       permittedInsecurePackages = [
-        "openssl-1.1.1w" # for viber
+        # "openssl-1.1.1w" # for viber
       ];
     };
   };
@@ -42,24 +42,16 @@
       # Binary caches
       substituters = [
         "https://cache.nixos.org"
-        "https://hyprland.cachix.org"
         "https://nix-community.cachix.org"
       ];
 
       # Public keys for the above caches
       trusted-public-keys = [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" 
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
     };
   };
-
-  # Add shells to /etc/shells
-  environment.shells = with pkgs; [ fish ];
-
-  # Default shell for all users
-  users.defaultUserShell = pkgs.fish;
 
   # User accounts. Don't forget to set a password with ‘passwd’.
   users.users.root.initialPassword = "123123";
@@ -76,9 +68,6 @@
     # Shorter timers for services
     extraConfig = "DefaultTimeoutStartSec=5s\nDefaultTimeoutStopSec=5s";
   };
-
-  # Set your time zone.
-  time.timeZone = "Europe/Sofia";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -117,13 +106,11 @@
       options = "grp:shifts_toggle,ctrl:swapcaps";
     };
 
-    # for auto mounting of disks
-    gvfs.enable = true;
-    udisks2.enable = true;
-    devmon.enable = true;
-
-    # file manager thumbnail support for images
-    tumbler.enable = true;
+    # handler for input devices (mouse, touchpad, etc.)
+    libinput = {
+      enable = true;
+      mouse.accelProfile = "flat"; # disables mouse acceleration
+    };
 
     # toggles flatpak
     flatpak.enable = true;

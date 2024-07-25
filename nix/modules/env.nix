@@ -4,7 +4,16 @@ let
   themeName = "adw-gtk3-dark";
 in
 {
+  # Default shell for all users
+  users.defaultUserShell = pkgs.fish;
+
   environment = {
+    # add ~/.local/bin to PATH
+    localBinInPath = true;
+
+    # Add shells to /etc/shells
+    shells = with pkgs; [ fish ];
+
     systemPackages = with pkgs; [
       # CLI apps, tools and requirements
       adw-gtk3 # used for GTK theming
@@ -79,9 +88,7 @@ in
       # julia-bin
     ];
 
-    localBinInPath = true; # add ~/.local/bin to PATH
-
-    sessionVariables = rec {
+    sessionVariables = {
       TERMINAL = "kitty";
       BROWSER = "floorp";
       HISTCONTROL = "ignoreboth:erasedups";

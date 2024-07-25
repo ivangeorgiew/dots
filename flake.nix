@@ -27,7 +27,6 @@
     inherit (self) outputs;
     inherit (nixpkgs) lib;
 
-    username = "ivangeorgiew";
     forAllSystems = (func:
       nixpkgs.lib.genAttrs [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ]
       (system: func nixpkgs.legacyPackages.${system})
@@ -49,10 +48,18 @@
     nixosModules = import ./nix/modules { inherit lib; };
 
     # Configurations
-    nixosConfigurations.mahcomp = lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = { inherit inputs outputs username; };
-      modules = builtins.attrValues outputs.nixosModules;
+    nixosConfigurations = {
+      mahcomp = lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs outputs;
+          username = "ivangeorgiew";
+          graphicsCard = "nvidia";
+        };
+        modules = (builtins.attrValues outputs.nixosModules) ++ [
+          ./nix/modules/hardware.nix
+        ];
+      };
     };
   };
 }

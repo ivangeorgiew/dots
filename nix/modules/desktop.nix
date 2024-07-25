@@ -1,5 +1,10 @@
-{ inputs, outputs, lib, config, pkgs, username, ... }:
+{ inputs, lib, pkgs, username, graphicsCard, ... }:
 {
+  nix.settings = {
+    substituters = lib.mkAfter [ "https://hyprland.cachix.org" ];
+    trusted-public-keys = lib.mkAfter [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
+  };
+
   services = {
     # Bad naming. Manages all the DE/WM settings, not only X11
     xserver = {
@@ -12,15 +17,6 @@
         # disable the default login manager
         lightdm.enable = false;
       };
-
-      # Enable proprietary Nvidia driver
-      videoDrivers = [ "nvidia" ];
-    };
-
-    # Wayland handler for input devices (mouse, touchpad, etc.)
-    libinput = {
-      enable = true;
-      mouse.accelProfile = "flat"; # disables mouse acceleration
     };
 
     displayManager = {
@@ -55,62 +51,11 @@
   security.pam.services.swaylock = { };
   security.pam.services.swaylock.fprintAuth = false;
 
-  # OpenGL has to be enabled for Nvidia according to wiki
-  hardware.opengl = {
-    enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
-
-    # fixes some applications (but maybe can break others?)
-    #setLdLibraryPath = true;
-
-    extraPackages = with pkgs; [
-      libva
-      vaapiVdpau
-      libvdpau-va-gl
-    ];
-
-    extraPackages32 = with pkgs.pkgsi686Linux; [
-      libva
-      vaapiVdpau
-      libvdpau-va-gl
-    ];
-  };
-
-  # Nvidia settings
-  hardware.nvidia = {
-    # Modesetting should be enabled almost always
-    modesetting.enable = true;
-
-    # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
-    powerManagement.enable = false;
-
-    # Fine-grained power management. Turns off GPU when not in use.
-    # Experimental and only works on modern Nvidia GPUs (Turing or newer).
-    powerManagement.finegrained = false;
-
-    # Choose driver package
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-
-    # Use the open source version
-    open = false;
-
-    # Auto installs nvidia-settings
-    nvidiaSettings = true;
-
-    # fix G-Sync / Adaptive Sync black screen issue
-    # disable if it's not needed because of worse performance
-    #forceFullCompositionPipeline = true;
-  };
-
   # Wayland packages and env variables
   environment = {
     sessionVariables = {
-      KEYBOARD_NAME = "kingston-hyperx-alloy-fps-pro-mechanical-gaming-keyboard"; # output of `hyprctl devices` for waybar module
       CLUTTER_BACKEND = "wayland";
-      GBM_BACKEND = "nvidia-drm"; # Could crash Firefox
       GDK_BACKEND = "wayland,x11";
-      LIBVA_DRIVER_NAME = "nvidia";
       NIXOS_OZONE_WL = "1";
       QT_AUTO_SCREEN_SCALE_FACTOR = "1";
       QT_QPA_PLATFORM = "wayland;xcb";
@@ -121,9 +66,12 @@
       XDG_CURRENT_DESKTOP = "Hyprland";
       XDG_SESSION_DESKTOP = "Hyprland";
       XDG_SESSION_TYPE = "wayland";
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia"; # Could cause issues with Discord and Zoom
       __GL_GSYNC_ALLOWED = "1";
       __GL_VRR_ALLOWED = "1";
+    } // lib.optionalAttrs (graphicsCard == "nvidia") {
+      GBM_BACKEND = "nvidia-drm"; # Could crash Firefox
+      LIBVA_DRIVER_NAME = "nvidia";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia"; # Could cause issues with Discord and Zoom
     };
 
     systemPackages = with pkgs; [
@@ -136,7 +84,6 @@
       polkit_gnome # some apps require polkit
       rofi-wayland # app launcher for wayland
       slurp # needed by `grim`
-      swappy # similar to MS Paint
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
       vulkan-tools # to debug issues with vulkan
@@ -167,6 +114,16 @@
 
     # app for gnome-keyring passwords management
     seahorse.enable = true;
+  };
+
+  services = {
+    # for auto mounting of disks
+    gvfs.enable = true;
+    udisks2.enable = true;
+    devmon.enable = true;
+
+    # file manager thumbnail support for images
+    tumbler.enable = true;
   };
 
   xdg.portal = {
