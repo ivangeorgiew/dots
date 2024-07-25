@@ -66,11 +66,11 @@ in
       google-chrome # browser
       keepassxc # password manager
       kitty # terminal
+      kolourpaint # MS Paint for linux
       libsForQt5.ark # 7-zip alternative
       libsForQt5.gwenview # image viewer
       mpv # video player
       nur.repos.nltch.spotify-adblock # spotify
-      pinta # MS Paint for linux
       qbittorrent # torrent downloading
       unstable.viber # chat app
       vesktop # discord + additions
