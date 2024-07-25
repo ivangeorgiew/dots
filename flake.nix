@@ -57,7 +57,7 @@
           graphicsCard = "nvidia";
         };
         modules = (builtins.attrValues outputs.nixosModules) ++ [
-          ./nix/modules/hardware.nix
+          ./nix/modules/hardware-mahcomp.nix
         ];
       };
     };
