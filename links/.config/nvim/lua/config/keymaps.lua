@@ -26,9 +26,8 @@ create_map({ "n", "v" }, "s", [["_s]],  { desc = "Substitute" })
 create_map({ "n", "v" }, "c", [["_c]],  { desc = "Change" })
 create_map({ "n", "v" }, "x", [["_x]],  { desc = "Delete character" })
 
-create_map({ "i", "n" }, "<C-c>", "<cmd>noh<bar>diffupdate<bar>normal! <C-l><cr><esc>", { desc = "Refresh screen and state" })
-create_map({ "i", "n" }, "<Esc>", "<cmd>noh<bar>diffupdate<bar>normal! <C-l><cr><esc>", { desc = "Refresh screen and state" })
-create_map({ "i", "n" }, "<C-s>", "<cmd>w<bar>noh<cr><esc>", { desc = "Save file" })
+create_map({ "i", "n", "v" }, "<C-c>", "<esc>", { desc = "Escape" })
+create_map({ "i", "n", "v" }, "<C-s>", "<cmd>w<bar>noh<bar>diffupdate<bar>normal! <C-l><cr><esc>", { desc = "Save file" })
 
 create_map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down", expr = true })
 create_map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up", expr = true })
