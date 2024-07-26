@@ -163,6 +163,15 @@ in
           end
         end
 
+        function go_to_project
+          set -l dirs $(fd . --exact-depth 1 -t d -L ~/projects ~/.config)
+          set -a dirs ~/dots
+          cd $(string split ' ' $dirs | fzf)
+        end
+
+        # Bind C-g to go to project dir
+        bind \cg 'go_to_project; commandline -f repaint'
+
         # Disable greeting
         set fish_greeting
 
