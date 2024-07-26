@@ -20,7 +20,7 @@
 
     # Don't wait to have an IP
     dhcpcd.wait = "background";
-    dhcpcd.extraConfig = "noarp"; 
+    dhcpcd.extraConfig = "noarp";
 
     # Configure NetworkManager
     networkmanager = {

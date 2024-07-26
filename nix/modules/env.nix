@@ -164,13 +164,28 @@ in
         end
 
         function go_to_project
+          # list of project dirs
           set -l dirs $(fd . --exact-depth 1 -t d -L ~/projects ~/.config)
-          set -a dirs ~/dots
-          cd $(string split ' ' $dirs | fzf)
-        end
 
-        # Bind C-g to go to project dir
-        bind \cg 'go_to_project; commandline -f repaint'
+          # append to `dirs`
+          set -a dirs ~/dots
+
+          # wanted project path
+          set -l dir_path (string split ' ' $dirs | fzf)
+
+          # only the dir name
+          set -l tab_name (basename $dir_path)
+
+          if test -d $dir_path
+            # go to the tab if it exists
+            kitty @ focus-tab --match title:$tab_name 2>/dev/null
+
+            if test ! $status -eq 0
+              # create a new tab and change to it
+              kitty @ launch --type=tab --tab-title $tab_name --cwd $dir_path
+            end
+          end
+        end
 
         # Disable greeting
         set fish_greeting
