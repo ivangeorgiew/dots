@@ -572,13 +572,13 @@
         "VoiceDownload": {
             "enabled": false
         },
-        "WatchTogetherAdblock": {
-            "enabled": false
-        },
         "WebScreenShareFixes": {
             "enabled": true
         },
         "MentionAvatars": {
+            "enabled": false
+        },
+        "YoutubeAdblock": {
             "enabled": false
         }
     },
@@ -592,6 +592,6 @@
         "authenticated": false,
         "url": "https://api.vencord.dev/",
         "settingsSync": false,
-        "settingsSyncVersion": 1721059761406
+        "settingsSyncVersion": 1722520983220
     }
 }

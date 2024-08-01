@@ -2,37 +2,36 @@
     name = Ivan Georgiev
     email = ivan_georgiew@yahoo.com
 [alias]
-    ad = !git add -A ; add all files to be commited
-    cm = !git commit -m ; commit the added files
     ac = !git add -A && git commit -m ; add all files and commit them
-    rs = restore --staged ; remove file/s from added list
+    ad = !git add -A ; add all files to be commited
     cl = clone
+    cm = !git commit -m ; commit the added files
+    cp = cherry-pick ; apply 1 or more commits from another branch to current one
     ct = checkout ; switch between branches
     df = diff; show only unstaged changes
-    dfs = diff --staged; show only staged changes
     dfa = diff HEAD; show staged + unstaged changes
+    dfs = diff --staged; show only staged changes
     dl = branch -D ; delete local branch
     dr = push origin --delete ; delete remote branch
+    fa = fetch --all
+    lg = log --graph --full-history --color --pretty=format:"%x1b[35m%h%x20%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n%x1b[0m%s%n"
+    lga = log --graph --full-history --all --color --pretty=format:"%x1b[35m%h%x20%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n%x1b[0m%s%n"
+    lst = !git branch --sort=committerdate ; sort branches by commit date
     ma = merge --abort
     me = merge --ff
-    lg = log --graph --full-history --color \
-        --pretty=format:"%x1b[35m%h%x20%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n%x1b[0m%s%n"
-    lga = log --graph --full-history --all --color \
-        --pretty=format:"%x1b[35m%h%x20%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n%x1b[0m%s%n"
     ph = push -u
     pl = pull
     pre = checkout @{-1} ; go to previous branch/commit
+    rs = restore --staged ; remove file/s from added list
     rt = reset HEAD~1 ; go back 1 commit and show changes as unstaged
     sa = submodule add
-    su = !git submodule sync && git submodule update --init --recursive
-    ss = status
     sch = !git branch --all | grep ; search branch names
-    lst = !git branch --sort=committerdate ; sort branches by commit date
     sh = stash --keep-index ; stash changes
     sha = "!git stash apply stash@{\"$1\"} #" ; apply stash with a number
     shs = "!git stash show stash@{\"$1\"} #" ; show stash with a number
-    fa = fetch --all
-    cp = cherry-pick ; apply 1 or more commits from another branch to current one
+    ss = status
+    su = !git submodule sync && git submodule update --init --recursive
+    w = worktree
 [core]
     autocrlf = input
 [include]

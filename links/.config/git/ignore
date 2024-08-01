@@ -17,3 +17,4 @@ linux-install.log
 .vim/view/*
 .vim/session/*
 .vim/.viminf*
+.branches

@@ -17,9 +17,9 @@ in
     systemPackages = with pkgs; [
       # CLI apps, tools and requirements
       adw-gtk3 # used for GTK theming
+      babelfish # translate bash scripts to fish
       bat # better alternative to cat
       btop # system monitor
-      babelfish # translate bash scripts to fish
       cava # audio visualizer
       cmatrix # cool effect
       curl # download files
@@ -47,6 +47,7 @@ in
       papirus-icon-theme # icons for GTK
       pavucontrol # audio control
       pstree # prints tree of pids
+      qalculate-gtk # calculator
       ripgrep # newest silver searcher + grep
       shared-mime-info # add new custom mime types (check arch wiki)
       stow # symlink dotfiles
@@ -112,7 +113,7 @@ in
       mkdir = "mkdir -p"; # Make dirs recursively
       cp = "cp -r"; # Copy recursively
       cat = "bat"; # Show file contents
-      p = "pnpm"; # use pnpm
+      p = "pnpm"; # Use pnpm
       ps_search = "ps aux | rg"; # List a process
       ps_kill = "pkill -9"; # Force kill a process (hence the 9)
       nix-switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
@@ -156,6 +157,13 @@ in
         npm_global_dir = "~/.npm-global";
         npm_packages = "npm pnpm neovim";
       in ''
+        function multicd
+          set -l length (math (string length -- $argv) - 1)
+          echo cd (string repeat -n $length ../)
+        end
+
+        abbr --add dotdot --regex '^\.\.+$' --function multicd
+
         function update_nix_inputs
           if count $argv > /dev/null
             set -l a (string join " --update-input " $argv)
@@ -278,10 +286,11 @@ in
   };
 
   # QT apps theming
+  # might need to set global theme manualy with the KDE System Settings app
   qt = {
     enable = true;
-    platformTheme = "gnome";
-    style = "adwaita-dark";
+    platformTheme = "kde";
+    style = "breeze";
   };
 
   # Associate programs with file extensions

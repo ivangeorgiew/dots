@@ -3,7 +3,8 @@
 return {
   {
     "folke/tokyonight.nvim",
-    lazy = not (vim.g.colorscheme == "tokyonight"),
+    enabled = vim.g.colorscheme == "tokyonight",
+    lazy = false,
     priority = 1000, -- load before all other plugins start
 
     -- pass setup options manually instead of using `opts`
@@ -63,16 +64,14 @@ return {
 
   {
     "rebelot/kanagawa.nvim",
-    lazy = not (vim.g.colorscheme == "kanagawa"),
+    enabled = vim.g.colorscheme == "kanagawa",
+    lazy = false,
     priority = 1000, -- load before all other plugins start
-
-    -- pass setup options manually instead of using `opts`
-    -- because we have to use `config` to change the colorscheme
     config = tie(
-      "configure tokyonight",
+      "configure kanagawa",
       {},
       function()
-        require('kanagawa').setup({
+        require("kanagawa").setup({
           compile = false,             -- enable compiling the colorscheme
           undercurl = false,            -- enable undercurls
           commentStyle = { italic = true },
@@ -108,5 +107,5 @@ return {
         vim.cmd("colorscheme kanagawa")
       end
     ),
-  }
+  },
 }

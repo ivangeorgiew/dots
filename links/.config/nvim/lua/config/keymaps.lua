@@ -32,10 +32,10 @@ create_map({ "i", "n", "v" }, "<C-s>", "<cmd>w<bar>noh<bar>diffupdate<bar>normal
 create_map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down", expr = true })
 create_map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up", expr = true })
 
-create_map({ "n", "v" }, "<C-h>", "<cmd>Navigate h<cr>", { desc = "Go to left split"  })
-create_map({ "n", "v" }, "<C-l>", "<cmd>Navigate l<cr>", { desc = "Go to right split" })
-create_map({ "n", "v" }, "<C-k>", "<cmd>Navigate k<cr>", { desc = "Go to upper split" })
-create_map({ "n", "v" }, "<C-j>", "<cmd>Navigate j<cr>", { desc = "Go to lower split" })
+create_map("n", "<C-h>", "<cmd>Navigate h<cr>", { desc = "Go to left split"  })
+create_map("n", "<C-l>", "<cmd>Navigate l<cr>", { desc = "Go to right split" })
+create_map("n", "<C-k>", "<cmd>Navigate k<cr>", { desc = "Go to upper split" })
+create_map("n", "<C-j>", "<cmd>Navigate j<cr>", { desc = "Go to lower split" })
 
 create_map("n", "<C-d>", "20jzz", { desc = "Move screen down" })
 create_map("n", "<C-u>", "20kzz", { desc = "Move screen up" })
@@ -45,11 +45,10 @@ create_map("n", "<S-Down>",  ":resize -2<cr>",          { desc = "Decrease windo
 create_map("n", "<S-Left>",  ":vertical resize -2<cr>", { desc = "Decrease window width" })
 create_map("n", "<S-Right>", ":vertical resize +2<cr>", { desc = "Increase window width" })
 
-create_map("n", "<C-Up>",   ":m -2<cr>==",      { desc = "Move selected lines up"   })
-create_map("n", "<C-Down>", ":m +1<cr>==",      { desc = "Move selected lines down" })
-create_map("v", "<C-Up>",   ":m '<-2<cr>gv=gv", { desc = "Move selected lines up"   })
-create_map("v", "<C-Down>", ":m '>+1<cr>gv=gv", { desc = "Move selected lines down" })
+create_map("v", "<C-k>", ":m '<-2<cr>gv=gv", { desc = "Move selected lines up"   })
+create_map("v", "<C-j>", ":m '>+1<cr>gv=gv", { desc = "Move selected lines down" })
 
+-- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
 create_map("n",          "n", "'Nn'[v:searchforward].'zv'",     { desc = "Next search result", expr = true })
 create_map("n",          "N", "'nN'[v:searchforward].'zv'",     { desc = "Prev search result", expr = true })
 create_map({ "x", "o" }, "n", "'Nn'[v:searchforward]",          { desc = "Next search result", expr = true })
