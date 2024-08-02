@@ -40,6 +40,7 @@
         "online-go.com"
         "9gag.com"
         "www.youtube.com"
+        # "www.reddit.com"
       ];
     };
   };
