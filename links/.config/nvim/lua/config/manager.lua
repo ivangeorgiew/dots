@@ -35,9 +35,23 @@ require("lazy").setup({
     -- cond = nil, ---@type boolean|fun(self:LazyPlugin):boolean|nil
   },
 
-  -- auto add all my plugins from `lua/plugins/*.lua`
-  -- spec = {},
-  spec = "plugins",
+  -- wrap plugins importing with error handling
+  -- alternatively, without error handling -> spec = "plugins",
+  spec = tie("requiring all plugins", {}, function()
+    local plugin_files = vim.fn.readdir(vim.fn.stdpath("config") .. "/lua/plugins", [[v:val =~ "\.lua$"]])
+    local plugins = {}
+
+    for _, file in ipairs(plugin_files) do
+      table.insert(plugins, tie(
+        "requiring " .. file .. " plugins",
+        {},
+        function() return require("plugins/" .. file:gsub("%.lua$", "")) end,
+        function() return {} end
+      )())
+    end
+
+    return plugins
+  end)(),
 
   -- local_spec = true, -- load project specific .lazy.lua spec files. They will be added at the end of the spec.
 
