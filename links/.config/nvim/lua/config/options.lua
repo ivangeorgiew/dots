@@ -1,7 +1,7 @@
 -- see `:h vim.g` for more
 local g = vim.g
 
-g.colorscheme = "tokyonight" -- one of those in plugins/colorsheme.lua
+g.colorscheme = "monokai-nightasty" -- one of those in plugins/colorsheme.lua
 
 g.mapleader = " "
 g.maplocalleader = " "
@@ -19,8 +19,10 @@ o.shiftwidth = 2 -- amount of spaces on shifting
 o.expandtab = true -- change tab to use spaces
 
 o.autoindent = true -- copy indent level from previous line
+o.autowrite = true -- smart auto-save on some commands
 o.autowriteall = true -- smart auto-save on some commands
 o.backup = false -- toggle backup file
+o.background = "dark" -- default to dark background
 o.breakindent = true -- wrapped line continues on the same indent level
 o.clipboard = "unnamedplus" -- combine OS and Neovim clipboard
 o.cmdheight = 0 -- if set to 0, hides the command line, when not typing a command NOTE: Experimental
@@ -70,4 +72,4 @@ o.virtualedit = "block" -- be able to place the cursor anywhere during vis block
 o.wildignore:append({"*/node_modules/*"}) -- ignore node_modules folders for completion stuff
 o.wildmode = "longest:full,full" -- command line completion
 o.winminwidth = 5 -- min width of a window
-o.wrap = true -- line wrap
+o.wrap = false -- line wrap

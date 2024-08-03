@@ -7,7 +7,6 @@ return {
       { "gc",  mode = { "n", "v" } },
       { "gb",  mode = { "n", "v" } },
     },
-    --event = "VeryLazy",
     config = tie(
       "configure Comment.nvim",
       {},
@@ -33,7 +32,7 @@ return {
   {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
-    event = "BufReadPost",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       require("todo-comments").setup({
         signs = true, -- show icons in the signs column
@@ -102,6 +101,9 @@ return {
 
       create_map("n", "<leader>pt", require("todo-comments").jump_prev, { desc = "Prev Todo (or other special) comment" })
       create_map("n", "<leader>nt", require("todo-comments").jump_next, { desc = "Next Todo (or other special) comment" })
+
+      create_map("ca", "TodoLocList", "TodoLocList keywords=TODO,FIX", {})
+      create_map("ca", "TodoQuickFix", "TodoQuickFix keywords=TODO,FIX", {})
 
       -- TODO: check :h todo-comments.nvim-todo-comments-usage
       -- TODO: integrate with Telescope.nvim (:TodoTelescope)

@@ -56,16 +56,14 @@ create_map({ "x", "o" }, "N", "'nN'[v:searchforward]",          { desc = "Prev s
 
 create_map("n", "<leader>k", "K", { desc = "Keywordprg" })
 
-create_map("n", "<leader>l", ":Lazy<cr>", { desc = "Open lazy.nvim" })
-
-create_map("n", "<leader>do", vim.diagnostic.open_float, { desc = "Show diagnostics in a window" })
-
 create_map("n", "<leader>pq", ":cprev<cr>", { desc = "Prev Quickfix item" })
 create_map("n", "<leader>nq", ":cnext<cr>", { desc = "Next Quickfix item" })
 create_map("n", "<leader>pl", ":lprev<cr>", { desc = "Prev Loclist item" })
 create_map("n", "<leader>nl", ":lnext<cr>", { desc = "Next Loclist item" })
 create_map("n", "<leader>pd", vim.diagnostic.goto_prev, { desc = "Prev diagnostics item" })
 create_map("n", "<leader>nd", vim.diagnostic.goto_next, { desc = "Next diagnostics item" })
+
+create_map("n", "<leader>do", vim.diagnostic.open_float, { desc = "Show diagnostics in a window" })
 
 create_map("n", "<leader>qa",  ":qa<cr>",       { desc = "Quit All" })
 create_map("n", "<leader>qw",  ":close<cr>",    { desc = "Quit Window" })
