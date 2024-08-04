@@ -7,9 +7,22 @@ g.mapleader = " "
 g.maplocalleader = " "
 
 -- provider related settings
+-- for plugins created by different languages
 g.loaded_ruby_provider = 0
 g.loaded_perl_provider = 0
-g.node_host_prog = "~/.npm-global/bin/neovim-node-host"
+-- g.loaded_python3_provider = 0
+-- g.loaded_node_provider = 0
+g.node_host_prog = "~/.npm-global/node_modules/.bin/neovim-node-host"
+
+-- see `:h vim.filetype.add`
+vim.filetype.add({
+  extensions = {
+    -- foo = 'fooscript',
+  },
+  filename = {
+    -- ['.foorc'] = 'toml',
+  }
+})
 
 -- see `:h vim.opt` for more
 local o = vim.opt

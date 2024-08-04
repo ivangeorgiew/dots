@@ -155,7 +155,6 @@ in
       interactiveShellInit =
       let
         npm_global_dir = "~/.npm-global";
-        npm_packages = "npm pnpm neovim";
       in ''
         function multicd
           set -l length (math (string length -- $argv) - 1)
@@ -199,17 +198,16 @@ in
         direnv hook fish | source
 
         # Setup npm if available
-        if command -q npm
-          # set the path for npm global packages
-          if not grep -q ".npm-global" ~/.npmrc
-            npm set prefix ${npm_global_dir}
-          end
+        if command -q npm && test -d ${npm_global_dir}
+          cd ${npm_global_dir}
+
+          # install npm global packages
+          nohup npm i </dev/null &>/dev/null &
 
           # add the npm globals to PATH
-          fish_add_path --path ${npm_global_dir}/bin
+          fish_add_path --path ${npm_global_dir}/node_modules/.bin
 
-          # install/update npm global packages
-          nohup npm i -g ${npm_packages} </dev/null &>/dev/null &
+          cd -
         end
       '';
     };

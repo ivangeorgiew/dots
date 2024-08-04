@@ -1,0 +1,14 @@
+{
+  "name": "globals",
+  "version": "1.0.0",
+  "description": "My global npm packages",
+  "main": "index.js",
+  "author": "Ivan Georgiev <ivan_georgiew@yahoo.com>",
+  "license": "MIT",
+  "scripts": {},
+  "dependencies": {
+    "neovim": "^5.1.0",
+    "npm": "^10.8.2",
+    "pnpm": "^9.6.0"
+  }
+}

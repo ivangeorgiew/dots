@@ -1,7 +1,7 @@
--- Search for packages: https://mason-registry.dev/registry/list
-
 -- TODO: integrate mason dependencies in nvim-lspconfig, nvim-dap, none-ls
 
+-- list of LSP, DAP, Formatters and Linters to install
+-- check available ones with :Mason or https://mason-registry.dev/registry/list
 local ensure_installed = {
   -- you can pin a tool to a particular version
   -- { 'golangci-lint', version = 'v1.47.0' },
@@ -33,8 +33,8 @@ return {
         -- install_root_dir = vim.fn.stdpath("data") .. "/mason",
 
         -- Where Mason should put its bin location in your PATH.
-        ---@type '"prepend"' | '"append"' | '"skip"'
-        PATH = "skip",
+        -- '"prepend"' | '"append"' | '"skip"'
+        -- PATH = "prepend",
 
         -- Controls to which degree logs are written to the log file. It's useful to set this to vim.log.levels.DEBUG when
         -- debugging issues with package installations.
@@ -85,22 +85,15 @@ return {
       })
 
       require("mason-lspconfig").setup({
-        -- Whether servers that are set up (via lspconfig) should be automatically installed if they're not already installed.
-        -- This setting has no relation with the `ensure_installed` setting.
-        -- Can either be:
-        --   - false: Servers are not automatically installed.
-        --   - true: All servers set up via lspconfig are automatically installed.
-        --   - { exclude: string[] }: All servers set up via lspconfig, except the ones provided in the list, are automatically installed.
-        --       Example: automatic_installation = { exclude = { "rust_analyzer", "solargraph" } }
-        ---@type boolean
+        -- true: All servers set up via lspconfig are automatically installed.
         -- automatic_installation = false,
 
         -- See `:h mason-lspconfig.setup_handlers()`
-        ---@type table<string, fun(server_name: string)>?
         -- handlers = nil
       })
 
       require("mason-nvim-dap").setup({
+        -- true: All servers set up via lspconfig are automatically installed.
         -- automatic_installation = false,
 
         -- https://github.com/jay-babu/mason-nvim-dap.nvim/tree/main?tab=readme-ov-file#handlers-usage-automatic-setup
@@ -118,6 +111,7 @@ return {
           hover = true,
         },
 
+        -- true: All servers set up via lspconfig are automatically installed.
         -- automatic_installation = true,
 
         -- https://github.com/jay-babu/mason-null-ls.nvim?tab=readme-ov-file#handlers-usage
