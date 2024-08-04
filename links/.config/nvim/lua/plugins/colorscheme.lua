@@ -115,74 +115,60 @@ return {
   },
 
   {
-    "polirritmico/monokai-nightasty.nvim",
-    enabled = vim.g.colorscheme == "monokai-nightasty",
+    "loctvl842/monokai-pro.nvim",
+    enabled = vim.g.colorscheme == "monokai-pro",
     lazy = false,
     priority = 1000,
     config = tie(
       "configure theme",
       {},
       function()
-        require("monokai-nightasty").setup({
-          dark_style_background = "transparent", -- default, dark, transparent, #color
-          light_style_background = "transparent", -- default, dark, transparent, #color
-          hl_styles = {
-            -- Style to be applied to selected syntax groups: (See `:help nvim_set_hl` for supported keys)
-            comments = { italic = true },
-            keywords = { italic = false },
-            functions = {},
-            variables = {},
-            -- Background styles for sidebars (panels) and floating windows:
-            floats = "transparent", -- default, dark, transparent
-            sidebars = "transparent", -- default, dark, transparent
-          },
-
-          color_headers = false, -- Enable header colors for each header level (h1, h2, etc.)
-          dim_inactive = false, -- dims inactive windows
-          lualine_bold = true, -- Lualine headers will be bold or regular
-          lualine_style = "default", -- "dark", "light" or "default" (default follows dark/light style)
-          markdown_header_marks = false, -- Add headers marks highlights (the `#` character) to Treesitter highlight query
-
-          -- Set the colors for terminal-mode (`:h terminal-config`). `false` to disable it.
-          -- Pass a table with `terminal_color_x` values: `{ terminal_color_8 = "#e6e6e6" }`.
-          -- Also accepts a function:
-          -- ```lua
-          -- function(colors) return { fg = colors.fg_dark, terminal_color_4 = "#ff00ff" } end
-          -- ```
-          -- > Use the `fg` key to apply colors to the normal text.
+        require("monokai-pro").setup({
+          filter = "spectrum", -- classic | octagon | pro | machine | ristretto | spectrum
+          transparent_background = true,
           terminal_colors = true,
-
-          --- You can override specific color groups to use other groups or a hex color
-          --- function will be called with the Monokai ColorScheme table.
-          ---@param colors ColorScheme
-          on_colors = tie("override colors", { "table" }, function(c) end),
-
-          --- You can override specific highlights to use other groups or a hex color
-          --- function will be called with the Monokai Highlights and ColorScheme table.
-          ---@param highlights monokai.Highlights
-          ---@param colors ColorScheme
-          on_highlights = tie("override highlights", { "table", "table" }, function(hl, c) end),
-
-          -- When `true` the theme will be cached for better performance.
-          cache = true,
-
-          --- Automatically enable highlights for supported plugins in the lazy.nvim config.
-          auto_enable_plugins = true,
-
-          --- List of manually enabled/disabled plugins.
-          --- Check the supported plugins here:
-          ---   https://github.com/polirritmico/monokai-nightasty.nvim/tree/main/lua/monokai-nightasty/highlights
-          ---@type table<string, boolean>
-          -- plugins = {
-          --   -- Use the ["<repository name>"]. For example:
-          --   -- ["telescope.nvim"] = true,
-
-          --   -- `all`: enable or disable all plugins. By default if lazy.nvim is not loaded enable all the plugins
-          --   all = package.loaded.lazy == nil,
-          -- },
+          devicons = true, -- highlight the icons of `nvim-web-devicons`
+          styles = {
+            comment = { italic = true },
+            keyword = { italic = true }, -- any other keyword
+            type = { italic = true }, -- (preferred) int, long, char, etc
+            storageclass = { italic = true }, -- static, register, volatile, etc
+            structure = { italic = true }, -- struct, union, enum, etc
+            parameter = { italic = true }, -- parameter pass in function
+            annotation = { italic = true },
+            tag_attribute = { italic = true }, -- attribute of tag in reactjs
+          },
+          inc_search = "background", -- underline | background
+          background_clear = {
+            "float_win",
+            "toggleterm",
+            "telescope",
+            "which-key",
+            "renamer",
+            "notify",
+            "nvim-tree",
+            "neo-tree",
+            "bufferline",
+          },
+          plugins = {
+            bufferline = {
+              underline_selected = false,
+              underline_visible = false,
+              underline_fill = false,
+              bold = true,
+            },
+            indent_blankline = {
+              context_highlight = "default", -- default | pro
+              context_start_underline = false,
+            },
+          },
+          -- https://github.com/loctvl842/monokai-pro.nvim/tree/master
+          override = tie("override colors", { "table" }, function(c) end),
         })
 
-        vim.cmd("colorscheme monokai-nightasty")
+        -- TODO: if you use lualine, you can set it's options theme to monokai-pro
+
+        vim.cmd("colorscheme monokai-pro")
       end
     ),
   },
