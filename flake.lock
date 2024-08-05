@@ -372,29 +372,12 @@
         "type": "github"
       }
     },
-    "nur": {
-      "locked": {
-        "lastModified": 1721493515,
-        "narHash": "sha256-l8XIL7n0zQ0Rkwr9x+6Hkfml1O+hvlagcM8xqws8cy0=",
-        "owner": "nix-community",
-        "repo": "nur",
-        "rev": "cd04c57aa89f999c964378ba250f023919c13036",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "ref": "master",
-        "repo": "nur",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "hyprland": "hyprland",
         "neovim-nightly": "neovim-nightly",
         "nixpkgs": "nixpkgs_3",
-        "nixpkgs-unstable": "nixpkgs-unstable",
-        "nur": "nur"
+        "nixpkgs-unstable": "nixpkgs-unstable"
       }
     },
     "systems": {

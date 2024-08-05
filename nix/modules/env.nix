@@ -72,7 +72,7 @@ in
       libsForQt5.ark # 7-zip alternative
       loupe # image viewer
       mpv # video player
-      nur.repos.nltch.spotify-adblock # spotify
+      spotify-no-ads # music player
       qbittorrent # torrent downloading
       unstable.viber # chat app
       vesktop # discord + additions

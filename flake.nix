@@ -13,7 +13,6 @@
     # get newest commit for nixos-unstable from https://status.nixos.org/
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nur.url = "github:nix-community/nur/master";
     hyprland.url = "github:hyprwm/Hyprland/v0.37.1";
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
 

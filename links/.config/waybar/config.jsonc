@@ -47,42 +47,42 @@
 
     "clock": {
       "format": "  {:%H:%M %a %d/%m/%y}",
-      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
     },
 
     "cpu": {
       "interval": 5,
       "format": " {}%",
       "max-length": 10,
-      "on-click": "",
+      "on-click": ""
     },
 
     "memory": {
       "interval": 5,
       "format": " {}%",
       "format-alt":" {used:0.1f}GB",
-      "max-length": 10,
+      "max-length": 10
     },
 
     "temperature": {
       "hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
       "format": "CPU {temperatureC}°C",
       "interval": 5,
-      "tooltip": false,
+      "tooltip": false
     },
 
     "custom/gpu": {
       "exec": "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader",
       "interval": 5,
       "format": "GPU {}°C",
-      "tooltip": false,
+      "tooltip": false
     },
 
     "backlight": {
         "device": "eDP-1",
         "format": "{icon}",
         "tooltip-format": "{percent}",
-        "format-icons": ["󱩎 ", "󱩏 ", "󱩐 ", "󱩑 ", "󱩒 ", "󱩓 ", "󱩔 ", "󱩕 ", "󱩖 ", "󰛨 "],
+        "format-icons": ["󱩎 ", "󱩏 ", "󱩐 ", "󱩑 ", "󱩒 ", "󱩓 ", "󱩔 ", "󱩕 ", "󱩖 ", "󰛨 "]
     },
 
     "network": {
@@ -90,8 +90,8 @@
         "format-ethernet": "󰈀",
         "format-disconnected": "󰖪",
         "tooltip-format": "{essid}",
-        "on-click": "~/.config/waybar/scripts/network/rofi-network-manager.sh",
-        "format-icons": ["󰤯","󰤟","󰤢","󰤥","󰤨"],
+        "on-click": "",
+        "format-icons": ["󰤯","󰤟","󰤢","󰤥","󰤨"]
     },
 
     "pulseaudio": {
@@ -119,17 +119,17 @@
       "format-warning": "{icon}",
       "format-critical": "{icon}",
       "format-charging": "",
-      "format-plugged": "󰚥", 
+      "format-plugged": "󰚥",
 
       "format-alt": "{icon} {time}",
-      "format-full": "󱊣", 
+      "format-full": "󱊣",
       "format-icons": ["󱊡", "󱊢", "󱊣"]
     },
 
     "custom/weather": {
       "exec": "python3 ~/.config/waybar/scripts/weather.py",
       "restart-interval": 300,
-      "return-type": "json",
+      "return-type": "json"
     },
 
     "custom/keyboard": {
@@ -155,7 +155,7 @@
     "custom/playerctl#play": {
       "exec": "playerctl -p spotify metadata -F -f '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}'",
       "format": "{icon}",
-      "tooltip": false,
+      "tooltip-format": "<span>󰎈 {} 󰎈</span>",
       "format-icons": {
         "Paused": "<span> </span>",
         "Playing": "<span> </span>",
@@ -189,11 +189,12 @@
     "custom/shutdown": {
       "format": "⏻",
       "tooltip": false,
-      "on-double-click": "~/.config/waybar/scripts/killall.sh && systemctl poweroff",
-    }, 
+      "on-double-click": "~/.config/waybar/scripts/killall.sh && systemctl poweroff"
+    },
 
     "custom/launcher": {
       "format": "󱄅",
-      "on-click": "rofi -show drun &",
-    },
+      "tooltip": false,
+      "on-click": "rofi -show drun &"
+    }
 }

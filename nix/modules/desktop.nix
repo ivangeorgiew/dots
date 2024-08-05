@@ -80,6 +80,7 @@
       kdePackages.qtwayland # requirement for qt6
       libsForQt5.qt5.qtwayland # requirement for qt5
       mpvpaper # video wallpaper
+      networkmanagerapplet # manage wifi
       playerctl # controls media players
       polkit_gnome # some apps require polkit
       rofi-wayland # app launcher for wayland

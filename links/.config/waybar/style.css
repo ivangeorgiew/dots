@@ -5,11 +5,6 @@
   border-radius: 0px;
 }
 
-/* remove the default styling */
-#workspaces button:hover {
-  background: inherit;
-}
-
 window#waybar {
   background: rgba(26, 27, 38, 0);
 }
@@ -28,6 +23,15 @@ window#waybar {
 
 #custom-gpu {
   color: #fb958b;
+}
+
+#workspaces {
+  margin-left: 0px;
+  padding-left: 0px;
+}
+
+#workspaces button:hover {
+  background: inherit;
 }
 
 #workspaces button {
@@ -49,7 +53,7 @@ window#waybar {
 }
 
 #custom-keyboard {
-  color: #a1c999;
+  color: #ecd3a0;
 }
 
 #network {
@@ -58,7 +62,7 @@ window#waybar {
 
 #pulseaudio {
   font-size: 15px;
-  color: #ecd3a0;
+  color: #a1c999;
 }
 
 #pulseaudio.muted {
@@ -83,7 +87,6 @@ window#waybar {
   color: #7a95c9;
   padding: 0 18px 0 15px;
   margin-right: 5px;
-  font-size: 18px;
 }
 
 #custom-reboot {
@@ -132,6 +135,7 @@ tooltip label {
 }
 
 #custom-weather {
+  padding-right: 5px;
   color: #fff;
 }
 
