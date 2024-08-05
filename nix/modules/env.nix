@@ -62,6 +62,7 @@ in
       easyeffects # sound effects
       firefox-bin # browser
       floorp # browser
+      freetube # youtube alternative
       gedit # basic text editor GUI
       gnome.dconf-editor # to check GTK theming values
       google-chrome # browser
@@ -69,7 +70,7 @@ in
       kitty # terminal
       kolourpaint # MS Paint for linux
       libsForQt5.ark # 7-zip alternative
-      libsForQt5.gwenview # image viewer
+      loupe # image viewer
       mpv # video player
       nur.repos.nltch.spotify-adblock # spotify
       qbittorrent # torrent downloading
@@ -77,16 +78,17 @@ in
       vesktop # discord + additions
 
       # Languages and Package Managers
+      # cargo
+      # julia-bin
+      # php
+      # php83Packages.composer
       (python310.withPackages(ps: with ps; [ requests pygobject3 pip ]))
-      gobject-introspection # for some python scripts
       go
+      gobject-introspection # for some python scripts
       lua51Packages.lua
       luarocks
       nodejs
-      # cargo
-      # php83Packages.composer
-      # php
-      # julia-bin
+      ruby
     ];
 
     sessionVariables = {
