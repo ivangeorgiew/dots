@@ -4,36 +4,37 @@
   additions = finalPkgs: _prevPkgs: { my-pkgs = import ./pkgs { pkgs = finalPkgs; }; };
 
   # Modifies existing pkgs https://nixos.wiki/wiki/Overlays
-  modifications = finalPkgs: prevPkgs: {
+  modifications = finalPkgs: prevPkgs: rec {
     # Adds `pkgs.unstable`
     unstable = import inputs.nixpkgs-unstable {
       system = finalPkgs.system;
       config.allowUnfree = true;
     };
 
-    mpvpaper = prevPkgs.mpvpaper.overrideAttrs (oldAttrs: {
-      src = prevPkgs.fetchFromGitHub {
-        owner = "GhostNaN";
-        repo = "mpvpaper";
-        rev = "d8164bb6bd2960d2f7f6a9573e086d07d440f037";
-        sha256 = "sha256-/A2C6T7gP+VGON3Peaz2Y4rNC63UT+zYr4RNM2gdLUY=";
-      };
-    });
+    modified = {
+      mpvpaper = prevPkgs.mpvpaper.overrideAttrs (oldAttrs: {
+        src = prevPkgs.fetchFromGitHub {
+          owner = "GhostNaN";
+          repo = "mpvpaper";
+          rev = "d8164bb6bd2960d2f7f6a9573e086d07d440f037";
+          sha256 = "sha256-/A2C6T7gP+VGON3Peaz2Y4rNC63UT+zYr4RNM2gdLUY=";
+        };
+      });
 
-    vesktop = prevPkgs.vesktop.override { withSystemVencord = false; };
+      vesktop = prevPkgs.vesktop.override { withSystemVencord = false; };
 
-    neovim = inputs.neovim-nightly.packages.${prevPkgs.system}.default;
+      neovim = inputs.neovim-nightly.packages.${prevPkgs.system}.default;
 
-    freetube = prevPkgs.freetube.overrideAttrs (oldAttrs: rec {
-      version = "0.21.3";
-      src = prevPkgs.fetchurl {
-        url = "https://github.com/FreeTubeApp/FreeTube/releases/download/v${version}-beta/freetube_${version}_amd64.AppImage";
-        sha256 = "sha256-sg/ycFo4roOJ2sW4naRCE6dwGXVQFzF8uwAZQkS2EY4=";
-      };
-    });
+      freetube = prevPkgs.freetube.overrideAttrs (oldAttrs: rec {
+        version = "0.21.3";
+        src = prevPkgs.fetchurl {
+          url = "https://github.com/FreeTubeApp/FreeTube/releases/download/v${version}-beta/freetube_${version}_amd64.AppImage";
+          sha256 = "sha256-sg/ycFo4roOJ2sW4naRCE6dwGXVQFzF8uwAZQkS2EY4=";
+        };
+      });
 
-    # https://github.com/NL-TCH/nur-packages/blob/master/pkgs/spotify-adblock/default.nix
-    spotify-no-ads =
+      # https://github.com/NL-TCH/nur-packages/blob/master/pkgs/spotify-adblock/default.nix
+      spotify-no-ads =
       let
         spotify-adblock = prevPkgs.rustPlatform.buildRustPackage {
           pname = "spotify-adblock";
@@ -76,5 +77,17 @@
             rm $out/share/spotify/Apps/xpui.js
           '';
         });
+
+      nwg-hello = unstable.nwg-hello.overrideAttrs (oldAttrs: {
+        postPatch = (oldAttrs.postPatch or "") + ''
+          substituteInPlace nwg_hello/main.py \
+            --replace "$out/etc/nwg-hello/nwg-hello.json" "/etc/nwg-hello/nwg-hello.json" \
+            --replace "$out/etc/nwg-hello/nwg-hello.css" "/etc/nwg-hello/nwg-hello.css"
+
+          substituteInPlace nwg-hello-default.css \
+            --replace "/usr/share/nwg-hello/nwg.jpg" "$out/share/nwg-hello/nwg.jpg"
+        '';
+      });
+    };
   };
 }

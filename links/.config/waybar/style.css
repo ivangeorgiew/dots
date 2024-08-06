@@ -18,11 +18,11 @@ window#waybar {
 }
 
 #temperature {
-  color: #ecd3a0;
+  color: #fb958b;
 }
 
 #custom-gpu {
-  color: #fb958b;
+  color: #a1c999;
 }
 
 #workspaces {
@@ -63,6 +63,7 @@ window#waybar {
 #pulseaudio {
   font-size: 15px;
   color: #a1c999;
+  margin-left: 8px;
 }
 
 #pulseaudio.muted {
@@ -113,7 +114,8 @@ tooltip label {
 }
 
 #tray {
-  margin-right: 8px;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 #tray > .passive {
@@ -140,11 +142,16 @@ tooltip label {
 }
 
 #custom-playerctl.text-button {
-  font-size: 20px;
-  background: none;
+  font-size: 17px;
   padding: 0px;
-  margin: 0px;
-  padding-right: 5px;
+  margin-top: 3px;
+  margin-left: 0px;
+  margin-right: 3px;
+  /* background: none; */
+}
+
+#custom-playerctl.backward {
+  margin-left: 6px;
 }
 
 #custom-playerlabel {

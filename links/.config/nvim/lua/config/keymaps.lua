@@ -10,7 +10,7 @@ local delete_maps = tie(
   end
 )
 
-delete_maps("n", { "Z", "ZZ" })
+delete_maps("n", { "Z", "ZZ", "<C-f>", "<C-b>" })
 
 -- mappings
 

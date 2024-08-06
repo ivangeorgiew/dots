@@ -27,10 +27,10 @@
     # greetd display manager
     greetd = {
       enable = true;
-
+      vt = 1;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --user-menu --time --cmd Hyprland";
+          command = "Hyprland -c /etc/nwg-hello/hyprland.conf";
           user = username;
         };
       };
@@ -79,7 +79,7 @@
       grim # screenshots for wayland
       kdePackages.qtwayland # requirement for qt6
       libsForQt5.qt5.qtwayland # requirement for qt5
-      mpvpaper # video wallpaper
+      modified.mpvpaper # video wallpaper
       networkmanagerapplet # manage wifi
       playerctl # controls media players
       polkit_gnome # some apps require polkit
@@ -87,6 +87,8 @@
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
+      unstable.nwg-dock-hyprland # dock for hyprland
+      modified.nwg-hello # login manager
       vulkan-tools # to debug issues with vulkan
       waybar # status bar
       wf-recorder # screen recording
@@ -96,6 +98,35 @@
     shellAliases = {
       reboot = "echo 'Use the buttons'";
       shutdown = "echo 'Use the buttons'";
+    };
+
+    # Adds some needed folders in /run/current-system/sw
+    # Example: /run/current-system/sw/share/wayland-sessions folder
+    pathsToLink = [ "/share" ];
+
+    etc = {
+      # nwg-hello starting file
+      "nwg-hello/hyprland.conf".text = ''
+        monitor = , highrr, auto, 1
+        bind = ALT SHIFT, q, killactive,
+        misc {
+          disable_hyprland_logo = true
+        }
+        animations {
+          enabled = false
+        }
+        input {
+          kb_model = pc104
+          kb_layout = us,bgd
+          kb_variant = dvorak,
+          kb_options = grp:shifts_toggle,ctrl:swapcaps
+          repeat_rate = 50
+          repeat_delay = 300
+          sensitivity = -0.75
+          accel_profile = flat
+        }
+        exec-once = nwg-hello; hyprctl dispatch exit
+      '';
     };
   };
 

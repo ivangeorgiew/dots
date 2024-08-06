@@ -33,6 +33,7 @@ in
       fzf # fuzzy file searcher
       gcc # c compiler
       gh # github authenticator
+      gnome.gnome-themes-extra # extra GTK themes
       git # obvious
       glibc # need by some programs
       gnumake # make command
@@ -62,7 +63,7 @@ in
       easyeffects # sound effects
       firefox-bin # browser
       floorp # browser
-      freetube # youtube alternative
+      modified.freetube # youtube alternative
       gedit # basic text editor GUI
       gnome.dconf-editor # to check GTK theming values
       google-chrome # browser
@@ -72,10 +73,10 @@ in
       libsForQt5.ark # 7-zip alternative
       loupe # image viewer
       mpv # video player
-      spotify-no-ads # music player
+      modified.spotify-no-ads # music player
       qbittorrent # torrent downloading
       unstable.viber # chat app
-      vesktop # discord + additions
+      modified.vesktop # discord + additions
 
       # Languages and Package Managers
       # cargo
@@ -220,7 +221,7 @@ in
     # IDE/Text editor
     neovim = {
       enable = true;
-      package = pkgs.neovim; # overlayed neovim-nightly
+      package = pkgs.modified.neovim; # overlayed neovim-nightly
       withRuby = true;
       withPython3 = true;
       withNodeJs = true;

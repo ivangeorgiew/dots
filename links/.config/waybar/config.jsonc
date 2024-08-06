@@ -4,25 +4,23 @@
     "position": "top",
 
     "modules-left": [
-      "custom/launcher",
+      "custom/weather",
       "temperature",
       "custom/gpu",
-      "network",
-      "custom/weather",
+      "custom/keyboard",
+      "custom/playerctl#backward",
+      "custom/playerctl#play",
+      "custom/playerctl#forward",
       "hyprland/workspaces"
     ],
 
     "modules-center": [
-      "custom/playerctl#backward",
-      "custom/playerctl#play",
-      "custom/playerctl#foward",
-      "custom/playerlabel"
     ],
 
     "modules-right": [
       "tray",
       "pulseaudio",
-      "custom/keyboard",
+      "network",
       "clock",
       "custom/logout",
       "custom/reboot",
@@ -146,7 +144,7 @@
       "on-click": "playerctl -p spotify previous"
     },
 
-    "custom/playerctl#foward": {
+    "custom/playerctl#forward": {
       "format": " ",
       "tooltip": false,
       "on-click": "playerctl -p spotify next"
