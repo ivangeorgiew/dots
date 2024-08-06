@@ -15,6 +15,7 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     hyprland.url = "github:hyprwm/Hyprland/v0.37.1";
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
+    grub-themes.url = "github:AdisonCavani/distro-grub-themes";
 
     # can add specific package version by getting info from https://www.nixhub.io/
     # pkgs-nodejs_20_9.url = "github:nixos/nixpkgs/a71323f68d4377d12c04a5410e214495ec598d4c";
