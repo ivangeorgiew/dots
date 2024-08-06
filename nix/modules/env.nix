@@ -33,9 +33,9 @@ in
       fzf # fuzzy file searcher
       gcc # c compiler
       gh # github authenticator
-      gnome.gnome-themes-extra # extra GTK themes
       git # obvious
       glibc # need by some programs
+      gnome.gnome-themes-extra # extra GTK themes
       gnumake # make command
       jq # json processor
       killall # kill a running process
@@ -63,7 +63,6 @@ in
       easyeffects # sound effects
       firefox-bin # browser
       floorp # browser
-      modified.freetube # youtube alternative
       gedit # basic text editor GUI
       gnome.dconf-editor # to check GTK theming values
       google-chrome # browser
@@ -72,11 +71,12 @@ in
       kolourpaint # MS Paint for linux
       libsForQt5.ark # 7-zip alternative
       loupe # image viewer
-      mpv # video player
+      modified.freetube # youtube alternative
       modified.spotify-no-ads # music player
+      modified.vesktop # discord + additions
+      mpv # video player
       qbittorrent # torrent downloading
       unstable.viber # chat app
-      modified.vesktop # discord + additions
 
       # Languages and Package Managers
       # cargo
@@ -155,10 +155,7 @@ in
 
       useBabelfish = true; # Bash to Fish translation
 
-      interactiveShellInit =
-      let
-        npm_global_dir = "~/.npm-global";
-      in ''
+      interactiveShellInit = ''
         function multicd
           set -l length (math (string length -- $argv) - 1)
           echo cd (string repeat -n $length ../)
@@ -200,15 +197,19 @@ in
         # Hook direnv
         direnv hook fish | source
 
-        # Setup npm if available
-        if command -q npm && test -d ${npm_global_dir}
-          cd ${npm_global_dir}
+        # add the npm globals to PATH
+        # manually do `npm i` inside the directory when you want to update
+        fish_add_path --path ~/.npm-global/node_modules/.bin
+
+        # Install npm global packages if needed
+        set -l npm_dir ~/.npm-global
+
+        if command -q npm && test -d "$npm_dir" && test ! -d "$npm_dir/node_modules"
+          cd $npm_dir
 
           # install npm global packages
-          nohup npm i </dev/null &>/dev/null &
-
-          # add the npm globals to PATH
-          fish_add_path --path ${npm_global_dir}/node_modules/.bin
+          echo "Installing global npm packages..."
+          npm i
 
           cd -
         end
