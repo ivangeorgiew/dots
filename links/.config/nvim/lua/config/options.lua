@@ -1,7 +1,7 @@
 -- see `:h vim.g` for more
 local g = vim.g
 
-g.colorscheme = "monokai-pro" -- one of those in plugins/colorsheme.lua
+g.colorscheme = "kanagawa" -- one of those in plugins/colorsheme.lua
 
 g.mapleader = " "
 g.maplocalleader = " "
