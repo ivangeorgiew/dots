@@ -27,8 +27,8 @@
     inherit (nixpkgs) lib;
 
     forAllSystems = (func:
-      nixpkgs.lib.genAttrs [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ]
-      (system: func nixpkgs.legacyPackages.${system})
+      lib.genAttrs [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ]
+      (system: func (import nixpkgs { inherit system; config.allowUnfree = true; }))
     );
   in
   {
@@ -36,15 +36,17 @@
     packages = forAllSystems
     (pkgs: import ./nix/pkgs { inherit pkgs inputs; });
 
-    # Development shells to use through `nix develop`
-    devShells = forAllSystems
-    (pkgs: import ./nix/shell.nix { inherit pkgs; });
-
     # Package overlays
     overlays = import ./nix/overlays.nix { inherit inputs; };
 
     # NixOS Modules
     nixosModules = import ./nix/modules { inherit lib; };
+
+    # Flake templates
+    templates.default = {
+      description = "Default shell template";
+      path = ./nix/shell-template;
+    };
 
     # Configurations
     nixosConfigurations = {

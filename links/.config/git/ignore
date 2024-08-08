@@ -18,3 +18,4 @@ linux-install.log
 .vim/session/*
 .vim/.viminf*
 .branches
+.direnv
