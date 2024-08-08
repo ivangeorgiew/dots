@@ -16,9 +16,7 @@
     hyprland.url = "github:hyprwm/Hyprland/v0.37.1";
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
 
-    # can add specific package version by getting info from https://www.nixhub.io/
-    # pkgs-nodejs_20_9.url = "github:nixos/nixpkgs/a71323f68d4377d12c04a5410e214495ec598d4c";
-    # then use: inputs.pkgs-nodejs_20_9.legacyPackages.${system}.nodejs_20
+    # nixos-hardware.url = "github:NixOS/nixos-hardware";
   };
 
   outputs = inputs@{ self, nixpkgs, ... }:
