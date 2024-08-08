@@ -93,8 +93,8 @@
         src = unstable.fetchFromGitHub {
           owner = "ivangeorgiew";
           repo = "nwg-dock-hyprland";
-          rev = "7a96e1c869cd8ad1761e1e556e203a73464bfe34";
-          hash = "sha256-NR1OTG2U5abp+BnMgDgzcOWBIWiK5F/I8Uprb66VcvQ=";
+          rev = "8b9d78d2ae0c0d090d1f5838c299f12c44958b73";
+          hash = "sha256-6+3sdG7rARcBGTHa/WUxSMnatZh4TYLSzhxz40XLBaA=";
         };
       });
     };
