@@ -72,8 +72,8 @@ window#waybar {
 
 #network {
   color: #5e81ac;
-  padding-left: 12px;
-  padding-right: 14px;
+  padding-left: 6px;
+  padding-right: 12px;
 }
 
 #network.disconnected {

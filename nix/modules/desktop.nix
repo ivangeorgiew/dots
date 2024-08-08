@@ -87,7 +87,7 @@
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
-      unstable.nwg-dock-hyprland # dock for hyprland
+      modified.nwg-dock-hyprland # dock for hyprland
       modified.nwg-hello # login manager
       vulkan-tools # to debug issues with vulkan
       waybar # status bar

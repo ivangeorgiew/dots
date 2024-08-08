@@ -88,6 +88,15 @@
             --replace "/usr/share/nwg-hello/nwg.jpg" "$out/share/nwg-hello/nwg.jpg"
         '';
       });
+
+      nwg-dock-hyprland = unstable.nwg-dock-hyprland.overrideAttrs (oldAttrs: {
+        src = unstable.fetchFromGitHub {
+          owner = "ivangeorgiew";
+          repo = "nwg-dock-hyprland";
+          rev = "7a96e1c869cd8ad1761e1e556e203a73464bfe34";
+          hash = "sha256-NR1OTG2U5abp+BnMgDgzcOWBIWiK5F/I8Uprb66VcvQ=";
+        };
+      });
     };
   };
 }

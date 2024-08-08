@@ -84,14 +84,12 @@
       systemd-boot.enable = false;
       efi.canTouchEfiVariables = true;
       timeout = 10; # null to disable
-      grub = rec {
+      grub = {
         enable = true;
         device = "nodev";
         efiSupport = true;
         useOSProber = true;
         configurationLimit = 10;
-        theme = inputs.grub-themes.packages.${pkgs.system}.nixos-grub-theme;
-        splashImage = "${theme}/splash_image.jpg";
       };
     };
   };

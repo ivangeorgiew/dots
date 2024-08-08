@@ -8,17 +8,17 @@
       "temperature",
       "custom/gpu",
       "custom/keyboard",
-      "custom/playerctl#backward",
-      "custom/playerctl#play",
-      "custom/playerctl#forward",
-      "hyprland/workspaces"
+      "hyprland/workspaces",
+      "tray"
     ],
 
     "modules-center": [
     ],
 
     "modules-right": [
-      "tray",
+      "custom/playerctl#backward",
+      "custom/playerctl#play",
+      "custom/playerctl#forward",
       "pulseaudio",
       "network",
       "clock",

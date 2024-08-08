@@ -117,8 +117,11 @@ create_map("n", "<leader>o", ":only<cr>",  { desc = "Leave only the current wind
 create_map("n", "zj", "o<esc>k", { desc = "Make a new line below" })
 create_map("n", "zk", "O<esc>j", { desc = "Make a new line above" })
 
-create_map("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Search and replace word under cursor", silent = false })
-create_map("v", "<leader>s", [["ay:%s/<C-r>a/<C-r>a/gI<Left><Left><Left>]],          { desc = "Search and replace visual selection",  silent = false })
+create_map("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Search and replace word under cursor",   silent = false })
+create_map("v", "<leader>s", [["ay:%s/<C-r>a/<C-r>a/gI<Left><Left><Left>]],          { desc = "Search and replace visual selection",    silent = false })
+create_map("v", "<leader>S", [[:s/\%V/gI<Left><Left><Left>]],                        { desc = "Search and replace in visual selection", silent = false })
+
+create_map("n", "<leader>/", ":/\\C", { desc = "Search with case matching", silent = false })
 
 -- abbreviations
 
