@@ -1,6 +1,6 @@
 {
     "notifyAboutUpdates": true,
-    "autoUpdate": false,
+    "autoUpdate": true,
     "autoUpdateNotification": false,
     "useQuickCss": false,
     "themeLinks": [],
@@ -560,9 +560,6 @@
         "Summaries": {
             "enabled": false
         },
-        "ShowAllRoles": {
-            "enabled": false
-        },
         "ShowTimeoutDuration": {
             "enabled": false
         },
@@ -580,6 +577,21 @@
         },
         "YoutubeAdblock": {
             "enabled": false
+        },
+        "NoMaskedUrlPaste": {
+            "enabled": false
+        },
+        "AlwaysExpandRoles": {
+            "enabled": false
+        },
+        "CopyFileContents": {
+            "enabled": false
+        },
+        "StickerPaste": {
+            "enabled": false
+        },
+        "VolumeBooster": {
+            "enabled": false
         }
     },
     "notifications": {
@@ -592,6 +604,6 @@
         "authenticated": false,
         "url": "https://api.vencord.dev/",
         "settingsSync": false,
-        "settingsSyncVersion": 1722520983220
+        "settingsSyncVersion": 1725551832057
     }
 }

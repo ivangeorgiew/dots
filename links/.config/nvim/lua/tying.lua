@@ -17,14 +17,15 @@ local validate_args = function(descr, args, spec)
       for _, possible_type in ipairs(t) do
         if arg_type == possible_type or possible_type == "any" then
           arg_is_valid = true
+          break
         end
 
         all_types = string.format([[%s%s|]], all_types, possible_type)
       end
 
-      all_types = all_types:gsub("|$", "")
-
       if not arg_is_valid then
+        all_types = all_types:gsub("|$", "")
+
         err_msg = string.format("args[%d] must be %s, instead got %s", k, all_types, arg_type)
       end
     end

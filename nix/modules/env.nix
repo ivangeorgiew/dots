@@ -39,6 +39,7 @@ in
       gnumake # make command
       jq # json processor
       killall # kill a running process
+      kdePackages.breeze # breeze theme for Qt
       lazygit # terminal UI for git commands
       libvterm-neovim # needed by neovim
       ncdu # windirstat for linux (sort dirs by size)
@@ -71,10 +72,10 @@ in
       kolourpaint # MS Paint for linux
       libsForQt5.ark # 7-zip alternative
       loupe # image viewer
-      modified.freetube # youtube alternative
       modified.spotify-no-ads # music player
       modified.vesktop # discord + additions
       mpv # video player
+      onlyoffice-bin_latest # MS Office alternative
       qbittorrent # torrent downloading
       unstable.viber # chat app
 
@@ -116,7 +117,6 @@ in
       mkdir = "mkdir -p"; # Make dirs recursively
       cp = "cp -r"; # Copy recursively
       cat = "bat"; # Show file contents
-      p = "pnpm"; # Use pnpm
       ps_search = "ps aux | rg"; # List a process
       ps_kill = "pkill -9"; # Force kill a process (hence the 9)
       nix-switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now

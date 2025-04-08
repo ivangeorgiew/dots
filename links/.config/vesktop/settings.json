@@ -1,8 +1,8 @@
 {
     "minimizeToTray": true,
     "discordBranch": "stable",
-    "splashColor": "oklab(0.899401 -0.00192499 -0.00481987)",
-    "splashBackground": "oklab(0.321088 -0.000220731 -0.00934622)",
+    "splashColor": "oklab(0.882637 -0.0119219 -0.0249626)",
+    "splashBackground": "oklab(0.254794 0.0113223 -0.0243848)",
     "hardwareAcceleration": true,
     "staticTitle": true,
     "enableMenu": true,

@@ -1007,8 +1007,8 @@ noremap <silent> <F7> :call SaveSession()<cr>
 noremap <silent> <F5> :call OpenSession()<cr>
 
 " Copy multiple words to register
-nnoremap <silent> <leader>8 viw"cy
-nnoremap <silent> <leader>9 :let @c .= ', '<cr>viw"Cy
+nnoremap <silent> <leader>8 "cyiw
+nnoremap <silent> <leader>9 :let @c .= ', '<cr>"Cyiw
 nnoremap <silent> <leader>0 :call PasteMultipleWords()<CR>
 
 "ALE

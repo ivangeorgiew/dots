@@ -25,14 +25,6 @@
 
       neovim = inputs.neovim-nightly.packages.${prevPkgs.system}.default;
 
-      freetube = prevPkgs.freetube.overrideAttrs (oldAttrs: rec {
-        version = "0.21.3";
-        src = prevPkgs.fetchurl {
-          url = "https://github.com/FreeTubeApp/FreeTube/releases/download/v${version}-beta/freetube_${version}_amd64.AppImage";
-          sha256 = "sha256-sg/ycFo4roOJ2sW4naRCE6dwGXVQFzF8uwAZQkS2EY4=";
-        };
-      });
-
       # https://github.com/NL-TCH/nur-packages/blob/master/pkgs/spotify-adblock/default.nix
       spotify-no-ads =
       let
