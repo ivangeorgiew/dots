@@ -63,7 +63,6 @@ in
       celluloid # mpv with GUI (video player)
       easyeffects # sound effects
       firefox-bin # browser
-      floorp # browser
       gedit # basic text editor GUI
       gnome.dconf-editor # to check GTK theming values
       google-chrome # browser
@@ -77,7 +76,6 @@ in
       mpv # video player
       onlyoffice-bin_latest # MS Office alternative
       qbittorrent # torrent downloading
-      unstable.viber # chat app
 
       # Languages and Package Managers
       # cargo
@@ -95,7 +93,7 @@ in
 
     sessionVariables = {
       TERMINAL = "kitty";
-      BROWSER = "floorp";
+      BROWSER = "firefox";
       HISTCONTROL = "ignoreboth:erasedups";
       LESSHISTFILE = "-";
       XDG_CONFIG_HOME = "$HOME/.config";
@@ -293,7 +291,7 @@ in
   xdg.mime =
   # list from /run/current-system/sw/share/applications
   let
-    browser = "floorp.desktop";
+    browser = "firefox.desktop";
     torrent = "org.qbittorrent.qBittorrent.desktop";
     imgviewer = "org.kde.gwenview.desktop";
   in {

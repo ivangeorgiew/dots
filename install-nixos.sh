@@ -63,9 +63,9 @@ setup_disk() {
 
     dev_to_part=$(read_diskname "Select disk [ex: sda]: ")
 
-    read -rp "Should we partition? [yes/no]: " should_partition
+    read -rp "Should we partition? [y/n]: " should_partition
 
-    if [[ ${should_partition} == "yes" ]]; then
+    if [[ ${should_partition} == "y" ]]; then
         echo -e "\nPartitioning Step\n"
 
         echo "Make 1GB EFI, (RAM/2)GB swap, rest root"
@@ -75,9 +75,9 @@ setup_disk() {
         cfdisk /dev/"${dev_to_part}"
     fi
 
-    read -rp "Should we format? [yes/no]: " should_format
+    read -rp "Should we format? [y/n]: " should_format
 
-    if [[ ${should_format} == "yes" ]]; then
+    if [[ ${should_format} == "y" ]]; then
         echo -e "\nFormatting Step\n"
 
         lsblk -o name,label,size
@@ -145,7 +145,17 @@ install_nix() {
 
     echo -e "\nInstall Step\n"
 
-    nixos-install --no-root-passwd --flake "github:ivangeorgiew/dots#mahcomp"
+    nixos-install --flake "github:ivangeorgiew/dots#mahcomp"
+}
+
+post_install() {
+    FUNC_NAME="post_install"
+
+    echo -e "\nPost-install Step\n"
+
+    nixos-enter --root /mnt -c "passwd ivangeorgiew"
+    nixos-enter --root /mnt -c "[[ -d ~/dots ]] || git clone https://github.com/ivangeorgiew/dots ~/dots"
+    nixos-enter --root /mnt -c "stow --no-folding ~/dots/links"
 }
 
 # Execution
