@@ -1,25 +1,28 @@
 #!/usr/bin/env bash
-# Setup disk layout before installing Linux
 
-# trigger error functions and pipes
+# Trigger error functions and pipes
 set -Euo pipefail
 shopt -s inherit_errexit failglob
 #IFS=$'\n\t'
 
-# switch to root
+# Switch to root
 if [[ "$(whoami)" != "root" ]]; then
     echo "Must be run as root!"
     exit
 fi
 
-FUNC_NAME="unknown"
+# Config variables. Change them if you want.
+USERNAME="ivangeorgiew"
 MOUNT_DIR="/mnt"
 BOOT_LABEL="NIX_BOOT"
 SWAP_LABEL="NIX_SWAP"
 ROOT_LABEL="NIX_ROOT"
 
+# For error handling
+FUNC_NAME="unknown"
+
 cleanup() {
-    echo -e "\nCleanup Step\n"
+    echo -e "\nCleaning up...\n"
 
     grep -qs "${MOUNT_DIR} " /proc/mounts && umount -R ${MOUNT_DIR}
 
@@ -58,16 +61,21 @@ read_diskname() {
 setup_disk() {
     FUNC_NAME="setup_disk"
 
-    lsblk -o name,label,size
-    echo
-
-    dev_to_part=$(read_diskname "Select disk [ex: sda]: ")
+    echo -e "\n1) Disk setup step\n"
 
     read -rp "Should we partition? [y/n]: " should_partition
 
-    if [[ ${should_partition} == "y" ]]; then
-        echo -e "\nPartitioning Step\n"
+    read -rp "Should we format? [y/n]: " should_format
 
+    if [[ ${should_partition} == "y" || ${should_format} == "y" ]]; then
+        echo
+        lsblk -o name,label,size
+        echo
+
+        dev_to_part=$(read_diskname "Select disk [ex: sda]: ")
+    fi
+
+    if [[ ${should_partition} == "y" ]]; then
         echo "Make 1GB EFI, (RAM/2)GB swap, rest root"
         read -srp "Press enter to continue..."
         echo
@@ -75,11 +83,8 @@ setup_disk() {
         cfdisk /dev/"${dev_to_part}"
     fi
 
-    read -rp "Should we format? [y/n]: " should_format
-
     if [[ ${should_format} == "y" ]]; then
-        echo -e "\nFormatting Step\n"
-
+        echo
         lsblk -o name,label,size
         echo
 
@@ -99,13 +104,14 @@ setup_disk() {
 mount_disk() {
     FUNC_NAME="mount_disk"
 
-    echo -e "\nMounting Step\n"
+    echo -e "\n2) Mounting Step\n"
 
     # unmount just in case
     grep -qs "${MOUNT_DIR} " /proc/mounts && umount -R ${MOUNT_DIR}
 
     # enable swap
     if ! cat /proc/swaps | grep -qs "/dev/"; then
+        echo "Turning swap on..."
         swapon /dev/disk/by-label/${SWAP_LABEL}
     fi
 
@@ -116,12 +122,15 @@ mount_disk() {
 
     # create btrfs subvolumes
     if ! btrfs subvolume list /mnt | grep -qs "@home"; then
+        echo "Creating btfs subvolumes..."
         btrfs subvolume create ${MOUNT_DIR}/@root
         btrfs subvolume create ${MOUNT_DIR}/@home
         btrfs subvolume create ${MOUNT_DIR}/@nix
     fi
 
-    # unmount
+    echo -e "\nMounting everything..."
+
+    # unmount just in case
     grep -qs "${MOUNT_DIR} " /proc/mounts && umount -R ${MOUNT_DIR}
 
     mount_opts="compress-force=zstd,commit=60,noatime,ssd,nodiscard"
@@ -143,23 +152,42 @@ mount_disk() {
 install_nix() {
     FUNC_NAME="install_nix"
 
-    echo -e "\nInstall Step\n"
+    echo -e "\n3) Install Step\n"
 
-    nixos-install --flake "github:ivangeorgiew/dots#mahcomp"
+    read -rp "Should we install NixOS? [y/n]: " should_install
+
+    if [[ ${should_install} == "y" ]]; then
+        nixos-install --flake "github:ivangeorgiew/dots#mahcomp"
+    fi
 }
 
 post_install() {
     FUNC_NAME="post_install"
 
-    echo -e "\nPost-install Step\n"
+    echo -e "\n4) Post-install Step\n"
 
-    nixos-enter --root /mnt -c "passwd ivangeorgiew"
-    nixos-enter --root /mnt -c "[[ -d ~/dots ]] || git clone https://github.com/ivangeorgiew/dots ~/dots"
-    nixos-enter --root /mnt -c "stow --no-folding ~/dots/links"
+    read -rp "Should we do post-install setup? [y/n]: " should_post_install
+
+    if [[ ${should_post_install} == "y" ]]; then
+
+        # Running commands as non-root user doesn't work, hence we change ownership of dirs at the end
+
+        echo -e "\nChanging user password..."
+        nixos-enter --root /mnt --silent -c "passwd ${USERNAME}"
+
+        nixos-enter --root /mnt --silent -c "[[ -d /home/${USERNAME}/dots ]] || git clone https://github.com/ivangeorgiew/dots /home/${USERNAME}/dots"
+
+        echo -e "\nLinking dot files..."
+        nixos-enter --root /mnt --silent -c "cd /home/${USERNAME}/dots && stow links"
+
+        echo -e "\nFixing dir ownerships..."
+        nixos-enter --root /mnt --silent -c "chown -R ${USERNAME}:users /home/${USERNAME}"
+    fi
 }
 
 # Execution
 setup_disk
 mount_disk
 install_nix
+post_install
 cleanup
