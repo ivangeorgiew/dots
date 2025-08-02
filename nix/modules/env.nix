@@ -62,10 +62,11 @@ in
       brave # browser
       celluloid # mpv with GUI (video player)
       easyeffects # sound effects
-      firefox-bin # browser
+      unstable.firefox-bin # browser
       gedit # basic text editor GUI
       gnome.dconf-editor # to check GTK theming values
       google-chrome # browser
+      obsidian # note-taking app
       keepassxc # password manager
       kitty # terminal
       kolourpaint # MS Paint for linux
