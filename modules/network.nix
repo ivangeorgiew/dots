@@ -1,5 +1,12 @@
-{ inputs, outputs, lib, config, pkgs, username, ... }:
 {
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  username,
+  ...
+}: {
   networking = {
     # Change to per interface if using systemd-networkd
     useDHCP = lib.mkDefault true;
@@ -13,7 +20,7 @@
     hostName = "mahcomp";
 
     # Set DNS
-    nameservers = [ "1.1.1.1" "1.0.0.1" ];
+    nameservers = ["1.1.1.1" "1.0.0.1"];
 
     # Toggles the firewall
     firewall.enable = false;

@@ -8,21 +8,21 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
-  outputs = inputs@{ nixpkgs, ... }:
-  let
+  outputs = inputs @ {nixpkgs, ...}: let
     inherit (nixpkgs) lib;
     inherit (inputs.self) outputs;
 
-    forAllSystems = (func:
-      lib.genAttrs [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ]
-      (system: func (import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = builtins.attrValues outputs.overlays;
-      }))
+    forAllSystems = (
+      func:
+        lib.genAttrs ["x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"]
+        (system:
+          func (import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            overlays = builtins.attrValues outputs.overlays;
+          }))
     );
-  in
-  {
+  in {
     overlays = {
       modifications = finalPkgs: prevPkgs: rec {
         unstable = import inputs.nixpkgs-unstable {
@@ -36,24 +36,25 @@
       };
     };
 
-    devShells = forAllSystems (pkgs: with pkgs; {
-      default = mkShell {
-        name = "shell";
+    devShells = forAllSystems (pkgs:
+      with pkgs; {
+        default = mkShell {
+          name = "shell";
 
-        # alias for nativeBuildInputs
-        packages = [];
+          # alias for nativeBuildInputs
+          packages = [];
 
-        # will not be added to $PATH
-        buildInputs = [];
+          # will not be added to $PATH
+          buildInputs = [];
 
-        # env variables
-        NIX_CONFIG = "experimental-features = nix-command flakes";
+          # env variables
+          NIX_CONFIG = "experimental-features = nix-command flakes";
 
-        # init script
-        shellHook = ''
-          echo "Welcome to my nix-shell!" 1>/dev/null
-        '';
-      };
-    });
+          # init script
+          shellHook = ''
+            echo "Welcome to my nix-shell!" 1>/dev/null
+          '';
+        };
+      });
   };
 }

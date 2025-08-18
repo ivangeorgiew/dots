@@ -1,5 +1,12 @@
-{ inputs, outputs, lib, config, pkgs, username, ... }:
 {
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  username,
+  ...
+}: {
   nixpkgs = {
     # Add all overlays
     overlays = builtins.attrValues outputs.overlays;
@@ -24,7 +31,7 @@
     };
 
     # Adds each flake input as registry to make nix3 command consistent
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
 
     # Adds each flake input to system's legacy channel to make legacy nix commands consistent
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
@@ -43,16 +50,16 @@
       auto-optimise-store = true;
 
       # Enable new nix features
-      extra-experimental-features = [ "nix-command" "flakes" ];
+      extra-experimental-features = ["nix-command" "flakes"];
 
       # Users which have rights to modify binary caches and other stuff
-      extra-trusted-users = [ "root" "@wheel" ];
+      extra-trusted-users = ["root" "@wheel"];
 
       # Binary caches
-      extra-trusted-substituters = [ "https://nix-community.cachix.org" ];
+      extra-trusted-substituters = ["https://nix-community.cachix.org"];
 
       # Public keys for the above caches
-      extra-trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
+      extra-trusted-public-keys = ["nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="];
     };
   };
 
@@ -61,7 +68,7 @@
   users.users."${username}" = {
     initialPassword = "123123";
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" "libvirtd" ];
+    extraGroups = ["wheel" "networkmanager" "video" "audio" "libvirtd"];
   };
 
   systemd = {
@@ -74,10 +81,13 @@
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
-  i18n.extraLocaleSettings = { LC_TIME = "en_GB.UTF-8"; };
+  i18n.extraLocaleSettings = {LC_TIME = "en_GB.UTF-8";};
 
   # Setup the tty console
-  console = { font = "Lat2-Terminus16"; useXkbConfig = true; };
+  console = {
+    font = "Lat2-Terminus16";
+    useXkbConfig = true;
+  };
 
   # Sound config for Pipewire
   services.pipewire = {
@@ -100,7 +110,7 @@
     xserver.xkb = {
       extraLayouts.bgd = {
         description = "Bulgarian";
-        languages = [ "bul" ];
+        languages = ["bul"];
         symbolsFile = ../xkb/bgd;
       };
       layout = "us,bgd";
@@ -121,4 +131,3 @@
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05"; # Don't touch
 }
-

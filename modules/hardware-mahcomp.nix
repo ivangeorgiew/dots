@@ -1,5 +1,12 @@
-{ inputs, outputs, lib, config, pkgs, username, ... }:
 {
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  username,
+  ...
+}: {
   # Set your time zone.
   time.timeZone = "Europe/Sofia";
 
@@ -64,15 +71,15 @@
   # Fixes for WiFi.
   boot = {
     initrd = {
-      availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+      availableKernelModules = ["xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod"];
       kernelModules = [];
     };
 
-    kernelModules = [ "kvm-amd" "v4l2loopback" ]; # v4l2loopback is for OBS virtual camera
+    kernelModules = ["kvm-amd" "v4l2loopback"]; # v4l2loopback is for OBS virtual camera
     kernelParams = [];
-    blacklistedKernelModules = [ "rtw88_8821cu" ];
-    extraModulePackages = with config.boot.kernelPackages; [ rtl8821cu v4l2loopback ];
-    supportedFilesystems = [ "btrfs" "ntfs" ];
+    blacklistedKernelModules = ["rtw88_8821cu"];
+    extraModulePackages = with config.boot.kernelPackages; [rtl8821cu v4l2loopback];
+    supportedFilesystems = ["btrfs" "ntfs"];
 
     # Set linux kernel version. Defaults to LTS
     #kernelPackages = pkgs.linuxKernel.packages.linux_6_1;
@@ -93,20 +100,34 @@
   };
 
   # Configure partitions
-  fileSystems =
-  let
+  fileSystems = let
     # For some reason, some of the options are not used by nix???
-    btrfsOpts = [ "compress-force=zstd" "commit=60" "noatime" "ssd" "nodiscard" ];
-    ntfsOpts = [ "commit=60" "noatime" "ssd" "nodiscard" "rw" "uid=1000" "gid=100" "iocharset=utf8" ];
+    btrfsOpts = ["compress-force=zstd" "commit=60" "noatime" "ssd" "nodiscard"];
+    ntfsOpts = ["commit=60" "noatime" "ssd" "nodiscard" "rw" "uid=1000" "gid=100" "iocharset=utf8"];
   in {
-    "/" = { device = "/dev/disk/by-label/NIX_ROOT"; fsType = "btrfs"; options = btrfsOpts ++ [ "subvol=@root" ]; };
-    "/home" = { device = "/dev/disk/by-label/NIX_ROOT"; fsType = "btrfs"; options = btrfsOpts ++ [ "subvol=@home" ]; };
-    "/nix" = { device = "/dev/disk/by-label/NIX_ROOT"; fsType = "btrfs"; options = btrfsOpts ++ [ "subvol=@nix" ]; };
-    "/boot" = { device = "/dev/disk/by-label/NIX_BOOT"; fsType = "vfat"; };
+    "/" = {
+      device = "/dev/disk/by-label/NIX_ROOT";
+      fsType = "btrfs";
+      options = btrfsOpts ++ ["subvol=@root"];
+    };
+    "/home" = {
+      device = "/dev/disk/by-label/NIX_ROOT";
+      fsType = "btrfs";
+      options = btrfsOpts ++ ["subvol=@home"];
+    };
+    "/nix" = {
+      device = "/dev/disk/by-label/NIX_ROOT";
+      fsType = "btrfs";
+      options = btrfsOpts ++ ["subvol=@nix"];
+    };
+    "/boot" = {
+      device = "/dev/disk/by-label/NIX_BOOT";
+      fsType = "vfat";
+    };
     # "/run/media/c" = { device = "/dev/disk/by-uuid/825AEDFB5AEDEC3B"; fsType = "ntfs-3g"; options = ntfsOpts; };
     # "/run/media/d" = { device = "/dev/disk/by-uuid/01D99A27C60FB320"; fsType = "ntfs-3g"; options = ntfsOpts; };
   };
-  swapDevices = [ { device = "/dev/disk/by-label/NIX_SWAP"; } ];
+  swapDevices = [{device = "/dev/disk/by-label/NIX_SWAP";}];
 
   # Enable zram
   zramSwap.enable = true;
@@ -122,9 +143,12 @@
     btrfs.autoScrub.enable = true;
 
     # regular trimming of the SSD
-    fstrim = { enable = true; interval = "weekly"; };
+    fstrim = {
+      enable = true;
+      interval = "weekly";
+    };
 
     # Enable proprietary Nvidia driver
-    xserver.videoDrivers = [ "nvidia" ];
+    xserver.videoDrivers = ["nvidia"];
   };
 }

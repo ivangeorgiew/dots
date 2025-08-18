@@ -1,5 +1,12 @@
-{ inputs, outputs, lib, config, pkgs, username, ... }:
 {
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  username,
+  ...
+}: {
   # Setup fonts
   fonts = {
     # Enables common fonts, causes more issues than it solves
@@ -13,10 +20,10 @@
 
       # Noto Color Emoji everywhere to overwrite DejaVu's B&W emojis
       defaultFonts = {
-        serif = [ "Noto Serif" "Noto Color Emoji" ];
-        sansSerif = [ "Noto Sans" "Noto Color Emoji" ];
-        monospace = [ "Noto Sans Mono" "Noto Color Emoji" ];
-        emoji = [ "Symbols Nerd Font" "Twitter Color Emoji" "Noto Color Emoji" ];
+        serif = ["Noto Serif" "Noto Color Emoji"];
+        sansSerif = ["Noto Sans" "Noto Color Emoji"];
+        monospace = ["Noto Sans Mono" "Noto Color Emoji"];
+        emoji = ["Symbols Nerd Font" "Twitter Color Emoji" "Noto Color Emoji"];
       };
     };
 

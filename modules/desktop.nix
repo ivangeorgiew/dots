@@ -1,8 +1,14 @@
-{ inputs, lib, pkgs, username, graphicsCard, ... }:
 {
+  inputs,
+  lib,
+  pkgs,
+  username,
+  graphicsCard,
+  ...
+}: {
   nix.settings = {
-    substituters = lib.mkAfter [ "https://hyprland.cachix.org" ];
-    trusted-public-keys = lib.mkAfter [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
+    substituters = lib.mkAfter ["https://hyprland.cachix.org"];
+    trusted-public-keys = lib.mkAfter ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
   };
 
   services = {
@@ -21,7 +27,10 @@
 
     displayManager = {
       # whether to autologin
-      autoLogin = { enable = false; user = username; };
+      autoLogin = {
+        enable = false;
+        user = username;
+      };
     };
 
     # greetd display manager
@@ -48,31 +57,33 @@
 
   # swaylock fix
   # https://discourse.nixos.org/t/swaylock-wont-unlock/27275
-  security.pam.services.swaylock = { };
+  security.pam.services.swaylock = {};
   security.pam.services.swaylock.fprintAuth = false;
 
   # Wayland packages and env variables
   environment = {
-    sessionVariables = {
-      CLUTTER_BACKEND = "wayland";
-      GDK_BACKEND = "wayland,x11";
-      NIXOS_OZONE_WL = "1";
-      QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-      QT_QPA_PLATFORM = "wayland;xcb";
-      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-      SDL_VIDEODRIVER = "wayland"; # might cause issues with older games
-      WLR_DRM_NO_ATOMIC = "1"; # set if you have flickering issue
-      WLR_NO_HARDWARE_CURSORS = "1";
-      XDG_CURRENT_DESKTOP = "Hyprland";
-      XDG_SESSION_DESKTOP = "Hyprland";
-      XDG_SESSION_TYPE = "wayland";
-      __GL_GSYNC_ALLOWED = "1";
-      __GL_VRR_ALLOWED = "1";
-    } // lib.optionalAttrs (graphicsCard == "nvidia") {
-      GBM_BACKEND = "nvidia-drm"; # Could crash Firefox
-      LIBVA_DRIVER_NAME = "nvidia";
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia"; # Could cause issues with Discord and Zoom
-    };
+    sessionVariables =
+      {
+        CLUTTER_BACKEND = "wayland";
+        GDK_BACKEND = "wayland,x11";
+        NIXOS_OZONE_WL = "1";
+        QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+        QT_QPA_PLATFORM = "wayland;xcb";
+        QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+        SDL_VIDEODRIVER = "wayland"; # might cause issues with older games
+        WLR_DRM_NO_ATOMIC = "1"; # set if you have flickering issue
+        WLR_NO_HARDWARE_CURSORS = "1";
+        XDG_CURRENT_DESKTOP = "Hyprland";
+        XDG_SESSION_DESKTOP = "Hyprland";
+        XDG_SESSION_TYPE = "wayland";
+        __GL_GSYNC_ALLOWED = "1";
+        __GL_VRR_ALLOWED = "1";
+      }
+      // lib.optionalAttrs (graphicsCard == "nvidia") {
+        GBM_BACKEND = "nvidia-drm"; # Could crash Firefox
+        LIBVA_DRIVER_NAME = "nvidia";
+        __GLX_VENDOR_LIBRARY_NAME = "nvidia"; # Could cause issues with Discord and Zoom
+      };
 
     systemPackages = with pkgs; [
       dunst # notifications
@@ -102,7 +113,7 @@
 
     # Adds some needed folders in /run/current-system/sw
     # Example: /run/current-system/sw/share/wayland-sessions folder
-    pathsToLink = [ "/share" ];
+    pathsToLink = ["/share"];
 
     etc = {
       # nwg-hello starting file
@@ -165,7 +176,7 @@
     xdgOpenUsePortal = true;
 
     # add extra portals (hyprland portal is auto added)
-    extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+    extraPortals = with pkgs; [xdg-desktop-portal-gtk];
   };
 
   # Polkit unit service

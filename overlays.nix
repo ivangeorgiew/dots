@@ -1,4 +1,4 @@
-{ inputs, ... }: final: prev: rec {
+{inputs, ...}: final: prev: rec {
   # Prefer this method to legacyPackages in order to be able to use unfree packages
   unstable = import inputs.nixpkgs-unstable {
     system = prev.system;
@@ -14,13 +14,12 @@
     };
   });
 
-  vesktop = prev.vesktop.override { withSystemVencord = false; };
+  vesktop = prev.vesktop.override {withSystemVencord = false;};
 
   neovim = inputs.neovim-nightly.packages.${prev.system}.default;
 
   # https://github.com/NL-TCH/nur-packages/blob/master/pkgs/spotify-adblock/default.nix
-  spotify-no-ads =
-  let
+  spotify-no-ads = let
     spotify-adblock = prev.rustPlatform.buildRustPackage {
       pname = "spotify-adblock";
       version = "1.0.3";
@@ -49,29 +48,34 @@
       '';
     };
   in
-    prev.spotify.overrideAttrs (oldAttrs: with prev; {
-      buildInputs = (oldAttrs.buildInputs or []) ++ [ zip unzip ];
-      postInstall = (oldAttrs.postInstall or "") + ''
-        ln -s ${spotify-adblock}/lib/libspotifyadblock.so $libdir
-        wrapProgram $out/bin/spotify \
-          --set LD_PRELOAD "${spotify-adblock}/lib/libspotifyadblock.so"
+    prev.spotify.overrideAttrs (oldAttrs:
+      with prev; {
+        buildInputs = (oldAttrs.buildInputs or []) ++ [zip unzip];
+        postInstall =
+          (oldAttrs.postInstall or "")
+          + ''
+            ln -s ${spotify-adblock}/lib/libspotifyadblock.so $libdir
+            wrapProgram $out/bin/spotify \
+              --set LD_PRELOAD "${spotify-adblock}/lib/libspotifyadblock.so"
 
-        # Hide placeholder for advert banner
-        unzip -p $out/share/spotify/Apps/xpui.spa xpui.js | sed 's/adsEnabled:\!0/adsEnabled:false/' > $out/share/spotify/Apps/xpui.js
-        zip --junk-paths --update $out/share/spotify/Apps/xpui.spa $out/share/spotify/Apps/xpui.js
-        rm $out/share/spotify/Apps/xpui.js
-      '';
-    });
+            # Hide placeholder for advert banner
+            unzip -p $out/share/spotify/Apps/xpui.spa xpui.js | sed 's/adsEnabled:\!0/adsEnabled:false/' > $out/share/spotify/Apps/xpui.js
+            zip --junk-paths --update $out/share/spotify/Apps/xpui.spa $out/share/spotify/Apps/xpui.js
+            rm $out/share/spotify/Apps/xpui.js
+          '';
+      });
 
   nwg-hello = unstable.nwg-hello.overrideAttrs (oldAttrs: {
-    postPatch = (oldAttrs.postPatch or "") + ''
-      substituteInPlace nwg_hello/main.py \
-        --replace "$out/etc/nwg-hello/nwg-hello.json" "/etc/nwg-hello/nwg-hello.json" \
-        --replace "$out/etc/nwg-hello/nwg-hello.css" "/etc/nwg-hello/nwg-hello.css"
+    postPatch =
+      (oldAttrs.postPatch or "")
+      + ''
+        substituteInPlace nwg_hello/main.py \
+          --replace "$out/etc/nwg-hello/nwg-hello.json" "/etc/nwg-hello/nwg-hello.json" \
+          --replace "$out/etc/nwg-hello/nwg-hello.css" "/etc/nwg-hello/nwg-hello.css"
 
-      substituteInPlace nwg-hello-default.css \
-        --replace "/usr/share/nwg-hello/nwg.jpg" "$out/share/nwg-hello/nwg.jpg"
-    '';
+        substituteInPlace nwg-hello-default.css \
+          --replace "/usr/share/nwg-hello/nwg.jpg" "$out/share/nwg-hello/nwg.jpg"
+      '';
   });
 
   nwg-dock-hyprland = unstable.nwg-dock-hyprland.overrideAttrs (oldAttrs: {

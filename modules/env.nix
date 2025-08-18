@@ -1,9 +1,15 @@
-{ inputs, outputs, lib, config, pkgs, username, ... }:
-let
+{
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  username,
+  ...
+}: let
   iconTheme = "Papirus-Dark";
   themeName = "adw-gtk3-dark";
-in
-{
+in {
   # Default shell for all users
   users.defaultUserShell = pkgs.fish;
 
@@ -12,7 +18,7 @@ in
     localBinInPath = true;
 
     # Add shells to /etc/shells
-    shells = with pkgs; [ fish ];
+    shells = with pkgs; [fish];
 
     systemPackages = with pkgs; [
       # CLI apps, tools and requirements
@@ -83,7 +89,7 @@ in
       # julia-bin
       # php
       # php83Packages.composer
-      (python311.withPackages(ps: with ps; [ requests pygobject3 pip ]))
+      (python311.withPackages (ps: with ps; [requests pygobject3 pip]))
       go
       gobject-introspection # for some python scripts
       lua51Packages.lua
@@ -269,14 +275,16 @@ in
 
       # check different values with dconf-editor
       # example config: https://github.com/Electrostasy/dots/blob/c62895040a8474bba8c4d48828665cfc1791c711/profiles/system/gnome/default.nix#L123-L287
-      profiles.user.databases = [{
-        settings = {
-          "org/gnome/desktop/interface" = {
-            gtk-theme = themeName;
-            icon-theme = iconTheme;
+      profiles.user.databases = [
+        {
+          settings = {
+            "org/gnome/desktop/interface" = {
+              gtk-theme = themeName;
+              icon-theme = iconTheme;
+            };
           };
-        };
-      }];
+        }
+      ];
     };
   };
 
@@ -290,28 +298,28 @@ in
 
   # Associate programs with file extensions
   xdg.mime =
-  # list from /run/current-system/sw/share/applications
-  let
-    browser = "firefox.desktop";
-    torrent = "org.qbittorrent.qBittorrent.desktop";
-    imgviewer = "org.kde.gwenview.desktop";
-  in {
-    defaultApplications = {
-      "text/html" = "${browser}";
-      "x-scheme-handler/http" = "${browser}";
-      "x-scheme-handler/https" = "${browser}";
-      "x-scheme-handler/about" = "${browser}";
-      "x-scheme-handler/unknown" = "${browser}";
+    # list from /run/current-system/sw/share/applications
+    let
+      browser = "firefox.desktop";
+      torrent = "org.qbittorrent.qBittorrent.desktop";
+      imgviewer = "org.kde.gwenview.desktop";
+    in {
+      defaultApplications = {
+        "text/html" = "${browser}";
+        "x-scheme-handler/http" = "${browser}";
+        "x-scheme-handler/https" = "${browser}";
+        "x-scheme-handler/about" = "${browser}";
+        "x-scheme-handler/unknown" = "${browser}";
 
-      "x-scheme-handler/magnet" = "${torrent}";
-      "application/x-bittorrent" = "${torrent}";
+        "x-scheme-handler/magnet" = "${torrent}";
+        "application/x-bittorrent" = "${torrent}";
 
-      "image/jpeg" = "${imgviewer}";
-      "image/png" = "${imgviewer}";
-      "image/gif" = "${imgviewer}";
-      "image/bmp" = "${imgviewer}";
-      "image/svg+xml" = "${imgviewer}";
-      "image/tiff" = "${imgviewer}";
+        "image/jpeg" = "${imgviewer}";
+        "image/png" = "${imgviewer}";
+        "image/gif" = "${imgviewer}";
+        "image/bmp" = "${imgviewer}";
+        "image/svg+xml" = "${imgviewer}";
+        "image/tiff" = "${imgviewer}";
+      };
     };
-  };
 }

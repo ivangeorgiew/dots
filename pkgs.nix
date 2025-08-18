@@ -1,8 +1,5 @@
-
 # CURRENTLY NOT IMPORTED!!!
-
 # Custom packages. Can be built using `nix build .#example`
-{ pkgs }:
-{
+{pkgs}: {
   #example = pkgs.callPackage ./example { };
 }
