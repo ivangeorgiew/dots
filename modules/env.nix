@@ -35,7 +35,7 @@ in
       gh # github authenticator
       git # obvious
       glibc # need by some programs
-      gnome.gnome-themes-extra # extra GTK themes
+      gnome-themes-extra # extra GTK themes
       gnumake # make command
       jq # json processor
       killall # kill a running process
@@ -64,12 +64,12 @@ in
       easyeffects # sound effects
       unstable.firefox-bin # browser
       gedit # basic text editor GUI
-      gnome.dconf-editor # to check GTK theming values
+      dconf-editor # to check GTK theming values
       google-chrome # browser
       obsidian # note-taking app
       keepassxc # password manager
       kitty # terminal
-      kolourpaint # MS Paint for linux
+      kdePackages.kolourpaint # MS Paint for linux
       libsForQt5.ark # 7-zip alternative
       loupe # image viewer
       spotify-no-ads # music player
@@ -83,7 +83,7 @@ in
       # julia-bin
       # php
       # php83Packages.composer
-      (python310.withPackages(ps: with ps; [ requests pygobject3 pip ]))
+      (python311.withPackages(ps: with ps; [ requests pygobject3 pip ]))
       go
       gobject-introspection # for some python scripts
       lua51Packages.lua
@@ -124,7 +124,7 @@ in
       nix-update = "update_nix_inputs"; # Update only specific flake inputs
       nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
       nix-roll = "sudo nix profile rollback --profile /nix/var/nix/profiles/system --to"; # Rollback to a generation
-      nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system && nix store gc"; # Garbage collect nixos
+      nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 7d && nix store gc"; # Garbage collect nixos
     };
 
     etc = {

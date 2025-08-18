@@ -80,7 +80,6 @@
   console = { font = "Lat2-Terminus16"; useXkbConfig = true; };
 
   # Sound config for Pipewire
-  sound.enable = false; #Disabled for pipewire
   services.pipewire = {
     enable = true;
     alsa.enable = true;

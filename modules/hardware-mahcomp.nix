@@ -13,14 +13,12 @@
     # Full hardware support
     enableAllFirmware = true;
 
-    # OpenGL has to be enabled for Nvidia according to wiki
-    opengl = {
+    graphics = {
+      # Enables hardware acceleration
       enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
 
-      # fixes some applications (but maybe can break others?)
-      #setLdLibraryPath = true;
+      # So 32bit apps can be used too
+      enable32Bit = true;
 
       extraPackages = with pkgs; [
         libva
@@ -50,7 +48,7 @@
       # Choose driver package
       package = config.boot.kernelPackages.nvidiaPackages.stable;
 
-      # Use the open source version
+      # open-source version requires RTX 20 series and newer
       open = false;
 
       # Auto installs nvidia-settings

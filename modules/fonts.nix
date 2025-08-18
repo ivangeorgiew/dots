@@ -23,11 +23,14 @@
     # Font packages
     packages = with pkgs; [
       # Nerd Fonts with icons
-      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Iosevka" "FiraCode" "JetBrainsMono" "SourceCodePro" ]; })
+      nerd-fonts.symbols-only
+      nerd-fonts.iosevka
+      nerd-fonts.fira-code
+      nerd-fonts.jetbrains-mono
 
       dejavu_fonts
       noto-fonts
-      noto-fonts-cjk
+      noto-fonts-cjk-sans
       noto-fonts-emoji
       twitter-color-emoji
     ];

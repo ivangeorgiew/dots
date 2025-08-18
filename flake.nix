@@ -4,7 +4,7 @@
   description = "My NixOS flake config";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     hyprland.url = "github:hyprwm/Hyprland/v0.37.1";
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
