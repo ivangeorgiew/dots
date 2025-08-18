@@ -79,7 +79,7 @@
       grim # screenshots for wayland
       kdePackages.qtwayland # requirement for qt6
       libsForQt5.qt5.qtwayland # requirement for qt5
-      modified.mpvpaper # video wallpaper
+      mpvpaper # video wallpaper
       networkmanagerapplet # manage wifi
       playerctl # controls media players
       polkit_gnome # some apps require polkit
@@ -87,8 +87,8 @@
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
-      #modified.nwg-dock-hyprland # dock for hyprland
-      modified.nwg-hello # login manager
+      #nwg-dock-hyprland # dock for hyprland
+      nwg-hello # login manager
       vulkan-tools # to debug issues with vulkan
       waybar # status bar
       wf-recorder # screen recording

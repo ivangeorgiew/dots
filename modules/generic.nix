@@ -30,26 +30,29 @@
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
     settings = {
+      # Faster nix changes, but works only with Determinate Nix
+      #lazy-trees = true;
+
+      # Used by default in Determinate Nix
+      #always-allow-substitutes = true;
+
+      # Used by default in Determinate Nix
+      max-jobs = "auto";
+
       # Removes duplicate files in the store automatically
       auto-optimise-store = true;
 
       # Enable new nix features
-      experimental-features = [ "nix-command" "flakes" ];
+      extra-experimental-features = [ "nix-command" "flakes" ];
 
       # Users which have rights to modify binary caches and other stuff
-      trusted-users = [ "root" "@wheel" ];
+      extra-trusted-users = [ "root" "@wheel" ];
 
       # Binary caches
-      substituters = [
-        "https://cache.nixos.org"
-        "https://nix-community.cachix.org"
-      ];
+      extra-trusted-substituters = [ "https://nix-community.cachix.org" ];
 
       # Public keys for the above caches
-      trusted-public-keys = [
-        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      ];
+      extra-trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
     };
   };
 

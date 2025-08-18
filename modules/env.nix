@@ -72,8 +72,8 @@ in
       kolourpaint # MS Paint for linux
       libsForQt5.ark # 7-zip alternative
       loupe # image viewer
-      modified.spotify-no-ads # music player
-      modified.vesktop # discord + additions
+      spotify-no-ads # music player
+      vesktop # discord + additions
       mpv # video player
       onlyoffice-bin_latest # MS Office alternative
       qbittorrent # torrent downloading
@@ -221,7 +221,7 @@ in
     # IDE/Text editor
     neovim = {
       enable = true;
-      package = pkgs.modified.neovim; # overlayed neovim-nightly
+      package = pkgs.neovim; # overlayed neovim-nightly
       withRuby = true;
       withPython3 = true;
       withNodeJs = true;

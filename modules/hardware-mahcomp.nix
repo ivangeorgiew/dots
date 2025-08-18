@@ -83,7 +83,7 @@
     loader = {
       systemd-boot.enable = false;
       efi.canTouchEfiVariables = true;
-      timeout = 10; # null to disable
+      timeout = null; # null or number of seconds
       grub = {
         enable = true;
         device = "nodev";
