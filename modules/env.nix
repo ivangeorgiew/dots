@@ -72,7 +72,7 @@ in {
       gedit # basic text editor GUI
       dconf-editor # to check GTK theming values
       google-chrome # browser
-      obsidian # note-taking app
+      unstable.obsidian # note-taking app
       keepassxc # password manager
       kitty # terminal
       kdePackages.kolourpaint # MS Paint for linux

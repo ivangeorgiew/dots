@@ -27,16 +27,20 @@
       # So 32bit apps can be used too
       enable32Bit = true;
 
+      # Hardware video acceleration
+      # Verification: https://wiki.archlinux.org/title/Hardware_video_acceleration#Verification
+      # You don't to add any other packages. They are either not needed or automatically used.
       extraPackages = with pkgs; [
-        libva
-        vaapiVdpau
-        libvdpau-va-gl
+        nvidia-vaapi-driver # VA-API -> VDPAU on NVIDIA (64-bit only)
+
+        # Not needed for now
+        #libvdpau # VDPAU loader (harmless to add explicitly)
+        #libva-vdpau-driver # VA-API → VDPAU bridge
       ];
 
-      extraPackages32 = with pkgs.pkgsi686Linux; [
-        libva
-        vaapiVdpau
-        libvdpau-va-gl
+      extraPackages32 = with pkgs.driversi686Linux; [
+        # Not needed for now
+        #libva-vdpau-driver # VA-API → VDPAU bridge
       ];
     };
 
@@ -75,8 +79,14 @@
       kernelModules = [];
     };
 
-    kernelModules = ["kvm-amd" "v4l2loopback"]; # v4l2loopback is for OBS virtual camera
-    kernelParams = [];
+    kernelModules = [
+      "kvm-amd" # for virtual machines
+      "v4l2loopback" # OBS virtual camera
+    ];
+    kernelParams = [
+      # Not needed currently
+      #"nvidia_drm.fbdev=1" # prevents some issues with latest nvidia drivers?
+    ];
     blacklistedKernelModules = ["rtw88_8821cu"];
     extraModulePackages = with config.boot.kernelPackages; [rtl8821cu v4l2loopback];
     supportedFilesystems = ["btrfs" "ntfs"];
