@@ -44,8 +44,8 @@ in {
       gnome-themes-extra # extra GTK themes
       gnumake # make command
       jq # json processor
-      killall # kill a running process
       kdePackages.breeze # breeze theme for Qt
+      killall # kill a running process
       lazygit # terminal UI for git commands
       libvterm-neovim # needed by neovim
       ncdu # windirstat for linux (sort dirs by size)
@@ -67,22 +67,22 @@ in {
       # GUI apps
       brave # browser
       celluloid # mpv with GUI (video player)
-      easyeffects # sound effects
-      unstable.firefox-bin # browser
-      gedit # basic text editor GUI
       dconf-editor # to check GTK theming values
+      easyeffects # sound effects
+      gedit # basic text editor GUI
       google-chrome # browser
-      unstable.obsidian # note-taking app
+      kdePackages.kolourpaint # MS Paint for linux
       keepassxc # password manager
       kitty # terminal
-      kdePackages.kolourpaint # MS Paint for linux
       libsForQt5.ark # 7-zip alternative
       loupe # image viewer
-      spotify-no-ads # music player
-      vesktop # discord + additions
       mpv # video player
       onlyoffice-bin_latest # MS Office alternative
       qbittorrent # torrent downloading
+      spotify-no-ads # music player
+      unstable.firefox-bin # browser
+      unstable.obsidian # note-taking app
+      vesktop # discord + additions
 
       # Languages and Package Managers
       # cargo
@@ -124,13 +124,19 @@ in {
       cat = "bat"; # Show file contents
       ps_search = "ps aux | rg"; # List a process
       ps_kill = "pkill -9"; # Force kill a process (hence the 9)
-      nix-switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
-      nix-boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
+      # nix-switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
+      # nix-boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
+      # nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
+      # nix-roll = "sudo nix profile rollback --profile /nix/var/nix/profiles/system --to"; # Rollback to a generation
+      # nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 7d && nix store gc"; # Garbage collect nixos
+      nix-switch = "nh os switch"; # Change nixos config now
+      nix-boot = "nh os boot"; # Change nixos config after boot
+      nix-list = "nh os info"; # List nixos generations
+      nix-roll = "nh os rollback --to"; # Rollback to a generation
+      nix-gc = "nh clean all --ask --keep 3 --keep-since 5d"; # Garbage collect nixos
       nix-update-all = "sudo nix flake update ~/dots/#"; # Update the versions of packages
       nix-update = "update_nix_inputs"; # Update only specific flake inputs
-      nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
-      nix-roll = "sudo nix profile rollback --profile /nix/var/nix/profiles/system --to"; # Rollback to a generation
-      nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 7d && nix store gc"; # Garbage collect nixos
+      nix-fmt = "nix fmt -- ~/dots/**/*.nix"; # Format all the nix files in my repo
     };
 
     etc = {
@@ -285,6 +291,22 @@ in {
           };
         }
       ];
+    };
+
+    # Better nix CLI
+    nh = {
+      enable = true;
+
+      # package = pkgs.nh;
+
+      flake = "/home/${username}/dots"; # sets NH_OS_FLAKE variable
+
+      # better garbage collection
+      clean = {
+        enable = true;
+        dates = "weekly";
+        extraArgs= "--keep 3 --keep-since 5d";
+      };
     };
   };
 

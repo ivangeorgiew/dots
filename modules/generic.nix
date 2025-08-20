@@ -25,7 +25,7 @@
   nix = {
     # Auto garbage collect
     gc = {
-      automatic = true;
+      automatic = false; # using the programs.nh.clean option instead
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
