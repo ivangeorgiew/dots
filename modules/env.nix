@@ -14,7 +14,7 @@ in {
   users.defaultUserShell = pkgs.fish;
 
   environment = {
-    # add ~/.local/bin to PATH
+    # Add ~/.local/bin to PATH
     localBinInPath = true;
 
     # Add shells to /etc/shells
@@ -122,21 +122,23 @@ in {
       mkdir = "mkdir -p"; # Make dirs recursively
       cp = "cp -r"; # Copy recursively
       cat = "bat"; # Show file contents
+      find = "fd"; # Find files/folders
+      dirs_size = "ncdu"; # Windirstat for Linux (sort dirs by size)
       ps_search = "ps aux | rg"; # List a process
       ps_kill = "pkill -9"; # Force kill a process (hence the 9)
-      # nix-switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
-      # nix-boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
-      # nix-list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
-      # nix-roll = "sudo nix profile rollback --profile /nix/var/nix/profiles/system --to"; # Rollback to a generation
-      # nix-gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 7d && nix store gc"; # Garbage collect nixos
-      nix-switch = "nh os switch"; # Change nixos config now
-      nix-boot = "nh os boot"; # Change nixos config after boot
-      nix-list = "nh os info"; # List nixos generations
-      nix-roll = "nh os rollback --to"; # Rollback to a generation
-      nix-gc = "nh clean all --ask --keep 3 --keep-since 5d"; # Garbage collect nixos
-      nix-update-all = "sudo nix flake update ~/dots/#"; # Update the versions of packages
-      nix-update = "update_nix_inputs"; # Update only specific flake inputs
-      nix-fmt = "nix fmt -- ~/dots/**/*.nix"; # Format all the nix files in my repo
+      # nix_switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
+      # nix_boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
+      # nix_list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
+      # nix_roll = "sudo nix profile rollback --profile /nix/var/nix/profiles/system --to"; # Rollback to a generation
+      # nix_gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 7d && nix store gc"; # Garbage collect nixos
+      nix_switch = "nh os switch"; # Change nixos config now
+      nix_boot = "nh os boot"; # Change nixos config after boot
+      nix_list = "nh os info"; # List nixos generations
+      nix_roll = "nh os rollback --to"; # Rollback to a generation
+      nix_gc = "nh clean all --ask --keep 3 --keep-since 5d"; # Garbage collect nixos
+      nix_update_all = "sudo nix flake update ~/dots/#"; # Update the versions of packages
+      nix_update = "update_nix_inputs"; # Update only specific flake inputs
+      nix_fmt = "nix fmt -- ~/dots/**/*.nix"; # Format all the nix files in my repo
     };
 
     etc = {
@@ -227,7 +229,7 @@ in {
       '';
     };
 
-    # shell prompt
+    # Shell prompt
     starship.enable = true;
 
     # IDE/Text editor
@@ -260,7 +262,7 @@ in {
       # libraries = []; # extra libraries to include
     };
 
-    # combined with devbox or a flake shell, autoloads
+    # Combined with devbox or a flake shell, autoloads
     # packages and env variables when entering directories
     direnv = {
       enable = true;
@@ -320,7 +322,7 @@ in {
 
   # Associate programs with file extensions
   xdg.mime =
-    # list from /run/current-system/sw/share/applications
+    # List from /run/current-system/sw/share/applications
     let
       browser = "firefox.desktop";
       torrent = "org.qbittorrent.qBittorrent.desktop";

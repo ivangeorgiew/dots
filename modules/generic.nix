@@ -89,16 +89,6 @@
     useXkbConfig = true;
   };
 
-  # Sound config for Pipewire
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    wireplumber.enable = true;
-    jack.enable = true; #Can be disabled
-  };
-
   # Some apps might break without those
   security = {
     polkit.enable = true;
@@ -106,6 +96,16 @@
   };
 
   services = {
+    # Sound config for Pipewire
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      wireplumber.enable = true;
+      jack.enable = true; #Can be disabled
+    };
+
     # Configure keymaps
     xserver.xkb = {
       extraLayouts.bgd = {
@@ -118,14 +118,17 @@
       options = "grp:shifts_toggle,ctrl:swapcaps";
     };
 
-    # handler for input devices (mouse, touchpad, etc.)
+    # Handler for input devices (mouse, touchpad, etc.)
     libinput = {
       enable = true;
       mouse.accelProfile = "flat"; # disables mouse acceleration
     };
 
-    # toggles flatpak
-    flatpak.enable = true;
+    # Toggles flatpak
+    flatpak.enable = false;
+
+    # Creates /bin and /usr/bin as on other Linux distros
+    envfs.enable = true;
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

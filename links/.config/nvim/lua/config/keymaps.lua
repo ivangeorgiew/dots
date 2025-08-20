@@ -32,15 +32,15 @@ delete_maps({ "n", "v" }, {
   --"T",
   -- "f",
   -- "F",
-  "s", -- shorthand for cl
-  "S", -- shorthand for cc
+  -- "s", -- shorthand for cl
+  -- "S", -- shorthand for cc
   "H", -- (reused)
   "L", -- (reused)
   "|",
   "\\",
   "Z",
-  "x", -- shorthand for dl
-  "X", -- shorthand for dh
+  -- "x", -- shorthand for dl
+  -- "X", -- shorthand for dh
   "M",
 })
 
