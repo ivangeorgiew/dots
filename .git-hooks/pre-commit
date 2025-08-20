@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Stash all uncommited changes
+git stash --keep-index --include-untracked
+
+# Format all nix files in my repo
+nix fmt -- ~/dots/**/*.nix
+
+# Add all formatting changes to the commit
+git add -A
+
+# Apply all stashed changes
+git stash pop

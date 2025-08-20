@@ -37,12 +37,6 @@
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
     settings = {
-      # Faster nix changes, but works only with Determinate Nix
-      #lazy-trees = true;
-
-      # Used by default in Determinate Nix
-      #always-allow-substitutes = true;
-
       # Used by default in Determinate Nix
       max-jobs = "auto";
 
