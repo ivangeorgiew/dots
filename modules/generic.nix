@@ -23,12 +23,13 @@
   };
 
   nix = {
+    # Instead of this programs.nh.clean is used below
     # Auto garbage collect
-    gc = {
-      automatic = false; # using the programs.nh.clean option instead
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
+    # gc = {
+    #   automatic = true;
+    #   dates = "weekly";
+    #   options = "--delete-older-than 7d";
+    # };
 
     # Adds each flake input as registry to make nix3 command consistent
     registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
@@ -49,11 +50,41 @@
       # Users which have rights to modify binary caches and other stuff
       extra-trusted-users = ["root" "@wheel"];
 
-      # Binary caches
-      extra-trusted-substituters = ["https://nix-community.cachix.org"];
+      # Binary caches (yes we want substituters, not trusted-substituters)
+      extra-substituters = ["https://nix-community.cachix.org"];
 
       # Public keys for the above caches
       extra-trusted-public-keys = ["nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="];
+    };
+  };
+
+  programs = {
+    # Fix dynamically linked binaries
+    # for example: things installed from mason.nvim
+    # might need to set:
+    # environment.shellInit = ''
+    #   export NIX_LD=${pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"}
+    # ''
+    nix-ld = {
+      enable = true;
+      # package = pkgs.nix-ld;
+      # libraries = []; # extra libraries to include
+    };
+
+    # Better nix CLI
+    nh = {
+      enable = true;
+
+      # package = pkgs.nh;
+
+      flake = "/home/${username}/dots"; # sets NH_OS_FLAKE variable
+
+      # Better garbage collection
+      clean = {
+        enable = true;
+        dates = "weekly";
+        extraArgs = "--keep 3 --keep-since 5d";
+      };
     };
   };
 
@@ -100,7 +131,8 @@
       jack.enable = true; #Can be disabled
     };
 
-    # Configure keymaps
+    # Configure keymaps on X11 and TTY console
+    # due to the console.useXkbConfig option
     xserver.xkb = {
       extraLayouts.bgd = {
         description = "Bulgarian";
@@ -115,7 +147,10 @@
     # Handler for input devices (mouse, touchpad, etc.)
     libinput = {
       enable = true;
-      mouse.accelProfile = "flat"; # disables mouse acceleration
+      mouse = {
+        accelProfile = "flat"; # disables mouse acceleration
+        accelSpeed = "-0.75"; # same as my Windows sensitivity
+      };
     };
 
     # Toggles flatpak

@@ -9,6 +9,7 @@
 }: let
   iconTheme = "Papirus-Dark";
   themeName = "adw-gtk3-dark";
+  fontName = "Noto Sans Medium 11";
 in {
   # Default shell for all users
   users.defaultUserShell = pkgs.fish;
@@ -65,12 +66,9 @@ in {
       wget # download files
 
       # GUI apps
-      brave # browser
       celluloid # mpv with GUI (video player)
-      dconf-editor # to check GTK theming values
       easyeffects # sound effects
       gedit # basic text editor GUI
-      google-chrome # browser
       kdePackages.kolourpaint # MS Paint for linux
       keepassxc # password manager
       kitty # terminal
@@ -79,10 +77,13 @@ in {
       mpv # video player
       onlyoffice-bin_latest # MS Office alternative
       qbittorrent # torrent downloading
-      spotify-no-ads # music player
+
+      custom.spotify-no-ads # music player
+      custom.vesktop # discord + additions
+
       unstable.firefox-bin # browser
+      unstable.google-chrome # browser
       unstable.obsidian # note-taking app
-      vesktop # discord + additions
 
       # Languages and Package Managers
       # cargo
@@ -126,6 +127,7 @@ in {
       dirs_size = "ncdu"; # Windirstat for Linux (sort dirs by size)
       ps_search = "ps aux | rg"; # List a process
       ps_kill = "pkill -9"; # Force kill a process (hence the 9)
+      neofetch = "nitch"; # Displays system info
       # nix_switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
       # nix_boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
       # nix_list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
@@ -142,20 +144,23 @@ in {
     };
 
     etc = {
-      # GTK theming
+      # GTK theming - just in case of old/broken apps
       "gtk-2.0/gtkrc".text = ''
         gtk-icon-theme-name = "${iconTheme}"
         gtk-theme-name = "${themeName}"
+        gtk-font-name = "${fontName}"
       '';
       "gtk-3.0/settings.ini".text = ''
         [Settings]
         gtk-icon-theme-name=${iconTheme}
         gtk-theme-name=${themeName}
+        gtk-font-name = ${fontName}
       '';
       "gtk-4.0/settings.ini".text = ''
         [Settings]
         gtk-icon-theme-name=${iconTheme}
         gtk-theme-name=${themeName}
+        gtk-font-name = ${fontName}
       '';
     };
   };
@@ -235,32 +240,21 @@ in {
     # IDE/Text editor
     neovim = {
       enable = true;
-      package = pkgs.neovim; # overlayed neovim-nightly
-      withRuby = true;
-      withPython3 = true;
-      withNodeJs = true;
+
+      package = pkgs.custom.neovim-nightly;
 
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
+      withRuby = true;
+      withPython3 = true;
+      withNodeJs = true;
     };
 
     # java = {
     #   enable = true;
     #   # package = pkgs.jdk; # can be substituted to oracle version
     # };
-
-    # fix dynamically linked binaries
-    # for example: things installed from mason.nvim
-    # might need to set:
-    # environment.shellInit = ''
-    #   export NIX_LD=${pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"}
-    # ''
-    nix-ld = {
-      enable = true;
-      # package = pkgs.nix-ld;
-      # libraries = []; # extra libraries to include
-    };
 
     # Combined with devbox or a flake shell, autoloads
     # packages and env variables when entering directories
@@ -277,7 +271,7 @@ in {
       };
     };
 
-    # GTK theming
+    # GTK theming - newer apps
     dconf = {
       enable = true;
 
@@ -285,30 +279,15 @@ in {
       # example config: https://github.com/Electrostasy/dots/blob/c62895040a8474bba8c4d48828665cfc1791c711/profiles/system/gnome/default.nix#L123-L287
       profiles.user.databases = [
         {
-          settings = {
-            "org/gnome/desktop/interface" = {
-              gtk-theme = themeName;
-              icon-theme = iconTheme;
-            };
+          settings."org/gnome/desktop/interface" = {
+            gtk-theme = themeName;
+            icon-theme = iconTheme;
+            font-name = fontName;
+            document-font-name = fontName;
+            monospace-font-name = fontName;
           };
         }
       ];
-    };
-
-    # Better nix CLI
-    nh = {
-      enable = true;
-
-      # package = pkgs.nh;
-
-      flake = "/home/${username}/dots"; # sets NH_OS_FLAKE variable
-
-      # better garbage collection
-      clean = {
-        enable = true;
-        dates = "weekly";
-        extraArgs = "--keep 3 --keep-since 5d";
-      };
     };
   };
 

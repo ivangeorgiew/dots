@@ -28,6 +28,7 @@
     };
 
     # Font packages
+    # List of all installed fonts -> fc-list : family | sort | uniq | less
     packages = with pkgs; [
       # Nerd Fonts with icons
       nerd-fonts.symbols-only

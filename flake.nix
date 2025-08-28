@@ -24,7 +24,7 @@
     system = "x86_64-linux";
 
     # Probably don't need unfree packages here
-    #(import nixpkgs { inherit system; config.allowUnfree = true; })
+    # but if you do -> (import nixpkgs { inherit system; config.allowUnfree = true; })
     forAllSystems = (
       func:
         lib.genAttrs ["x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"] (
@@ -42,7 +42,7 @@
     # Flake templates
     # templates.default = {
     #   description = "Default shell template";
-    #   path = ./shell-template;
+    #   path = ./shell_template;
     # };
 
     # Package overlays
@@ -60,7 +60,7 @@
           username = "ivangeorgiew";
           graphicsCard = "nvidia";
         };
-        modules = (builtins.attrValues outputs.nixosModules) ++ [./modules/hardware-mahcomp.nix];
+        modules = (builtins.attrValues outputs.nixosModules) ++ [./modules/hardware_mahcomp.nix];
       };
     };
   };

@@ -7,8 +7,9 @@
   ...
 }: {
   nix.settings = {
-    substituters = lib.mkAfter ["https://hyprland.cachix.org"];
-    trusted-public-keys = lib.mkAfter ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+    # Add hyprland binary cache
+    extra-substituters = lib.mkAfter ["https://hyprland.cachix.org"];
+    extra-trusted-public-keys = lib.mkAfter ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
   };
 
   services = {
@@ -25,6 +26,7 @@
       };
     };
 
+    # Works only if a display manager is enabled
     displayManager = {
       # whether to autologin
       autoLogin = {
@@ -36,10 +38,21 @@
     # greetd display manager
     greetd = {
       enable = true;
-      vt = 1;
-      settings = {
+
+      settings = let
+        greeter_opts = "--asterisks --remember-session --user-menu --time --cmd";
+        start_command = "Hyprland";
+        # start_command = "uwsm start hyprland-uwsm.desktop"; # use UWSM
+      in {
+        # First login
+        initial_session = {
+          command = start_command;
+          user = username;
+        };
+
+        # If you logout or crash happens
         default_session = {
-          command = "Hyprland -c /etc/nwg-hello/hyprland.conf";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet ${greeter_opts} ${start_command}";
           user = username;
         };
       };
@@ -53,6 +66,14 @@
       gcr
       gnome-settings-daemon
     ];
+
+    # for auto mounting of disks
+    gvfs.enable = true;
+    udisks2.enable = true;
+    devmon.enable = true;
+
+    # file manager thumbnail support for images
+    tumbler.enable = true;
   };
 
   # swaylock fix
@@ -60,8 +81,8 @@
   security.pam.services.swaylock = {};
   security.pam.services.swaylock.fprintAuth = false;
 
-  # Wayland packages and env variables
   environment = {
+    # Desktop Environment variables
     sessionVariables =
       {
         CLUTTER_BACKEND = "wayland";
@@ -85,12 +106,13 @@
         __GLX_VENDOR_LIBRARY_NAME = "nvidia"; # Could cause issues with Discord and Zoom
       };
 
+    # Desktop related packages
     systemPackages = with pkgs; [
       dunst # notifications
       grim # screenshots for wayland
+      nwg-look # to check GTK theming values
       kdePackages.qtwayland # requirement for qt6
       libsForQt5.qt5.qtwayland # requirement for qt5
-      mpvpaper # video wallpaper
       networkmanagerapplet # manage wifi
       playerctl # controls media players
       polkit_gnome # some apps require polkit
@@ -98,12 +120,13 @@
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
-      #nwg-dock-hyprland # dock for hyprland
-      nwg-hello # login manager
       vulkan-tools # to debug issues with vulkan
       waybar # status bar
       wf-recorder # screen recording
       wl-clipboard # copy/paste on wayland
+
+      custom.mpvpaper # video wallpaper
+      #custom.nwg-dock-hyprland # dock for hyprland
     ];
 
     shellAliases = {
@@ -114,31 +137,6 @@
     # Adds some needed folders in /run/current-system/sw
     # Example: /run/current-system/sw/share/wayland-sessions folder
     pathsToLink = ["/share"];
-
-    etc = {
-      # nwg-hello starting file
-      "nwg-hello/hyprland.conf".text = ''
-        monitor = , highrr, auto, 1
-        bind = ALT SHIFT, q, killactive,
-        misc {
-          disable_hyprland_logo = true
-        }
-        animations {
-          enabled = false
-        }
-        input {
-          kb_model = pc104
-          kb_layout = us,bgd
-          kb_variant = dvorak,
-          kb_options = grp:shifts_toggle,ctrl:swapcaps
-          repeat_rate = 50
-          repeat_delay = 300
-          sensitivity = -0.75
-          accel_profile = flat
-        }
-        exec-once = nwg-hello; hyprctl dispatch exit
-      '';
-    };
   };
 
   programs = {
@@ -146,10 +144,13 @@
     # https://github.com/NixOS/nixpkgs/blob/nixos-23.05/nixos/modules/programs/hyprland.nix#L59
     hyprland = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
 
-      # use latest xdg-desktop-portal-hyprland (currently v1.3.1)
-      #portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
+      # Use packages from the Hyprland input
+      package = pkgs.hyprland-pkgs.hyprland;
+      portalPackage = pkgs.hyprland-pkgs.xdg-desktop-portal-hyprland;
+
+      # Enabled by default
+      #xwayland.enable = true;
     };
 
     # GUI file manager
@@ -159,23 +160,19 @@
     seahorse.enable = true;
   };
 
-  services = {
-    # for auto mounting of disks
-    gvfs.enable = true;
-    udisks2.enable = true;
-    devmon.enable = true;
-
-    # file manager thumbnail support for images
-    tumbler.enable = true;
+  hardware.graphics = {
+    # Use mesa from the hyprland input's nixpkgs commit to prevent issues
+    package = pkgs.hyprland-nixpkgs.mesa;
+    package32 = pkgs.hyprland-nixpkgs.driversi686Linux.mesa;
   };
 
   xdg.portal = {
     enable = true;
 
-    # for the `xdg-open` command to use portals
+    # For the `xdg-open` command to use portals
     xdgOpenUsePortal = true;
 
-    # add extra portals (hyprland portal is auto added)
+    # Add extra portals (hyprland portal is auto added)
     extraPortals = with pkgs; [xdg-desktop-portal-gtk];
   };
 

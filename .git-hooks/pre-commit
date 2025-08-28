@@ -1,13 +1,22 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
+
+# Initially from:
+# https://stackoverflow.com/questions/20479794/how-do-i-properly-git-stash-pop-in-pre-commit-hooks-to-get-a-clean-working-tree
 
 # Stash all uncommited changes
-git stash --keep-index --include-untracked
+old_stash=$(git rev-parse -q --verify refs/stash)
+git stash -q --keep-index --include-untracked
+new_stash=$(git rev-parse -q --verify refs/stash)
 
-# Format all nix files in my repo
-nix fmt -- ~/dots/**/*.nix
+# If there nothing was stashed then we should skip everything.
+if [ "$old_stash" = "$new_stash" ]; then
+    echo "pre-commit script: no changes to test"
+    sleep 1 # hack, editor may erase message
+    exit 0
+fi
 
-# Add all formatting changes to the commit
-git add -A
+# Format all nix files in my repo and add the changes
+nix fmt -- ~/dots/**/*.nix && git add -A
 
-# Apply all stashed changes
-git stash pop
+# Restore changes
+git reset --hard -q && git stash apply --index -q && git stash drop -q
