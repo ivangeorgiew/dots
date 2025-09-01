@@ -5,14 +5,26 @@
     config.allowUnfree = true;
   };
 
-  # nixpkgs-unstable which Hyprland uses. Can fix some issues.
-  # No need for unfree packages for now
-  hyprland-nixpkgs = inputs.hyprland.inputs.nixpkgs.legacyPackages.${prev.system};
+  hland = {
+    # nixpkgs-unstable which Hyprland uses. Can fix some issues.
+    # No need for unfree packages for now
+    nixpkgs = inputs.hyprland.inputs.nixpkgs.legacyPackages.${prev.system};
 
-  # hyprland-related packages
-  hyprland-pkgs = inputs.hyprland.packages.${prev.system};
+    # Packages related to Hyprland
+    hypr-pkgs = inputs.hyprland.packages.${prev.system};
+
+    # Official Hyprland plugins by vaxry
+    plugins-git = inputs.hyprland-plugins.packages.${prev.system};
+
+    # Plugins from nixpkgs
+    plugins-nix = unstable.hyprlandPlugins;
+
+    # GUI for configuring Hyprland
+    hyprviz = inputs.hyprviz.packages.${prev.system}.default;
+  };
 
   custom = {
+    # Video as wallpaper
     mpvpaper = prev.mpvpaper.overrideAttrs (oldAttrs: {
       src = prev.fetchFromGitHub {
         owner = "GhostNaN";
@@ -22,10 +34,13 @@
       };
     });
 
+    # Discord client
     vesktop = prev.vesktop.override {withSystemVencord = false;};
 
+    # Latest nvim version
     neovim-nightly = inputs.neovim-nightly.packages.${prev.system}.default;
 
+    # Spotify without ads
     # https://github.com/NL-TCH/nur-packages/blob/master/pkgs/spotify-adblock/default.nix
     spotify-no-ads = let
       spotify-adblock = prev.rustPlatform.buildRustPackage {
@@ -49,10 +64,8 @@
         '';
 
         installPhase = ''
-          mkdir -p $out/etc/spotify-adblock
-          install -D --mode=644 config.toml $out/etc/spotify-adblock
-          mkdir -p $out/lib
-          install -D --mode=644 --strip target/release/libspotifyadblock.so $out/lib
+          install -Dm644 config.toml -t $out/etc/spotify-adblock
+          install -Dm644 --strip target/release/libspotifyadblock.so -t $out/lib
         '';
       };
     in
@@ -73,6 +86,7 @@
             '';
         });
 
+    # App dock for Hyprland
     nwg-dock-hyprland = unstable.nwg-dock-hyprland.overrideAttrs (oldAttrs: {
       src = unstable.fetchFromGitHub {
         owner = "ivangeorgiew";

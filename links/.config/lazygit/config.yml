@@ -1,0 +1,5 @@
+# https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#default
+
+gui:
+  # If true, do not show a warning when discarding changes in the staging view.
+  skipDiscardChangeWarning: true

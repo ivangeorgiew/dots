@@ -2,15 +2,23 @@
 {
   description = "My NixOS flake config";
 
+  # Use specific commits for repos without versioned tags so flake.lock can be deleted if there are issues.
+  # Don't use inputs.<>.follows due to cache misses and issues. Only when absolutely necessary.
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/b4c2c57c31e68544982226d07e4719a2d86302a8"; # branch nixos-25.05
 
-    hyprland.url = "github:hyprwm/Hyprland/v0.37.1";
-    neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/d7600c775f877cd87b4f5a831c28aa94137377aa"; # branch nixos-unstable
 
-    # Hardware settings for laptops
-    # nixos-hardware.url = "github:NixOS/nixos-hardware";
+    neovim-nightly.url = "github:nix-community/neovim-nightly-overlay/6c06684174406a5c11d1479fa0ab9d3ccc5e08d1";
+
+    hyprland.url = "github:hyprwm/Hyprland/v0.50.1";
+
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins/v0.50.0";
+      inputs.hyprland.follows = "hyprland"; # required
+    };
+
+    hyprviz.url = "github:ivangeorgiew/hyprviz"; # change to "timasoft/hyprviz" when PR is accepted
   };
 
   outputs = inputs @ {

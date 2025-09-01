@@ -22,8 +22,7 @@ in {
     shells = with pkgs; [fish];
 
     systemPackages = with pkgs; [
-      # CLI apps, tools and requirements
-      adw-gtk3 # used for GTK theming
+      # CLI apps
       babelfish # translate bash scripts to fish
       bat # better alternative to cat
       btop # system monitor
@@ -41,11 +40,9 @@ in {
       gcc # c compiler
       gh # github authenticator
       git # obvious
-      glibc # need by some programs
-      gnome-themes-extra # extra GTK themes
+      glibc # need by some apps
       gnumake # make command
       jq # json processor
-      kdePackages.breeze # breeze theme for Qt
       killall # kill a running process
       lazygit # terminal UI for git commands
       libvterm-neovim # needed by neovim
@@ -53,7 +50,6 @@ in {
       nerdfix # removes obsolete nerd font icons
       nitch # alternative to neofetch
       p7zip # archiving and compression
-      papirus-icon-theme # icons for GTK
       pavucontrol # audio control
       pstree # prints tree of pids
       qalculate-gtk # calculator
@@ -67,6 +63,8 @@ in {
 
       # GUI apps
       celluloid # mpv with GUI (video player)
+      custom.spotify-no-ads # music player
+      custom.vesktop # discord + additions
       easyeffects # sound effects
       gedit # basic text editor GUI
       kdePackages.kolourpaint # MS Paint for linux
@@ -77,10 +75,6 @@ in {
       mpv # video player
       onlyoffice-bin_latest # MS Office alternative
       qbittorrent # torrent downloading
-
-      custom.spotify-no-ads # music player
-      custom.vesktop # discord + additions
-
       unstable.firefox-bin # browser
       unstable.google-chrome # browser
       unstable.obsidian # note-taking app
@@ -92,6 +86,12 @@ in {
       luarocks
       nodejs
       ruby
+
+      # Theme packages
+      adw-gtk3 # used for GTK theming
+      gnome-themes-extra # extra GTK themes
+      kdePackages.breeze # breeze theme for Qt
+      papirus-icon-theme # icons for GTK
     ];
 
     sessionVariables = {
