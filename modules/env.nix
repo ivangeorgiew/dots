@@ -86,13 +86,8 @@ in {
       unstable.obsidian # note-taking app
 
       # Languages and Package Managers
-      # cargo
-      # julia-bin
-      # php
-      # php83Packages.composer
-      (python311.withPackages (ps: with ps; [requests pygobject3 pip]))
+      (python311.withPackages (ps: with ps; [pip]))
       go
-      gobject-introspection # for some python scripts
       lua51Packages.lua
       luarocks
       nodejs

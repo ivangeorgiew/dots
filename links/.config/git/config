@@ -26,8 +26,8 @@
     rt = reset HEAD~1 ; go back 1 commit and show changes as unstaged
     sa = submodule add
     sch = !git branch --all | grep ; search branch names
-    sh = stash --keep-index ; stash changes
-    sha = "!git stash apply stash@{\"$1\"} #" ; apply stash with a number
+    sh = stash --keep-index --include-untracked ; stash all uncommited changes
+    sha = "!git stash apply --index stash@{\"$1\"} #" ; apply stash with a number
     shs = "!git stash show stash@{\"$1\"} #" ; show stash with a number
     ss = status
     su = !git submodule sync && git submodule update --init --recursive

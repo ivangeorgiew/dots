@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# Requires nix packages:
+# (python311.withPackages (ps: with ps; [requests pygobject3 pip]))
+# gobject-introspection
+
 import json
 import requests
 from datetime import datetime

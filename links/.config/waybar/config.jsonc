@@ -4,7 +4,7 @@
     "position": "top",
 
     "modules-left": [
-      "custom/weather",
+      // "custom/weather",
       "temperature",
       "custom/gpu",
       "custom/keyboard",
@@ -31,7 +31,7 @@
       "format": " {} {icon}",
       "format-icons": {
         "active": "󰮯",
-        "default": "󰊠",
+        "default": "󰊠"
       },
       "active-only": false,
       "on-click": "activate",
@@ -64,7 +64,7 @@
 
     "temperature": {
       "hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
-      "format": "CPU {temperatureC}°C",
+      "format": "  {temperatureC}°C",
       "interval": 5,
       "tooltip": false
     },
@@ -72,7 +72,7 @@
     "custom/gpu": {
       "exec": "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader",
       "interval": 5,
-      "format": "GPU {}°C",
+      "format": "  {}°C",
       "tooltip": false
     },
 
