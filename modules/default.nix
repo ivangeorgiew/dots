@@ -8,5 +8,5 @@ builtins.listToAttrs
     value = import (./. + "/${name}");
   })
   (builtins.filter
-    (name: name != "default.nix" && !(lib.strings.hasPrefix "hardware" name))
+    (name: name != "default.nix" && !(lib.strings.hasPrefix "hardware" name) && (lib.strings.hasSuffix ".nix" name))
     (builtins.attrNames (builtins.readDir ./.))))

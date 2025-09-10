@@ -24,16 +24,6 @@
   };
 
   custom = {
-    # Video as wallpaper
-    mpvpaper = prev.mpvpaper.overrideAttrs (oldAttrs: {
-      src = prev.fetchFromGitHub {
-        owner = "GhostNaN";
-        repo = "mpvpaper";
-        rev = "d8164bb6bd2960d2f7f6a9573e086d07d440f037";
-        sha256 = "sha256-/A2C6T7gP+VGON3Peaz2Y4rNC63UT+zYr4RNM2gdLUY=";
-      };
-    });
-
     # Discord client
     vesktop = prev.vesktop.override {withSystemVencord = false;};
 
@@ -85,15 +75,5 @@
               rm $out/share/spotify/Apps/xpui.js
             '';
         });
-
-    # App dock for Hyprland
-    nwg-dock-hyprland = unstable.nwg-dock-hyprland.overrideAttrs (oldAttrs: {
-      src = unstable.fetchFromGitHub {
-        owner = "ivangeorgiew";
-        repo = "nwg-dock-hyprland";
-        rev = "8b9d78d2ae0c0d090d1f5838c299f12c44958b73";
-        hash = "sha256-6+3sdG7rARcBGTHa/WUxSMnatZh4TYLSzhxz40XLBaA=";
-      };
-    });
   };
 }

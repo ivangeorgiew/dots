@@ -133,6 +133,7 @@ in {
       nix_list = "nh os info"; # List nixos generations
       nix_roll = "nh os rollback --to"; # Rollback to a generation
       nix_gc = "nh clean all --ask --keep 3 --keep-since 5d"; # Garbage collect nixos
+      nix_gc_all = "nh clean all --ask"; # Garbage collect all but 1 nixos generation
       nix_update_all = "sudo nix flake update ~/dots/#"; # Update the versions of packages
       nix_update = "update_nix_inputs"; # Update only specific flake inputs
       nix_fmt = "nix fmt -- ~/dots/**/*.nix"; # Format all the nix files in my repo
@@ -178,8 +179,8 @@ in {
 
         function update_nix_inputs
           if count $argv > /dev/null
-            set -l a (string join " --update-input " $argv)
-            eval "sudo nix flake lock --update-input $a ~/dots/#"
+            set -l a (string join " " $argv)
+            eval "sudo nix flake update $a --flake ~/dots"
           end
         end
 

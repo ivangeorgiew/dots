@@ -523,18 +523,20 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "naersk": "naersk",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
       },
       "locked": {
-        "lastModified": 1756733159,
-        "narHash": "sha256-BsX7C7yOAC5OrXsXc9yFRRPPZb1y+VGoIvPBiOBcOM4=",
-        "owner": "ivangeorgiew",
+        "lastModified": 1757446208,
+        "narHash": "sha256-gWtLnWQypk/Lv8/zKDACqvfI6RAGFwnINTTjskJOf3Y=",
+        "owner": "timasoft",
         "repo": "hyprviz",
-        "rev": "b727f88568c534a37fc4f7f5a58afa1e07983fd5",
+        "rev": "ec9ef8fe3f13537c1cfdd5c88ce0b900a1ed04ac",
         "type": "github"
       },
       "original": {
-        "owner": "ivangeorgiew",
+        "owner": "timasoft",
         "repo": "hyprviz",
         "type": "github"
       }
@@ -590,7 +592,7 @@
         "git-hooks": "git-hooks",
         "hercules-ci-effects": "hercules-ci-effects",
         "neovim-src": "neovim-src",
-        "nixpkgs": "nixpkgs_4",
+        "nixpkgs": "nixpkgs_3",
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
@@ -674,22 +676,6 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1755186698,
-        "narHash": "sha256-wNO3+Ks2jZJ4nTHMuks+cxAiVBGNuEBXsT29Bz6HASo=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "fbcf476f790d8a217c3eab4e12033dc4a0f6d23c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_4": {
-      "locked": {
         "lastModified": 1756536218,
         "narHash": "sha256-ynQxPVN2FIPheUgTFhv01gYLbaiSOS7NgWJPm9LF9D0=",
         "owner": "NixOS",
@@ -704,7 +690,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_5": {
+    "nixpkgs_4": {
       "locked": {
         "lastModified": 1756617294,
         "narHash": "sha256-aGnd4AHIYCWQKChAkHPpX+YYCt7pA6y2LFFA/s8q0wQ=",
@@ -749,7 +735,7 @@
         "hyprland-plugins": "hyprland-plugins",
         "hyprviz": "hyprviz",
         "neovim-nightly": "neovim-nightly",
-        "nixpkgs": "nixpkgs_5",
+        "nixpkgs": "nixpkgs_4",
         "nixpkgs-unstable": "nixpkgs-unstable"
       }
     },

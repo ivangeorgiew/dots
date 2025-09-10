@@ -15,10 +15,13 @@
 
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins/v0.50.0";
-      inputs.hyprland.follows = "hyprland"; # required
+      inputs.hyprland.follows = "hyprland";
     };
 
-    hyprviz.url = "github:ivangeorgiew/hyprviz"; # change to "timasoft/hyprviz" when PR is accepted
+    hyprviz = {
+      url = "github:timasoft/hyprviz";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = inputs @ {

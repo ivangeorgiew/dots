@@ -8,17 +8,17 @@
       "temperature",
       "custom/gpu",
       "custom/keyboard",
-      "hyprland/workspaces",
-      "tray"
+      "hyprland/workspaces"
     ],
 
     "modules-center": [
+      "custom/playerctl#backward",
+      "custom/playerctl#play",
+      "custom/playerctl#forward"
     ],
 
     "modules-right": [
-      "custom/playerctl#backward",
-      "custom/playerctl#play",
-      "custom/playerctl#forward",
+      "tray",
       "pulseaudio",
       "network",
       "clock",
@@ -28,14 +28,21 @@
     ],
 
     "hyprland/workspaces": {
-      "format": " {} {icon}",
+      "format": " {icon}: {windows}",
       "format-icons": {
         "active": "󰮯",
         "default": "󰊠"
       },
+      "on-scroll-up": "hyprctl dispatch workspace e+1",
+      "on-scroll-down": "hyprctl dispatch workspace e-1",
       "active-only": false,
       "on-click": "activate",
-      "persistent-workspaces": { "*": 4 }
+      "persistent-workspaces": { "*": 5 },
+      "workspace-taskbar": {
+        "enable": true,
+        "format": "{icon}",
+        "icon-size": 15
+      }
     },
 
     "tray": {

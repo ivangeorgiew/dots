@@ -16,23 +16,13 @@
     # Bad naming. Manages all the DE/WM settings, not only X11
     xserver = {
       enable = true;
-
-      displayManager = {
-        # Gnome display manager (login)
-        gdm.enable = false;
-
-        # disable the default login manager
-        lightdm.enable = false;
-      };
+      displayManager.lightdm.enable = false;
     };
 
     # Works only if a display manager is enabled
-    displayManager = {
-      # whether to autologin
-      autoLogin = {
-        enable = false;
-        user = username;
-      };
+    displayManager.autoLogin = {
+      enable = false;
+      user = username;
     };
 
     # greetd display manager
@@ -83,28 +73,31 @@
 
   environment = {
     sessionVariables =
-      # Generic variables
+      # Generic variables recommended by Hyprland
       {
-        CLUTTER_BACKEND = "wayland";
-        GDK_BACKEND = "wayland,x11";
+        ELECTRON_OZONE_PLATFORM_HINT = "auto";
         NIXOS_OZONE_WL = "1";
+        NVD_BACKEND = "direct";
+        CLUTTER_BACKEND = "wayland";
+        GDK_BACKEND = "wayland,x11,*";
         QT_AUTO_SCREEN_SCALE_FACTOR = "1";
         QT_QPA_PLATFORM = "wayland;xcb";
         QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-        SDL_VIDEODRIVER = "wayland"; # might cause issues with older games
-        WLR_DRM_NO_ATOMIC = "1"; # set if you have flickering issue
-        WLR_NO_HARDWARE_CURSORS = "1";
+        SDL_VIDEODRIVER = "wayland";
+        # WLR_DRM_NO_ATOMIC = "1"; # set if you have flickering issue
         XDG_CURRENT_DESKTOP = "Hyprland";
         XDG_SESSION_DESKTOP = "Hyprland";
         XDG_SESSION_TYPE = "wayland";
         __GL_GSYNC_ALLOWED = "1";
         __GL_VRR_ALLOWED = "1";
+        XCURSOR_THEME = "Bibata-Modern-Classic";
+        XCURSOR_SIZE = "24";
       }
       # Nvidia related variables
       // lib.optionalAttrs (graphicsCard == "nvidia") {
-        GBM_BACKEND = "nvidia-drm"; # Could crash Firefox
+        GBM_BACKEND = "nvidia-drm";
         LIBVA_DRIVER_NAME = "nvidia";
-        __GLX_VENDOR_LIBRARY_NAME = "nvidia"; # Could cause issues with Discord and Zoom
+        __GLX_VENDOR_LIBRARY_NAME = "nvidia";
       }
       # Hyprland Plugins
       // {
@@ -120,27 +113,33 @@
 
     # Desktop related packages
     systemPackages = with pkgs; [
-      #custom.nwg-dock-hyprland # dock for hyprland
-      custom.mpvpaper # video wallpaper
+      # CLI apps
       dunst # notifications
       grim # screenshots for wayland
-      hland.hyprviz # GUI for configuring Hyprland
-      kdePackages.qt6ct # QT6 theme changing
       kdePackages.qtwayland # requirement for qt6
       libsForQt5.qt5.qtwayland # requirement for qt5
-      libsForQt5.qt5ct # QT5 theme changing
-      networkmanagerapplet # manage wifi
-      nwg-look # GTK theme changing
-      playerctl # controls media players
+      mpvpaper # video wallpaper
       polkit_gnome # some apps require polkit
-      rofi-wayland # app launcher for wayland
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
+      unstable.waybar # status bar
       vulkan-tools # to debug issues with vulkan
-      waybar # status bar
       wf-recorder # screen recording
       wl-clipboard # copy/paste on wayland
+
+      # GUI apps
+      hland.hyprviz # GUI for configuring Hyprland
+      networkmanagerapplet # manage wifi
+      nwg-look # GTK theme changing
+      nwg-icon-picker # GTK icons search
+      playerctl # controls media players
+      rofi-wayland # app launcher for wayland
+
+      # Theme apps
+      bibata-cursors # cursor themes
+      kdePackages.qt6ct # QT6 theme changing
+      libsForQt5.qt5ct # QT5 theme changing
     ];
 
     shellAliases = {
