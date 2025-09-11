@@ -190,7 +190,7 @@
   systemd.user.services = {
     polkit-agent = {
       description = "Polkit Agent (user verification for apps)";
-      wantedBy = [ "default.target" ];
+      wantedBy = ["default.target"];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
