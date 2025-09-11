@@ -10,6 +10,8 @@
   iconTheme = "Papirus-Dark";
   themeName = "adw-gtk3-dark";
   fontName = "Noto Sans Medium 11";
+  cursorTheme = "Bibata-Modern-Classic";
+  cursorSize = "24";
 in {
   # Default shell for all users
   users.defaultUserShell = pkgs.fish;
@@ -79,7 +81,7 @@ in {
       unstable.google-chrome # browser
       unstable.obsidian # note-taking app
 
-      # Languages and Package Managers
+      # Programming apps
       (python311.withPackages (ps: with ps; [pip]))
       go
       lua51Packages.lua
@@ -87,18 +89,21 @@ in {
       nodejs
       ruby
 
-      # Theme packages
+      # Theme apps
       adw-gtk3 # used for GTK theming
-      gnome-themes-extra # extra GTK themes
-      kdePackages.breeze # breeze theme for Qt
+      bibata-cursors # cursors
+      dconf-editor # check dconf settings (GTK)
       papirus-icon-theme # icons for GTK
     ];
 
     sessionVariables = {
       TERMINAL = "kitty";
       BROWSER = "firefox";
+      FILE_MANAGER = "thunar";
       HISTCONTROL = "ignoreboth:erasedups";
       LESSHISTFILE = "-";
+      XCURSOR_THEME = cursorTheme;
+      XCURSOR_SIZE = cursorSize;
       XDG_CONFIG_HOME = "$HOME/.config";
       XDG_CACHE_HOME = "$HOME/.cache";
       XDG_DATA_HOME = "$HOME/.local/share";
@@ -113,6 +118,8 @@ in {
     };
 
     shellAliases = {
+      reboot = "systemctl reboot"; # Restart the PC
+      shutdown = "systemctl poweroff"; # Shutdown the PC
       ll = "ls -lah1"; # List files and directories
       rm = "rm -rI"; # Ask for each file before deleting
       mkdir = "mkdir -p"; # Make dirs recursively
@@ -123,11 +130,6 @@ in {
       ps_search = "ps aux | rg"; # List a process
       ps_kill = "pkill -9"; # Force kill a process (hence the 9)
       neofetch = "nitch"; # Displays system info
-      # nix_switch = "sudo nixos-rebuild switch --flake ~/dots/#"; # Change nixos config now
-      # nix_boot = "sudo nixos-rebuild boot --flake ~/dots/#"; # Change nixos config after boot
-      # nix_list = "sudo nix profile history --profile /nix/var/nix/profiles/system"; # List nixos generations
-      # nix_roll = "sudo nix profile rollback --profile /nix/var/nix/profiles/system --to"; # Rollback to a generation
-      # nix_gc = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 7d && nix store gc"; # Garbage collect nixos
       nix_switch = "nh os switch"; # Change nixos config now
       nix_boot = "nh os boot"; # Change nixos config after boot
       nix_list = "nh os info"; # List nixos generations
@@ -145,18 +147,24 @@ in {
         gtk-icon-theme-name = "${iconTheme}"
         gtk-theme-name = "${themeName}"
         gtk-font-name = "${fontName}"
+        gtk-cursor-theme-name="${cursorTheme}"
+        gtk-cursor-theme-size=${cursorSize}
       '';
       "gtk-3.0/settings.ini".text = ''
         [Settings]
         gtk-icon-theme-name=${iconTheme}
         gtk-theme-name=${themeName}
         gtk-font-name = ${fontName}
+        gtk-cursor-theme-name=${cursorTheme}
+        gtk-cursor-theme-size=${cursorSize}
       '';
       "gtk-4.0/settings.ini".text = ''
         [Settings]
         gtk-icon-theme-name=${iconTheme}
         gtk-theme-name=${themeName}
         gtk-font-name = ${fontName}
+        gtk-cursor-theme-name=${cursorTheme}
+        gtk-cursor-theme-size=${cursorSize}
       '';
     };
   };
@@ -281,6 +289,8 @@ in {
             font-name = fontName;
             document-font-name = fontName;
             monospace-font-name = fontName;
+            cursor-theme = cursorTheme;
+            cursor-size = cursorSize;
           };
         }
       ];
@@ -291,8 +301,8 @@ in {
   # might need to set global theme manualy with the KDE System Settings app
   qt = {
     enable = true;
-    platformTheme = "kde";
-    style = "breeze";
+    platformTheme = "gnome";
+    style = "adwaita-dark";
   };
 
   # Associate programs with file extensions

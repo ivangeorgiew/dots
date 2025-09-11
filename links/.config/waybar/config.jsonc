@@ -20,7 +20,7 @@
     "modules-right": [
       "tray",
       "pulseaudio",
-      "network",
+      // "network",
       "clock",
       "custom/logout",
       "custom/reboot",
@@ -33,8 +33,6 @@
         "active": "󰮯",
         "default": "󰊠"
       },
-      "on-scroll-up": "hyprctl dispatch workspace e+1",
-      "on-scroll-down": "hyprctl dispatch workspace e-1",
       "active-only": false,
       "on-click": "activate",
       "persistent-workspaces": { "*": 5 },
@@ -188,13 +186,13 @@
     "custom/reboot": {
       "format": "",
       "tooltip": false,
-      "on-double-click": "~/.config/waybar/scripts/killall.sh && systemctl reboot"
+      "on-double-click": "systemctl reboot"
     },
 
     "custom/shutdown": {
       "format": "⏻",
       "tooltip": false,
-      "on-double-click": "~/.config/waybar/scripts/killall.sh && systemctl poweroff"
+      "on-double-click": "systemctl poweroff"
     },
 
     "custom/launcher": {

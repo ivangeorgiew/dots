@@ -19,7 +19,7 @@
     };
 
     hyprviz = {
-      url = "github:timasoft/hyprviz";
+      url = "github:timasoft/hyprviz/ec9ef8fe3f13537c1cfdd5c88ce0b900a1ed04ac";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };

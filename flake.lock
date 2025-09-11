@@ -538,6 +538,7 @@
       "original": {
         "owner": "timasoft",
         "repo": "hyprviz",
+        "rev": "ec9ef8fe3f13537c1cfdd5c88ce0b900a1ed04ac",
         "type": "github"
       }
     },

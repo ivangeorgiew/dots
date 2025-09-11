@@ -13,9 +13,9 @@
   };
 
   services = {
-    # Bad naming. Manages all the DE/WM settings, not only X11
+    # X11 settings
     xserver = {
-      enable = true;
+      enable = false;
       displayManager.lightdm.enable = false;
     };
 
@@ -31,8 +31,8 @@
 
       settings = let
         greeter_opts = "--asterisks --remember-session --user-menu --time --cmd";
-        start_command = "Hyprland";
-        # start_command = "uwsm start hyprland-uwsm.desktop"; # use UWSM
+        # start_command = "Hyprland";
+        start_command = "uwsm start hyprland-uwsm.desktop";
       in {
         # First login
         initial_session = {
@@ -90,8 +90,6 @@
         XDG_SESSION_TYPE = "wayland";
         __GL_GSYNC_ALLOWED = "1";
         __GL_VRR_ALLOWED = "1";
-        XCURSOR_THEME = "Bibata-Modern-Classic";
-        XCURSOR_SIZE = "24";
       }
       # Nvidia related variables
       // lib.optionalAttrs (graphicsCard == "nvidia") {
@@ -123,6 +121,7 @@
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
+      unstable.app2unit # UWSM related
       unstable.waybar # status bar
       vulkan-tools # to debug issues with vulkan
       wf-recorder # screen recording
@@ -135,21 +134,11 @@
       nwg-icon-picker # GTK icons search
       playerctl # controls media players
       rofi-wayland # app launcher for wayland
-
-      # Theme apps
-      bibata-cursors # cursor themes
-      kdePackages.qt6ct # QT6 theme changing
-      libsForQt5.qt5ct # QT5 theme changing
     ];
-
-    shellAliases = {
-      reboot = "echo 'Use the buttons'";
-      shutdown = "echo 'Use the buttons'";
-    };
 
     # Adds some needed folders in /run/current-system/sw
     # Example: /run/current-system/sw/share/wayland-sessions folder
-    pathsToLink = ["/share"];
+    # pathsToLink = ["/share"];
   };
 
   programs = {
@@ -166,12 +155,10 @@
       #xwayland.enable = true;
 
       # UWSM - https://wiki.hypr.land/Useful-Utilities/Systemd-start/#uwsm
-      # Don't use it for now because of the added complexity
       # If you do enable it - you have to change:
-      # - environment variables declaration file
       # - startup command at top of this file
-      # - the way all apps are started
-      withUWSM = false;
+      # - the way all apps are started in hyprland config files
+      withUWSM = true;
     };
 
     # GUI file manager
@@ -197,16 +184,36 @@
     extraPortals = with pkgs; [xdg-desktop-portal-gtk];
   };
 
-  # Polkit unit service
-  # to start it use `systemctl --user start my-polkit-agent`
-  systemd.user.services.my-polkit-agent = {
-    description = "starts polkit agent";
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-      Restart = "on-failure";
-      RestartSec = 1;
-      TimeoutStopSec = 10;
+  systemd.user.services = {
+    polkit-agent = {
+      description = "Polkit Agent (user verification for apps)";
+      wantedBy = [ "default.target" ];
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        Restart = "on-failure";
+        RestartSec = 1;
+        TimeoutStopSec = 10;
+      };
     };
+
+    # Not needed with UWSM
+    # not sure if it works in the end - test if uncommenting
+
+    # close-all-apps = {
+    #   description = "Close all apps on Hyprland gracefully before shutdown";
+    #   wantedBy = [ "exit.target" ];
+    #   before = [ "exit.target" ];
+    #   path = with pkgs; [ hland.hypr-pkgs.hyprland jq ]; # add pkgs to path for script
+    #   serviceConfig = {
+    #     Type = "oneshot";
+    #     ExecStart = "${pkgs.writeShellScript "close-all-apps" ''
+    #       hyprctl -j clients \
+    #         | jq -j '.[] | "dispatch closewindow address:\(.address); "' \
+    #         | xargs -r hyprctl --batch
+    #       sleep 2
+    #     ''}";
+    #   };
+    # };
   };
 }
