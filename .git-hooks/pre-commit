@@ -1,22 +1,22 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s globstar nullglob # for ** expanding
 
-# Initially from:
-# https://stackoverflow.com/questions/20479794/how-do-i-properly-git-stash-pop-in-pre-commit-hooks-to-get-a-clean-working-tree
+# Save staged changes into a temporary commit
+TMP_MSG="pre-commit-$(date +%s)"
+git commit --no-verify -m "$TMP_MSG" >/dev/null 2>&1
 
-# Stash all uncommited changes
-old_stash=$(git rev-parse -q --verify refs/stash)
-git stash -q --keep-index --include-untracked
-new_stash=$(git rev-parse -q --verify refs/stash)
+# Stash all the unstaged changes that are left
+git stash --include-untracked -q -m "$TMP_MSG"
+# git stash --keep-index --include-untracked -q -m "$TMP_MSG"
 
-# If there nothing was stashed then we should skip everything.
-if [ "$old_stash" = "$new_stash" ]; then
-    echo "pre-commit script: no changes to test"
-    sleep 1 # hack, editor may erase message
-    exit 0
+# Reset HEAD to undo commit, but keep staged files staged
+git reset --soft HEAD^ >/dev/null 2>&1
+
+nix fmt -- "$HOME"/dots/**/*.nix # format all nix files
+git add -u # stage only existing files
+
+# Try to apply stashed changes, but only if there were any
+if git stash list | grep -q "$TMP_MSG"; then
+  git stash pop -q
 fi
-
-# Format all nix files in my repo and add the changes
-nix fmt -- ~/dots/**/*.nix && git add -A
-
-# Restore changes
-git reset --hard -q && git stash apply --index -q && git stash drop -q
