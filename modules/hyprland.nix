@@ -30,7 +30,6 @@
       enable = true;
 
       settings = let
-        greeter_opts = "--asterisks --remember-session --user-menu --time --cmd";
         # start_command = "Hyprland";
         start_command = "uwsm start hyprland-uwsm.desktop";
       in {
@@ -42,7 +41,9 @@
 
         # If you logout or crash happens
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet ${greeter_opts} ${start_command}";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet \
+            --asterisks --remember-session --user-menu --time \
+            --cmd '${start_command}'";
           user = username;
         };
       };
@@ -68,12 +69,14 @@
 
   # swaylock fix
   # https://discourse.nixos.org/t/swaylock-wont-unlock/27275
-  security.pam.services.swaylock = {};
-  security.pam.services.swaylock.fprintAuth = false;
+  security.pam.services = {
+    swaylock = {};
+    swaylock.fprintAuth = false;
+  };
 
   environment = {
     sessionVariables =
-      # Generic variables recommended by Hyprland
+      # Recommended by Hyprland
       {
         ELECTRON_OZONE_PLATFORM_HINT = "auto";
         NIXOS_OZONE_WL = "1";
@@ -196,24 +199,5 @@
         TimeoutStopSec = 10;
       };
     };
-
-    # Not needed with UWSM
-    # not sure if it works in the end - test if uncommenting
-
-    # close-all-apps = {
-    #   description = "Close all apps on Hyprland gracefully before shutdown";
-    #   wantedBy = [ "exit.target" ];
-    #   before = [ "exit.target" ];
-    #   path = with pkgs; [ hland.hypr-pkgs.hyprland jq ]; # add pkgs to path for script
-    #   serviceConfig = {
-    #     Type = "oneshot";
-    #     ExecStart = "${pkgs.writeShellScript "close-all-apps" ''
-    #       hyprctl -j clients \
-    #         | jq -j '.[] | "dispatch closewindow address:\(.address); "' \
-    #         | xargs -r hyprctl --batch
-    #       sleep 2
-    #     ''}";
-    #   };
-    # };
   };
 }
