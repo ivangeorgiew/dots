@@ -101,7 +101,7 @@
     services.NetworkManager-wait-online.enable = false;
 
     # Shorter timers for services
-    extraConfig = "DefaultTimeoutStartSec=5s\nDefaultTimeoutStopSec=5s";
+    extraConfig = "DefaultTimeoutStartSec=5s\nDefaultTimeoutStopSec=5s\nDefaultTimeoutAbortSec=5s";
   };
 
   # Select internationalisation properties.

@@ -1,19 +1,13 @@
 create_cmd(
   "Navigate",
   function(t)
-    local dir = t.fargs[1]
+    local vim_dir = t.fargs[1]
+    local kitty_dirs = { h = "left", l = "right", j = "bottom", k = "top" }
 
-    -- differing lines for hyprwm implementation
-    -- local dirs = { l = "h", r = "l", u = "k", d = "j" }
-    -- local vim_dir = dirs[dir]
-    -- vim.system({ "hyprctl", "dispatch", "movefocus", dir })
-
-    if vim.fn.winnr(dir) ~= vim.fn.winnr() then
-      vim.cmd("wincmd " .. dir)
+    if vim.fn.winnr(vim_dir) ~= vim.fn.winnr() then
+      vim.cmd("wincmd " .. vim_dir)
     else
-      local dirs = { h = "left", j = "bottom", k = "top", l = "right" }
-
-      vim.system({ "kitty", "@", "focus-window", "--match", "neighbor:" .. dirs[dir] })
+      vim.system({ "kitty", "@", "focus-window", "--match", "neighbor:" .. kitty_dirs[vim_dir] })
     end
   end,
   { desc = "Navigate between splits", nargs = 1 }

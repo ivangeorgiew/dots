@@ -2,10 +2,13 @@
   inputs,
   lib,
   pkgs,
+  config,
   username,
   graphicsCard,
   ...
-}: {
+}: let
+  use-uwsm = true; # make sure to disable UWSM stuff in hyprland config
+in {
   nix.settings = {
     # Add hyprland binary cache
     extra-substituters = lib.mkAfter ["https://hyprland.cachix.org"];
@@ -30,8 +33,10 @@
       enable = true;
 
       settings = let
-        # start_command = "Hyprland";
-        start_command = "uwsm start hyprland-uwsm.desktop";
+        start_command =
+          if use-uwsm
+          then "uwsm start hyprland-uwsm.desktop"
+          else "Hyprland";
       in {
         # First login
         initial_session = {
@@ -107,7 +112,6 @@
           paths = with pkgs.hland; [
             # Use either plugins-git or plugins-nix
             plugins-git.hyprbars # titlebars on windows
-            plugins-git.hyprwinwrap # video/gif as wallpaper
           ];
         };
       };
@@ -120,7 +124,7 @@
       kdePackages.qtwayland # requirement for qt6
       libsForQt5.qt5.qtwayland # requirement for qt5
       mpvpaper # video wallpaper
-      polkit_gnome # some apps require polkit
+      polkit_gnome # authentication for some apps
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
@@ -141,7 +145,7 @@
 
     # Adds some needed folders in /run/current-system/sw
     # Example: /run/current-system/sw/share/wayland-sessions folder
-    # pathsToLink = ["/share"];
+    pathsToLink = ["/share"];
   };
 
   programs = {
@@ -161,7 +165,7 @@
       # If you do enable it - you have to change:
       # - startup command at top of this file
       # - the way all apps are started in hyprland config files
-      withUWSM = true;
+      withUWSM = use-uwsm;
     };
 
     # GUI file manager
@@ -187,16 +191,88 @@
     extraPortals = with pkgs; [xdg-desktop-portal-gtk];
   };
 
-  systemd.user.services = {
-    polkit-agent = {
-      description = "Polkit Agent (user verification for apps)";
-      wantedBy = ["default.target"];
+  systemd = let
+    merge = lib.recursiveUpdate;
+    environment = {
+      # Make sure that all apps are available (must use mkForce)
+      # By default Nix fills PATH with some other dirs (not useful for custom services)
+      PATH = lib.mkForce "/run/current-system/sw/bin:/run/current-system/sw/sbin:/run/wrappers/bin";
+    };
+    common = {
+      inherit environment;
+      wantedBy = ["graphical-session.target"];
+      after = ["graphical-session.target"];
+      partOf = ["graphical-session.target"];
+      requisite = ["graphical-session.target"];
       serviceConfig = {
-        Type = "simple";
-        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-        Restart = "on-failure";
-        RestartSec = 1;
-        TimeoutStopSec = 10;
+        Slice = "background.slice";
+      };
+    };
+  in {
+    # Add systemd services from packages
+    # packages = with pkgs; [];
+
+    # Creates services in /etc/systemd/system/
+    services = {
+    };
+
+    # Creates services in /etc/systemd/user/
+    user.services = {
+      # Info: https://opensource.com/article/20/5/systemd-startup
+      example = {
+        enable = false; # true by default
+        description = "Some description";
+        wantedBy = ["default.target"]; # auto start and enable
+        after = ["default.target"]; # start after another target
+        before = ["default.target"]; # start before another target
+        partOf = ["default.target"]; # restarts/stops if the target is restarted/stopped
+        requisite = ["default.target"]; # requires the target to be running, but don't actually start it
+        path = with pkgs; []; # adds /bin and /sbin subdirectories of packages to path for scripts
+        environment = {}; # session variables
+
+        # Better alternatives for pathing issues than the commented commands
+        # Defined in: https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/lib/systemd-unit-options.nix#L484
+        script = ''echo "hello world"''; # ExecStop
+        # preStop = ""; # ExecStop
+        # postStop = ""; # ExecStopPost
+        # reload = ""; # ExecReload
+        # preStart = ""; # ExecStartPre
+        # postStart = ""; # ExecStartPost
+
+        # Info: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html
+        unitConfig = {};
+
+        # Info: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
+        serviceConfig = {
+          # `exec` - continue with other services once the process is STARTED
+          # `oneshot` - continue with other services once the process is COMPLETED
+          Type = "exec";
+
+          # restart the service
+          # preferrably with `Type = "exec"`
+          # always - even on clean exit
+          # on-failure - on crashes only
+          #Restart = "on-failure";
+
+          # consider the service active after it is done executing
+          # preferrably with `Type = "oneshot"`
+          #RemainAfterExit = "yes";
+
+          # Which slice to run the unit at
+          # `systemctl status --user` shows slices and units
+          Slice = "background.slice";
+        };
+      };
+
+      # Provides xdg autostart desktop file, but it requires
+      # that the gnome DE is running so we have to manually start it
+      polkit-agent = merge common {
+        description = "Polkit Agent";
+        script = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        serviceConfig = {
+          Type = "exec";
+          Restart = "on-failure";
+        };
       };
     };
   };

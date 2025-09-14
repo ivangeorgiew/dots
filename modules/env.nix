@@ -102,6 +102,7 @@ in {
       FILE_MANAGER = "thunar";
       HISTCONTROL = "ignoreboth:erasedups";
       LESSHISTFILE = "-";
+      GTK_THEME = themeName;
       XCURSOR_THEME = cursorTheme;
       XCURSOR_SIZE = cursorSize;
       XDG_CONFIG_HOME = "$HOME/.config";
@@ -139,6 +140,7 @@ in {
       nix_update_all = "sudo nix flake update ~/dots/#"; # Update the versions of packages
       nix_update = "update_nix_inputs"; # Update only specific flake inputs
       nix_fmt = "nix fmt -- ~/dots/**/*.nix"; # Format all the nix files in my repo
+      nix_locate = "nix path-info"; # Locate nixpkgs#pkg in /nix/store
     };
 
     etc = {
@@ -245,7 +247,8 @@ in {
     neovim = {
       enable = true;
 
-      package = pkgs.custom.neovim-nightly;
+      # Don't use neovim-nightly (0.12) for now, cuz of issues
+      package = pkgs.unstable.neovim-unwrapped;
 
       defaultEditor = true;
       viAlias = true;

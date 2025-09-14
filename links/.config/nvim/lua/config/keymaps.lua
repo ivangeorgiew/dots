@@ -162,6 +162,8 @@ create_map("n", "J", "mzJ`z", { desc = "Join lines" })
 
 create_map("ca", "te", "tabe", {})
 create_map("ca", "vs", "vsplit", {})
+create_map("ca", "rg", "Find", {})
+create_map("ca", "grep", "Find", {})
 
 create_map("!a", "teh", "the", {})
 create_map("!a", "cosnt", "const", {})

@@ -9,8 +9,6 @@
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/d7600c775f877cd87b4f5a831c28aa94137377aa"; # branch nixos-unstable
 
-    neovim-nightly.url = "github:nix-community/neovim-nightly-overlay/6c06684174406a5c11d1479fa0ab9d3ccc5e08d1";
-
     hyprland.url = "github:hyprwm/Hyprland/v0.50.1";
 
     hyprland-plugins = {
@@ -33,9 +31,13 @@
     inherit (nixpkgs) lib;
 
     system = "x86_64-linux";
+    nixpkgs-opts = {
+      inherit system;
+      config.allowUnfree = true;
+    };
 
     # Probably don't need unfree packages here
-    # but if you do -> (import nixpkgs { inherit system; config.allowUnfree = true; })
+    # but if you do -> (import nixpkgs nixpkgs-opts)
     forAllSystems = (
       func:
         lib.genAttrs ["x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"] (
@@ -57,7 +59,7 @@
     # };
 
     # Package overlays
-    overlays.default = import ./overlays.nix {inherit inputs;};
+    overlays.default = import ./overlays.nix {inherit inputs lib nixpkgs-opts;};
 
     # NixOS Modules
     nixosModules = import ./modules {inherit lib;};
@@ -67,7 +69,7 @@
       mahcomp = lib.nixosSystem {
         inherit system;
         specialArgs = {
-          inherit inputs outputs;
+          inherit inputs outputs nixpkgs-opts;
           username = "ivangeorgiew";
           graphicsCard = "nvidia";
         };
