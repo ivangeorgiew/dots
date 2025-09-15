@@ -5,9 +5,9 @@
 
     "modules-left": [
       // "custom/weather",
+      "custom/keyboard",
       "temperature",
       "custom/gpu",
-      "custom/keyboard",
       "hyprland/workspaces"
     ],
 
