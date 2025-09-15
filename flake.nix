@@ -2,22 +2,21 @@
 {
   description = "My NixOS flake config";
 
-  # Use specific commits for repos without versioned tags so flake.lock can be deleted if there are issues.
+  # ALWAYS use tag or specific commit for each input
   # Don't use inputs.<>.follows due to cache misses and issues. Only when absolutely necessary.
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/b4c2c57c31e68544982226d07e4719a2d86302a8"; # branch nixos-25.05
-
     nixpkgs-unstable.url = "github:nixos/nixpkgs/d7600c775f877cd87b4f5a831c28aa94137377aa"; # branch nixos-unstable
 
-    hyprland.url = "github:hyprwm/Hyprland/v0.50.1";
+    hyprland.url = "github:hyprwm/Hyprland/v0.51.0";
 
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins/v0.50.0";
+      url = "github:hyprwm/hyprland-plugins/v0.51.0";
       inputs.hyprland.follows = "hyprland";
     };
 
     hyprviz = {
-      url = "github:timasoft/hyprviz/ec9ef8fe3f13537c1cfdd5c88ce0b900a1ed04ac";
+      url = "github:timasoft/hyprviz/v0.5.2";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };

@@ -99,6 +99,10 @@ in {
         __GL_GSYNC_ALLOWED = "1";
         __GL_VRR_ALLOWED = "1";
       }
+      // lib.optionalAttrs use-uwsm {
+        APP2UNIT_SLICES = "a=app-graphical.slice b=background-graphical.slice s=session-graphical.slice";
+        APP2UNIT_TYPE = "service";
+      }
       # Nvidia related variables
       // lib.optionalAttrs (graphicsCard == "nvidia") {
         GBM_BACKEND = "nvidia-drm";
@@ -168,6 +172,8 @@ in {
       withUWSM = use-uwsm;
     };
 
+    # uwsm.package = pkgs.unstable.uwsm;
+
     # GUI file manager
     thunar.enable = true;
 
@@ -200,74 +206,70 @@ in {
     };
     common = {
       inherit environment;
-      wantedBy = ["graphical-session.target"];
       after = ["graphical-session.target"];
-      partOf = ["graphical-session.target"];
       requisite = ["graphical-session.target"];
       serviceConfig = {
-        Slice = "background.slice";
+        Slice = "background-graphical.slice";
+      };
+    };
+
+    # Info: https://opensource.com/article/20/5/systemd-startup
+    example-service = {
+      enable = false; # true by default
+      description = "Some description";
+      wantedBy = ["default.target"]; # auto start and enable
+      after = ["default.target"]; # start after another target
+      before = ["default.target"]; # start before another target
+      partOf = ["default.target"]; # restarts/stops if the target is restarted/stopped
+      requisite = ["default.target"]; # requires the target to be running, but don't actually start it
+      path = with pkgs; []; # adds /bin and /sbin subdirectories of packages to path for scripts
+      environment = {}; # session variables
+
+      # Better alternatives for pathing issues than the commented commands
+      # Defined in: https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/lib/systemd-unit-options.nix#L484
+      script = ''echo "hello world"''; # ExecStart
+      # preStop = ""; # ExecStop
+      # postStop = ""; # ExecStopPost
+      # reload = ""; # ExecReload
+      # preStart = ""; # ExecStartPre
+      # postStart = ""; # ExecStartPost
+
+      # Info: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html
+      unitConfig = {};
+
+      # Info: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
+      serviceConfig = {
+        # `exec` - continue with other services once the process is STARTED
+        # `oneshot` - continue with other services once the process is COMPLETED
+        Type = "exec";
+
+        # restart the service
+        # preferrably with `Type = "exec"`
+        # always - even on clean exit
+        # on-failure - on crashes only
+        #Restart = "on-failure";
+
+        # consider the service active after it is done executing
+        # preferrably with `Type = "oneshot"`
+        #RemainAfterExit = "yes";
+
+        # Which slice to run the unit at
+        # `systemctl status --user` shows slices and units
+        Slice = "background-graphical.slice";
       };
     };
   in {
     # Add systemd services from packages
     # packages = with pkgs; [];
 
-    # Creates services in /etc/systemd/system/
-    services = {
-    };
-
     # Creates services in /etc/systemd/user/
     user.services = {
-      # Info: https://opensource.com/article/20/5/systemd-startup
-      example = {
-        enable = false; # true by default
-        description = "Some description";
-        wantedBy = ["default.target"]; # auto start and enable
-        after = ["default.target"]; # start after another target
-        before = ["default.target"]; # start before another target
-        partOf = ["default.target"]; # restarts/stops if the target is restarted/stopped
-        requisite = ["default.target"]; # requires the target to be running, but don't actually start it
-        path = with pkgs; []; # adds /bin and /sbin subdirectories of packages to path for scripts
-        environment = {}; # session variables
-
-        # Better alternatives for pathing issues than the commented commands
-        # Defined in: https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/lib/systemd-unit-options.nix#L484
-        script = ''echo "hello world"''; # ExecStop
-        # preStop = ""; # ExecStop
-        # postStop = ""; # ExecStopPost
-        # reload = ""; # ExecReload
-        # preStart = ""; # ExecStartPre
-        # postStart = ""; # ExecStartPost
-
-        # Info: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html
-        unitConfig = {};
-
-        # Info: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html
-        serviceConfig = {
-          # `exec` - continue with other services once the process is STARTED
-          # `oneshot` - continue with other services once the process is COMPLETED
-          Type = "exec";
-
-          # restart the service
-          # preferrably with `Type = "exec"`
-          # always - even on clean exit
-          # on-failure - on crashes only
-          #Restart = "on-failure";
-
-          # consider the service active after it is done executing
-          # preferrably with `Type = "oneshot"`
-          #RemainAfterExit = "yes";
-
-          # Which slice to run the unit at
-          # `systemctl status --user` shows slices and units
-          Slice = "background.slice";
-        };
-      };
-
       # Provides xdg autostart desktop file, but it requires
       # that the gnome DE is running so we have to manually start it
       polkit-agent = merge common {
         description = "Polkit Agent";
+        wantedBy = ["graphical-session.target"];
+        partOf = ["graphical-session.target"];
         script = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
         serviceConfig = {
           Type = "exec";
@@ -275,5 +277,8 @@ in {
         };
       };
     };
+
+    # Creates services in /etc/systemd/system/
+    # services = {};
   };
 }

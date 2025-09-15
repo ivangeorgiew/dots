@@ -146,12 +146,6 @@
   # Enable zram
   zramSwap.enable = true;
 
-  # set keyboard name for waybar module
-  # output of `hyprctl devices`
-  environment.sessionVariables = {
-    "KEYBOARD_NAME" = "kingston-hyperx-alloy-fps-pro-mechanical-gaming-keyboard";
-  };
-
   services = {
     # Regular btrfs scrub
     btrfs.autoScrub.enable = true;
