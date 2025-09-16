@@ -2,4 +2,4 @@
 
 gui:
   # If true, do not show a warning when discarding changes in the staging view.
-  skipDiscardChangeWarning: false
+  skipDiscardChangeWarning: true

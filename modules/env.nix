@@ -75,6 +75,7 @@ in {
       libsForQt5.ark # 7-zip alternative
       loupe # image viewer
       mpv # video player
+      nautilus # file manager
       onlyoffice-bin_latest # MS Office alternative
       qbittorrent # torrent downloading
       unstable.firefox-bin # browser
@@ -99,7 +100,7 @@ in {
     sessionVariables = {
       TERMINAL = "kitty";
       BROWSER = "firefox";
-      FILE_MANAGER = "thunar";
+      FILE_MANAGER = "nautilus";
       HISTCONTROL = "ignoreboth:erasedups";
       LESSHISTFILE = "-";
       GTK_THEME = themeName;
@@ -131,7 +132,7 @@ in {
       ps_search = "ps aux | rg"; # List a process
       ps_kill = "pkill -9"; # Force kill a process (hence the 9)
       neofetch = "nitch"; # Displays system info
-      nix_update = "sudo nix flake update --flake ~/dots"; # Update the versions of packages
+      nix_update = "echo '> Updating flake inputs' && sudo nix flake update --flake ~/dots"; # Update the versions of packages
       nix_switch = "nix_update && nh os switch"; # Change nixos config now
       nix_boot = "nix_update && nh os boot"; # Change nixos config after boot
       nix_list = "nh os info"; # List nixos generations
@@ -139,7 +140,6 @@ in {
       nix_gc = "nh clean all --ask --keep 3 --keep-since 5d"; # Garbage collect nixos
       nix_gc_all = "nh clean all --ask"; # Garbage collect all but 1 nixos generation
       nix_fmt = "nix fmt -- ~/dots/**/*.nix"; # Format all the nix files in my repo
-      nix_locate = "nix path-info"; # Locate nixpkgs#pkg in /nix/store
     };
 
     etc = {

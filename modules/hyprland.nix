@@ -7,7 +7,7 @@
   graphicsCard,
   ...
 }: let
-  use-uwsm = true; # make sure to disable UWSM stuff in hyprland config
+  use_uwsm = true; # make sure to disable UWSM stuff in hyprland config
 in {
   nix.settings = {
     # Add hyprland binary cache
@@ -22,66 +22,70 @@ in {
       displayManager.lightdm.enable = false;
     };
 
-    # Works only if a display manager is enabled
-    displayManager.autoLogin = {
-      enable = false;
-      user = username;
+    displayManager = {
+      # Works only if a display manager is enabled
+      autoLogin = {
+        enable = false;
+        user = username;
+      };
+
+      # Add .desktop entries from packages
+      # Can later be accessed manually with `{service.displayManager.sessionData.desktops}/share`
+      # sessionPackages = with pkgs; [ ];
     };
 
     # greetd display manager
     greetd = {
       enable = true;
+      # vt = 1;
 
-      settings = let
-        start_command =
-          if use-uwsm
-          then "uwsm start hyprland-uwsm.desktop"
-          else "Hyprland";
-      in {
+      settings = rec {
         # First login
+        # Comment out if you want to require password on first login
         initial_session = {
-          command = start_command;
+          command =
+            if use_uwsm
+            then "uwsm start hyprland-uwsm.desktop"
+            else "Hyprland";
           user = username;
         };
 
-        # If you logout or crash happens
-        default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet \
-            --asterisks --remember-session --user-menu --time \
-            --cmd '${start_command}'";
-          user = username;
+        # Subsequent logins
+        default_session = let
+          tuigreet_flags = lib.concatStringsSep " " [
+            "--debug /tmp/tuigreet.log"
+            "--asterisks"
+            "--remember"
+            "--remember-user-session"
+            "--user-menu"
+            "--time"
+          ];
+        in {
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet ${tuigreet_flags}";
+          user = "greeter";
         };
       };
     };
 
     # gnome keyring daemon (passwords/credentials)
     gnome.gnome-keyring.enable = true;
-
-    # needed for GNOME services outside of GNOME Desktop
-    dbus.packages = with pkgs; [
-      gcr
-      gnome-settings-daemon
-    ];
-
-    # for auto mounting of disks
-    gvfs.enable = true;
-    udisks2.enable = true;
-    devmon.enable = true;
-
-    # file manager thumbnail support for images
-    tumbler.enable = true;
   };
 
-  # swaylock fix
-  # https://discourse.nixos.org/t/swaylock-wont-unlock/27275
   security.pam.services = {
+    # swaylock fix
+    # https://discourse.nixos.org/t/swaylock-wont-unlock/27275
     swaylock = {};
     swaylock.fprintAuth = false;
+
+    # Unlock gnome-keyring on login with greetd
+    # Works only if you use password to login
+    # and have Default keyring created
+    greetd.enableGnomeKeyring = true;
   };
 
   environment = {
     sessionVariables =
-      # Recommended by Hyprland
+      # Generic
       {
         ELECTRON_OZONE_PLATFORM_HINT = "auto";
         NIXOS_OZONE_WL = "1";
@@ -98,8 +102,15 @@ in {
         XDG_SESSION_TYPE = "wayland";
         __GL_GSYNC_ALLOWED = "1";
         __GL_VRR_ALLOWED = "1";
+        HYPR_PLUGIN_DIR = pkgs.symlinkJoin {
+          name = "hyprland-plugins";
+          paths = with pkgs.hland; [
+            # Use either plugins-git or plugins-nix
+            plugins-git.hyprbars # titlebars on windows
+          ];
+        };
       }
-      // lib.optionalAttrs use-uwsm {
+      // lib.optionalAttrs use_uwsm {
         APP2UNIT_SLICES = "a=app-graphical.slice b=background-graphical.slice s=session-graphical.slice";
         APP2UNIT_TYPE = "service";
       }
@@ -108,16 +119,6 @@ in {
         GBM_BACKEND = "nvidia-drm";
         LIBVA_DRIVER_NAME = "nvidia";
         __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-      }
-      # Hyprland Plugins
-      // {
-        HYPR_PLUGIN_DIR = pkgs.symlinkJoin {
-          name = "hyprland-plugins";
-          paths = with pkgs.hland; [
-            # Use either plugins-git or plugins-nix
-            plugins-git.hyprbars # titlebars on windows
-          ];
-        };
       };
 
     # Desktop related packages
@@ -127,6 +128,7 @@ in {
       grim # screenshots for wayland
       kdePackages.qtwayland # requirement for qt6
       libsForQt5.qt5.qtwayland # requirement for qt5
+      libsecret # used by seahorse and gnome-keyring
       mpvpaper # video wallpaper
       polkit_gnome # authentication for some apps
       slurp # needed by `grim`
@@ -148,8 +150,7 @@ in {
     ];
 
     # Adds some needed folders in /run/current-system/sw
-    # Example: /run/current-system/sw/share/wayland-sessions folder
-    pathsToLink = ["/share"];
+    # pathsToLink = ["/share/wayland-session"];
   };
 
   programs = {
@@ -169,13 +170,10 @@ in {
       # If you do enable it - you have to change:
       # - startup command at top of this file
       # - the way all apps are started in hyprland config files
-      withUWSM = use-uwsm;
+      withUWSM = use_uwsm;
     };
 
     # uwsm.package = pkgs.unstable.uwsm;
-
-    # GUI file manager
-    thunar.enable = true;
 
     # app for gnome-keyring passwords management
     seahorse.enable = true;
@@ -198,23 +196,8 @@ in {
   };
 
   systemd = let
-    merge = lib.recursiveUpdate;
-    environment = {
-      # Make sure that all apps are available (must use mkForce)
-      # By default Nix fills PATH with some other dirs (not useful for custom services)
-      PATH = lib.mkForce "/run/current-system/sw/bin:/run/current-system/sw/sbin:/run/wrappers/bin";
-    };
-    common = {
-      inherit environment;
-      after = ["graphical-session.target"];
-      requisite = ["graphical-session.target"];
-      serviceConfig = {
-        Slice = "background-graphical.slice";
-      };
-    };
-
     # Info: https://opensource.com/article/20/5/systemd-startup
-    example-service = {
+    example_service = {
       enable = false; # true by default
       description = "Some description";
       wantedBy = ["default.target"]; # auto start and enable
@@ -258,6 +241,30 @@ in {
         Slice = "background-graphical.slice";
       };
     };
+
+    merge = lib.recursiveUpdate;
+
+    common = {
+      environment = {
+        # Make sure that all apps are available (must use mkForce)
+        # By default Nix fills PATH with some other dirs (not useful for custom services)
+        PATH = lib.mkForce "/run/current-system/sw/bin:/run/current-system/sw/sbin:/run/wrappers/bin";
+      };
+      serviceConfig = {
+        Slice = "background-graphical.slice";
+      };
+    };
+
+    exec_common = merge common {
+      wantedBy = ["graphical-session.target"];
+      partOf = ["graphical-session.target"];
+      after = ["graphical-session.target"];
+      requisite = ["graphical-session.target"];
+      serviceConfig = {
+        Type = "exec";
+        Restart = "always";
+      };
+    };
   in {
     # Add systemd services from packages
     # packages = with pkgs; [];
@@ -266,14 +273,58 @@ in {
     user.services = {
       # Provides xdg autostart desktop file, but it requires
       # that the gnome DE is running so we have to manually start it
-      polkit-agent = merge common {
+      polkit-agent = merge exec_common {
         description = "Polkit Agent";
-        wantedBy = ["graphical-session.target"];
-        partOf = ["graphical-session.target"];
         script = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      };
+
+      reload-hypr = merge common {
+        description = "Reload Hyprland and other services";
+        after = ["graphical-session.target"];
+        requisite = ["graphical-session.target"];
+        script = "hyprctl reload";
+        serviceConfig.Type = "oneshot";
+      };
+
+      waybar = merge exec_common {
+        description = "Status bar for wayland";
+        partOf = ["graphical-session.target" "reload-hypr.service"];
+        after = ["graphical-session.target" "reload-hypr.service"];
+        script = "waybar";
+      };
+
+      dunst = merge exec_common {
+        description = "Notifications manager";
+        partOf = ["graphical-session.target" "reload-hypr.service"];
+        after = ["graphical-session.target" "reload-hypr.service"];
+        script = "dunst";
+      };
+
+      mpvpaper = merge exec_common {
+        description = "Video as wallpaper";
+        partOf = ["graphical-session.target" "reload-hypr.service"];
+        after = ["graphical-session.target" "reload-hypr.service"];
+        script = "mpvpaper -o 'no-audio loop' DP-1 ~/.config/livewall.mp4 >/dev/null";
+      };
+
+      # Works, but is unneeded when using UWSM
+      close-all-apps = merge exec_common {
+        enable = false;
+        description = "Close all apps on Hyprland gracefully";
+        script = ''
+          while true; do
+            sleep 3
+          done
+        '';
+        preStop = ''
+          hyprctl -j clients \
+            | jq -j '.[] | "dispatch closewindow address:\(.address); "' \
+            | xargs -r hyprctl --batch
+          sleep 1
+        '';
         serviceConfig = {
           Type = "exec";
-          Restart = "on-failure";
+          Restart = "no";
         };
       };
     };

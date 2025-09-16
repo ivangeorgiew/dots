@@ -59,6 +59,7 @@
   };
 
   programs = {
+    # https://wiki.nixos.org/wiki/Nix-ld
     # Fix dynamically linked binaries
     # for example: things installed from mason.nvim
     # might need to set:
@@ -116,8 +117,21 @@
 
   # Some apps might break without those
   security = {
-    polkit.enable = true;
     rtkit.enable = true;
+
+    polkit = {
+      enable = true;
+      extraConfig = ''
+        // Allow udisks2 to mount devices without authentication
+        // for users in the "wheel" group.
+        polkit.addRule(function(action, subject) {
+          if ((action.id == "org.freedesktop.udisks2.filesystem-mount-system" ||
+            action.id == "org.freedesktop.udisks2.filesystem-mount") &&
+            subject.isInGroup("wheel")
+          ) { return polkit.Result.YES; }
+        });
+      '';
+    };
   };
 
   services = {
@@ -141,7 +155,7 @@
       };
       layout = "us,bgd";
       variant = "dvorak,";
-      options = "grp:shifts_toggle,ctrl:swapcaps";
+      options = "grp:shifts_toggle,ctrl:nocaps"; #ctrl:swapcaps to change left ctrl to caps lock
     };
 
     # Handler for input devices (mouse, touchpad, etc.)
@@ -158,6 +172,14 @@
 
     # Creates /bin and /usr/bin as on other Linux distros
     envfs.enable = true;
+
+    # for auto mounting of disks
+    gvfs.enable = true;
+    udisks2.enable = true;
+
+    dbus.packages = with pkgs; [
+      gnome2.GConf # used by very old apps
+    ];
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
