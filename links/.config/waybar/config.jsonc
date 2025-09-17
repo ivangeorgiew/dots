@@ -28,7 +28,8 @@
     ],
 
     "hyprland/workspaces": {
-      "format": " {icon}: {windows}",
+      // "format": " {icon}: {windows}",
+      "format": " {}: {windows}",
       "format-icons": {
         "active": "󰮯",
         "default": "󰊠"

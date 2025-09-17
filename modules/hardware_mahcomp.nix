@@ -31,9 +31,8 @@
       # Verification: https://wiki.archlinux.org/title/Hardware_video_acceleration#Verification
       # You don't to add any other packages. They are either not needed or automatically used.
       extraPackages = with pkgs; [
-        nvidia-vaapi-driver # VA-API -> VDPAU on NVIDIA (64-bit only)
-
         # Not needed for now
+        # nvidia-vaapi-driver # VA-API -> VDPAU on NVIDIA (64-bit only)
         #libvdpau # VDPAU loader (harmless to add explicitly)
         #libva-vdpau-driver # VA-API → VDPAU bridge
       ];
@@ -62,6 +61,7 @@
 
       # Choose driver package
       package = config.boot.kernelPackages.nvidiaPackages.stable;
+      # package = config.boot.kernelPackages.nvidiaPackages.latest;
 
       # open-source version requires RTX 20 series and newer
       open = false;
@@ -72,12 +72,19 @@
       # fix G-Sync / Adaptive Sync black screen issue
       # disable if it's not needed because of worse performance
       #forceFullCompositionPipeline = true;
+
+      # Whether video acceleration (VA-API) should be enabled.
+      videoAcceleration = true;
     };
   };
 
   # Kernel related settings.
   # Fixes for WiFi.
   boot = {
+    # Set linux kernel version. Comment the lines below to use LTS
+    # kernelPackages = pkgs.linuxPackages_latest;
+    # kernelPackages = pkgs.unstable.linuxPackages_latest;
+
     initrd = {
       availableKernelModules = ["xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod"];
       kernelModules = [];
@@ -94,9 +101,6 @@
     blacklistedKernelModules = ["rtw88_8821cu"];
     extraModulePackages = with config.boot.kernelPackages; [rtl8821cu v4l2loopback];
     supportedFilesystems = ["btrfs" "ntfs"];
-
-    # Set linux kernel version. Defaults to LTS
-    #kernelPackages = pkgs.linuxKernel.packages.linux_6_1;
 
     # Setup boot loader
     loader = {

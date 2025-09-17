@@ -137,6 +137,7 @@ in {
       unstable.app2unit # UWSM related
       unstable.waybar # status bar
       vulkan-tools # to debug issues with vulkan
+      virtualglLib # provides glxinfo for debugging
       wf-recorder # screen recording
       wl-clipboard # copy/paste on wayland
 

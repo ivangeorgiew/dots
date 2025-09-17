@@ -67,6 +67,7 @@ in {
       celluloid # mpv with GUI (video player)
       custom.spotify-no-ads # music player
       custom.vesktop # discord + additions
+      custom.viber # messaging app
       easyeffects # sound effects
       gedit # basic text editor GUI
       kdePackages.kolourpaint # MS Paint for linux
