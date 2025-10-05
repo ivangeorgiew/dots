@@ -6,7 +6,7 @@
   # Don't use inputs.<>.follows due to cache misses and issues. Only when absolutely necessary.
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/b4c2c57c31e68544982226d07e4719a2d86302a8"; # branch nixos-25.05
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/d7600c775f877cd87b4f5a831c28aa94137377aa"; # branch nixos-unstable
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/0147c2f1d54b30b5dd6d4a8c8542e8d7edf93b5d"; # branch nixos-unstable
 
     hyprland.url = "github:hyprwm/Hyprland/v0.51.0";
 
@@ -15,10 +15,7 @@
       inputs.hyprland.follows = "hyprland";
     };
 
-    hyprviz = {
-      url = "github:timasoft/hyprviz/v0.5.2";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    hyprviz.url = "github:timasoft/hyprviz/v0.5.2";
   };
 
   outputs = inputs @ {

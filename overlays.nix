@@ -31,6 +31,13 @@
     hyprviz = inputs.hyprviz.packages.${prev.system}.default;
   };
 
+  # Unstable wrapper, not unstable neovim
+  # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/applications/editors/neovim/wrapper.nix
+  wrapNeovimUnstable = unstable.wrapNeovimUnstable.override {
+    # Overrides python3 packages to fix pynvim version `:checkhealth` warning
+    python3 = unstable.python312;
+  };
+
   custom = {
     # Discord client
     vesktop = prev.vesktop.override {withSystemVencord = false;};

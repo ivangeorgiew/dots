@@ -1,5 +1,5 @@
 {
-    "layer": "top", // Waybar at top layer
+    "layer": "bottom", // on top or bottom of other windows
 
     "position": "top",
 
@@ -46,7 +46,7 @@
 
     "tray": {
       "spacing": 10,
-      "show-passive-items": true
+      "show-passive-items": false
     },
 
     "clock": {

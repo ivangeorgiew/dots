@@ -47,8 +47,7 @@ in {
       jq # json processor
       killall # kill a running process
       lazygit # terminal UI for git commands
-      libvterm-neovim # needed by neovim
-      ncdu # windirstat for linux (sort dirs by size)
+      gdu # windirstat for linux (sort dirs by size)
       nerdfix # removes obsolete nerd font icons
       nitch # alternative to neofetch
       p7zip # archiving and compression
@@ -59,12 +58,12 @@ in {
       shared-mime-info # add new custom mime types (check arch wiki)
       stow # symlink dotfiles
       tree # print folder tree structure
-      tree-sitter # needed by neovim
+      tree-sitter # used by neovim
       unzip # required by some programs
       wget # download files
 
       # GUI apps
-      celluloid # mpv with GUI (video player)
+      vlc # video player
       custom.spotify-no-ads # music player
       custom.vesktop # discord + additions
       custom.viber # messaging app
@@ -84,12 +83,16 @@ in {
       unstable.obsidian # note-taking app
 
       # Programming apps
-      (python311.withPackages (ps: with ps; [pip]))
+      (python312.withPackages (ps: with ps; [pip]))
       go
       lua51Packages.lua
       luarocks
       nodejs
       ruby
+      julia
+      cargo
+      php
+      php83Packages.composer
 
       # Theme apps
       adw-gtk3 # used for GTK theming
@@ -129,7 +132,7 @@ in {
       cp = "cp -r"; # Copy recursively
       cat = "bat"; # Show file contents
       find = "fd"; # Find files/folders
-      dirs_size = "ncdu"; # Windirstat for Linux (sort dirs by size)
+      dirs_size = "gdu"; # Windirstat for Linux (sort dirs by size)
       ps_search = "ps aux | rg"; # List a process
       ps_kill = "pkill -9"; # Force kill a process (hence the 9)
       neofetch = "nitch"; # Displays system info
@@ -200,6 +203,7 @@ in {
 
           # append to `dirs`
           set -a dirs ~/dots
+          set -a dirs ~/projects
 
           # wanted project path
           set -l dir_path (string split ' ' $dirs | fzf)
@@ -211,6 +215,11 @@ in {
         end
 
         bind \cg 'go_to_project; commandline -f repaint'
+
+        # Create ~/projects folder if needed
+        if test ! -d "~/projects"
+          mkdir ~/projects
+        end
 
         # Disable greeting
         set fish_greeting
@@ -258,10 +267,11 @@ in {
       withNodeJs = true;
     };
 
-    # java = {
-    #   enable = true;
-    #   # package = pkgs.jdk; # can be substituted to oracle version
-    # };
+    java = {
+      enable = true;
+      # binfmt = true;
+      # package = pkgs.jdk; # can be substituted to oracle version
+    };
 
     # Combined with devbox or a flake shell, autoloads
     # packages and env variables when entering directories

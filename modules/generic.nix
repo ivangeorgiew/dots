@@ -148,14 +148,30 @@
     # Configure keymaps on X11 and TTY console
     # due to the console.useXkbConfig option
     xserver.xkb = {
+      layout = "us,bgd";
+      variant = "dvorak,";
+      options = "grp:shifts_toggle"; # ctrl:nocaps or ctrl:swapcaps can be used
+      # used on Wayland too
       extraLayouts.bgd = {
         description = "Bulgarian";
         languages = ["bul"];
         symbolsFile = ../xkb/bgd;
       };
-      layout = "us,bgd";
-      variant = "dvorak,";
-      options = "grp:shifts_toggle,ctrl:nocaps"; #ctrl:swapcaps to change left ctrl to caps lock
+    };
+
+    interception-tools = {
+      # CapsLock maps to both Esc (pressed alone) and Ctrl (when held)
+      enable = true;
+
+      # plugins = with pkgs; [ interception-tools-plugins.caps2esc ]; # the default
+
+      # Default `udevmonConfig` is broken in nixpkgs
+      udevmonConfig = ''
+        - JOB: "${pkgs.interception-tools}/bin/intercept -g $DEVNODE | ${pkgs.interception-tools-plugins.caps2esc}/bin/caps2esc -m 1 | ${pkgs.interception-tools}/bin/uinput -d $DEVNODE"
+          DEVICE:
+            EVENTS:
+              EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
+      '';
     };
 
     # Handler for input devices (mouse, touchpad, etc.)
@@ -170,8 +186,8 @@
     # Toggles flatpak
     flatpak.enable = false;
 
-    # Creates /bin and /usr/bin as on other Linux distros
-    envfs.enable = true;
+    # Populates /bin and /usr/bin as on other Linux distros
+    envfs.enable = false;
 
     # for auto mounting of disks
     gvfs.enable = true;

@@ -3,3 +3,10 @@
 gui:
   # If true, do not show a warning when discarding changes in the staging view.
   skipDiscardChangeWarning: true
+
+  # If true, display the files in the file views as a tree. If false, display the files as a flat list.
+  # This can be toggled from within Lazygit with the '`' key, but that will not change the default.
+  showFileTree: true
+
+  # If true, hunk selection mode will be enabled by default when entering the staging view.
+  useHunkModeInStagingView: false
