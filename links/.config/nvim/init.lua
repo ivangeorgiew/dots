@@ -2,20 +2,24 @@
 
 require("tying") -- error handling wrapper
 
-tie("require config files", {}, function()
-  -- order matters
-  local configs = {
-    "utils",
-    "options",
-    "manager",
-    "usercmds",
-    "autocmds",
-    "keymaps",
-  }
+tie(
+  "initialize nvim config",
+  function()
+    -- order matters
+    local configs = {
+      "utils",
+      "options",
+      "plugin_manager",
+      "keymaps",
+      "usercmds",
+      "autocmds",
+    }
 
-  for _, file in ipairs(configs) do
-    local descr = "requiring " .. file .. ".lua"
+    for _, file in ipairs(configs) do
+      local desc = "require " .. file .. ".lua"
 
-    tie(descr, {}, function() require("config/" .. file:gsub("%.lua$", "")) end)()
-  end
-end)()
+      tie(desc, function() require("config/" .. file:gsub("%.lua$", "")).setup() end, do_nothing)()
+    end
+  end,
+  do_nothing
+)()
