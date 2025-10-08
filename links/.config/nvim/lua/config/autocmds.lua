@@ -72,37 +72,6 @@ M.setup = tie(
     )
 
     create_au(
-      "augroup -> go to last cursor position",
-      "BufReadPost",
-      {
-        callback = function(e)
-          local bn = e.buf -- buffer number
-          local is_excluded_ft = vim.tbl_contains(
-            { "gitcommit", "gitrebase", "svn", "hgcommit" },
-            vim.bo[bn].filetype
-          )
-          local is_excluded_bt = vim.tbl_contains(
-            { "quickfix", "nofile", "help" },
-            vim.bo[bn].buftype
-          )
-
-          if vim.b[bn].last_loc or is_excluded_ft or is_excluded_bt then
-            return
-          end
-
-          local mark = vim.api.nvim_buf_get_mark(bn, '"')
-          local lcount = vim.api.nvim_buf_line_count(bn)
-
-          if mark[1] > 0 and mark[1] <= lcount then
-            -- also open fold and recenter
-            ---@diagnostic disable-next-line: param-type-mismatch
-            vim.b[bn].last_loc = pcall(vim.cmd, [[normal! g`"zvzz]])
-          end
-        end
-      }
-    )
-
-    create_au(
       "augroup -> create directories when saving files",
       "BufWritePre",
       {

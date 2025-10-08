@@ -5,7 +5,10 @@ require("tying") -- error handling wrapper
 tie(
   "initialize nvim config",
   function()
-    -- order matters
+    -- Delay notificatinos until vim.notify has been replaced
+    require("notify").delay_notify()
+
+    -- Order matters
     local configs = {
       "utils",
       "options",

@@ -168,13 +168,6 @@ tied.colorscheme_config = tie(
   do_nothing
 )
 
-tied.delay_notifications = tie(
-  "delay_notifications",
-  function()
-  end,
-  do_nothing
-)
-
 M.setup = tie(
   "setup utils",
   function()

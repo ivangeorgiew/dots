@@ -3,7 +3,6 @@ local delete_maps = tied.delete_maps
 local create_map = tied.create_map
 
 M.config = {
-  -- TODO: change some of my keybinds to use a single char
   to_delete = {
     { "n", { "ZZ", "<C-f>", "<C-b>" } },
     { { "n", "v" }, {
@@ -16,7 +15,7 @@ M.config = {
       "_",
       "-",
       "+",
-      "Q",
+      "Q", -- (reused)
       "r",
       "R",
       -- "t",
@@ -102,9 +101,10 @@ M.config = {
     -- Toggle things
     { "n", "<leader>tb", "<cmd>buffers<cr>", { desc = "Toggle Buffers" } },
     { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle Diff mode" } },
-    { "n", "<leader>te", vim.diagnostic.setloclist, { desc = "Toggle errors list" } }, -- close with q
-    { "n", "<leader>tl", "<cmd>Lazy<cr>", { desc = "Toggle Lazy" } }, -- close with q
-    { "n", "<leader>tm", "<cmd>Mason<cr>", { desc = "Toggle Mason" } }, -- close with q
+    { "n", "<leader>te", function() local h = vim.diagnostic.open_float; h();h(); end, { desc = "Toggle errors on current line" } },
+    { "n", "<leader>tE", vim.diagnostic.setloclist, { desc = "Toggle errors list" } },
+    { "n", "<leader>tl", "<cmd>Lazy<cr>", { desc = "Toggle Lazy" } },
+    { "n", "<leader>tm", "<cmd>Mason<cr>", { desc = "Toggle Mason" } },
     { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.loclist')) ? ':lopen<cr>' : ':lclose<cr>'", { desc = "Toggle location list", expr = true } },
     { "n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle Wrapping of lines" } },
 
@@ -137,7 +137,7 @@ M.config = {
 
     -- Search in file (delete the \c to match case)
     { "n", "/", "/\\c", { desc = "Search for text in buffer", silent = false } },
-    { "n", "<leader>/", "/\\<<C-r><C-w>\\><cr>", { desc = "Search for word under cursor in buffer" } },
+    { "n", "<leader>/", "/\\<<C-r><C-w>\\><cr><C-o>", { desc = "Search for word under cursor in buffer" } },
     { "v", "<leader>/", "<esc>/\\%V\\c", { desc = "Search in visual selection", silent = false } },
 
     -- Find text in all files

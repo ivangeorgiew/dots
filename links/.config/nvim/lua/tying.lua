@@ -32,15 +32,11 @@ end
 --- @param on_catch fun(props: { desc: string, err: string, args: table }): any
 --- @return fun(...: any): any
 _G.tie = function(desc, on_try, on_catch)
-  desc = type(desc) == "string" and desc or "unknown function"
-
   local inner_catch = function(...)
     local args = {...}
     local n_args = select("#", ...) -- num of args must be gathered here
 
     return function(err)
-      local value
-      local catch_was_valid = true
       local is_error = false
       local args_string = "Function args:\n"
 
@@ -52,16 +48,11 @@ _G.tie = function(desc, on_try, on_catch)
         args_string = args_string .. " [none]\n"
       end
 
-      -- better than vim.notify()
-      vim.api.nvim_echo(
-        { { "\nError at:\n [" .. desc .. "]\n" .. args_string .. "Message:\n " .. err .. "\n\n", "ErrorMsg" } },
-        true, -- include in :messages
-        { verbose = true } -- can write to log file when nvim has higher 'verbose' level
-      )
+      local msg = "\nError at:\n [" .. desc .. "]\n" .. args_string .. "Message:\n " .. err .. "\n\n"
 
-      if type(on_catch) == "function" then
-        catch_was_valid, value = pcall(on_catch, { desc = desc, err = err, args = args })
-      end
+      pcall(vim.notify, msg, vim.log.levels.ERROR)
+
+      local catch_was_valid, value = pcall(on_catch, { desc = desc, err = err, args = args })
 
       if value == RETHROW then
         value = "\nWhile calling [" .. desc .. "]:\n  " .. err
@@ -78,10 +69,10 @@ _G.tie = function(desc, on_try, on_catch)
   return function(...)
     local was_valid, result = xpcall(on_try, inner_catch(...), ...)
 
-    if not was_valid then
-      if result.is_error then
+    if not was_valid then -- on_try failed
+      if result.is_error then -- rethrow or on_catch failed
         error(result.value, 2)
-      else
+      else -- value from on_catch call
         return result.value
       end
     end
