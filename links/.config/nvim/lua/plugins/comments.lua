@@ -1,26 +1,8 @@
-local maps_config = require("config.keymaps").config
-
 return {
   {
-    "numToStr/Comment.nvim",
-    enabled = false, -- seems to not be needed
-    keys = {
-      { "gcc", mode = "n" },
-      { "gbc", mode = "n" },
-      { "gc",  mode = { "n", "v" } },
-      { "gb",  mode = { "n", "v" } },
-    },
-    opts = {
-      padding = true, -- Add a space b/w comment and the line
-      sticky = true, -- Whether the cursor should stay at its position
-      ignore = "^$", -- Lines to be ignored while (un)comment
-      mappings = { basic = true, extra = true, }, -- Toggles keybindings creation
-      toggler = { line = "gcc", block = "gbc", }, -- LHS of toggle mappings in NORMAL mode
-      opleader = { line = "gc", block = "gb", }, -- LHS of operator-pending mappings in NORMAL and VISUAL mode
-      extra = { above = "gcO", below = "gco", eol = "gcA", }, -- LHS of extra mappings
-      pre_hook = nil, -- Function to call before (un)comment
-      post_hook = nil, -- Function to call after (un)comment
-    },
+    "folke/ts-comments.nvim",
+    event = "VeryLazy",
+    opts = {},
   },
   {
     "folke/todo-comments.nvim",
@@ -29,9 +11,21 @@ return {
     config = tie(
       "plugin todo-comments -> config",
       function(_, opts)
-        require("todo-comments").setup(opts)
+        local todo = require("todo-comments")
 
-        maps_config.plugins.todo_comments()
+        todo.setup(opts)
+        tied.apply_maps({
+          { "n", "[t", todo.jump_prev, { desc = "Prev special comment" } },
+          { "n", "]t", todo.jump_next, { desc = "Next special comment" } },
+
+          -- Always use location list instead of quickfix list
+          { "n", "<leader>tc", "<cmd>TodoLocList keywords=TODO,FIX<cr>", { desc = "Toggle Comments (TODO,FIX,etc)" } },
+          { "ca", "TodoLocList", "TodoLocList keywords=TODO,FIX", {} },
+          { "ca", "TodoQuickFix", "TodoLocList keywords=TODO,FIX", {} },
+
+          -- TODO: integrate with Telescope.nvim (:TodoTelescope)
+          -- TODO: integrate with Trouble.nvim (:TodoTrouble)
+        })
       end,
       do_nothing
     ),

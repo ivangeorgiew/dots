@@ -1,50 +1,40 @@
 local M = {}
-local delete_maps = tied.delete_maps
-local create_map = tied.create_map
 
 M.config = {
   to_delete = {
     { "n", { "ZZ", "<C-f>", "<C-b>" } },
     { { "n", "v" }, {
-      "~", -- use `gu`/`gU`
       "#", -- use `m` instead
-      "*", -- use `M` instead
       "&",
       "(",
-      ")", -- (reused)
-      "_",
-      "-",
+      ")",
+      "*", -- use `M` instead
       "+",
-      "Q", -- (reused)
-      "r",
-      "R",
-      -- "t",
-      -- "T",
-      -- "f",
-      -- "F",
-      "H", -- (reused)
-      "L", -- (reused)
-      "|",
-      "\\", -- (reused) as localleader
-      "Z",
+      "-",
+      "H",
+      "L",
       "M",
-      -- "s", -- shorthand for cl
-      -- "S", -- shorthand for cc
-      -- "x", -- shorthand for dl
-      -- "X", -- shorthand for dh
+      "R",
+      "S", -- shorthand for cc
+      "X", -- shorthand for dh
+      "Z",
+      "_",
+      "r",
+      "s", -- shorthand for cl
+      "x", -- shorthand for dl
+      "|",
+      "~", -- use `gu`/`gU`
     } },
   },
   to_create = {
     -- Escape mappings
-    { { "i", "n", "v" }, "<Esc>", "<cmd>lua vim.snippet.stop()<cr><cmd>let @/=''<cr><esc>", { desc = "Escape" } },
-    { { "i", "n", "v" }, "<C-c>", "<esc>", { desc = "Escape", remap = true } },
+    { { "i", "n", "v" }, "<Esc>", "<cmd>lua vim.snippet.stop()<cr><esc>", { desc = "Escape" } },
+    { { "i", "n", "v" }, "<C-c>", "<cmd>let @/=''<cr><esc>", { desc = "Escape", remap = true } },
     { { "i", "n", "v" }, "<C-s>", "<cmd>w<bar>diffupdate<bar>normal! <C-l><cr><esc>", { desc = "Save file", remap = true } },
 
-    -- TODO: add mapping for cut and for replace
-    -- TODO: remove the below mappings when/if plugin is added
     -- Don't copy to buffer on certain commands
-    { "v", "p", "P", { desc = "Replace" } },
-    { "o", "D", "d", { desc = "Cut line" } },
+    { "v", "p", "P", { desc = "Paste" } },
+    { "n", "DD", "dd", { desc = "Cut Line" } },
     { { "n", "v" }, "D", "d", { desc = "Cut" } },
     { { "n", "v" }, "d", [["_d]],  { desc = "Delete" } },
     { { "n", "v" }, "c", [["_c]],  { desc = "Change" } },
@@ -105,8 +95,12 @@ M.config = {
     { "n", "<leader>tE", vim.diagnostic.setloclist, { desc = "Toggle errors list" } },
     { "n", "<leader>tl", "<cmd>Lazy<cr>", { desc = "Toggle Lazy" } },
     { "n", "<leader>tm", "<cmd>Mason<cr>", { desc = "Toggle Mason" } },
-    { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.loclist')) ? ':lopen<cr>' : ':lclose<cr>'", { desc = "Toggle location list", expr = true } },
     { "n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle Wrapping of lines" } },
+    {
+      "n", "<leader>tq",
+      "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.loclist')) ? ':lopen<cr>' : ':windo lclose<cr>'",
+      { desc = "Toggle location list", expr = true }
+    },
 
     -- Command mode movement
     { "c", "<C-a>", "<Home>",    { desc = "Go to the beginning", silent = false } },
@@ -127,8 +121,8 @@ M.config = {
     -- Make new line
     { "n", "zj", "o<esc>k", { desc = "Make a new line below" } },
     { "n", "zk", "O<esc>j", { desc = "Make a new line above" } },
-    { "n", "gco", "ox<esc><cmd>normal gcc<cr>fxc$", { desc = "Make a new commented line below" } },
-    { "n", "gcO", "Ox<esc><cmd>normal gcc<cr>fxc$", { desc = "Make a new commented line above" } },
+    { "n", "gco", "ox<esc><cmd>normal gcc<cr>A<bs>", { desc = "Make a new commented line below" } },
+    { "n", "gcO", "Ox<esc><cmd>normal gcc<cr>A<bs>", { desc = "Make a new commented line above" } },
 
     -- Folding
     { "n", "z;", "zA", { desc = "Open fold recursively" } },
@@ -137,6 +131,7 @@ M.config = {
 
     -- Search in file (delete the \c to match case)
     { "n", "/", "/\\c", { desc = "Search for text in buffer", silent = false } },
+    { "v", "/", "\"ay/\\V<C-r>a<cr>", { desc = "Search for the selection", } },
     { "n", "<leader>/", "/\\<<C-r><C-w>\\><cr><C-o>", { desc = "Search for word under cursor in buffer" } },
     { "v", "<leader>/", "<esc>/\\%V\\c", { desc = "Search in visual selection", silent = false } },
 
@@ -156,9 +151,9 @@ M.config = {
     { { "v", "o" }, [[a`]], [[2i`]], { desc = [[Select all in ``]] } },
 
     -- Operate on whole file
-    { "n", "=%", "gg=G<C-o>", { desc = "Indent whole file" } },
-    { "n", "y%", "ggyG<C-o>", { desc = "Yank whole file" } },
-    { "n", "r%", "ggVGp",     { desc = "Replace whole file" } },
+    { "n", "<leader>%=", "gg=G<C-o>", { desc = "Indent whole file" } },
+    { "n", "<leader>%y", "ggyG<C-o>", { desc = "Yank whole file" } },
+    { "n", "<leader>%r", "ggVGp",     { desc = "Replace whole file" } },
 
     -- Unrelated mappings
     { "n", "X", "<C-a>", { desc = "Increment number under cursor" } },
@@ -167,69 +162,31 @@ M.config = {
     { "n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file executable" } },
     { "n", "J", "mzJ`z", { desc = "Join lines" } },
     { "n", "K", function() local h = vim.lsp.buf.hover; h(); h(); end, { desc = "Enter symbol information popup" } },
-    { "n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" } },
+    { "n", "gd", function() vim.lsp.buf.definition({ loclist = true }) end, { desc = "Go to definition" } },
     { "n", "i", "len(getline('.')) == 0 && empty(&buftype) ? '\"_cc' : 'i'", { desc = "Enter insert mode", expr = true } },
     { "n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" } },
 
-    -- Abbreviations
+    -- Command mode abbreviations
     { "ca", "te", "tabe", {} },
     { "ca", "vs", "vsplit", {} },
 
-    -- Misspellings
-    { "!a", "teh", "the", {} },
-    { "!a", "cosnt", "const", {} },
-    { "!a", "prosp", "props", {} },
+    -- Insert mode abbreviations
+    { "ia", "teh", "the", {} },
+    { "ia", "cosnt", "const", {} },
+    { "ia", "prosp", "props", {} },
   },
-  quickfix = tie(
-    "create keymaps for quickfix/location lists",
-    function(e)
-      local bn = e.buf -- buffer number
-
-      create_map("n", "r", "<cmd>Replace<cr>", { buffer = bn, desc = "Replace text in files" })
-
-      -- Open file mappings
-      local cmd = ""
-      cmd = "<C-w><CR><C-w>T"
-      create_map("n", "<C-t>", cmd, { buffer = bn, desc = "Open quickfix file in new tab" })
-      cmd = "<C-w><CR><C-w>L<C-w>2w<C-w>J<C-w>2w"
-      create_map("n", "<C-v>", cmd, { buffer = bn, desc = "Open quickfix file in vert. split" })
-      cmd = "<C-w><CR>"
-      create_map("n", "<C-s>", cmd, { buffer = bn, desc = "Open quickfix file in hor. split" })
-    end,
-    do_nothing
-  ),
-  plugins = {
-    todo_comments = tie(
-      "create keymaps for plugin todo-comments.nvim",
-      function()
-        create_map("n", "<leader>kt", require("todo-comments").jump_prev, { desc = "Prev Todo (or other special) comment" })
-        create_map("n", "<leader>jt", require("todo-comments").jump_next, { desc = "Next Todo (or other special) comment" })
-
-        -- Always use location list instead of quickfix list
-        local list_cmd = "TodoLocList keywords=TODO,FIX"
-
-        create_map("n", "<leader>tc", "<cmd>"..list_cmd.."<cr>", { desc = "Toggle Comments (TODO,FIX,etc)" })
-        create_map("ca", "TodoLocList", list_cmd, {})
-        create_map("ca", "TodoQuickFix", list_cmd, {})
-
-        -- TODO: integrate with Telescope.nvim (:TodoTelescope)
-        -- TODO: integrate with Trouble.nvim (:TodoTrouble)
-      end,
-      do_nothing
-    ),
+  quickfix = {
+    { "n", "<C-r>", "<cmd>Replace<cr>", { desc = "Replace text in files" } },
+    { "n", "<C-t>", "<C-w><CR><C-w>T", { desc = "Open quickfix file in new tab" } },
+    { "n", "<C-s>", "<C-w><CR>", { desc = "Open quickfix file in hor. split" } },
+    { "n", "<C-v>", "<C-w><CR><C-w>L<C-w>2w<C-w>J<C-w>2w", { desc = "Open quickfix file in vert. split" } },
   },
 }
 
 M.setup = tie(
   "setup keymaps",
   function()
-    for k, v in ipairs(M.config.to_delete) do
-      delete_maps(unpack(v))
-    end
-
-    for k, v in ipairs(M.config.to_create) do
-      create_map(unpack(v))
-    end
+    tied.apply_maps(M.config.to_create, M.config.to_delete)
   end,
   do_nothing
 )

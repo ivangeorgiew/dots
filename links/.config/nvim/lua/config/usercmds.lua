@@ -23,7 +23,7 @@ M.setup = tie(
 
     create_cmd(
       "Find",
-      "execute 'silent lgrep! <args>' | lopen",
+      "execute('silent lgrep! ' .. <q-args>) | lopen",
       { desc = "Find in all files", nargs = "+" }
     )
 

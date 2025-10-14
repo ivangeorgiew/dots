@@ -10,14 +10,12 @@ return {
     keywordStyle = { italic = false },
     transparent = true, -- do not set background color
     colors = { -- add/modify theme and palette colors
-      palette = {},
       theme = {
-        wave = {}, lotus = {}, dragon = {},
         all = {
           ui = {
             float = { bg = "none", bg_border = "none" },
             bg_gutter = "none",
-            -- nontext = "#8b83a8,"
+            -- nontext = "#8b83a8",
           }
         }
       },

@@ -11,7 +11,7 @@ M.setup = tie(
 
     g.colorscheme = colorschemes[1]
     g.mapleader = " "
-    g.maplocalleader = "\\"
+    g.maplocalleader = "\\" -- must be different than mapleader or bugs
 
     -- Provider related settings for plugins created by different languages
     g.loaded_ruby_provider = 0
@@ -31,6 +31,29 @@ M.setup = tie(
       }
     })
 
+    -- Track last pressed keys
+    -- g.last_keys = {}
+    -- g.last_keys_id = vim.on_key(tie(
+    --   "save last pressed keys",
+    --   function(_raw, key)
+    --     if not key or #key <= 0 then return end
+    --
+    --     key = vim.fn.keytrans(key)
+    --
+    --     local last_keys = g.last_keys
+    --
+    --     table.insert(last_keys, key)
+    --
+    --     if #last_keys > 5 then
+    --       table.remove(last_keys, 1)
+    --     end
+    --
+    --     -- must save in vim.g.table in the end
+    --     g.last_keys = last_keys
+    --   end,
+    --   function() g.last_keys = {} end
+    -- ), vim.api.nvim_create_namespace("key_tracker"))
+
     -- See `:h vim.opt` for more
     local o = vim.opt
 
@@ -49,11 +72,13 @@ M.setup = tie(
     o.diffopt = "vertical,iwhite,filler" -- vimdiff split direction and ignore whitespace
     o.expandtab = true -- change tab to use spaces
     o.fillchars:append({ foldopen = "", foldclose = "", fold = " ", foldsep = " ", eob = " ", }) -- special characters
-    o.foldlevel = 99 -- default fold default
+    o.foldlevelstart = 99 -- default fold level
+    o.foldmarker="region,endregion" -- markers for folding
     o.foldmethod = "marker" -- default fold method
+    o.foldtext = "v:lua.tied.get_fold_text()" -- text for closed folds
     o.foldnestmax = 4 -- max nested fold levels
     o.grepformat = "%f:%l:%m" -- format for grep command
-    o.grepprg = "rg --no-heading -n -uu -s -F" -- faster alternative to grep
+    o.grepprg = "rg --no-heading -n -uu -S -F" -- faster alternative to grep
     o.hidden = false -- ask to save before closing buffers
     o.hlsearch = true -- highlighting search results
     o.ignorecase = false -- see smartcase option (affects search and replace too)
@@ -79,7 +104,7 @@ M.setup = tie(
     o.shiftwidth = 2 -- amount of spaces on shifting
     o.shortmess:append({ W = true, I = true, c = true, C = true, s = true }) -- skip some unnecessary messages
     o.showbreak = " ⤷ " -- arrow for wrapped text
-    o.showcmd = false -- whether to show partial command on last line
+    o.showcmd = true -- whether to show partial command on last line
     o.showmode = false -- don't show vim typing mode
     o.sidescrolloff = 8 -- columns of context
     o.signcolumn = "yes" -- whether to always show the signcolumn
@@ -92,7 +117,6 @@ M.setup = tie(
     o.tabstop = 2 -- amount of spaces on tab
     o.tagstack = false -- don't add tags manually
     o.termguicolors = true -- enables 24-bit RGB colors
-    o.textwidth = 0 -- max line char length
     o.timeoutlen = 5000 -- time in ms to wait for mapped sequence
     o.undofile = true -- whether to use undo file
     o.undolevels = 10000 -- max number of undo changes

@@ -19,10 +19,10 @@ end
 M.delay_notify = tie(
   "delay_notify",
   function()
-    vim.notify = M.temp_notify
+    local timer = assert(vim.uv.new_timer())
+    local check = assert(vim.uv.new_check())
 
-    local timer = assert(vim.uv.new_timer(), "assert fail on new_timer()")
-    local check = assert(vim.uv.new_check(), "assert fail on new_check()")
+    vim.notify = M.temp_notify
 
     local on_notify_change = tie(
       "on_notify_change",

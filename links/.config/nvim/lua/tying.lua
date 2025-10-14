@@ -9,7 +9,7 @@ _G.NOTHING = "__tie_nothing__"
 _G.do_nothing = function() return NOTHING end
 
 -- Stringify anything
---- @param arg string
+--- @param arg any
 --- @return string
 _G.stringify = function(arg)
   if type(arg) == "table" then
@@ -22,7 +22,7 @@ _G.stringify = function(arg)
       return str
     end
   else
-    return tostring(arg)
+    return type(arg) == "string" and '"'..arg..'"' or tostring(arg)
   end
 end
 
@@ -38,27 +38,36 @@ _G.tie = function(desc, on_try, on_catch)
 
     return function(err)
       local is_error = false
-      local args_string = "Function args:\n"
+      local ind = "  " -- indent for err_msg
+      local args_string = ""
 
       if n_args > 0 then
         for idx = 1, n_args do
-          args_string = args_string .. " " .. idx .. ") " .. stringify(args[idx]) .. "\n"
+          args_string = args_string .. string.format(ind.."%d) %s\n", idx, stringify(args[idx]))
         end
       else
-        args_string = args_string .. " [none]\n"
+        args_string = ind.."[no args]\n"
       end
 
-      local msg = "\nError at:\n [" .. desc .. "]\n" .. args_string .. "Message:\n " .. err .. "\n\n"
+      local err_msg = string.format(
+        "Error at:\n"..
+        ind.."[%s]\n"..
+        "Function args:\n"..
+        "%s"..
+        "Message:\n"..
+        ind.."%s\n\n",
+        desc, args_string, err
+      )
 
-      pcall(vim.notify, msg, vim.log.levels.ERROR)
+      pcall(vim.notify, err_msg, vim.log.levels.ERROR)
 
       local catch_was_valid, value = pcall(on_catch, { desc = desc, err = err, args = args })
 
       if value == RETHROW then
-        value = "\nWhile calling [" .. desc .. "]:\n  " .. err
+        value = "error while calling: ["..desc.."]"
         is_error = true
       elseif not catch_was_valid then
-        value = "\nWhile catching error for [" .. desc .. "]:\n  " .. value
+        value = "error in `on_catch` for: ["..desc.."]"
         is_error = true
       end
 

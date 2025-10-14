@@ -1,13 +1,11 @@
+-- Lazy Settings: https://lazy.folke.io/configuration
+-- Plugin Settings: https://lazy.folke.io/spec
 local M = {}
 local find_files = tied.find_files
 
 M.setup = tie(
   "setup plugin manager",
   function()
-    -- Lazy Settings: https://lazy.folke.io/configuration
-    -- Plugin Settings: https://lazy.folke.io/spec
-
-    -- setup plugin manager
     local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
     if not vim.uv.fs_stat(lazypath) then
@@ -23,7 +21,6 @@ M.setup = tie(
 
     vim.opt.rtp:prepend(lazypath)
 
-    -- For all settings: https://lazy.folke.io/configuration
     require("lazy").setup({
       defaults = {
         -- Set this to `true` to have all your plugins lazy-loaded by default.
@@ -38,8 +35,8 @@ M.setup = tie(
         ext = ".lua",
         map = function(file)
           return tie(
-            "require plugin file ["..file.."]",
-            function() return require("plugins/" .. file:gsub("%.lua$", "")) end,
+            "require plugins/"..file,
+            function() return require("plugins/"..file:gsub("%.lua$", "")) end,
             function() return {} end
           )()
         end
@@ -47,7 +44,7 @@ M.setup = tie(
 
       dev = {
         ---@type string | fun(plugin): string directory where you store your local plugin projects
-        path = vim.fn.stdpath("config") .. "/local_plugins",
+        path = "~/projects",
       },
 
       install = {
@@ -72,7 +69,7 @@ M.setup = tie(
           -- How they affect startup can be seen in `:Lazy` -> Profile
           disabled_plugins = {
             -- "editorconfig", -- support for .editorconfig files
-            -- "ftplugin", -- load configs from after/ftplugin/file_type.lua
+            "ftplugin", -- load configs from after/ftplugin/file_type.lua
             "gzip", -- edit compressed files
             "man", -- view man pages in vim
             "matchparen", -- highlight parens

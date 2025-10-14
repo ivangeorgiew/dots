@@ -1,5 +1,4 @@
 local M = {}
-local maps_config = require("config.keymaps").config
 local create_au = tied.create_au
 
 M.setup = tie(
@@ -13,12 +12,6 @@ M.setup = tie(
           if vim.o.buftype ~= "nofile" then vim.cmd("checktime") end
         end
       }
-    )
-
-    create_au(
-      "augroup -> highlight on yank",
-      "TextYankPost",
-      { callback = function(e) vim.hl.on_yank() end, }
     )
 
     create_au(
@@ -90,7 +83,16 @@ M.setup = tie(
       "Filetype",
       {
         pattern = "qf", -- matches both quickfix and location lists
-        callback = function(e) maps_config.quickfix(e) end
+        callback = function(e)
+          local buf_nr = e.buf
+          local maps = require("config.keymaps").config.quickfix
+
+          for k, v in ipairs(maps) do
+            maps[k][4].buffer = buf_nr
+          end
+
+          tied.apply_maps(maps)
+        end
       }
     )
   end,

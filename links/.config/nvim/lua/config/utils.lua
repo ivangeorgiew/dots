@@ -45,7 +45,28 @@ tied.delete_maps = tie(
   --- @param commands table
   function(modes, commands)
     for _, lhs in ipairs(commands) do
-      tied.create_map(modes, lhs, "<nop>", { desc = "Nothing" })
+      local is_deleted = pcall(vim.keymap.del, modes, lhs)
+
+      if not is_deleted then
+        tied.create_map(modes, lhs, "<nop>", { desc = "<nop>" })
+      end
+    end
+  end,
+  do_nothing
+)
+
+tied.apply_maps = tie(
+  "apply_maps",
+  function(to_create, to_delete)
+    if type(to_delete) == "table" then
+      for k, v in ipairs(to_delete) do
+        tied.delete_maps(unpack(v))
+      end
+    end
+    if type(to_create) == "table" then
+      for k, v in ipairs(to_create) do
+        tied.create_map(unpack(v))
+      end
     end
   end,
   do_nothing
@@ -164,6 +185,57 @@ tied.colorscheme_config = tie(
   function(_, opts)
     require(vim.g.colorscheme).setup(opts)
     vim.cmd("colorscheme "..vim.g.colorscheme)
+  end,
+  do_nothing
+)
+
+tied.get_fold_text = tie(
+  "get_fold_text",
+  function()
+    local start_line_nr = vim.v.foldstart
+    local end_line_nr = vim.v.foldend
+    local first_line = vim.fn.getline(start_line_nr)
+    local fold_lines_nr = end_line_nr - start_line_nr + 1
+    local text = string.format("%s ⮞ [%d lines]", first_line, fold_lines_nr)
+
+    return text
+  end,
+  function()
+    return vim.fn.getline(vim.v.foldstart)
+  end
+)
+
+-- from LazyVim
+tied.on_plugin_load = tie(
+  "on_plugin_load",
+  function(name, fn)
+    local lazy_config = require("lazy.core.config")
+
+    if not lazy_config.plugins[name] then return end
+
+    local is_loaded = lazy_config.plugins[name]._.loaded
+    local fn_desc = "on_plugin_load -> "..name
+
+    fn = vim.schedule_wrap(tie(fn_desc, fn, do_nothing))
+
+    if is_loaded then
+      fn()
+      return
+    end
+
+    tied.create_au(
+      "augroup -> "..fn_desc,
+      "User",
+      {
+        pattern = "LazyLoad",
+        callback = function(event)
+          if event.data == name then
+            fn()
+            return true -- clear autocmd
+          end
+        end,
+      }
+    )
   end,
   do_nothing
 )

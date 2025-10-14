@@ -19,9 +19,11 @@ tie(
     }
 
     for _, file in ipairs(configs) do
-      local desc = "require " .. file .. ".lua"
-
-      tie(desc, function() require("config/" .. file:gsub("%.lua$", "")).setup() end, do_nothing)()
+      tie(
+        "require config/"..file..".lua",
+        function() require("config." .. file).setup() end,
+        do_nothing
+      )()
     end
   end,
   do_nothing
