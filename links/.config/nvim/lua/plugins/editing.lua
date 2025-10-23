@@ -26,8 +26,8 @@ return {
         tied.on_plugin_load("which-key.nvim", function()
           require("which-key").add({
             mode = "n",
-            { r, group = "Replace", op = true },
-            { x, group = "Exchange", op = true },
+            { r, group = "replace", op = true },
+            { x, group = "exchange", op = true },
           })
         end)
       end,

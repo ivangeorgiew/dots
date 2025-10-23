@@ -1,15 +1,13 @@
 -- For neovim's lua API info -> https://neovim.io/doc/user/lua-guide.html
 
-require("tying") -- error handling wrapper
+require("tying") -- error handling logic
 
 tie(
   "initialize nvim config",
   function()
-    -- Delay notificatinos until vim.notify has been replaced
-    require("notify").delay_notify()
-
     -- Order matters
     local configs = {
+      "notify",
       "utils",
       "options",
       "plugin_manager",
@@ -19,11 +17,7 @@ tie(
     }
 
     for _, file in ipairs(configs) do
-      tie(
-        "require config/"..file..".lua",
-        function() require("config." .. file).setup() end,
-        do_nothing
-      )()
+      require("config/"..file, do_nothing).setup()
     end
   end,
   do_nothing

@@ -1,7 +1,6 @@
 -- Lazy Settings: https://lazy.folke.io/configuration
 -- Plugin Settings: https://lazy.folke.io/spec
 local M = {}
-local find_files = tied.find_files
 
 M.setup = tie(
   "setup plugin manager",
@@ -28,27 +27,25 @@ M.setup = tie(
         lazy = true, -- should plugins be lazy-loaded?
       },
 
-      -- wrap plugins importing with error handling
-      -- alternatively, without error handling -> spec = "plugins",
-      spec = find_files({
+      -- Wrap plugins importing with error handling
+      -- Alternatively, without error handling -> spec = "plugins",
+      spec = tied.get_files({
         path = vim.fn.stdpath("config") .. "/lua/plugins",
         ext = ".lua",
         map = function(file)
-          return tie(
-            "require plugins/"..file,
-            function() return require("plugins/"..file:gsub("%.lua$", "")) end,
-            function() return {} end
-          )()
+          local full_path = "plugins/"..file:gsub("%.lua$", "")
+          return require(full_path, function() return {} end)
         end
       }),
 
+      ---@type table
       dev = {
         ---@type string | fun(plugin): string directory where you store your local plugin projects
         path = "~/projects",
       },
 
       install = {
-        -- try to load one of these colorschemes when starting an installation during startup
+        -- Try to load one of these colorschemes when starting an installation during startup
         colorscheme = { vim.g.colorscheme },
       },
 
@@ -59,7 +56,7 @@ M.setup = tie(
       },
 
       change_detection = {
-        -- automatically check for config file changes and reload the ui
+        -- Automatically check for config file changes and reload the ui
         enabled = false,
       },
 

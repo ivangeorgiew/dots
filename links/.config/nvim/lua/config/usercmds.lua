@@ -1,15 +1,15 @@
 local M = {}
-local create_cmd = tied.create_cmd
+local create_usercmd = tied.create_usercmd
 local ui_input = tied.ui_input
 local ui_select = tied.ui_select
 
 M.setup = tie(
   "setup usercmds",
   function()
-    create_cmd(
+    create_usercmd(
       "Navigate",
-      function(t)
-        local vim_dir = t.fargs[1]
+      function(opts)
+        local vim_dir = opts.fargs[1]
         local kitty_dirs = { h = "left", l = "right", j = "bottom", k = "top" }
 
         if vim.fn.winnr(vim_dir) ~= vim.fn.winnr() then
@@ -21,15 +21,15 @@ M.setup = tie(
       { desc = "Navigate between splits", nargs = 1 }
     )
 
-    create_cmd(
+    create_usercmd(
       "Find",
       "execute('silent lgrep! ' .. <q-args>) | lopen",
       { desc = "Find in all files", nargs = "+" }
     )
 
-    create_cmd(
+    create_usercmd(
       "Replace",
-      function(opts)
+      function()
         ui_input({ prompt = "Search for: " }, function(search)
           ui_input({ prompt = "Replace with: " }, function(replace)
             if type(search) ~= "string" or type(replace) ~= "string" then return end

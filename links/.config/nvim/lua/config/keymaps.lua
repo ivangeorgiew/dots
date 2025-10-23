@@ -29,7 +29,7 @@ M.config = {
   to_create = {
     -- Escape mappings
     { { "i", "n", "v" }, "<Esc>", "<cmd>lua vim.snippet.stop()<cr><esc>", { desc = "Escape" } },
-    { { "i", "n", "v" }, "<C-c>", "<cmd>let @/=''<cr><esc>", { desc = "Escape", remap = true } },
+    { { "i", "n", "v" }, "<C-c>", "<esc>", { desc = "Escape", remap = true } },
     { { "i", "n", "v" }, "<C-s>", "<cmd>w<bar>diffupdate<bar>normal! <C-l><cr><esc>", { desc = "Save file", remap = true } },
 
     -- Don't copy to buffer on certain commands
@@ -62,8 +62,8 @@ M.config = {
     { "n", "<leader><S-l>", "<cmd>tabm +1<cr>", { desc = "Move tab to the right" } },
 
     -- Move lines up or down
-    { "n", "<Up>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move Up" } },
-    { "n", "<Down>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" } },
+    { "n", "<Up>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move line up" } },
+    { "n", "<Down>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move line down" } },
 
     -- Change window size
     { "n", "<S-Up>",    "<cmd>resize +2<cr>",          { desc = "Increase window height" } },
@@ -84,18 +84,23 @@ M.config = {
     { "n", "[e", function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = "Prev error" } },
 
     -- Quit things
-    { "n", "<leader>qa", "<cmd>qa<cr>",       { desc = "Quit All" } },
-    { "n", "<leader>qt", "<cmd>tabclose<cr>", { desc = "Quit Tab" } },
-    { "n", "<leader>qw", "<cmd>close<cr>",    { desc = "Quit Window" } },
+    { "n", "<leader>qa", "<cmd>qa<cr>",       { desc = "Quit all" } },
+    { "n", "<leader>qt", "<cmd>tabclose<cr>", { desc = "Quit tab" } },
+    { "n", "<leader>qw", "<cmd>close<cr>",    { desc = "Quit window" } },
 
     -- Toggle things
-    { "n", "<leader>tb", "<cmd>buffers<cr>", { desc = "Toggle Buffers" } },
-    { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle Diff mode" } },
+    { "n", "<leader>tb", "<cmd>buffers<cr>", { desc = "Toggle buffers" } },
+    { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
     { "n", "<leader>te", function() local h = vim.diagnostic.open_float; h();h(); end, { desc = "Toggle errors on current line" } },
     { "n", "<leader>tE", vim.diagnostic.setloclist, { desc = "Toggle errors list" } },
     { "n", "<leader>tl", "<cmd>Lazy<cr>", { desc = "Toggle Lazy" } },
     { "n", "<leader>tm", "<cmd>Mason<cr>", { desc = "Toggle Mason" } },
     { "n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle Wrapping of lines" } },
+    {
+      "n", "<leader>th",
+      "getreg('/') == '' ? ':let @/=g:last_hls | let g:last_hls=\"\"<cr>' : ':let g:last_hls=@/ | let @/=\"\"<cr>'",
+      { desc = "Toggle search highlighting", expr = true }
+    },
     {
       "n", "<leader>tq",
       "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.loclist')) ? ':lopen<cr>' : ':windo lclose<cr>'",
@@ -151,9 +156,9 @@ M.config = {
     { { "v", "o" }, [[a`]], [[2i`]], { desc = [[Select all in ``]] } },
 
     -- Operate on whole file
-    { "n", "<leader>%=", "gg=G<C-o>", { desc = "Indent whole file" } },
-    { "n", "<leader>%y", "ggyG<C-o>", { desc = "Yank whole file" } },
-    { "n", "<leader>%r", "ggVGp",     { desc = "Replace whole file" } },
+    { "n", "<leader>%=", "msgg=Gg`s", { desc = "Indent whole file" } },
+    { "n", "<leader>%y", "msggyGg`s", { desc = "Yank whole file" } },
+    { "n", "<leader>%r", "ggVGpgg",   { desc = "Replace whole file" } },
 
     -- Unrelated mappings
     { "n", "X", "<C-a>", { desc = "Increment number under cursor" } },

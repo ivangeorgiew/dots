@@ -12,8 +12,7 @@ return {
     "nvimtools/none-ls.nvim",
     "jay-babu/mason-null-ls.nvim",
   },
-  -- event = "VeryLazy",
-  event = { "BufReadPre", "BufNewFile" },
+  event = "VeryLazy",
   -- order matters and this is the cleanest working setup
   config = tie(
     "plugin mason -> config",
@@ -32,13 +31,13 @@ return {
       })
 
       -- :h mason-lspconfig-settings
-      require("mason-lspconfig").setup({})
+      require("mason-lspconfig").setup()
 
       -- :h mason-nvim-dap.nvim-configuration
-      require("mason-nvim-dap").setup({})
+      require("mason-nvim-dap").setup()
 
       -- :h mason-null-ls.nvim-configuration
-      require("mason-null-ls").setup({})
+      require("mason-null-ls").setup()
 
       local mti = require("mason-tool-installer")
 

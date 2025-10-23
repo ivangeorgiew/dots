@@ -1,6 +1,7 @@
 return {
   {
     "ivangeorgiew/which-key.nvim",
+    -- dev = true,
     event = "VeryLazy",
     dependencies = { "nvim-mini/mini.icons", "nvim-tree/nvim-web-devicons" },
     config = tie(
@@ -25,7 +26,7 @@ return {
     opts = {
       preset = "helix",
       delay = 200,
-      icons = { mappings = false --[[remove icons]] },
+      icons = { mappings = false }, -- remove icons
       expand = tie(
         "plugin which-key -> expand",
         -- expand all nodes without a description
@@ -64,7 +65,7 @@ return {
           { "<leader>k", group = "next", proxy = "]", },
           { "[", group = "prev", },
           { "]", group = "next", },
-          { "\\", group = "local leader", },
+          { vim.g.localleader, group = "local leader", },
           { "D", group = "cut", op = true },
           { "gc", group = "toggle comment", op = true },
         },

@@ -1,10 +1,10 @@
 local M = {}
-local create_au = tied.create_au
+local create_autocmd = tied.create_autocmd
 
 M.setup = tie(
   "setup autocmds",
   function()
-    create_au(
+    create_autocmd(
       "augroup -> reload file on change",
       { "FocusGained", "TermClose", "TermLeave" },
       {
@@ -14,11 +14,11 @@ M.setup = tie(
       }
     )
 
-    create_au(
+    create_autocmd(
       "augroup -> delete ending space",
       { "BufWritePre", "BufReadPost" },
       {
-        callback = function(e)
+        callback = function()
           vim.cmd("normal! ms")
           vim.cmd([[silent! %s/\s\+$//]])
           vim.cmd("normal! `s")
@@ -26,11 +26,11 @@ M.setup = tie(
       }
     )
 
-    create_au(
+    create_autocmd(
       "augroup -> overwrite settings",
       "BufEnter",
       {
-        callback = function(e)
+        callback = function()
           local o = vim.opt
 
           o.formatoptions = "tcrqnlj" -- formatting options
@@ -38,11 +38,11 @@ M.setup = tie(
       }
     )
 
-    create_au(
+    create_autocmd(
       "augroup -> resize splits on window resize",
       "VimResized",
       {
-        callback = function(e)
+        callback = function()
           local current_tab = vim.fn.tabpagenr()
 
           vim.cmd("tabdo wincmd =")
@@ -51,12 +51,12 @@ M.setup = tie(
       }
     )
 
-    create_au(
+    create_autocmd(
       "augroup -> enable local options in special files",
       "FileType",
       {
         pattern = { "gitcommit", "markdown" },
-        callback = function(e)
+        callback = function()
           local l = vim.opt_local
 
           l.wrap = true
@@ -64,7 +64,7 @@ M.setup = tie(
       }
     )
 
-    create_au(
+    create_autocmd(
       "augroup -> create directories when saving files",
       "BufWritePre",
       {
@@ -78,7 +78,7 @@ M.setup = tie(
       }
     )
 
-    create_au(
+    create_autocmd(
       "augroup -> quickfix/location lists",
       "Filetype",
       {
@@ -87,7 +87,7 @@ M.setup = tie(
           local buf_nr = e.buf
           local maps = require("config.keymaps").config.quickfix
 
-          for k, v in ipairs(maps) do
+          for k, _ in ipairs(maps) do
             maps[k][4].buffer = buf_nr
           end
 

@@ -11,7 +11,7 @@ M.setup = tie(
 
     g.colorscheme = colorschemes[1]
     g.mapleader = " "
-    g.maplocalleader = "\\" -- must be different than mapleader or bugs
+    g.maplocalleader = "\\" -- must be different than mapleader
 
     -- Provider related settings for plugins created by different languages
     g.loaded_ruby_provider = 0

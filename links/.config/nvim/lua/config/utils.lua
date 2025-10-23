@@ -1,5 +1,5 @@
 -- Docs: https://neovim.io/doc/user/lua.html
--- NOTE: Useful API used in this or other files:
+-- NOTE: Useful API:
 -- vim.g - set or get global variable
 -- vim.o or vim.opt - set option
 -- vim.notify() - better print
@@ -18,7 +18,7 @@ local M = {}
 local tied = {}
 
 tied.create_map = tie(
-  "create_map",
+  "tied.create_map",
   --- @param modes string|table
   --- @param lhs string
   --- @param rhs string|fun(...: any): any
@@ -31,7 +31,7 @@ tied.create_map = tie(
     end
 
     if type(rhs) == "function" then
-      rhs = tie("create_map -> "..opts.desc, rhs, do_nothing)
+      rhs = tie("tied.create_map -> "..opts.desc, rhs, do_nothing)
     end
 
     vim.keymap.set(modes, lhs, rhs, opts)
@@ -40,31 +40,32 @@ tied.create_map = tie(
 )
 
 tied.delete_maps = tie(
-  "delete_maps",
+  "tied.delete_maps",
   --- @param modes string|table
   --- @param commands table
   function(modes, commands)
     for _, lhs in ipairs(commands) do
-      local is_deleted = pcall(vim.keymap.del, modes, lhs)
-
-      if not is_deleted then
-        tied.create_map(modes, lhs, "<nop>", { desc = "<nop>" })
-      end
+      -- vim.keymap.del() can fail if the mapping doesn't exist
+      -- so use create_map instead
+      tied.create_map(modes, lhs, "<nop>", { desc = "Nothing" })
     end
   end,
   do_nothing
 )
 
 tied.apply_maps = tie(
-  "apply_maps",
+  "tied.apply_maps",
+  --- @param to_create table?
+  --- @param to_delete table?
   function(to_create, to_delete)
-    if type(to_delete) == "table" then
-      for k, v in ipairs(to_delete) do
+    -- Order matters, first delete and then create
+    if to_delete then
+      for _, v in ipairs(to_delete) do
         tied.delete_maps(unpack(v))
       end
     end
-    if type(to_create) == "table" then
-      for k, v in ipairs(to_create) do
+    if to_create then
+      for _, v in ipairs(to_create) do
         tied.create_map(unpack(v))
       end
     end
@@ -72,8 +73,8 @@ tied.apply_maps = tie(
   do_nothing
 )
 
-tied.create_au = tie(
-  "create_au",
+tied.create_autocmd = tie(
+  "tied.create_autocmd",
   --- @param group_name string
   --- @param events string|table
   --- @param opts table
@@ -93,10 +94,10 @@ tied.create_au = tie(
   end
 )
 
-tied.create_cmd = tie(
-  "create_cmd",
+tied.create_usercmd = tie(
+  "tied.create_usercmd",
   --- @param name string
-  --- @param command string|fun()
+  --- @param command string|fun(t: table)
   --- @param opts table
   function(name, command, opts)
     if type(command) == "function" then
@@ -115,9 +116,9 @@ tied.create_cmd = tie(
   end
 )
 
-tied.find_files = tie(
-  "find_files",
-  --- @param opts table
+tied.get_files = tie(
+  "tied.get_files",
+  --- @param opts { ext: string, path: string, map: function }
   function(opts)
     local ext, path, map = opts.ext, opts.path, opts.map
 
@@ -125,13 +126,13 @@ tied.find_files = tie(
       map = function(file) return path .. "/" .. file end
     end
 
-    map = tie("find_files -> map", map, do_nothing)
+    map = tie("tied.get_files -> map", map, do_nothing)
 
     local entries = {}
 
     for name, type in vim.fs.dir(path, { depth = math.huge }) do
       if type == "file" and name:match("%"..ext.."$") then
-        table.insert(entries, map(name))
+        table.insert(entries, map(name) or name)
       end
     end
 
@@ -141,18 +142,17 @@ tied.find_files = tie(
 )
 
 tied.ui_input = tie(
-  "ui_input",
+  "tied.ui_input",
   --- @param opts table
   --- @param func function
   function(opts, func)
-    local desc = "ui_input -> prompt: "
+    local desc = "tied.ui_input -> prompt: "
 
     if type(opts.prompt) == "string" then
       desc = desc .. opts.prompt
     else
-      desc = desc .. "[not defined]"
+      desc = desc .. "none"
     end
-
 
     vim.schedule(function() vim.ui.input(opts, tie(desc, func, do_nothing)) end)
   end,
@@ -160,17 +160,17 @@ tied.ui_input = tie(
 )
 
 tied.ui_select = tie(
-  "ui_select",
+  "tied.ui_select",
   --- @param list table
   --- @param opts table
   --- @param func function
   function(list, opts, func)
-    local desc = "ui_select -> prompt: "
+    local desc = "tied.ui_select -> prompt: "
 
     if type(opts.prompt) == "string" then
       desc = desc .. opts.prompt
     else
-      desc = desc .. "[not defined]"
+      desc = desc .. "none"
     end
 
     -- vim.schedule(function()
@@ -181,7 +181,8 @@ tied.ui_select = tie(
 )
 
 tied.colorscheme_config = tie(
-  "colorscheme_config",
+  "tied.colorscheme_config",
+  --- @param opts table
   function(_, opts)
     require(vim.g.colorscheme).setup(opts)
     vim.cmd("colorscheme "..vim.g.colorscheme)
@@ -190,7 +191,7 @@ tied.colorscheme_config = tie(
 )
 
 tied.get_fold_text = tie(
-  "get_fold_text",
+  "tied.get_fold_text",
   function()
     local start_line_nr = vim.v.foldstart
     local end_line_nr = vim.v.foldend
@@ -207,7 +208,9 @@ tied.get_fold_text = tie(
 
 -- from LazyVim
 tied.on_plugin_load = tie(
-  "on_plugin_load",
+  "tied.on_plugin_load",
+  --- @param name string
+  --- @param fn function
   function(name, fn)
     local lazy_config = require("lazy.core.config")
 
@@ -223,7 +226,7 @@ tied.on_plugin_load = tie(
       return
     end
 
-    tied.create_au(
+    tied.create_autocmd(
       "augroup -> "..fn_desc,
       "User",
       {

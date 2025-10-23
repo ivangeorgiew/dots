@@ -16,8 +16,8 @@ M.restore_notify = function()
   end
 end
 
-M.delay_notify = tie(
-  "delay_notify",
+M.setup = tie(
+  "setup notifications delay",
   function()
     local timer = assert(vim.uv.new_timer())
     local check = assert(vim.uv.new_check())
