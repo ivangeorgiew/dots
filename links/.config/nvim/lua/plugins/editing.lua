@@ -31,7 +31,7 @@ return {
           })
         end)
       end,
-      do_nothing
+      tied.do_nothing
     ),
     opts = {
       highlight_substituted_text = { enabled = false, },

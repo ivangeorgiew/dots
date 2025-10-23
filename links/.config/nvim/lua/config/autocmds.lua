@@ -1,47 +1,34 @@
 local M = {}
-local create_autocmd = tied.create_autocmd
 
 M.setup = tie(
   "setup autocmds",
   function()
-    create_autocmd(
-      "augroup -> reload file on change",
+    tied.create_autocmd(
       { "FocusGained", "TermClose", "TermLeave" },
       {
+        group = "reload file on change",
         callback = function()
           if vim.o.buftype ~= "nofile" then vim.cmd("checktime") end
         end
       }
     )
 
-    create_autocmd(
-      "augroup -> delete ending space",
-      { "BufWritePre", "BufReadPost" },
-      {
-        callback = function()
-          vim.cmd("normal! ms")
-          vim.cmd([[silent! %s/\s\+$//]])
-          vim.cmd("normal! `s")
-        end,
-      }
-    )
-
-    create_autocmd(
-      "augroup -> overwrite settings",
+    tied.create_autocmd(
       "BufEnter",
       {
+        group = "overwrite settings",
         callback = function()
           local o = vim.opt
 
-          o.formatoptions = "tcrqnlj" -- formatting options
+          o.formatoptions = "tcrqnlj"
         end
       }
     )
 
-    create_autocmd(
-      "augroup -> resize splits on window resize",
+    tied.create_autocmd(
       "VimResized",
       {
+        group = "resize splits on window resize",
         callback = function()
           local current_tab = vim.fn.tabpagenr()
 
@@ -51,10 +38,10 @@ M.setup = tie(
       }
     )
 
-    create_autocmd(
-      "augroup -> enable local options in special files",
+    tied.create_autocmd(
       "FileType",
       {
+        group = "enable local options in special files",
         pattern = { "gitcommit", "markdown" },
         callback = function()
           local l = vim.opt_local
@@ -64,10 +51,10 @@ M.setup = tie(
       }
     )
 
-    create_autocmd(
-      "augroup -> create directories when saving files",
+    tied.create_autocmd(
       "BufWritePre",
       {
+        group = "create directories when saving files",
         callback = function()
           local dir = vim.fn.expand("<afile>:p:h")
 
@@ -78,10 +65,10 @@ M.setup = tie(
       }
     )
 
-    create_autocmd(
-      "augroup -> quickfix/location lists",
+    tied.create_autocmd(
       "Filetype",
       {
+        group = "on quickfix/location lists",
         pattern = "qf", -- matches both quickfix and location lists
         callback = function(e)
           local buf_nr = e.buf
@@ -96,7 +83,7 @@ M.setup = tie(
       }
     )
   end,
-  do_nothing
+  tied.do_nothing
 )
 
 return M

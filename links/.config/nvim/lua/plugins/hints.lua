@@ -20,7 +20,7 @@ return {
           { "n", "<leader>?", function() wk.show({ global = false }) end, { desc = "Buffer Keymaps (which-key)", } },
         })
       end,
-      do_nothing
+      tied.do_nothing
     ),
     -- :h which-key.nvim.txt
     opts = {

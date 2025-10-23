@@ -27,7 +27,7 @@ return {
           -- TODO: integrate with Trouble.nvim (:TodoTrouble)
         })
       end,
-      do_nothing
+      tied.do_nothing
     ),
     opts = {
       signs = true, -- show icons in the signs column

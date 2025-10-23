@@ -86,7 +86,7 @@ M.setup = tie(
       },
     })
   end,
-  do_nothing
+  tied.do_nothing
 )
 
 return M

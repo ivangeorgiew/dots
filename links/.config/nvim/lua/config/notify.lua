@@ -5,16 +5,20 @@ M.notifs = {}
 
 M.orig_notify = vim.notify
 M.temp_notify = tie(
-  "temp_notify",
+  "save notifications for later",
   function(...) table.insert(M.notifs, vim.F.pack_len(...)) end,
-  do_nothing
+  tied.do_nothing
 )
 
-M.restore_notify = function()
-  if vim.notify == M.temp_notify then
-    vim.notify = M.orig_notify
-  end
-end
+M.restore_notify = tie(
+  "restory vim.notify",
+  function()
+    if vim.notify == M.temp_notify then
+      vim.notify = M.orig_notify
+    end
+  end,
+  tied.do_nothing
+)
 
 M.setup = tie(
   "setup notifications delay",
@@ -25,7 +29,7 @@ M.setup = tie(
     vim.notify = M.temp_notify
 
     local on_notify_change = tie(
-      "on_notify_change",
+      "after vim.notify has changed",
       function()
         timer:stop()
         check:stop()
@@ -40,7 +44,7 @@ M.setup = tie(
               vim.notify(vim.F.unpack_len(notif))
             end
           end,
-          do_nothing
+          tied.do_nothing
         ))
       end,
       M.restore_notify
@@ -51,7 +55,7 @@ M.setup = tie(
       function()
         if vim.notify ~= M.temp_notify then on_notify_change() end
       end,
-      do_rethrow
+      tied.do_rethrow
     ))
 
     -- if it took more than 500ms revert to original

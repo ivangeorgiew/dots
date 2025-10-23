@@ -193,7 +193,7 @@ M.setup = tie(
   function()
     tied.apply_maps(M.config.to_create, M.config.to_delete)
   end,
-  do_nothing
+  tied.do_nothing
 )
 
 return M

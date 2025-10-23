@@ -94,7 +94,7 @@ M.setup = tie(
     o.number = true -- line numbers
     o.path:append("**") -- include subdirectories in search
     o.pumblend = 10 -- transparency for popups
-    o.pumheight = 10 -- max entries in a popup
+    o.pumheight = 0 -- max entries in a popup
     o.redrawtime = 10000 -- increase redraw time for syntax handling
     o.relativenumber = false -- relative line numbers
     o.scroll = 20 -- lines to move on <C-d>/<C-u>
@@ -128,7 +128,7 @@ M.setup = tie(
     o.winminwidth = 5 -- min width of a window
     o.wrap = false -- line wrap
   end,
-  do_nothing
+  tied.do_nothing
 )
 
 return M

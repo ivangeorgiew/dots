@@ -32,7 +32,7 @@ return {
           -- StatusLine = { bg = "none" },
         }
       end,
-      do_nothing
+      tied.do_nothing
     ),
   },
 }

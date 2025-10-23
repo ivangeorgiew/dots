@@ -38,6 +38,6 @@ return {
         end
       end
     end,
-    do_nothing
+    tied.do_nothing
   )
 }

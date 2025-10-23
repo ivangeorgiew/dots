@@ -1,12 +1,9 @@
 local M = {}
-local create_usercmd = tied.create_usercmd
-local ui_input = tied.ui_input
-local ui_select = tied.ui_select
 
 M.setup = tie(
   "setup usercmds",
   function()
-    create_usercmd(
+    tied.create_usercmd(
       "Navigate",
       function(opts)
         local vim_dir = opts.fargs[1]
@@ -21,20 +18,20 @@ M.setup = tie(
       { desc = "Navigate between splits", nargs = 1 }
     )
 
-    create_usercmd(
+    tied.create_usercmd(
       "Find",
       "execute('silent lgrep! ' .. <q-args>) | lopen",
       { desc = "Find in all files", nargs = "+" }
     )
 
-    create_usercmd(
+    tied.create_usercmd(
       "Replace",
       function()
-        ui_input({ prompt = "Search for: " }, function(search)
-          ui_input({ prompt = "Replace with: " }, function(replace)
+        tied.ui_input({ prompt = "Search for: " }, function(search)
+          tied.ui_input({ prompt = "Replace with: " }, function(replace)
             if type(search) ~= "string" or type(replace) ~= "string" then return end
 
-            ui_select(
+            tied.ui_select(
               { "Yes, but only full words", "Yes, any occurance", "No" },
               { prompt = "Replace `"..search.."` with `"..replace.."` ?" },
               function(choice)
@@ -56,7 +53,7 @@ M.setup = tie(
       { desc = "Replace text in files", nargs = 0 }
     )
   end,
-  do_nothing
+  tied.do_nothing
 )
 
 return M
