@@ -7,6 +7,9 @@
   username,
   ...
 }: {
+  # Define your hostname.
+  networking.hostName = "mahcomp";
+
   # Set your time zone.
   time.timeZone = "Europe/Sofia";
 
@@ -142,8 +145,17 @@
       device = "/dev/disk/by-label/NIX_BOOT";
       fsType = "vfat";
     };
-    # "/run/media/c" = { device = "/dev/disk/by-uuid/825AEDFB5AEDEC3B"; fsType = "ntfs-3g"; options = ntfsOpts; };
-    # "/run/media/d" = { device = "/dev/disk/by-uuid/01D99A27C60FB320"; fsType = "ntfs-3g"; options = ntfsOpts; };
+    # Not needed, only for folder naming purposes
+    "/run/media/c" = {
+      device = "/dev/disk/by-uuid/825AEDFB5AEDEC3B";
+      fsType = "ntfs-3g";
+      options = ntfsOpts;
+    };
+    "/run/media/d" = {
+      device = "/dev/disk/by-uuid/01D99A27C60FB320";
+      fsType = "ntfs-3g";
+      options = ntfsOpts;
+    };
   };
   swapDevices = [{device = "/dev/disk/by-label/NIX_SWAP";}];
 

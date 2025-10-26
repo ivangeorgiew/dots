@@ -16,14 +16,11 @@
     # Toggles IPv6
     enableIPv6 = false;
 
-    # Define your hostname.
-    hostName = "mahcomp";
-
     # Set DNS
     nameservers = ["1.1.1.1" "1.0.0.1"];
 
     # Toggles the firewall
-    firewall.enable = false;
+    firewall.enable = true;
 
     # Don't wait to have an IP
     dhcpcd.wait = "background";

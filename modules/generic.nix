@@ -196,6 +196,41 @@
     dbus.packages = with pkgs; [
       gnome2.GConf # used by very old apps
     ];
+
+    # Network File Sharing
+    # https://nixos.wiki/wiki/Samba
+    # https://gist.github.com/vy-let/a030c1079f09ecae4135aebf1e121ea6
+    samba = {
+      enable = true;
+      openFirewall = true;
+      nmbd.enable = false;
+      settings = {
+        global = {
+          "security" = "user";
+          "hosts allow" = "192.168.0. 127.0.0.1 localhost";
+          "hosts deny" = "0.0.0.0/0";
+          "guest account" = "nobody";
+          "map to guest" = "bad user";
+        };
+        "public" = {
+          "path" = "/run/media/c/Users/Public";
+          "browseable" = "yes";
+          "read only" = "no";
+          "guest ok" = "yes";
+        };
+      };
+    };
+    avahi = {
+      enable = true;
+      openFirewall = true;
+      publish.enable = true;
+      publish.userServices = true;
+      # nssmdns4 = true;
+    };
+    samba-wsdd = {
+      enable = true;
+      openFirewall = true;
+    };
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
