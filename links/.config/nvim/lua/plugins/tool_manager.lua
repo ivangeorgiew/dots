@@ -16,7 +16,7 @@ return {
     }
   },
   {
-    "jay-babu/mason-null-ls.nvim",
+    "adrian-the-git/mason-null-ls.nvim",
     dependencies = {
       "mason-org/mason.nvim",
       "nvimtools/none-ls.nvim",
@@ -34,7 +34,7 @@ return {
       "jay-babu/mason-nvim-dap.nvim",
 
       "nvimtools/none-ls.nvim",
-      "jay-babu/mason-null-ls.nvim",
+      "adrian-the-git/mason-null-ls.nvim",
     },
     event = "VeryLazy",
     -- order matters and this is the cleanest working setup

@@ -1,40 +1,57 @@
 return {
-  -- Configures lua_ls for neovim plugin development
-  -- https://github.com/folke/lazydev.nvim
-  {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    cmd = "LazyDev",
-    -- TODO: setup config for nvim-cmp and blink.cmp when added
-    opts = {
-      enabled = tie(
-        "plugin lazydev -> opts.enabled",
-        function(root_dir)
-          local enabled = true
-
-          enabled = enabled and not vim.uv.fs_stat(root_dir .. "/.luarc.json")
-          enabled = enabled and not vim.uv.fs_stat(root_dir .. "/.luarc.jsonc")
-
-          return enabled
-        end,
-        function() return false end
-      ),
-      library = {
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-        { path = "lazy.nvim", words = { "LazyVim" } },
-        { path = "snacks.nvim", words = { "Snacks" } },
-        -- { path = "LazyVim", words = { "LazyVim" } },
-      },
-    },
-  },
-
-  -- TODO: configure "neovim/nvim-lspconfig",
+  -- :h lspconfig
   {
     "neovim/nvim-lspconfig",
-    dependencies = { "folke/lazydev.nvim" },
+    config = tie(
+      "plugin nvim-lspconfig -> config",
+      function()
+        -- Recommended config from nvim-lspconfig
+        vim.lsp.config('lua_ls', {
+          settings = { Lua = {} },
+          on_init = tie(
+            "lsp lua_ls -> on_init",
+            function(client)
+              if client.workspace_folders then
+                local path = client.workspace_folders[1].name
+
+                if (
+                  vim.uv.fs_stat(path .. "/.luarc.json") or
+                  vim.uv.fs_stat(path .. "/.luarc.jsonc")
+                ) then
+                  return
+                end
+              end
+
+              -- nvim related lua settings
+              client.config.settings.Lua = vim.tbl_deep_extend(
+                "force",
+                client.config.settings.Lua,
+                {
+                  runtime = {
+                    version = 'LuaJIT',
+                    path = { 'lua/?.lua', 'lua/?/init.lua', },
+                  },
+                  workspace = {
+                    checkThirdParty = false,
+                    library = {
+                      vim.env.VIMRUNTIME,
+                      "${3rd}/luv/library", -- vim.uv
+                      vim.fn.stdpath("data").."/lazy/lazy.nvim",
+                      -- TODO: vim.fn.stdpath("data").."/lazy/snacks.nvim",
+                    }
+                  },
+                }
+              )
+            end,
+            tied.do_nothing
+          ),
+        })
+      end,
+      tied.do_nothing
+    ),
   },
 
-  -- TODO: configure "nvimtools/none-ls.nvim",
+  -- :h null-ls.txt
   {
     "nvimtools/none-ls.nvim",
   }
