@@ -1,52 +1,102 @@
+-- TODO: finish reimplementing LazyVim's treesitter file ("windwp/nvim-ts-autotag" and "nvim-treesitter/nvim-treesitter-textobjects")
+
 return {
   -- Language parsing which provides better highlight, indentation, etc.
   -- You can see the difference with `:TSToggle highlight lua` in a lua buffer
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
+    branch = "main",
     build = ":TSUpdate",
-    event = "VeryLazy",
-    main = "nvim-treesitter.configs", -- name to require(main).setup(opts)
-    -- :h nvim-treesitter-quickstart (and scroll to modules as well)
-    opts = {
-      -- A list of parser names, or "all" (the listed parsers MUST always be installed)
-      -- ensure_installed =  { "lua", "luadoc", "printf", "vim", "vimdoc" },
-      ensure_installed = "all",
+    event = { "VeryLazy", "BufReadPost", "BufNewFile" },
+    cmd = { "TSUpdate", "TSInstall", "TSInstallFromGrammar", "TSLog", "TSUninstall" },
+    -- :h nvim-treesitter.txt
+    config = tie(
+      "plugin nvim-treesitter -> config",
+      function(_, opts)
+        local ts = require("nvim-treesitter")
 
-      -- List of parsers to ignore installing from `ensure_installed = "all"`
-      -- Need to be uninstalled with `:TSUninstall x` if they are already present
-      ignore_install = {
-        "ipkg", -- broken
-        "comment" -- use folke/todo-comments instead
-      },
+        -- Make sure we're on the "main" branch
+        assert(ts.get_installed, "Please use `:Lazy` and update `nvim-treesitter`")
 
-      -- Install parsers synchronously (only applied to `ensure_installed`)
-      sync_install = false,
+        ts.setup(opts)
 
-      -- Automatically install missing parsers when entering buffer
-      -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-      auto_install = true,
+        ---@type table<string,{ enable?: boolean, ignore?: string[] }>
+        local config = {
+          highlights = { enable = true, },
+          indents = { enable = true, },
+          folds = { enable = true, },
+        }
+        local ignore = {
+          "comment" -- interferes when todo-comments.nvim
+        }
 
-      -- A directory to install the parsers into.
-      -- If this is excluded or nil parsers are installed to either the package dir, or the "site" dir.
-      -- If a custom path is used (not nil) it must be added to the runtimepath.
-      -- parser_install_dir = vim.fn.stdpath("data") .. "/lazy/nvim-treesitter/",
+        local installed = ts.get_installed()
+        local ensure_installed = {
+          unpack(ts.get_available(1)), -- stable
+          unpack(ts.get_available(2)), -- unstable
+        }
 
-      highlight = {
-        enable = true,
-        disable = { "ruby" },
+        local to_delete = vim.iter(installed)
+          :filter(function(parser) return vim.list_contains(ignore, parser) end)
+          :totable()
+        local to_install = vim.iter(ensure_installed)
+          :filter(function(parser)
+            return (
+              not vim.list_contains(installed, parser) and
+              not vim.list_contains(ignore, parser)
+            )
+          end)
+          :totable()
 
-        -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-        -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-        -- Using this option may slow down your editor, and you may see some duplicate highlights.
-        -- Instead of true it can also be a list of languages
-        additional_vim_regex_highlighting = false,
-      },
+        if #to_delete > 0 then ts.uninstall(to_delete, { summary = true }) end
+        if #to_install > 0 then ts.install(to_install, { summary = true }) end
 
-      indent = {
-        enable = true,
-        disable = { "ruby" },
-      },
-    },
+        tied.create_autocmd("FileType", {
+          group = "start treesitter for a filetype",
+          callback = function(ev)
+            local ft = ev.match
+            local lang = vim.treesitter.language.get_lang(ev.match)
+
+            -- Update the list of installed parsers
+            -- installed = ts.get_installed()
+
+            if not lang or not vim.list_contains(installed, lang) then return end
+
+            local should_enable = tie(
+              "check if should enable treesitter feature for ft: " .. ft,
+              ---@param query string
+              function(query)
+                local c = config[query] or {}
+                local query_enabled = c.enable
+                local lang_not_ignored = not vim.list_contains(c.ignore or {}, lang)
+                local lang_supports_query = vim.treesitter.query.get(lang, query) ~= nil
+
+                return query_enabled and lang_not_ignored and lang_supports_query
+              end,
+              function() return false end
+            )
+
+            if should_enable("highlights") then
+              pcall(vim.treesitter.start, ev.buf)
+              -- vim.notify("Setup highlighting for: "..lang)
+            end
+
+            if should_enable("indents") then
+              vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+              -- vim.notify("Setup indenting for: "..lang)
+            end
+
+            if should_enable("folds") then
+              vim.wo.foldmethod = "expr"
+              vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+              -- vim.notify("Setup folding for: "..lang)
+            end
+          end
+        })
+      end,
+      tied.do_nothing
+    ),
+    -- Most options are removed in the main branch
+    opts = {},
   },
 }
