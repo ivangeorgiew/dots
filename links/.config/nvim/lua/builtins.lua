@@ -134,7 +134,7 @@ _G.vim.api.nvim_create_autocmd = tie(
     end
 
     if type(opts.callback) == "function" then
-      local desc = opts.group and "callback for augroup "..opts.group or "autocmd callback"
+      local desc = opts.group and "callback for augroup: "..opts.group or "autocmd callback"
       local on_try = opts.callback ---@type function
       local on_catch = function() return true end
       local tied_opts = tied.functions[opts.callback]

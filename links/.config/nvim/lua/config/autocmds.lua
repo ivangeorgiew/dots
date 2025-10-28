@@ -79,6 +79,9 @@ M.setup = tie(
           end
 
           tied.apply_maps(maps)
+
+          -- move to the bottom of all other windows
+          vim.cmd("wincmd J")
         end
       }
     )

@@ -1,20 +1,21 @@
 -- For neovim's lua API info -> https://neovim.io/doc/user/lua-guide.html
 
 require("tying") -- error handling logic
-require("builtins") -- replace some global builtin functions
-require("utils") -- add some tied function utils
 
 tie(
   "initialize nvim config",
   function()
+    require("notify") -- delay notifications
+    require("builtins") -- replace some global builtin functions
+    require("utils") -- add global util functions
+
     -- Order matters
     local configs = {
-      "notify",
       "options",
-      "plugin_manager",
       "keymaps",
       "usercmds",
       "autocmds",
+      "plugin_manager",
     }
 
     for _, file in ipairs(configs) do

@@ -16,7 +16,6 @@ tied.do_nothing = function() end
 
 -- Check if function was called with pcall or xpcall
 -- Used in `tie()` to not wrap protected calls
-tied.is_pcalled = false
 local wrap_prot_call = function(orig_fn)
   return function(...)
     tied.is_pcalled = true
@@ -25,6 +24,7 @@ local wrap_prot_call = function(orig_fn)
     return unpack(results)
   end
 end
+tied.is_pcalled = false
 -- No need to rename pcall and xpcall
 -- they are automatically called with the local versions in
 -- all the code throughout this file
@@ -33,7 +33,7 @@ _G.pcall = wrap_prot_call(pcall)
 local xpcall = xpcall
 _G.xpcall = wrap_prot_call(xpcall)
 
--- Stringify anything
+--- Stringify anything
 --- @param arg any
 --- @return string
 tied.stringify = function(arg)
@@ -51,12 +51,15 @@ tied.stringify = function(arg)
   end
 end
 
--- Error handle a function
---- @generic F : function
+--- @generic F
+--- @alias on_try_func F
+--- @alias on_catch_func fun(props: { desc: string, err: string, args: table }): any
+
+--- Error-handle a function
 --- @param desc string
---- @param on_try F
---- @param on_catch function
---- @return F
+--- @param on_try on_try_func
+--- @param on_catch on_catch_func
+--- @return on_try_func
 _G.tie = function(desc, on_try, on_catch)
   if tied.functions[on_try] then return on_try end
 
@@ -105,6 +108,7 @@ _G.tie = function(desc, on_try, on_catch)
     end
   end
 
+  ---@type on_try_func
   local inner_fn = function(...)
     -- Don't notify or do anything at all when
     -- the function was called from pcall or xpcall

@@ -1,32 +1,30 @@
 -- From: https://github.com/LazyVim/LazyVim/blob/a50f92f7550fb6e9f21c0852e6cb190e6fcd50f5/lua/lazyvim/util/init.lua#L90-L125
-local M = {}
+local notifs = {}
 
-M.notifs = {}
-
-M.orig_notify = vim.notify
-M.temp_notify = tie(
+local orig_notify = vim.notify
+local temp_notify = tie(
   "save notifications for later",
-  function(...) table.insert(M.notifs, vim.F.pack_len(...)) end,
+  function(...) table.insert(notifs, vim.F.pack_len(...)) end,
   tied.do_nothing
 )
 
-M.restore_notify = tie(
+local restore_notify = tie(
   "restory vim.notify",
   function()
-    if vim.notify == M.temp_notify then
-      vim.notify = M.orig_notify
+    if vim.notify == temp_notify then
+      vim.notify = orig_notify
     end
   end,
   tied.do_nothing
 )
 
-M.setup = tie(
+tie(
   "setup notifications delay",
   function()
     local timer = assert(vim.uv.new_timer())
     local check = assert(vim.uv.new_check())
 
-    vim.notify = M.temp_notify
+    vim.notify = temp_notify
 
     local on_notify_change = tie(
       "after vim.notify has changed",
@@ -34,34 +32,40 @@ M.setup = tie(
         timer:stop()
         check:stop()
 
-        -- in case 500ms timer passed
-        M.restore_notify()
+        -- In case the timer passed
+        restore_notify()
+
+        -- Wrap the new notify and try to call the original on error
+        local new_notify = vim.notify
+        vim.notify = tie(
+          "vim.notify",
+          new_notify,
+          function(props) pcall(orig_notify, unpack(props.args)) end
+        )
 
         vim.schedule(tie(
           "play the stored notifications",
           function()
-            for _, notif in ipairs(M.notifs) do
+            for _, notif in ipairs(notifs) do
               vim.notify(vim.F.unpack_len(notif))
             end
           end,
           tied.do_nothing
         ))
       end,
-      M.restore_notify
+      restore_notify
     )
 
     check:start(tie(
       "check if vim.notify has been replaced",
       function()
-        if vim.notify ~= M.temp_notify then on_notify_change() end
+        if vim.notify ~= temp_notify then on_notify_change() end
       end,
-      tied.do_rethrow
+      function() check:stop() end
     ))
 
-    -- if it took more than 500ms revert to original
+    -- revert to original if too much time passed
     timer:start(500, 0, on_notify_change)
   end,
-  M.restore_notify
-)
-
-return M
+  restore_notify
+)()

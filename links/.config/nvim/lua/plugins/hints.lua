@@ -68,12 +68,15 @@ return {
           { vim.g.localleader, group = "local leader", },
           { "D", group = "cut", op = true },
           { "gc", group = "toggle comment", op = true },
+          { "g@", desc = "Operator-pending mode" },
+        },
+        {
+          mode = "v",
+          { "<leader>", group = "leader", }
         },
         {
           mode = { "n", "v" },
-          -- can overwrite desc
           { "gx", desc = "Open with system app" },
-          { "g@", desc = "Operator-pending mode" },
         },
       },
     },

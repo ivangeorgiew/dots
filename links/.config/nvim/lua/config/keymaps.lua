@@ -2,7 +2,7 @@ local M = {}
 
 M.config = {
   to_delete = {
-    { "n", { "ZZ", "<C-f>", "<C-b>" } },
+    { "n", { "ZZ", "<C-z>", "<C-f>", "<C-b>" } },
     { { "n", "v" }, {
       "#", -- use `m` instead
       "&",
@@ -182,9 +182,9 @@ M.config = {
   },
   quickfix = {
     { "n", "<C-r>", "<cmd>Replace<cr>", { desc = "Replace text in files" } },
-    { "n", "<C-t>", "<C-w><CR><C-w>T", { desc = "Open quickfix file in new tab" } },
-    { "n", "<C-s>", "<C-w><CR>", { desc = "Open quickfix file in hor. split" } },
-    { "n", "<C-v>", "<C-w><CR><C-w>L<C-w>2w<C-w>J<C-w>2w", { desc = "Open quickfix file in vert. split" } },
+    { "n", "<C-t>", "<C-w><CR><C-w>T", { desc = "Open list item in new tab" } },
+    { "n", "<C-s>", "<C-w><CR>", { desc = "Open list item in hor. split" } },
+    { "n", "<C-v>", "<C-w><CR>:windo lclose<cr><C-w>L:lopen<cr><cr>", { desc = "Open list item in vert. split" } },
   },
 }
 
