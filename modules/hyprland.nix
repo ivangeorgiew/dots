@@ -302,10 +302,19 @@ in {
       };
 
       mpvpaper = merge exec_common {
+        enable = false;
         description = "Video as wallpaper";
         partOf = ["graphical-session.target" "reload-hypr.service"];
         after = ["graphical-session.target" "reload-hypr.service"];
         script = "mpvpaper -o 'no-audio loop' DP-1 ~/.config/livewall.mp4 >/dev/null";
+      };
+
+      wallpaper = merge exec_common {
+        enable = true;
+        description = "Set wallpaper";
+        partOf = ["graphical-session.target" "reload-hypr.service"];
+        after = ["graphical-session.target" "reload-hypr.service"];
+        script = "swaybg -o DP-1 -m fill -i ~/.config/wall.png >/dev/null";
       };
 
       # Works, but is unneeded when using UWSM
