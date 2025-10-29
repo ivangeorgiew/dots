@@ -95,12 +95,8 @@ M.config = {
     { "n", "<leader>tE", vim.diagnostic.setloclist, { desc = "Toggle errors list" } },
     { "n", "<leader>tl", "<cmd>Lazy<cr>", { desc = "Toggle Lazy" } },
     { "n", "<leader>tm", "<cmd>Mason<cr>", { desc = "Toggle Mason" } },
-    { "n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle Wrapping of lines" } },
-    {
-      "n", "<leader>th",
-      "getreg('/') == '' ? ':let @/=g:last_hls | let g:last_hls=\"\"<cr>' : ':let g:last_hls=@/ | let @/=\"\"<cr>'",
-      { desc = "Toggle search highlighting", expr = true }
-    },
+    { "n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle wrapping of lines" } },
+    { "n", "<leader>th", function() vim.o.hls = not vim.o.hls end, { desc = "Toggle search highlighting" } },
     {
       "n", "<leader>tq",
       "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.loclist')) ? ':lopen<cr>' : ':windo lclose<cr>'",

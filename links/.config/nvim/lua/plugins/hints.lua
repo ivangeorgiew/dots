@@ -9,10 +9,9 @@ return {
       function(_, opts)
         local wk = require("which-key")
 
-        -- which-key doesn't show maps unless timeoutlen is low enough
-        -- there shouldn't be any keymap that is also a group in my setup
-        -- so it is safe to set timeoutlen to such a low value
-        vim.opt.timeoutlen = 50
+        -- which-key doesn't show some keymaps unless timeoutlen is low enough
+        -- but my fork fixes this issue, so can safely comment out
+        -- vim.opt.timeoutlen = 150
 
         wk.setup(opts)
 
@@ -58,6 +57,7 @@ return {
       spec = {
         {
           mode = "n",
+          { "<localleader>", group = "local leader", },
           { "<leader>q", group = "quit", },
           { "<leader>t", group = "toggle", },
           { "<leader>%", group = "whole file", },
@@ -65,7 +65,6 @@ return {
           { "<leader>k", group = "next", proxy = "]", },
           { "[", group = "prev", },
           { "]", group = "next", },
-          { vim.g.localleader, group = "local leader", },
           { "D", group = "cut", op = true },
           { "gc", group = "toggle comment", op = true },
           { "g@", desc = "Operator-pending mode" },

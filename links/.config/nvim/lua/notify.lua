@@ -2,6 +2,8 @@
 local notifs = {}
 
 local orig_notify = vim.notify
+
+--- @type fun(msg: string, level?: number, opts?: table)
 local temp_notify = tie(
   "save notifications for later",
   function(...) table.insert(notifs, vim.F.pack_len(...)) end,

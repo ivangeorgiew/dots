@@ -4,7 +4,7 @@ local tie_table_deep = tie(
   "tie functions nested deep in a table",
   --- @param tbl_name string
   --- @param tbl table
-  --- @param on_catch function
+  --- @param on_catch on_catch_func
   function(tbl_name, tbl, on_catch)
     local queue = { { tbl, tbl_name } }
     local seen = {} -- filled with traversed tables
@@ -46,7 +46,7 @@ local tie_import_func = tie(
     return tie(
       "tied "..fn_name,
       --- @param path string
-      --- @param on_catch function?
+      --- @param on_catch on_catch_func
       function(path, on_catch)
         on_catch = on_catch or tied.do_rethrow
 

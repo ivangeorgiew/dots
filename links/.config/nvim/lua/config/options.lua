@@ -69,7 +69,7 @@ M.setup = tie(
     o.completeopt = "fuzzy,menuone,noselect,popup" -- completion options (fuzzy only works on populated results)
     o.confirm = true -- popup to save file after some commands
     o.cursorline = true -- highlight the current cursor line
-    o.diffopt = "vertical,iwhite,filler" -- vimdiff split direction and ignore whitespace
+    o.diffopt:append({ "vertical", "iwhite", "algorithm:patience", "context:10", "indent-heuristic", "followwrap" }) -- https://vimways.org/2018/the-power-of-diff/
     o.expandtab = true -- change tab to use spaces
     o.fillchars:append({ foldopen = "", foldclose = "", fold = " ", foldsep = " ", eob = " ", }) -- special characters
     o.foldlevelstart = 99 -- default fold level
@@ -80,7 +80,7 @@ M.setup = tie(
     o.grepformat = "%f:%l:%m" -- format for grep command
     o.grepprg = "rg --no-heading -n -uu -S -F" -- faster alternative to grep
     o.hidden = false -- ask to save before closing buffers
-    o.hlsearch = true -- highlighting search results
+    o.hlsearch = false -- highlighting search results
     o.ignorecase = false -- see smartcase option (affects search and replace too)
     o.inccommand = "nosplit" -- include partial off-screen matches for search and replace
     o.incsearch = true -- show where the pattern is as you search for it
@@ -89,14 +89,13 @@ M.setup = tie(
     o.linebreak = true -- better break of long lines
     o.list = true -- show hidden chars (tabs, trailing space, etc)
     o.listchars = { tab = '»·', trail = '·', nbsp = '␣' } -- chars to use for hidden symbols
-    o.maxmempattern = 20000 -- increase max memory for pattern matching
     o.mouse = "" -- disable mouse
     o.number = true -- line numbers
     o.path:append("**") -- include subdirectories in search
     o.pumblend = 10 -- transparency for popups
     o.pumheight = 0 -- max entries in a popup
-    o.redrawtime = 10000 -- increase redraw time for syntax handling
     o.relativenumber = false -- relative line numbers
+    o.ruler = false -- toggle statusline info at the end
     o.scroll = 20 -- lines to move on <C-d>/<C-u>
     o.scrolloff = 10 -- min lines below and above
     o.selection = "old" -- don't go past line end in visual mode

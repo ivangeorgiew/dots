@@ -37,29 +37,31 @@ _G.xpcall = wrap_prot_call(xpcall)
 --- @param arg any
 --- @return string
 tied.stringify = function(arg)
-  if type(arg) == "table" then
-    -- options from https://github.com/kikito/inspect.lua
-    local str = vim.inspect(arg, { newline = " ", indent = "", depth = 3 })
+  local str = ""
+  local arg_type = type(arg)
 
-    if str:len() > 1000 then
-      return "{...}"
-    else
-      return str
-    end
+  if arg_type == "table" then
+    -- options from https://github.com/kikito/inspect.lua
+    str = vim.inspect(arg, { newline = " ", indent = "", depth = 3 })
+  elseif arg_type == "string" then
+    str = '"'..arg..'"'
   else
-    return type(arg) == "string" and '"'..arg..'"' or tostring(arg)
+    str = tostring(arg)
   end
+
+  if str:len() > 1000 then str = "[large "..arg_type.."]" end
+
+  return str
 end
 
---- @generic F
---- @alias on_try_func F
 --- @alias on_catch_func fun(props: { desc: string, err: string, args: table }): any
 
 --- Error-handle a function
+--- @generic F : function
 --- @param desc string
---- @param on_try on_try_func
+--- @param on_try F
 --- @param on_catch on_catch_func
---- @return on_try_func
+--- @return F
 _G.tie = function(desc, on_try, on_catch)
   if tied.functions[on_try] then return on_try end
 
@@ -67,9 +69,37 @@ _G.tie = function(desc, on_try, on_catch)
     local args = {...}
     local n_args = select("#", ...) -- num of args must be gathered here
 
-    return function(err)
-      local should_rethrow = false
-      local ind = "  " -- indent for err_msg
+    local get_stacktrace = function(ind)
+      local stacktrace = ""
+      local trace = {}
+      local level = 3
+
+      while true do
+        local info = debug.getinfo(level, "Sln")
+
+        if not info then break end
+
+        -- Ignore C language functions
+        if info.what == "Lua" then
+          local source = vim.fn.fnamemodify(info.source:sub(2), ":p:~:.")
+          local line = ind..source..":"..info.currentline
+
+          table.insert(trace, line)
+        end
+
+        level = level + 1
+      end
+
+      if #trace > 0 then
+        stacktrace = "Stacktrace:\n" .. table.concat(trace, "\n") .. "\n\n"
+      else
+        stacktrace = "\n"
+      end
+
+      return stacktrace
+    end
+
+    local get_args_string = function(ind)
       local args_string = ""
 
       if n_args > 0 then
@@ -80,15 +110,27 @@ _G.tie = function(desc, on_try, on_catch)
         args_string = ind.."[no args]\n"
       end
 
-      local err_msg = string.format(
+      return args_string
+    end
+
+    local get_err_msg = function(err)
+      local ind = "  " -- indent for err_msg
+
+      return string.format(
         "Error at:\n"..
         ind.."[%s]\n"..
         "Function args:\n"..
         "%s"..
         "Message:\n"..
-        ind.."%s\n\n",
-        desc, args_string, err
+        ind.."%s\n"..
+        get_stacktrace(ind),
+        desc, get_args_string(ind), err
       )
+    end
+
+    return function(err)
+      local should_rethrow = false
+      local err_msg = get_err_msg(err)
 
       pcall(vim.notify_once, err_msg, vim.log.levels.ERROR)
 
@@ -108,7 +150,6 @@ _G.tie = function(desc, on_try, on_catch)
     end
   end
 
-  ---@type on_try_func
   local inner_fn = function(...)
     -- Don't notify or do anything at all when
     -- the function was called from pcall or xpcall

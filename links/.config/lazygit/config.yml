@@ -10,3 +10,12 @@ gui:
 
   # If true, hunk selection mode will be enabled by default when entering the staging view.
   useHunkModeInStagingView: false
+
+git:
+  # If true, git diffs are rendered with the `--ignore-all-space` flag, which
+  # ignores whitespace changes. Can be toggled from within Lazygit with `<c-w>`.
+  ignoreWhitespaceInDiffView: true
+
+  # The number of lines of context to show around each diff hunk. Can be changed
+  # from within Lazygit with the `{` and `}` keys.
+  diffContextSize: 10
