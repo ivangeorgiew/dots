@@ -1,7 +1,8 @@
 _G.tied = {}
 
 -- All functions which are wrapped with `tie()`
-tied.functions = {}
+-- Keep weak references in order to be able to garbage collect
+tied.functions = setmetatable({}, { __mode = "k" })
 
 -- Indicates to rethow the error if returned in `on_catch`
 tied.RETHROW = "__tie_rethrow__"

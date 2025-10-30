@@ -45,15 +45,11 @@ tie(
           function(props) pcall(orig_notify, unpack(props.args)) end
         )
 
-        vim.schedule(tie(
-          "play the stored notifications",
-          function()
-            for _, notif in ipairs(notifs) do
-              vim.notify(vim.F.unpack_len(notif))
-            end
-          end,
-          tied.do_nothing
-        ))
+        vim.schedule(function()
+          for _, notif in ipairs(notifs) do
+            vim.notify(vim.F.unpack_len(notif))
+          end
+        end)
       end,
       restore_notify
     )

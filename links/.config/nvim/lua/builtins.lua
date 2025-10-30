@@ -74,54 +74,49 @@ _G.require = tie_import_func("require", require)
 local dofile = dofile
 _G.dofile = tie_import_func("dofile", dofile)
 
--- Prevents error rethrows
 local schedule = vim.schedule
 _G.vim.schedule = tie(
   "vim.schedule",
   ---@param fn function
   function(fn)
+    local desc = "scheduled fn"
+    local on_try = fn
+    local on_catch = tied.do_nothing
     local tied_opts = tied.functions[fn]
 
-    if not tied_opts then
-      fn = tie("scheduled fn", fn, tied.do_nothing)
-    else
-      fn = tie(
-        tied_opts.desc,
-        tied_opts.on_try,
-        function(props) tied_opts.on_catch(props) end
-      )
+    -- Execute on_catch without rethrowing, but still doing cleanup
+    if tied_opts and tied_opts.desc ~= desc then
+      on_try = tied_opts.on_try
+      on_catch = function(props) tied_opts.on_catch(props) end
     end
 
-    schedule(fn)
+    schedule(tie(desc, on_try, on_catch))
   end,
   tied.do_nothing
 )
 
--- Prevents error rethrows
 local defer_fn = vim.defer_fn
 _G.vim.defer_fn = tie(
   "vim.defer_fn",
   ---@param fn function
   ---@param timeout number
   function(fn, timeout)
+    local desc = "deferred fn"
+    local on_try = fn
+    local on_catch = tied.do_nothing
     local tied_opts = tied.functions[fn]
 
-    if not tied_opts then
-      fn = tie("deferred fn", fn, tied.do_nothing)
-    else
-      fn = tie(
-        tied_opts.desc,
-        tied_opts.on_try,
-        function(props) tied_opts.on_catch(props) end
-      )
+    -- Execute on_catch without rethrowing, but still doing cleanup
+    if tied_opts and tied_opts.desc ~= desc then
+      on_try = tied_opts.on_try
+      on_catch = function(props) tied_opts.on_catch(props) end
     end
 
-    return defer_fn(fn, timeout)
+    return defer_fn(tie(desc, on_try, on_catch), timeout)
   end,
   tied.do_rethrow
 )
 
--- Handle autocmds
 local create_autocmd = vim.api.nvim_create_autocmd
 _G.vim.api.nvim_create_autocmd = tie(
   "vim.api.nvim_create_autocmd",
@@ -134,13 +129,17 @@ _G.vim.api.nvim_create_autocmd = tie(
     end
 
     if type(opts.callback) == "function" then
-      local desc = opts.group and "callback for augroup: "..opts.group or "autocmd callback"
+      local desc = "autocmd callback"
       local on_try = opts.callback ---@type function
       local on_catch = function() return true end
       local tied_opts = tied.functions[opts.callback]
 
-      if tied_opts then
-        desc = tied_opts.desc
+      if opts.group then
+        desc = "callback for augroup: " .. tostring(opts.group)
+      end
+
+      -- Execute on_catch without rethrowing, but still doing cleanup
+      if tied_opts and tied_opts.desc ~= desc then
         on_try = tied_opts.on_try
         on_catch = function(props)
           tied_opts.on_catch(props)
@@ -156,7 +155,6 @@ _G.vim.api.nvim_create_autocmd = tie(
   tied.do_rethrow
 )
 
--- Handle usercmds
 local create_usercmd = vim.api.nvim_create_user_command
 _G.vim.api.nvim_create_user_command = tie(
   "vim.api.nvim_create_user_command",
@@ -170,8 +168,8 @@ _G.vim.api.nvim_create_user_command = tie(
       local on_catch = tied.do_nothing
       local tied_opts = tied.functions[command]
 
-      if tied_opts then
-        desc = tied_opts.desc
+      -- Execute on_catch without rethrowing, but still doing cleanup
+      if tied_opts and tied_opts.desc ~= desc then
         on_try = tied_opts.on_try
         on_catch = function(props) tied_opts.on_catch(props) end
       end
