@@ -29,14 +29,12 @@ M.setup = tie(
 
       -- Wrap plugins importing with error handling
       -- Alternatively, without error handling -> spec = "plugins",
-      spec = tied.get_files({
-        path = vim.fn.stdpath("config") .. "/lua/plugins",
-        ext = ".lua",
-        map = function(file)
+      spec = vim.iter(tied.get_files(vim.fn.stdpath("config") .. "/lua/plugins", "lua"))
+        :map(function(file)
           local full_path = "plugins/"..file:gsub("%.lua$", "")
           return require(full_path, function() return {} end)
-        end
-      }),
+        end)
+        :totable(),
 
       ---@type table
       dev = {

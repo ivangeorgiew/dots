@@ -64,6 +64,10 @@ end
 --- @param on_catch on_catch_func
 --- @return F
 _G.tie = function(desc, on_try, on_catch)
+  vim.validate("desc", desc, "string")
+  vim.validate("on_try", on_try, "function")
+  vim.validate("on_catch", on_catch, "function")
+
   if tied.functions[on_try] then return on_try end
 
   local inner_catch = function(...)

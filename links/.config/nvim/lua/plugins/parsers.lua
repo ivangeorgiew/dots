@@ -66,6 +66,8 @@ return {
               "check if should enable treesitter feature for ft: " .. ft,
               ---@param query string
               function(query)
+                vim.validate("query", query, "string")
+
                 local c = config[query] or {}
                 local query_enabled = c.enable
                 local lang_not_ignored = not vim.list_contains(c.ignore or {}, lang)

@@ -9,6 +9,8 @@ configs["nvim-lspconfig"] = tie(
       on_init = tie(
         "lsp lua_ls -> on_init",
         function(client)
+          vim.validate("client", client, "table")
+
           if client.workspace_folders then
             local path = client.workspace_folders[1].name
 
