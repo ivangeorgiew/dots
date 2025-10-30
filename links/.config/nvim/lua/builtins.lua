@@ -15,7 +15,7 @@ local tie_table_deep = tie(
       local curr_path = item[2]
 
       -- ignore global vim
-      local is_vim_table = curr_path == "vim" or curr_path:match("^vim%.")
+      local is_vim_table = curr_path == "vim" or curr_path:find("^vim%.")
 
       if not seen[curr_tbl] and not is_vim_table then
         seen[curr_tbl] = true
@@ -58,8 +58,9 @@ local tie_import_func = tie(
 
         if type(module) == "function" then
           module = tie(path, module, tied.do_rethrow)
-        elseif type(module) == "table" then
-          tie_table_deep(path, module, tied.do_rethrow)
+        -- NOTE: Add on a case by case basis instead
+        -- elseif type(module) == "table" then
+        --   tie_table_deep(path, module, tied.do_rethrow)
         end
 
         return module
@@ -69,28 +70,43 @@ local tie_import_func = tie(
   end,
   tied.do_rethrow
 )
+
 local require = require
 _G.require = tie_import_func("require", require)
 local dofile = dofile
 _G.dofile = tie_import_func("dofile", dofile)
+
+local modify_tied_fn = tie(
+  "modify tied function if needed",
+  ---@param desc string
+  ---@param on_try function
+  ---@param on_catch on_catch_func
+  function(desc, on_try, on_catch)
+    local tied_opts = tied.functions[on_try]
+
+    -- Execute on_catch without rethrowing, but still doing cleanup
+    if tied_opts and not vim.startswith(tied_opts.desc, desc) then
+      return tie(
+        desc .. " -> " .. tied_opts.desc,
+        tied_opts.on_try, --- @type function
+        function(props)
+          tied_opts.on_catch(props)
+          return on_catch(props)
+        end
+      )
+    end
+
+    return tie(desc, on_try, on_catch)
+  end,
+  tied.do_rethrow
+)
 
 local schedule = vim.schedule
 _G.vim.schedule = tie(
   "vim.schedule",
   ---@param fn function
   function(fn)
-    local desc = "scheduled fn"
-    local on_try = fn
-    local on_catch = tied.do_nothing
-    local tied_opts = tied.functions[fn]
-
-    -- Execute on_catch without rethrowing, but still doing cleanup
-    if tied_opts and tied_opts.desc ~= desc then
-      on_try = tied_opts.on_try
-      on_catch = function(props) tied_opts.on_catch(props) end
-    end
-
-    schedule(tie(desc, on_try, on_catch))
+    schedule(modify_tied_fn("scheduled fn", fn, tied.do_nothing))
   end,
   tied.do_nothing
 )
@@ -101,18 +117,7 @@ _G.vim.defer_fn = tie(
   ---@param fn function
   ---@param timeout number
   function(fn, timeout)
-    local desc = "deferred fn"
-    local on_try = fn
-    local on_catch = tied.do_nothing
-    local tied_opts = tied.functions[fn]
-
-    -- Execute on_catch without rethrowing, but still doing cleanup
-    if tied_opts and tied_opts.desc ~= desc then
-      on_try = tied_opts.on_try
-      on_catch = function(props) tied_opts.on_catch(props) end
-    end
-
-    return defer_fn(tie(desc, on_try, on_catch), timeout)
+    return defer_fn(modify_tied_fn("deferred fn", fn, tied.do_nothing), timeout)
   end,
   tied.do_rethrow
 )
@@ -130,24 +135,12 @@ _G.vim.api.nvim_create_autocmd = tie(
 
     if type(opts.callback) == "function" then
       local desc = "autocmd callback"
-      local on_try = opts.callback ---@type function
-      local on_catch = function() return true end
-      local tied_opts = tied.functions[opts.callback]
 
       if opts.group then
         desc = "callback for augroup: " .. tostring(opts.group)
       end
 
-      -- Execute on_catch without rethrowing, but still doing cleanup
-      if tied_opts and tied_opts.desc ~= desc then
-        on_try = tied_opts.on_try
-        on_catch = function(props)
-          tied_opts.on_catch(props)
-          return true
-        end
-      end
-
-      opts.callback = tie(desc, on_try, on_catch)
+      opts.callback = modify_tied_fn(desc, opts.callback, function() return true end)
     end
 
     return create_autocmd(events, opts)
@@ -164,17 +157,8 @@ _G.vim.api.nvim_create_user_command = tie(
   function(name, command, opts)
     if type(command) == "function" then
       local desc = type(opts.desc) == "string" and opts.desc or name
-      local on_try = command
-      local on_catch = tied.do_nothing
-      local tied_opts = tied.functions[command]
 
-      -- Execute on_catch without rethrowing, but still doing cleanup
-      if tied_opts and tied_opts.desc ~= desc then
-        on_try = tied_opts.on_try
-        on_catch = function(props) tied_opts.on_catch(props) end
-      end
-
-      command = tie(desc, on_try, on_catch)
+      command = tie(desc, command, tied.do_nothing)
     end
 
    create_usercmd(name, command, opts)

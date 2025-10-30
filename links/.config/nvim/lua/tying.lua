@@ -70,12 +70,25 @@ _G.tie = function(desc, on_try, on_catch)
     local args = {...}
     local n_args = select("#", ...) -- num of args must be gathered here
 
-    local get_stacktrace = function(ind)
+    return function(err)
+      local should_rethrow = false
+      local ind = "  " -- indent for err_msg
+      local args_string = ""
+
+      if n_args > 0 then
+        for idx = 1, n_args do
+          args_string = args_string .. string.format(ind.."%d) %s\n", idx, tied.stringify(args[idx]))
+        end
+      else
+        args_string = ind.."[no args]\n"
+      end
+
       local stacktrace = ""
       local trace = {}
       local level = 3
 
-      while true do
+      -- No need for huge stacktrace
+      while #trace < 10 do
         local info = debug.getinfo(level, "Sln")
 
         if not info then break end
@@ -92,46 +105,19 @@ _G.tie = function(desc, on_try, on_catch)
       end
 
       if #trace > 0 then
-        stacktrace = "Stacktrace:\n" .. table.concat(trace, "\n") .. "\n\n"
-      else
-        stacktrace = "\n"
+        stacktrace = "Stacktrace:\n" .. table.concat(trace, "\n") .. "\n"
       end
 
-      return stacktrace
-    end
-
-    local get_args_string = function(ind)
-      local args_string = ""
-
-      if n_args > 0 then
-        for idx = 1, n_args do
-          args_string = args_string .. string.format(ind.."%d) %s\n", idx, tied.stringify(args[idx]))
-        end
-      else
-        args_string = ind.."[no args]\n"
-      end
-
-      return args_string
-    end
-
-    local get_err_msg = function(err)
-      local ind = "  " -- indent for err_msg
-
-      return string.format(
+      local err_msg = string.format(
         "Error at:\n"..
         ind.."[%s]\n"..
         "Function args:\n"..
         "%s"..
         "Message:\n"..
         ind.."%s\n"..
-        get_stacktrace(ind),
-        desc, get_args_string(ind), err
+        stacktrace.."\n",
+        desc, args_string, err
       )
-    end
-
-    return function(err)
-      local should_rethrow = false
-      local err_msg = get_err_msg(err)
 
       pcall(vim.notify_once, err_msg, vim.log.levels.ERROR)
 

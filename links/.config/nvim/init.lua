@@ -5,8 +5,8 @@ require("tying") -- error handling logic
 tie(
   "initialize nvim config",
   function()
-    require("notify") -- delay notifications
     require("builtins") -- replace some global builtin functions
+    require("notify") -- delay notifications
     require("utils") -- add global util functions
 
     -- Order matters

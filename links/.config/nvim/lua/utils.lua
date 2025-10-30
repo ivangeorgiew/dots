@@ -91,7 +91,7 @@ tied.get_files = tie(
     local entries = {}
 
     for name, type in vim.fs.dir(path, { depth = math.huge }) do
-      if type == "file" and name:match("%"..ext.."$") then
+      if type == "file" and name:find("%"..ext.."$") then
         table.insert(entries, map(name) or name)
       end
     end
@@ -106,7 +106,7 @@ tied.ui_input = tie(
   --- @param opts table
   --- @param func function
   function(opts, func)
-    local desc = "create ui for input with prompt: "
+    local desc = "after UI input with prompt: "
 
     if type(opts.prompt) == "string" then
       desc = desc .. opts.prompt
@@ -114,7 +114,7 @@ tied.ui_input = tie(
       desc = desc .. "none"
     end
 
-    vim.schedule(function() vim.ui.input(opts, tie(desc, func, tied.do_nothing)) end)
+    vim.ui.input(opts, vim.schedule_wrap(tie(desc, func, tied.do_nothing)))
   end,
   tied.do_nothing
 )
@@ -125,7 +125,7 @@ tied.ui_select = tie(
   --- @param opts table
   --- @param func function
   function(list, opts, func)
-    local desc = "create ui for selection with prompt: "
+    local desc = "after UI selection with prompt: "
 
     if type(opts.prompt) == "string" then
       desc = desc .. opts.prompt
@@ -133,9 +133,7 @@ tied.ui_select = tie(
       desc = desc .. "none"
     end
 
-    -- vim.schedule(function()
-    vim.ui.select(list, opts, tie(desc, func, tied.do_nothing))
-    -- end)
+    vim.ui.select(list, opts, vim.schedule_wrap(tie(desc, func, tied.do_nothing)))
   end,
   tied.do_nothing
 )
@@ -179,10 +177,10 @@ tied.on_plugin_load = tie(
     local is_loaded = lazy_config.plugins[name]._.loaded
     local fn_desc = "after loading plugin "..name
 
-    fn = vim.schedule_wrap(tie(fn_desc, fn, tied.do_nothing))
+    fn = tie(fn_desc, fn, tied.do_nothing)
 
     if is_loaded then
-      fn()
+      vim.schedule(fn)
       return
     end
 
@@ -193,7 +191,7 @@ tied.on_plugin_load = tie(
         pattern = "LazyLoad",
         callback = function(event)
           if event.data == name then
-            fn()
+            vim.schedule(fn)
             return true -- clear autocmd
           end
         end,
