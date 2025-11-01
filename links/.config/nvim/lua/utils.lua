@@ -87,27 +87,37 @@ tied.apply_maps = tie(
 )
 
 tied.get_files = tie(
-  "get file names from a folder",
-  --- @param path string
-  --- @param ext string?
-  function(path, ext)
-    vim.validate("path", path, "string")
-    vim.validate("ext", ext, "string", true)
+  "get files from a folder",
+  --- @param opts { path: string, ext: string?, map: function? }
+  function(opts)
+    vim.validate("opts", opts, "table")
+    vim.validate("opts.path", opts.path, "string")
+    vim.validate("opts.ext", opts.ext, "string", true)
+    vim.validate("opts.map", opts.map, "function", true)
 
     local entries = {}
+    local map = function(file) return file end
 
-    for name, type in vim.fs.dir(path, { depth = math.huge }) do
+    if opts.map then
+      map = tie(
+        "map file in path: "..opts.path,
+        function(file) return opts.map(file) end,
+        function(props) return props.args[1] end
+      )
+    end
+
+    for name, type in vim.fs.dir(opts.path, { depth = math.huge }) do
       if (
         type == "file" and
-        (not ext or vim.endswith(name, "."..ext))
+        (not opts.ext or vim.endswith(name, "."..opts.ext))
       ) then
-        table.insert(entries, name)
+        table.insert(entries, opts.map and map(name) or name)
       end
     end
 
     return entries
   end,
-  tied.do_nothing
+  function() return {} end
 )
 
 tied.colorscheme_config = tie(
@@ -141,34 +151,34 @@ tied.get_fold_text = tie(
 -- from LazyVim
 tied.on_plugin_load = tie(
   "after a plugin is loaded",
-  --- @param name string
-  --- @param fn function
-  function(name, fn)
-    vim.validate("name", name, "string")
-    vim.validate("fn", fn, "function")
+  --- @param plugin_name string
+  --- @param on_load function
+  function(plugin_name, on_load)
+    vim.validate("plugin_name", plugin_name, "string")
+    vim.validate("on_load", on_load, "function")
 
     local lazy_config = require("lazy.core.config")
 
-    if not lazy_config.plugins[name] then return end
+    if not lazy_config.plugins[plugin_name] then return end
 
-    local is_loaded = lazy_config.plugins[name]._.loaded
-    local fn_desc = "after loading plugin "..name
+    local is_loaded = lazy_config.plugins[plugin_name]._.loaded
+    local on_load_desc = "after loading plugin "..plugin_name
 
-    fn = tie(fn_desc, fn, tied.do_nothing)
+    on_load = tie(on_load_desc, on_load, tied.do_nothing)
 
     if is_loaded then
-      vim.schedule(fn)
+      vim.schedule(on_load)
       return
     end
 
     tied.create_autocmd(
       "User",
       {
-        group = fn_desc,
+        group = on_load_desc,
         pattern = "LazyLoad",
         callback = function(event)
-          if event.data == name then
-            vim.schedule(fn)
+          if event.data == plugin_name then
+            vim.schedule(on_load)
             return true -- clear autocmd
           end
         end,

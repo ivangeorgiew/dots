@@ -5,7 +5,21 @@ configs["nvim-lspconfig"] = tie(
   function()
     -- Recommended config from nvim-lspconfig
     vim.lsp.config('lua_ls', {
-      settings = { Lua = {} },
+      settings = { Lua = {
+        runtime = {
+          version = 'LuaJIT',
+          path = { 'lua/?.lua', 'lua/?/init.lua', },
+        },
+        workspace = {
+          checkThirdParty = false,
+          library = {
+            vim.env.VIMRUNTIME,
+            "${3rd}/luv/library", -- vim.uv
+            vim.fn.stdpath("data").."/lazy/lazy.nvim",
+            -- TODO: vim.fn.stdpath("data").."/lazy/snacks.nvim",
+          }
+        },
+      } },
       on_init = tie(
         "lsp lua_ls -> on_init",
         function(client)
@@ -18,30 +32,9 @@ configs["nvim-lspconfig"] = tie(
               vim.uv.fs_stat(path .. "/.luarc.json") or
               vim.uv.fs_stat(path .. "/.luarc.jsonc")
             ) then
-              return
+              client.config.settings.Lua = {}
             end
           end
-
-          -- nvim related lua settings
-          client.config.settings.Lua = vim.tbl_deep_extend(
-            "force",
-            client.config.settings.Lua,
-            {
-              runtime = {
-                version = 'LuaJIT',
-                path = { 'lua/?.lua', 'lua/?/init.lua', },
-              },
-              workspace = {
-                checkThirdParty = false,
-                library = {
-                  vim.env.VIMRUNTIME,
-                  "${3rd}/luv/library", -- vim.uv
-                  vim.fn.stdpath("data").."/lazy/lazy.nvim",
-                  -- TODO: vim.fn.stdpath("data").."/lazy/snacks.nvim",
-                }
-              },
-            }
-          )
         end,
         tied.do_nothing
       ),
@@ -115,10 +108,10 @@ return {
     config = configs["nvim-lspconfig"],
   },
 
-  -- TODO: configure
+  -- TODO: configure none-ls
   { "nvimtools/none-ls.nvim" },
 
-  -- TODO: configure
+  -- TODO: configure nvim-dap
   { "mfussenegger/nvim-dap" },
 
   {
@@ -146,14 +139,8 @@ return {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     dependencies = {
       "mason-org/mason.nvim",
-
-      "neovim/nvim-lspconfig",
       "mason-org/mason-lspconfig.nvim",
-
-      "mfussenegger/nvim-dap",
       "jay-babu/mason-nvim-dap.nvim",
-
-      "nvimtools/none-ls.nvim",
       "adrian-the-git/mason-null-ls.nvim",
     },
     event = "VeryLazy",

@@ -1,13 +1,10 @@
--- TODO: finish reimplementing LazyVim's treesitter file ("windwp/nvim-ts-autotag" and "nvim-treesitter/nvim-treesitter-textobjects")
-
 return {
-  -- Language parsing which provides better highlight, indentation, etc.
-  -- You can see the difference with `:TSToggle highlight lua` in a lua buffer
   {
+    -- Language parsing which provides better highlight, indentation, etc.
     "nvim-treesitter/nvim-treesitter",
     branch = "main",
     build = ":TSUpdate",
-    event = { "VeryLazy", "BufReadPost", "BufNewFile" },
+    event = "User FilePost",
     cmd = { "TSUpdate", "TSInstall", "TSInstallFromGrammar", "TSLog", "TSUninstall" },
     -- :h nvim-treesitter.txt
     config = tie(
@@ -22,14 +19,16 @@ return {
 
         ---@type table<string,{ enable?: boolean, ignore?: string[] }>
         local config = {
-          highlights = { enable = true, },
-          indents = { enable = true, },
-          folds = { enable = true, },
+          highlights = {},
+          indents = {},
+          folds = {},
         }
         local ignore = {
           "comment" -- interferes when todo-comments.nvim
         }
 
+        -- NOTE: Can't install a parser only when a new filetype is opened,
+        -- because some of the parsers are not filetype related
         local installed = ts.get_installed()
         local ensure_installed = {
           unpack(ts.get_available(1)), -- stable
@@ -69,7 +68,7 @@ return {
                 vim.validate("query", query, "string")
 
                 local c = config[query] or {}
-                local query_enabled = c.enable
+                local query_enabled = c.enable ~= false
                 local lang_not_ignored = not vim.list_contains(c.ignore or {}, lang)
                 local lang_supports_query = vim.treesitter.query.get(lang, query) ~= nil
 
@@ -99,6 +98,22 @@ return {
       tied.do_nothing
     ),
     -- Most options are removed in the main branch
+    opts = {},
+  },
+  {
+    -- Add textobjects that depend on treesitter
+    -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects/tree/main
+    -- TODO: config and enable nvim-treesitter-textobjects
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    enabled = false,
+    branch = "main",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+  },
+  {
+    -- Automatically add closing tags for HTML, JSX, etc
+    "windwp/nvim-ts-autotag",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    event = "User FilePost",
     opts = {},
   },
 }

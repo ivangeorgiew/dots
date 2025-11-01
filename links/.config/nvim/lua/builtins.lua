@@ -7,7 +7,7 @@ local tie_table_deep = tie(
   --- @param on_catch on_catch_func
   function(tbl_name, tbl, on_catch)
     vim.validate("tbl_name", tbl_name, "string")
-    vim.validate("tbl", tbl, "string")
+    vim.validate("tbl", tbl, "table")
     vim.validate("on_catch", on_catch, "function")
 
     local queue = { { tbl, tbl_name } }
@@ -51,29 +51,23 @@ local tie_import_func = tie(
     vim.validate("orig_fn", orig_fn, "function")
 
     return tie(
-      "tied "..fn_name,
+      fn_name,
       --- @param path string
-      --- @param on_catch on_catch_func?
-      function(path, on_catch)
-        vim.validate("fn_name", fn_name, "string")
-        vim.validate("on_catch", on_catch, "function", true)
+      function(path)
+        vim.validate("path", path, "string")
 
-        on_catch = on_catch or tied.do_rethrow
+        local results = { orig_fn(path) }
 
-        local module = tie(
-          fn_name.." "..path,
-          function() return orig_fn(path) end,
-          on_catch
-        )()
-
-        if type(module) == "function" then
-          module = tie(path, module, tied.do_rethrow)
-        -- NOTE: Add on a case by case basis instead
-        -- elseif type(module) == "table" then
-        --   tie_table_deep(path, module, tied.do_rethrow)
+        for idx, val in ipairs(results) do
+          if type(val) == "function" then
+            results[idx] = tie(path, val, tied.do_rethrow)
+          -- NOTE: Add on a case by case basis instead
+          -- elseif type(val) == "table" then
+          --   tie_table_deep(path, val, tied.do_rethrow)
+          end
         end
 
-        return module
+        return unpack(results)
       end,
       tied.do_rethrow
     )
@@ -204,7 +198,7 @@ _G.vim.keymap.set = tie(
     vim.validate("modes", modes, { "string", "table" })
     vim.validate("lhs", lhs, "string")
     vim.validate("rhs", rhs, { "string", "function" })
-    vim.validate("opts", opts, "table")
+    vim.validate("opts", opts, "table", true)
 
     opts = opts or {}
 

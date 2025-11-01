@@ -1,8 +1,7 @@
 return {
   "rebelot/kanagawa.nvim",
   enabled = vim.g.colorscheme == "kanagawa",
-  lazy = false,
-  priority = 1000, -- load before all other plugins start
+  event = "UIEnter", -- issues if VeryLazy
   config = tied.colorscheme_config,
   -- :h kanagawa.nvim-configuration
   opts = {

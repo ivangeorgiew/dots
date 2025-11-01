@@ -1,8 +1,7 @@
 return {
   "loctvl842/monokai-pro.nvim",
   enabled = vim.g.colorscheme == "monokai-pro",
-  lazy = false,
-  priority = 1000, -- load before all other plugins start
+  event = "UIEnter", -- issues if VeryLazy
   config = tied.colorscheme_config,
   -- :h monokai-pro-configuration
   opts = {
