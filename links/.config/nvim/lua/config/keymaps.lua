@@ -61,9 +61,11 @@ M.config = {
     { "n", "<leader><S-h>", "<cmd>tabm -1<cr>", { desc = "Move tab to the left" } },
     { "n", "<leader><S-l>", "<cmd>tabm +1<cr>", { desc = "Move tab to the right" } },
 
-    -- Move lines up or down
-    { "n", "<Up>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move line up" } },
-    { "n", "<Down>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move line down" } },
+    -- Resize window
+    { "n", "<Up>",    "<cmd> resize +2<cr>",         { desc = "Increase window height" } },
+    { "n", "<Down>",  "<cmd> resize -2<cr>",         { desc = "Decrease window height" } },
+    { "n", "<Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" } },
+    { "n", "<Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" } },
 
     -- Change window size
     { "n", "<S-Up>",    "<cmd>resize +2<cr>",          { desc = "Increase window height" } },
@@ -84,9 +86,13 @@ M.config = {
     { "n", "[e", function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = "Prev error" } },
 
     -- Quit things
-    { "n", "<leader>qa", "<cmd>qa<cr>",       { desc = "Quit all" } },
+    { "n", "<leader>qa", "<cmd>qa<cr>", { desc = "Quit all" } },
     { "n", "<leader>qt", "<cmd>tabclose<cr>", { desc = "Quit tab" } },
-    { "n", "<leader>qw", "<cmd>close<cr>",    { desc = "Quit window" } },
+    {
+      "n", "<leader>qw",
+      function() return #vim.api.nvim_list_wins() > 1 and ":confirm q<cr>" or ":bdelete<cr>" end,
+      { desc = "Quit window", expr = true, }
+    },
 
     -- Toggle things
     { "n", "<leader>tb", "<cmd>buffers<cr>", { desc = "Toggle buffers" } },
@@ -116,7 +122,7 @@ M.config = {
 
     -- Macros
     { "n", "Q", "q", { desc = "Start/end macro" } },
-    { "n", "q", "reg_recording() == 'e' ? 'q' : 'qe'", { desc = "Start/end default macro", expr = true } },
+    { "n", "#", "reg_recording() == 'e' ? 'q' : 'qe'", { desc = "Start/end default macro", expr = true } },
     { { "n", "v" }, "<cr>", "empty(&buftype) ? ':normal! @e<cr>' : '<cr>'", { desc = "Apply default macro", expr = true } },
 
     -- Make new line
@@ -158,7 +164,7 @@ M.config = {
 
     -- Unrelated mappings
     { "n", "X", "<C-a>", { desc = "Increment number under cursor" } },
-    { "t", "<C-q>", "<C-\\><C-n>", { desc = "Exit terminal mode" } },
+    { "t", "<C-x>", "<C-\\><C-n>", { desc = "Exit terminal mode" } },
     { "n", "<leader>o", "<cmd>only<cr>",  { desc = "Leave only the current window" } },
     { "n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file executable" } },
     { "n", "J", "mzJ`z", { desc = "Join lines" } },

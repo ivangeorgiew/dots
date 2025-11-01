@@ -135,6 +135,8 @@ in {
       dirs_size = "gdu"; # Windirstat for Linux (sort dirs by size)
       ps_search = "ps aux | rg"; # List a process
       ps_kill = "pkill -9"; # Force kill a process (hence the 9)
+      lazyvim = "NVIM_APPNAME=lazyvim nvim"; # use the LazyVim neovim config
+      nvchad = "NVIM_APPNAME=nvchad nvim"; # use the NvChad neovim config
       neofetch = "nitch"; # Displays system info
       nix_update = "echo '> Updating flake inputs' && sudo nix flake update --flake ~/dots"; # Update the versions of packages
       nix_switch = "nix_update && nh os switch"; # Change nixos config now

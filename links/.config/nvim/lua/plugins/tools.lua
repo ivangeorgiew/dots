@@ -146,14 +146,8 @@ return {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     dependencies = {
       "mason-org/mason.nvim",
-
-      "neovim/nvim-lspconfig",
       "mason-org/mason-lspconfig.nvim",
-
-      "mfussenegger/nvim-dap",
       "jay-babu/mason-nvim-dap.nvim",
-
-      "nvimtools/none-ls.nvim",
       "adrian-the-git/mason-null-ls.nvim",
     },
     event = "VeryLazy",

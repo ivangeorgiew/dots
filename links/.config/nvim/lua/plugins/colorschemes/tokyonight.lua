@@ -1,8 +1,8 @@
 return {
   "folke/tokyonight.nvim",
   enabled = vim.g.colorscheme == "tokyonight",
-  lazy = false,
-  priority = 1000, -- load before all other plugins start
+  cmd = "Lazy",
+  event = { "BufReadPost", "BufNewFile", },
   config = tied.colorscheme_config,
   -- :h tokyonight.nvim-tokyo-night-configuration
   opts = {

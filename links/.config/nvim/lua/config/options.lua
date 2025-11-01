@@ -22,37 +22,14 @@ M.setup = tie(
 
     -- Add custom file types
     -- see `:h vim.filetype.add`
-    vim.filetype.add({
-      extensions = {
-        -- foo = 'fooscript',
-      },
-      filename = {
-        -- ['.foorc'] = 'toml',
-      }
-    })
-
-    -- Track last pressed keys
-    -- g.last_keys = {}
-    -- g.last_keys_id = vim.on_key(tie(
-    --   "save last pressed keys",
-    --   function(_raw, key)
-    --     if not key or #key <= 0 then return end
-    --
-    --     key = vim.fn.keytrans(key)
-    --
-    --     local last_keys = g.last_keys
-    --
-    --     table.insert(last_keys, key)
-    --
-    --     if #last_keys > 5 then
-    --       table.remove(last_keys, 1)
-    --     end
-    --
-    --     -- must save in vim.g.table in the end
-    --     g.last_keys = last_keys
-    --   end,
-    --   function() g.last_keys = {} end
-    -- ), vim.api.nvim_create_namespace("key_tracker"))
+    -- vim.filetype.add({
+    --   extensions = {
+    --     -- foo = 'fooscript',
+    --   },
+    --   filename = {
+    --     -- ['.foorc'] = 'toml',
+    --   }
+    -- })
 
     -- See `:h vim.opt` for more
     local o = vim.opt
@@ -108,7 +85,7 @@ M.setup = tie(
     o.sidescrolloff = 8 -- columns of context
     o.signcolumn = "yes" -- whether to always show the signcolumn
     o.smartcase = true -- (requires ignorecase on) ignore case when only small letters are used
-    o.smartindent = false -- c-like indenting when 'indentexpr' is not used
+    o.smartindent = true -- c-like indenting when 'indentexpr' is not used
     o.splitbelow = true -- new windows are below
     o.splitkeep = "cursor" -- don't change cursor position when splits change
     o.splitright = true -- new windows are to the right

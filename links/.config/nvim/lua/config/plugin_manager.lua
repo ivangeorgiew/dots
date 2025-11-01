@@ -21,20 +21,22 @@ M.setup = tie(
     vim.opt.rtp:prepend(lazypath)
 
     require("lazy").setup({
+      -- Wrap plugins importing with error handling
+      spec = tied.get_files({
+        path = vim.fn.stdpath("config") .. "/lua/plugins",
+        ext = "lua",
+        map = tie(
+          "require plugin file",
+          function(file) return require("plugins/"..file:gsub("%.lua$", "")) end,
+          function() return {} end
+        ),
+      }),
+
       defaults = {
         -- Set this to `true` to have all your plugins lazy-loaded by default.
         -- Only do this if you know what you are doing, as it can lead to unexpected behavior.
         lazy = true, -- should plugins be lazy-loaded?
       },
-
-      -- Wrap plugins importing with error handling
-      -- Alternatively, without error handling -> spec = "plugins",
-      spec = vim.iter(tied.get_files(vim.fn.stdpath("config") .. "/lua/plugins", "lua"))
-        :map(function(file)
-          local full_path = "plugins/"..file:gsub("%.lua$", "")
-          return require(full_path, function() return {} end)
-        end)
-        :totable(),
 
       ---@type table
       dev = {

@@ -87,27 +87,37 @@ tied.apply_maps = tie(
 )
 
 tied.get_files = tie(
-  "get file names from a folder",
-  --- @param path string
-  --- @param ext string?
-  function(path, ext)
-    vim.validate("path", path, "string")
-    vim.validate("ext", ext, "string", true)
+  "get files from a folder",
+  --- @param opts { path: string, ext: string?, map: function? }
+  function(opts)
+    vim.validate("opts", opts, "table")
+    vim.validate("opts.path", opts.path, "string")
+    vim.validate("opts.ext", opts.ext, "string", true)
+    vim.validate("opts.map", opts.map, "function", true)
 
     local entries = {}
+    local map = function(file) return file end
 
-    for name, type in vim.fs.dir(path, { depth = math.huge }) do
+    if opts.map then
+      map = tie(
+        "map file in path: "..opts.path,
+        function(file) return opts.map(file) end,
+        function(props) return props.args[1] end
+      )
+    end
+
+    for name, type in vim.fs.dir(opts.path, { depth = math.huge }) do
       if (
         type == "file" and
-        (not ext or vim.endswith(name, "."..ext))
+        (not opts.ext or vim.endswith(name, "."..opts.ext))
       ) then
-        table.insert(entries, name)
+        table.insert(entries, opts.map and map(name) or name)
       end
     end
 
     return entries
   end,
-  tied.do_nothing
+  function() return {} end
 )
 
 tied.colorscheme_config = tie(

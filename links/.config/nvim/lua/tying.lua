@@ -45,7 +45,7 @@ tied.stringify = function(arg)
     -- options from https://github.com/kikito/inspect.lua
     str = vim.inspect(arg, { newline = " ", indent = "", depth = 3 })
   elseif arg_type == "string" then
-    str = '"'..arg..'"'
+    str = ('"'..arg..'"'):gsub("\n", "\\n")
   else
     str = tostring(arg)
   end
@@ -87,39 +87,13 @@ _G.tie = function(desc, on_try, on_catch)
         args_string = ind.."[no args]\n"
       end
 
-      local stacktrace = ""
-      local trace = {}
-      local level = 3
-
-      -- No need for huge stacktrace
-      while #trace < 10 do
-        local info = debug.getinfo(level, "Sln")
-
-        if not info then break end
-
-        -- Ignore C language functions
-        if info.what == "Lua" then
-          local source = vim.fn.fnamemodify(info.source:sub(2), ":p:~:.")
-          local line = ind..source..":"..info.currentline
-
-          table.insert(trace, line)
-        end
-
-        level = level + 1
-      end
-
-      if #trace > 0 then
-        stacktrace = "Stacktrace:\n" .. table.concat(trace, "\n") .. "\n"
-      end
-
       local err_msg = string.format(
         "Error at:\n"..
         ind.."[%s]\n"..
         "Function args:\n"..
         "%s"..
         "Message:\n"..
-        ind.."%s\n"..
-        stacktrace.."\n",
+        ind.."%s\n\n",
         desc, args_string, err
       )
 
@@ -151,8 +125,15 @@ _G.tie = function(desc, on_try, on_catch)
     local on_try_was_valid = table.remove(on_try_results, 1)
 
     if not on_try_was_valid then
-      local inner_catch_results = on_try_results[1]
-      local should_rethrow = table.remove(inner_catch_results, 1)
+      local inner_catch_results, should_rethrow
+
+      if type(on_try_results[1]) == "table" then
+        inner_catch_results = on_try_results[1]
+        should_rethrow = table.remove(inner_catch_results, 1)
+      else -- internal error
+        inner_catch_results = { on_try_results[1] }
+        should_rethrow = true
+      end
 
       if should_rethrow then
         local err_msg = inner_catch_results[1]

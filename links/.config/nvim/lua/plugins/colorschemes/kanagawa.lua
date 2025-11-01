@@ -1,8 +1,8 @@
 return {
   "rebelot/kanagawa.nvim",
   enabled = vim.g.colorscheme == "kanagawa",
-  lazy = false,
-  priority = 1000, -- load before all other plugins start
+  cmd = "Lazy",
+  event = { "BufReadPost", "BufNewFile", },
   config = tied.colorscheme_config,
   -- :h kanagawa.nvim-configuration
   opts = {
