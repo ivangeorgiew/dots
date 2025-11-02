@@ -20,6 +20,39 @@ tied.create_usercmd = vim.api.nvim_create_user_command
 tied.ui_input = vim.ui.input
 tied.ui_select = vim.ui.select
 
+local foreach = tie(
+  "foreach wrapper",
+  ---@param is_list boolean
+  function(is_list)
+    vim.validate("is_list", is_list, "boolean")
+
+    return tie(
+      "for each item in a table",
+      ---@param iter table|function
+      ---@param desc string
+      ---@param on_try function
+      function(iter, desc, on_try)
+        vim.validate("iter", iter, { "table", "function", })
+        vim.validate("desc", desc, "string")
+        vim.validate("on_try", on_try, "function")
+
+        local fn = tie(desc, on_try, tied.do_nothing)
+
+        if type(iter) == "table" then
+          local create = is_list and ipairs or pairs
+          for key, val in create(iter) do fn(key, val) end
+        else
+          for key, val in iter do fn(key, val) end
+        end
+      end,
+      tied.do_nothing
+    )
+  end,
+  tied.do_rethrow
+)
+tied.each_i = foreach(true)
+tied.each = foreach(false)
+
 tied.create_map = tie(
   "create vim keymap",
   --- @param modes string|string[]
@@ -54,11 +87,11 @@ tied.delete_maps = tie(
     vim.validate("modes", modes, { "string", "table", })
     vim.validate("commands", commands, "table")
 
-    for _, lhs in ipairs(commands) do
+    tied.each_i(commands, "delete vim keymap", function(_, lhs)
       -- vim.keymap.del() can fail if the mapping doesn't exist
       -- so use create_map instead
       tied.create_map(modes, lhs, "<nop>", { desc = "Nothing" })
-    end
+    end)
   end,
   tied.do_nothing
 )
@@ -73,14 +106,14 @@ tied.apply_maps = tie(
 
     -- Order matters, first delete and then create
     if to_delete then
-      for _, v in ipairs(to_delete) do
+      tied.each_i(to_delete, "queue vim keymaps to delete", function(_, v)
         tied.delete_maps(unpack(v))
-      end
+      end)
     end
     if to_create then
-      for _, v in ipairs(to_create) do
+      tied.each_i(to_create, "queue vim keymap to create", function(_, v)
         tied.create_map(unpack(v))
-      end
+      end)
     end
   end,
   tied.do_nothing
@@ -106,14 +139,17 @@ tied.get_files = tie(
       )
     end
 
-    for name, type in vim.fs.dir(opts.path, { depth = math.huge }) do
-      if (
-        type == "file" and
-        (not opts.ext or vim.endswith(name, "."..opts.ext))
-      ) then
-        table.insert(entries, opts.map and map(name) or name)
+    tied.each(
+      vim.fs.dir(opts.path, { depth = math.huge }),
+      "parse file from path: "..opts.path,
+      function(name, type)
+        local matches_ext = not opts.ext or vim.endswith(name, "."..opts.ext)
+
+        if type == "file" and matches_ext then
+          table.insert(entries, opts.map and map(name) or name)
+        end
       end
-    end
+    )
 
     return entries
   end,

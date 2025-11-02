@@ -1,7 +1,8 @@
+---@type LazyPluginSpec|LazyPluginSpec[]
 return {
   "folke/tokyonight.nvim",
   enabled = vim.g.colorscheme == "tokyonight",
-  event = "UIEnter", -- issues if VeryLazy
+  event = { "UIEnter", }, -- issues if VeryLazy
   config = tied.colorscheme_config,
   -- :h tokyonight.nvim-tokyo-night-configuration
   opts = {

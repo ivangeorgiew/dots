@@ -1,3 +1,4 @@
+---@type LazyPluginSpec|LazyPluginSpec[]
 return {
   {
     "ivangeorgiew/which-key.nvim",

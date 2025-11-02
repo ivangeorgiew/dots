@@ -1,45 +1,5 @@
 -- NOTE: I haven't error-handled all async functions
 
-local tie_table_deep = tie(
-  "tie functions nested deep in a table",
-  --- @param tbl_name string
-  --- @param tbl table
-  --- @param on_catch on_catch_func
-  function(tbl_name, tbl, on_catch)
-    vim.validate("tbl_name", tbl_name, "string")
-    vim.validate("tbl", tbl, "table")
-    vim.validate("on_catch", on_catch, "function")
-
-    local queue = { { tbl, tbl_name } }
-    local seen = {} -- filled with traversed tables
-
-    while #queue > 0 do
-      local item = table.remove(queue, 1)
-      local curr_tbl = item[1]
-      local curr_path = item[2]
-
-      -- ignore global vim
-      local is_vim_table = curr_path == "vim" or curr_path:find("^vim%.")
-
-      if not seen[curr_tbl] and not is_vim_table then
-        seen[curr_tbl] = true
-
-        for key, val in pairs(curr_tbl) do
-          local val_type = type(val)
-          local full_path = curr_path .. "." .. tostring(key)
-
-          if val_type == "function" then
-            curr_tbl[key] = tie(full_path, val, on_catch)
-          elseif val_type == "table" then
-            queue[#queue + 1] = { val, full_path }
-          end
-        end
-      end
-    end
-  end,
-  tied.do_nothing
-)
-
 -- 1. The imported code itself is error-handled
 -- 2. Modules from external code have their deeply nested functions tied
 local tie_import_func = tie(
@@ -58,12 +18,12 @@ local tie_import_func = tie(
 
         local results = { orig_fn(path) }
 
+        -- NOTE: Don't handle functions nested into module table
+        -- or functions passed as arguments to other functions
+
         for idx, val in ipairs(results) do
           if type(val) == "function" then
             results[idx] = tie(path, val, tied.do_rethrow)
-          -- NOTE: Add on a case by case basis instead
-          -- elseif type(val) == "table" then
-          --   tie_table_deep(path, val, tied.do_rethrow)
           end
         end
 

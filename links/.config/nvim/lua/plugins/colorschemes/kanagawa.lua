@@ -1,7 +1,8 @@
+---@type LazyPluginSpec|LazyPluginSpec[]
 return {
   "rebelot/kanagawa.nvim",
   enabled = vim.g.colorscheme == "kanagawa",
-  event = "UIEnter", -- issues if VeryLazy
+  event = { "UIEnter" },
   config = tied.colorscheme_config,
   -- :h kanagawa.nvim-configuration
   opts = {

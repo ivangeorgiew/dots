@@ -47,7 +47,7 @@ tie(
 
         vim.schedule(function()
           for _, notif in ipairs(notifs) do
-            vim.notify(vim.F.unpack_len(notif))
+            pcall(vim.notify, vim.F.unpack_len(notif))
           end
         end)
       end,

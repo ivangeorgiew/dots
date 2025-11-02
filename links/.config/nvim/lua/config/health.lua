@@ -15,28 +15,29 @@ return {
         h.error(string.format("Neovim version is: '%s'. Upgrade to at least '%s'", ver_str, table.concat(min_ver, '.')))
       end
 
-      -- check if required executables exist
-      local execs = {
-        "curl",
-        "fd",
-        "fswatch",
-        "fzf",
-        "git",
-        "lazygit",
-        "make",
-        "rg",
-        "unzip",
-      }
+      tied.each_i(
+        {
+          "curl",
+          "fd",
+          "fswatch",
+          "fzf",
+          "git",
+          "lazygit",
+          "make",
+          "rg",
+          "unzip",
+        },
+        "warn if executable is missing",
+        function(_, exe)
+          local is_executable = vim.fn.executable(exe) == 1
 
-      for _, exe in ipairs(execs) do
-        local is_executable = vim.fn.executable(exe) == 1
-
-        if is_executable then
-          h.ok(string.format("Executable found: '%s'", exe))
-        else
-          h.warn(string.format("Could not find: '%s'", exe))
+          if is_executable then
+            h.ok(string.format("Executable found: '%s'", exe))
+          else
+            h.warn(string.format("Could not find: '%s'", exe))
+          end
         end
-      end
+      )
     end,
     tied.do_nothing
   )

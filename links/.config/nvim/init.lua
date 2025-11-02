@@ -18,13 +18,9 @@ tie(
       "autocmds",
     }
 
-    local init = tie(
-      "initialize config file",
-      function(file) require("config/"..file).setup() end,
-      tied.do_nothing
-    )
-
-    for _, file in ipairs(configs) do init(file) end
+    tied.each_i(configs, "initialize config file", function(_, file)
+      require("config/"..file).setup()
+    end)
   end,
   tied.do_nothing
 )()

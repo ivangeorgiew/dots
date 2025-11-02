@@ -1,10 +1,6 @@
 {
   "kanagawa.nvim": { "branch": "master", "commit": "aef7f5cec0a40dbe7f3304214850c472e2264b10" },
-  "lazy.nvim": { "branch": "main", "commit": "f0f5bbb9e5bfae5e6468f9359ffea3d151418176" },
-  "mason-lspconfig.nvim": { "branch": "main", "commit": "d7b5feb6e769e995f7fcf44d92f49f811c51d10c" },
-  "mason-null-ls.nvim": { "branch": "main", "commit": "8a4818aa2e2fe19e5117146e34c7eb9595fda3c0" },
-  "mason-nvim-dap.nvim": { "branch": "main", "commit": "9a10e096703966335bd5c46c8c875d5b0690dade" },
-  "mason-tool-installer.nvim": { "branch": "main", "commit": "517ef5994ef9d6b738322664d5fdd948f0fdeb46" },
+  "lazy.nvim": { "branch": "main", "commit": "202d8e92b3a74ac88eb3a7f1e40fb59b4c2a6535" },
   "mason.nvim": { "branch": "main", "commit": "ad7146aa61dcaeb54fa900144d768f040090bff0" },
   "mini.icons": { "branch": "main", "commit": "284798619aed9f4c1ac1b9417b9a5e3b4b85ef3a" },
   "none-ls.nvim": { "branch": "main", "commit": "a96172f673f720cd4f3572e1fcd08400ed3eb25d" },

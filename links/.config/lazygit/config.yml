@@ -19,3 +19,10 @@ git:
   # The number of lines of context to show around each diff hunk. Can be changed
   # from within Lazygit with the `{` and `}` keys.
   diffContextSize: 10
+
+  # If not "none", lazygit will automatically fast-forward local branches to match
+  # their upstream after fetching. Applies to branches that are not the currently
+  # checked out branch, and only to those that are strictly behind their upstream
+  # (as opposed to diverged).
+  # Possible values: 'none' | 'onlyMainBranches' | 'allBranches'
+  autoForwardBranches: "none"

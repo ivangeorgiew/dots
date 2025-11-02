@@ -1,3 +1,4 @@
+---@type LazyPluginSpec|LazyPluginSpec[]
 return {
   {
     -- Language parsing which provides better highlight, indentation, etc.
@@ -20,7 +21,9 @@ return {
         ---@type table<string,{ enable?: boolean, ignore?: string[] }>
         local config = {
           highlights = {},
-          indents = {},
+          indents = {
+            ignore = { "lua", },
+          },
           folds = {},
         }
         local ignore = {
@@ -35,17 +38,22 @@ return {
           unpack(ts.get_available(2)), -- unstable
         }
 
-        local to_delete = vim.iter(installed)
-          :filter(function(parser) return vim.list_contains(ignore, parser) end)
-          :totable()
-        local to_install = vim.iter(ensure_installed)
-          :filter(function(parser)
-            return (
-              not vim.list_contains(installed, parser) and
-              not vim.list_contains(ignore, parser)
-            )
-          end)
-          :totable()
+        local to_install, to_delete = {}, {}
+
+        tied.each_i(installed, "add parser for deletion", function(_, parser)
+          if vim.list_contains(ignore, parser) then
+            to_delete[#to_delete + 1] = parser
+          end
+        end)
+
+        tied.each_i(ensure_installed, "add parser for installation", function(_, parser)
+          if
+            not vim.list_contains(installed, parser) and
+            not vim.list_contains(ignore, parser)
+          then
+            to_install[#to_install + 1] = parser
+          end
+        end)
 
         if #to_delete > 0 then ts.uninstall(to_delete, { summary = true }) end
         if #to_install > 0 then ts.install(to_install, { summary = true }) end

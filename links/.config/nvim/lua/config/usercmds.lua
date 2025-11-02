@@ -73,9 +73,9 @@ M.config = {
 M.setup = tie(
   "setup usercmds",
   function()
-    for _, usercmd in ipairs(M.config) do
+    tied.each_i(M.config, "queue usercmd to create", function(_, usercmd)
       tied.create_usercmd(unpack(usercmd))
-    end
+    end)
   end,
   tied.do_nothing
 )

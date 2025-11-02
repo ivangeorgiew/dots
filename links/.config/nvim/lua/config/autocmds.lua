@@ -2,10 +2,10 @@ local M = {}
 
 M.config = {
   {
-    -- from nvchad
+    -- from NvChad
     { "UIEnter", "BufNewFile", "BufReadPost", },
     {
-      group = "FilePost",
+      group = "create user event FilePost",
       callback = function(e)
         local file = vim.api.nvim_buf_get_name(e.buf)
         local buftype = vim.api.nvim_get_option_value("buftype", { buf = e.buf })
@@ -16,7 +16,7 @@ M.config = {
 
         if file ~= "" and buftype ~= "nofile" and vim.g.ui_entered then
           vim.api.nvim_exec_autocmds("User", { pattern = "FilePost", modeline = false })
-          vim.api.nvim_del_augroup_by_name("FilePost")
+          vim.api.nvim_del_augroup_by_id(e.group)
 
           vim.schedule(function()
             vim.api.nvim_exec_autocmds("FileType", {})
@@ -43,17 +43,6 @@ M.config = {
     {
       group = "highlight on yank",
       callback = function() vim.hl.on_yank() end,
-    }
-  },
-  {
-    "BufEnter",
-    {
-      group = "overwrite settings",
-      callback = function()
-        local o = vim.opt
-
-        o.formatoptions = "tcrqnlj"
-      end
     }
   },
   {
@@ -105,9 +94,9 @@ M.config = {
 
         local qf_maps = require("config.keymaps").config.quickfix
 
-        for k, _ in ipairs(qf_maps) do
+        tied.each_i(qf_maps, "assign buffer to vim keymap", function(k, _)
           qf_maps[k][4].buffer = e.buf
-        end
+        end)
 
         tied.apply_maps(qf_maps)
       end
@@ -118,9 +107,9 @@ M.config = {
 M.setup = tie(
   "setup autocmds",
   function()
-    for _, autocmd in ipairs(M.config) do
+    tied.each_i(M.config, "queue autocmd to create", function(_, autocmd)
       tied.create_autocmd(unpack(autocmd))
-    end
+    end)
   end,
   tied.do_nothing
 )

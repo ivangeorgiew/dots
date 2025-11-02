@@ -1,111 +1,19 @@
-local configs = {}
-
-configs["nvim-lspconfig"] = tie(
-  "plugin nvim-lspconfig -> config",
-  function()
-    -- Recommended config from nvim-lspconfig
-    vim.lsp.config('lua_ls', {
-      settings = { Lua = {
-        runtime = {
-          version = 'LuaJIT',
-          path = { 'lua/?.lua', 'lua/?/init.lua', },
-        },
-        workspace = {
-          checkThirdParty = false,
-          library = {
-            vim.env.VIMRUNTIME,
-            "${3rd}/luv/library", -- vim.uv
-            vim.fn.stdpath("data").."/lazy/lazy.nvim",
-            -- TODO: vim.fn.stdpath("data").."/lazy/snacks.nvim",
-          }
-        },
-      } },
-      on_init = tie(
-        "lsp lua_ls -> on_init",
-        function(client)
-          vim.validate("client", client, "table")
-
-          if client.workspace_folders then
-            local path = client.workspace_folders[1].name
-
-            if (
-              vim.uv.fs_stat(path .. "/.luarc.json") or
-              vim.uv.fs_stat(path .. "/.luarc.jsonc")
-            ) then
-              client.config.settings.Lua = {}
-            end
-          end
-        end,
-        tied.do_nothing
-      ),
-    })
-  end,
-  tied.do_nothing
-)
-
-configs["mason-tool-installer"] = tie(
-  "plugin mason -> config",
-  function()
-    -- Order matters and this is the cleanest working setup
-
-    -- :h mason-settings
-    require("mason").setup({
-      ---@type '"prepend"' | '"append"' | '"skip"'
-      -- default: "prepend"
-      -- PATH = "prepend", -- use `append` to search mason dir only after others
-
-      ui = {
-        border = "single", -- same as nvim_open_win()
-        width = 0.6, -- 0-1 for a percentage of screen width.
-        height = 0.8, -- 0-1 for a percentage of screen height.
-      },
-    })
-
-    -- :h mason-lspconfig-settings
-    require("mason-lspconfig").setup({
-      -- Don't specify ensure_installed here
-      -- Whether to call vim.lsp.enable on all installed LSPs
-      automatic_enable = true
-    })
-
-    -- :h mason-nvim-dap.nvim-configuration
-    require("mason-nvim-dap").setup({
-      -- Don't specify ensure_installed here
-      -- Whether to auto-install DAPs configured in nvim-dap
-      automatic_installation = false
-    })
-
-    -- :h mason-null-ls.nvim-configuration
-    require("mason-null-ls").setup({
-      -- Don't specify ensure_installed here
-      -- Whether to auto-install tools configured in null-ls
-      automatic_installation = false
-    })
-
-    local mti = require("mason-tool-installer")
-
-    mti.setup({
-      -- List of LSP, DAP, Formatters and Linters to install
-      -- check available ones with :Mason or https://mason-registry.dev/registry/list
-      ensure_installed = {
-        "lua-language-server",
-      },
-      auto_update = false, -- whether to auto-update tools
-      run_on_start = false, -- instead use .check_install(false)
-    })
-
-    mti.clean() -- remove packages not declared in ensure_installed
-    mti.check_install(false) -- install without updating
-  end,
-  tied.do_nothing
-)
-
--- Specify dependencies
+---@type LazyPluginSpec|LazyPluginSpec[]
 return {
   {
     "neovim/nvim-lspconfig",
+    event = "User FilePost",
     -- :h lspconfig
-    config = configs["nvim-lspconfig"],
+    config = tie(
+      "plugin nvim-lspconfig -> config",
+      function()
+        tied.each(require("config.lsp"), "setup an LSP", function(name, lsp)
+          if lsp.config then vim.lsp.config(name, lsp.config) end
+          if lsp.enable ~= false then vim.lsp.enable(name) end
+        end)
+      end,
+      tied.do_nothing
+    ),
   },
 
   -- TODO: configure none-ls
@@ -115,35 +23,91 @@ return {
   { "mfussenegger/nvim-dap" },
 
   {
-    "mason-org/mason-lspconfig.nvim",
-    dependencies = {
-      "mason-org/mason.nvim",
-      "neovim/nvim-lspconfig",
-    }
-  },
-  {
-    "jay-babu/mason-nvim-dap.nvim",
-    dependencies = {
-      "mason-org/mason.nvim",
-      "mfussenegger/nvim-dap",
-    }
-  },
-  {
-    "adrian-the-git/mason-null-ls.nvim",
-    dependencies = {
-      "mason-org/mason.nvim",
-      "nvimtools/none-ls.nvim",
-    }
-  },
-  {
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    dependencies = {
-      "mason-org/mason.nvim",
-      "mason-org/mason-lspconfig.nvim",
-      "jay-babu/mason-nvim-dap.nvim",
-      "adrian-the-git/mason-null-ls.nvim",
+    "mason-org/mason.nvim",
+    event = "VeryLazy", -- always needed to provide binaries
+    build = ":MasonUpdate",
+    config = tie(
+      "plugin mason -> config",
+      function(_, opts)
+        require("mason").setup(opts)
+
+        local mr = require("mason-registry")
+
+        tied.each_i(
+          {
+            "package:install:success",
+            "package:install:failed",
+            "package:uninstall:success",
+            "package:uninstall:failed",
+          },
+          "notify about mason event status",
+          function(_, event)
+            mr:on(event, vim.schedule_wrap(function(payload)
+              local action, status = event:match(":(.+):(.+)$")
+
+              action = action:sub(1,1):upper() .. action:sub(2)
+
+              vim.notify(("[mason]: %s `%s` %s"):format(action, payload.name, status))
+            end))
+          end
+        )
+
+        -- Try to load the newly installed package
+        mr:on("package:install:success", vim.schedule_wrap(function()
+          vim.api.nvim_exec_autocmds(
+            "FileType",
+            { buffer = vim.api.nvim_get_current_buf() }
+          )
+        end))
+
+        mr.refresh(tie(
+          "manage mason packages",
+          function()
+            local installed = mr.get_installed_package_names()
+            local to_install = {}
+
+            tied.each(require("config.lsp"), "queue LSP for mason install", function(_, lsp)
+              if lsp.enable ~= false and lsp.pkg_name then
+                to_install[#to_install + 1] = lsp.pkg_name
+              end
+            end)
+
+            -- TODO: Add DAP tools
+            -- TODO: Add null-ls tools
+
+            tied.each_i(installed, "auto-remove mason tool", function(_, tool)
+              if not vim.list_contains(to_install, tool) then
+                local name = tool:match("^([^@]+)")
+
+                mr.get_package(name):uninstall()
+              end
+            end)
+
+            tied.each_i(to_install, "auto-install mason tool", function(_, tool)
+              -- Intentionally fail if tool is missing to notify about it
+              if not vim.list_contains(installed, tool) then
+                local name = tool:match("^([^@]+)")
+                local version = tool:match("^[^@]+@(.+)$")
+
+                mr.get_package(name):install({ version = version })
+              end
+            end)
+          end,
+          tied.do_nothing
+         ))
+      end,
+      tied.do_nothing
+    ),
+    opts = {
+      -- default "prepend"
+      ---@type '"prepend"' | '"append"' | '"skip"'
+      PATH = "prepend",
+
+      ui = {
+        border = "single", -- same as nvim_open_win()
+        width = 0.6, -- 0-1 for a percentage of screen width.
+        height = 0.8, -- 0-1 for a percentage of screen height.
+      },
     },
-    event = "VeryLazy",
-    config = configs["mason-tool-installer"],
-  }
+  },
 }

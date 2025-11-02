@@ -1,3 +1,6 @@
+-- TODO: fix indentation after replace and paste
+
+---@type LazyPluginSpec|LazyPluginSpec[]
 return {
   {
     "gbprod/substitute.nvim",
