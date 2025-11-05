@@ -28,7 +28,7 @@ return {
         },
       }, },
       on_init = tie(
-        "lsp lua_ls -> on_init",
+        "LSP lua_ls -> on_init",
         function(client)
           vim.validate("client", client, "table")
 

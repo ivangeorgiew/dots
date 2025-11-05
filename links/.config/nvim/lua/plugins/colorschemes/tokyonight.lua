@@ -31,7 +31,7 @@ return {
     -- function will be called with a Highlights and ColorScheme table
     -- https://github.com/folke/tokyonight.nvim?tab=readme-ov-file#borderless-telescope-example
     on_highlights = tie(
-      "colorscheme tokyonight -> config -> on_highlight",
+      "Colorscheme tokyonight -> config -> on_highlight",
       function(hl, _)
         local n_col = "#8b83a8"
 

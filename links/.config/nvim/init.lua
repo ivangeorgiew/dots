@@ -3,7 +3,7 @@
 require("tying") -- error handling logic
 
 tie(
-  "initialize nvim config",
+  "Initialize nvim config",
   function()
     require("builtins") -- replace some global builtins
     require("notify") -- delay notifications
@@ -18,7 +18,7 @@ tie(
       "autocmds",
     }
 
-    tied.each_i(configs, "initialize config file", function(_, file)
+    tied.each_i(configs, "Initialize config file", function(_, file)
       require("config/"..file).setup()
     end)
   end,

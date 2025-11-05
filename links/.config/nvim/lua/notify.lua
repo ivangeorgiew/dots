@@ -5,13 +5,13 @@ local orig_notify = vim.notify
 
 --- @type fun(msg: string, level?: number, opts?: table)
 local temp_notify = tie(
-  "save notifications for later",
+  "Save notifications for later",
   function(...) table.insert(notifs, vim.F.pack_len(...)) end,
   tied.do_nothing
 )
 
 local restore_notify = tie(
-  "restory vim.notify",
+  "Restory vim.notify",
   function()
     if vim.notify == temp_notify then
       vim.notify = orig_notify
@@ -21,7 +21,7 @@ local restore_notify = tie(
 )
 
 tie(
-  "setup notifications delay",
+  "Setup notifications delay",
   function()
     local timer = assert(vim.uv.new_timer())
     local check = assert(vim.uv.new_check())
@@ -29,7 +29,7 @@ tie(
     vim.notify = temp_notify
 
     local on_notify_change = tie(
-      "after vim.notify has changed",
+      "After vim.notify has changed",
       function()
         timer:stop()
         check:stop()
@@ -40,7 +40,7 @@ tie(
         -- Wrap the new notify and try to call the original on error
         local new_notify = vim.notify
         vim.notify = tie(
-          "vim.notify",
+          "Tied vim.notify",
           new_notify,
           function(props) pcall(orig_notify, unpack(props.args)) end
         )
@@ -55,7 +55,7 @@ tie(
     )
 
     check:start(tie(
-      "check if vim.notify has been replaced",
+      "Check if vim.notify has been replaced",
       function()
         if vim.notify ~= temp_notify then on_notify_change() end
       end,

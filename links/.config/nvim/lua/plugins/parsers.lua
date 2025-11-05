@@ -9,7 +9,7 @@ return {
     cmd = { "TSUpdate", "TSInstall", "TSInstallFromGrammar", "TSLog", "TSUninstall" },
     -- :h nvim-treesitter.txt
     config = tie(
-      "plugin nvim-treesitter -> config",
+      "Plugin nvim-treesitter -> config",
       function(_, opts)
         local ts = require("nvim-treesitter")
 
@@ -40,26 +40,36 @@ return {
 
         local to_install, to_delete = {}, {}
 
-        tied.each_i(installed, "add parser for deletion", function(_, parser)
-          if vim.list_contains(ignore, parser) then
-            to_delete[#to_delete + 1] = parser
+        tied.each_i(
+          installed,
+          "Add treesitter parser for deletion",
+          function(_, parser)
+            if vim.list_contains(ignore, parser) then
+              to_delete[#to_delete + 1] = parser
+            end
           end
-        end)
+        )
 
-        tied.each_i(ensure_installed, "add parser for installation", function(_, parser)
-          if
-            not vim.list_contains(installed, parser) and
-            not vim.list_contains(ignore, parser)
-          then
-            to_install[#to_install + 1] = parser
+        tied.each_i(
+          ensure_installed,
+          "Add treesitter parser for installation",
+          function(_, parser)
+            if
+              not vim.list_contains(installed, parser) and
+              not vim.list_contains(ignore, parser)
+            then
+              to_install[#to_install + 1] = parser
+            end
           end
-        end)
+        )
 
         if #to_delete > 0 then ts.uninstall(to_delete, { summary = true }) end
         if #to_install > 0 then ts.install(to_install, { summary = true }) end
 
-        tied.create_autocmd("FileType", {
-          group = "start treesitter for a filetype",
+        tied.create_autocmd({
+          desc = "Setup treesitter for a filetype",
+          group = tied.create_augroup("my.treesitter.on_filetype", true),
+          event = "FileType",
           callback = function(ev)
             local ft = ev.match
             local lang = vim.treesitter.language.get_lang(ev.match)
@@ -70,7 +80,7 @@ return {
             if not lang or not vim.list_contains(installed, lang) then return end
 
             local should_enable = tie(
-              "check if should enable treesitter feature for ft: " .. ft,
+              "Check if should enable treesitter feature for ft: " .. ft,
               ---@param query string
               function(query)
                 vim.validate("query", query, "string")

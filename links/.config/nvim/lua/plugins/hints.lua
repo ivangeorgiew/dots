@@ -6,7 +6,7 @@ return {
     event = "VeryLazy",
     dependencies = { "nvim-mini/mini.icons", "nvim-tree/nvim-web-devicons" },
     config = tie(
-      "plugin which-key -> config",
+      "Plugin which-key -> config",
       function(_, opts)
         local wk = require("which-key")
 
@@ -28,7 +28,7 @@ return {
       delay = 200,
       icons = { mappings = false }, -- remove icons
       expand = tie(
-        "plugin which-key -> expand",
+        "Plugin which-key -> expand",
         -- expand all nodes without a description
         function(node) return not node.desc end,
         function() return false end
@@ -40,7 +40,7 @@ return {
         -- { "<leader>", mode = { "n", "v" } },
       },
       defer = tie(
-        "plugin which-key -> defer",
+        "Plugin which-key -> defer",
         ---@param ctx { mode: string, operator: string }
         function(ctx)
           -- If it returns true, don't show which-key for

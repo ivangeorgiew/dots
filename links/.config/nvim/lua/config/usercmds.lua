@@ -44,12 +44,12 @@ M.config = {
 
           tied.ui_select(
             { "Yes, but only full words", "Yes, any occurance", "No" },
-            { prompt = "Replace `"..search.."` with `"..replace.."` ?" },
+            { prompt = ("Replace `%s` with `%s` ?"):format(search, replace) },
             function(choice)
               if type(choice) ~= "string" then return end
 
               if choice:find("full words") then
-                search = "\\<"..search.."\\>"
+                search = ("\\<%s\\>"):format(search)
               end
 
               if choice:find("Yes") then
@@ -58,7 +58,7 @@ M.config = {
                 -- :h cdo
                 local multicmd = "silent noautocmd keepjumps keepalt lfdo"
 
-                vim.cmd(multicmd.." %sno@"..search .."@"..replace.."@gIe | update | bdelete")
+                vim.cmd(("%s %%sno@%s@%s@gIe | update | bdelete"):format(multicmd, search, replace))
                 vim.cmd("llast | lclose")
               end
             end
@@ -71,9 +71,9 @@ M.config = {
 }
 
 M.setup = tie(
-  "setup usercmds",
+  "Setup usercmds",
   function()
-    tied.each_i(M.config, "queue usercmd to create", function(_, usercmd)
+    tied.each_i(M.config, "Queue usercmd to create", function(_, usercmd)
       tied.create_usercmd(unpack(usercmd))
     end)
   end,

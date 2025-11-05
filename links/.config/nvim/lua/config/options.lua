@@ -1,7 +1,7 @@
 local M = {}
 
 M.setup = tie(
-  "setup options",
+  "Setup options",
   function()
     -- See `:h vim.g` for more
     local g = vim.g
@@ -54,12 +54,11 @@ M.setup = tie(
     o.foldmethod = "marker" -- default fold method
     o.foldtext = "v:lua.tied.get_fold_text()" -- text for closed folds
     o.foldnestmax = 4 -- max nested fold levels
-    o.formatoptions = "tcrqnlj" -- formatting options
     o.grepformat = "%f:%l:%m" -- format for grep command
     o.grepprg = "rg --no-heading -n -uu -S -F" -- faster alternative to grep
     o.hidden = false -- ask to save before closing buffers
     o.hlsearch = false -- highlighting search results
-    o.ignorecase = false -- see smartcase option (affects search and replace too)
+    o.ignorecase = false -- see smartcase option (affects :s too)
     o.inccommand = "nosplit" -- include partial off-screen matches for search and replace
     o.incsearch = true -- show where the pattern is as you search for it
     o.iskeyword:append("-") -- consider dash as part of a word

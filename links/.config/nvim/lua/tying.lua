@@ -7,6 +7,9 @@ tied.functions = setmetatable({}, { __mode = "k" })
 -- Indicates to rethow the error if returned in `on_catch`
 tied.RETHROW = "__tie_rethrow__"
 
+-- When no meaningful description can be provided
+tied.NO_DESC = "__no_desc__"
+
 -- Should be used for functions which must return a value
 -- or you don't know how to handle an error (among other possible uses)
 tied.do_rethrow = function() return tied.RETHROW end
@@ -37,7 +40,7 @@ _G.xpcall = wrap_prot_call(xpcall)
 --- Stringify anything
 --- @param arg any
 --- @return string
-tied.stringify = function(arg)
+local stringify = function(arg)
   local str = ""
   local arg_type = type(arg)
 
@@ -45,23 +48,34 @@ tied.stringify = function(arg)
     -- options from https://github.com/kikito/inspect.lua
     str = vim.inspect(arg, { newline = " ", indent = "", depth = 3 })
   elseif arg_type == "string" then
-    str = ('"'..arg..'"'):gsub("\n", "\\n")
+    str = ('"%s"'):format(arg):gsub("\n", "\\n")
   else
     str = tostring(arg)
   end
 
-  if str:len() > 1000 then str = "[large "..arg_type.."]" end
+  if str:len() > 1000 then str = ("[large %s]"):format(arg_type) end
 
   return str
 end
 
---- @alias on_catch_func fun(props: { desc: string, err: string, args: table }): any
+---@param err string
+local print_err = function(err)
+  vim.validate("err", err, "string")
+  vim.notify_once(err, vim.log.levels.ERROR)
+end
+
+---@param err string
+local print_inner_err = function(err)
+  print_err(("Error in inner error-handling:\n%s"):format(err))
+end
+
+--- @alias OnCatchFunc fun(props: { desc: string, err: string, args: table }): any
 
 --- Error-handle a function
 --- @generic F : function
 --- @param desc string
 --- @param on_try F
---- @param on_catch on_catch_func
+--- @param on_catch OnCatchFunc
 --- @return F
 _G.tie = function(desc, on_try, on_catch)
   vim.validate("desc", desc, "string")
@@ -75,40 +89,105 @@ _G.tie = function(desc, on_try, on_catch)
     local n_args = select("#", ...) -- num of args must be gathered here
 
     return function(err)
-      local should_rethrow = false
-      local ind = "  " -- indent for err_msg
-      local args_string = ""
+      local should_rethrow, results = false, {}
+      local ok, inner_err = true, nil
 
-      if n_args > 0 then
-        for idx = 1, n_args do
-          args_string = args_string .. string.format(ind.."%d) %s\n", idx, tied.stringify(args[idx]))
+      -- Actual on_catch call and error logging
+      ---@type boolean, unknown
+      ok, inner_err = pcall(function()
+        local ind = "  "
+        local args_string = ""
+        local stacktrace = ""
+
+        -- Stringify args
+        ok, inner_err = pcall(function()
+          if n_args > 0 then
+            local lines = {}
+
+            for idx = 1, n_args do
+              lines[#lines + 1] = ("%s%d) %s"):format(ind, idx, stringify(args[idx]))
+            end
+
+            args_string = table.concat(lines, "\n")
+          else
+            args_string = ind .. "[no args]"
+          end
+        end)
+        if not ok then print_inner_err(inner_err) end
+
+        -- Gather stacktrace
+        ok, inner_err = pcall(function()
+          local level = 6
+          local lines = {}
+
+          while #lines < 10 do
+            local info = debug.getinfo(level, "Sln")
+
+            if not info then break end
+
+            if info and info.what == "Lua" then
+              local source = vim.fn.fnamemodify(info.source:sub(2), ":p:~:.")
+              local line = ("%s- %s:%d"):format(ind, source, info.currentline)
+
+              if info.name and info.namewhat then
+                line = ("%s _in_ *%s* [%s]"):format(line, info.namewhat, info.name)
+              end
+
+              lines[#lines + 1] = line
+            end
+
+            level = level + 1
+          end
+
+          stacktrace = table.concat(lines, "\n")
+        end)
+        if not ok then print_inner_err(inner_err) end
+
+        -- Print error message
+        ok, inner_err = pcall(function()
+          local l = {
+            "Error at:",
+            ("%s[%s]"):format(ind, desc),
+          }
+
+          if args_string ~= "" then
+            l[#l+1] = "Function args:"
+            l[#l+1] = args_string
+          end
+
+          l[#l+1] = "Message:"
+          l[#l+1] = ("%s%s"):format(ind, err)
+
+          if stacktrace ~= "" then
+            l[#l+1] = "Stacktrace:"
+            l[#l+1] = stacktrace
+          end
+
+          l[#l+1] = "\n"
+
+          print_err(table.concat(l, "\n"))
+        end)
+        if not ok then print_inner_err(inner_err) end
+
+        local on_catch_results = { pcall(on_catch, { desc = desc, err = err, args = args }) }
+        local on_catch_was_valid = table.remove(on_catch_results, 1)
+
+        if on_catch_results[1] == tied.RETHROW then
+          on_catch_results = { ("error while calling: [%s]"):format(desc) }
+          should_rethrow = true
+        elseif not on_catch_was_valid then
+          on_catch_results = { ("error in `on_catch` for: [%s]"):format(desc) }
+          should_rethrow = true
         end
-      else
-        args_string = ind.."[no args]\n"
-      end
 
-      local err_msg = string.format(
-        "Error at:\n"..
-        ind.."[%s]\n"..
-        "Function args:\n"..
-        "%s"..
-        "Message:\n"..
-        ind.."%s\n\n",
-        desc, args_string, err
-      )
+        results = on_catch_results
+      end)
 
-      pcall(vim.notify_once, err_msg, vim.log.levels.ERROR)
-
-      ---@type any[]
-      local results = { pcall(on_catch, { desc = desc, err = err, args = args }) }
-      local catch_was_valid = table.remove(results, 1)
-
-      if results[1] == tied.RETHROW then
-        results = { "error while calling: ["..desc.."]" }
+      if not ok then
+        print_inner_err(inner_err)
         should_rethrow = true
-      elseif not catch_was_valid then
-        results = { "error in `on_catch` for: ["..desc.."]" }
-        should_rethrow = true
+
+        return { should_rethrow, inner_err }
       end
 
       return { should_rethrow, unpack(results) }
@@ -125,15 +204,8 @@ _G.tie = function(desc, on_try, on_catch)
     local on_try_was_valid = table.remove(on_try_results, 1)
 
     if not on_try_was_valid then
-      local inner_catch_results, should_rethrow
-
-      if type(on_try_results[1]) == "table" then
-        inner_catch_results = on_try_results[1]
-        should_rethrow = table.remove(inner_catch_results, 1)
-      else -- internal error
-        inner_catch_results = { on_try_results[1] }
-        should_rethrow = true
-      end
+      local inner_catch_results = on_try_results[1]
+      local should_rethrow = table.remove(inner_catch_results, 1)
 
       if should_rethrow then
         local err_msg = inner_catch_results[1]

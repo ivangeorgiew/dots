@@ -7,7 +7,7 @@ return {
     event = "VeryLazy",
     -- https://github.com/gbprod/substitute.nvim?tab=readme-ov-file
     config = tie(
-      "plugin substitute -> config",
+      "Plugin substitute -> config",
       function(_, opts)
         local subs = require("substitute")
         local exch = require("substitute.exchange")
@@ -26,13 +26,17 @@ return {
           { "n", x..x, exch.line, { desc = "Exchange Line" } },
           { "n", x:upper(), exch.cancel, { desc = "Exchange cancel" } },
         })
-        tied.on_plugin_load("which-key.nvim", function()
-          require("which-key").add({
-            mode = "n",
-            { r, group = "replace", op = true },
-            { x, group = "exchange", op = true },
-          })
-        end)
+        tied.on_plugin_load(
+          "which-key.nvim",
+          "Add substitute.nvim mappings to which-key",
+          function()
+            require("which-key").add({
+              mode = "n",
+              { r, group = "replace", op = true },
+              { x, group = "exchange", op = true },
+            })
+          end
+        )
       end,
       tied.do_nothing
     ),

@@ -10,7 +10,7 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     event = "VeryLazy",
     config = tie(
-      "plugin todo-comments -> config",
+      "Plugin todo-comments -> config",
       function(_, opts)
         local todo = require("todo-comments")
 

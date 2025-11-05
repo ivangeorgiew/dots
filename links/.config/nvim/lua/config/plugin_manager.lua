@@ -3,7 +3,7 @@
 local M = {}
 
 M.setup = tie(
-  "setup plugin manager",
+  "Setup plugin manager",
   function()
     local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
@@ -26,7 +26,7 @@ M.setup = tie(
         path = vim.fn.stdpath("config") .. "/lua/plugins",
         ext = "lua",
         map = tie(
-          "require plugin file",
+          "Require plugin file",
           function(file) return require("plugins/"..file:gsub("%.lua$", "")) end,
           function() return {} end
         ),

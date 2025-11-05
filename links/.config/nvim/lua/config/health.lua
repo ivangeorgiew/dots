@@ -1,7 +1,7 @@
 -- autoinvoked by the ':checkhealth' command
 return {
   check = tie(
-    "check health",
+    "Check health",
     function()
       local h = vim.health
       local min_ver = { 0, 11, 2 }
@@ -27,7 +27,7 @@ return {
           "rg",
           "unzip",
         },
-        "warn if executable is missing",
+        "Warn if executable is missing",
         function(_, exe)
           local is_executable = vim.fn.executable(exe) == 1
 

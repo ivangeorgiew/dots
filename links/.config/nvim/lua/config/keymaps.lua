@@ -148,9 +148,9 @@ M.config = {
     { "v", ")", "\"ay:let @a = escape(@a,'\"')<cr>:Find \"<C-r>a\"<cr>", { desc = "Find the selection in all files" } },
 
     -- Search and replace
-    { "n", "<leader>s", [[:%s/\<<C-r><C-w>\>//gc<Left><Left><Left>]], { desc = "Search and replace word under cursor",   silent = false } },
-    { "v", "<leader>s", [["ay:%s/<C-r>a//gc<Left><Left><Left>]],      { desc = "Search and replace visual selection",    silent = false } },
-    { "v", "<leader>S", [[:s/\%V/gc<Left><Left><Left>]],              { desc = "Search and replace in visual selection", silent = false } },
+    { "n", "<leader>s", [[:%s/\(\<<C-r><C-w>\>\)/\1/gc<Left><Left><Left>]], { desc = "Search and replace word under cursor",   silent = false } },
+    { "v", "<leader>s", [["ay:%s/\(<C-r>a\)/\1/gc<Left><Left><Left>]],      { desc = "Search and replace visual selection",    silent = false } },
+    { "v", "<leader>S", [[:s/\%V/gc<Left><Left><Left>]],                    { desc = "Search and replace in visual selection", silent = false } },
 
     -- Motion expecting operations
     { { "v", "o" }, [[a"]], [[2i"]], { desc = [[Select all in ""]] } },
@@ -191,7 +191,7 @@ M.config = {
 }
 
 M.setup = tie(
-  "setup keymaps",
+  "Setup keymaps",
   function()
     tied.apply_maps(M.config.to_create, M.config.to_delete)
   end,

@@ -21,7 +21,7 @@ return {
       },
     },
     overrides = tie(
-      "colorscheme kanagawa -> overrides",
+      "Colorscheme kanagawa -> overrides",
       function()
         local hypr_border = "#492A78"
 

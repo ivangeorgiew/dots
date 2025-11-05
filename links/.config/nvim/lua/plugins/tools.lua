@@ -5,9 +5,9 @@ return {
     event = "User FilePost",
     -- :h lspconfig
     config = tie(
-      "plugin nvim-lspconfig -> config",
+      "Plugin nvim-lspconfig -> config",
       function()
-        tied.each(require("config.lsp"), "setup an LSP", function(name, lsp)
+        tied.each(require("config.lsp"), "Setup an LSP", function(name, lsp)
           if lsp.config then vim.lsp.config(name, lsp.config) end
           if lsp.enable ~= false then vim.lsp.enable(name) end
         end)
@@ -27,7 +27,7 @@ return {
     event = "VeryLazy", -- always needed to provide binaries
     build = ":MasonUpdate",
     config = tie(
-      "plugin mason -> config",
+      "Plugin mason -> config",
       function(_, opts)
         require("mason").setup(opts)
 
@@ -40,7 +40,7 @@ return {
             "package:uninstall:success",
             "package:uninstall:failed",
           },
-          "notify about mason event status",
+          "Notify about mason event status",
           function(_, event)
             mr:on(event, vim.schedule_wrap(function(payload)
               local action, status = event:match(":(.+):(.+)$")
@@ -61,12 +61,12 @@ return {
         end))
 
         mr.refresh(tie(
-          "manage mason packages",
+          "Manage mason packages",
           function()
             local installed = mr.get_installed_package_names()
             local to_install = {}
 
-            tied.each(require("config.lsp"), "queue LSP for mason install", function(_, lsp)
+            tied.each(require("config.lsp"), "Queue LSP for mason install", function(_, lsp)
               if lsp.enable ~= false and lsp.pkg_name then
                 to_install[#to_install + 1] = lsp.pkg_name
               end
@@ -75,7 +75,7 @@ return {
             -- TODO: Add DAP tools
             -- TODO: Add null-ls tools
 
-            tied.each_i(installed, "auto-remove mason tool", function(_, tool)
+            tied.each_i(installed, "Auto-remove a mason tool", function(_, tool)
               if not vim.list_contains(to_install, tool) then
                 local name = tool:match("^([^@]+)")
 
@@ -83,7 +83,7 @@ return {
               end
             end)
 
-            tied.each_i(to_install, "auto-install mason tool", function(_, tool)
+            tied.each_i(to_install, "Auto-install a mason tool", function(_, tool)
               -- Intentionally fail if tool is missing to notify about it
               if not vim.list_contains(installed, tool) then
                 local name = tool:match("^([^@]+)")
