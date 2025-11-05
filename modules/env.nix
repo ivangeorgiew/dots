@@ -47,6 +47,7 @@ in {
       jq # json processor
       killall # kill a running process
       lazygit # terminal UI for git commands
+      lsd # better ls command
       gdu # windirstat for linux (sort dirs by size)
       nerdfix # removes obsolete nerd font icons
       nitch # alternative to neofetch
@@ -57,7 +58,6 @@ in {
       ripgrep # newest silver searcher + grep
       shared-mime-info # add new custom mime types (check arch wiki)
       stow # symlink dotfiles
-      tree # print folder tree structure
       tree-sitter # used by neovim
       unzip # required by some programs
       wget # download files
@@ -126,7 +126,9 @@ in {
     shellAliases = {
       reboot = "systemctl reboot"; # Restart the PC
       shutdown = "systemctl poweroff"; # Shutdown the PC
-      ll = "ls -lah1"; # List files and directories
+      ls = "lsd"; # Better ls command
+      ll = "lsd -lA1"; # List files and directories
+      tree = "lsd --tree"; # Better tree command
       rm = "rm -rI"; # Ask for each file before deleting
       mkdir = "mkdir -p"; # Make dirs recursively
       cp = "cp -r"; # Copy recursively
