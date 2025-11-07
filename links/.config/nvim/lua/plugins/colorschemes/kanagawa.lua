@@ -1,14 +1,18 @@
 ---@type LazyPluginSpec|LazyPluginSpec[]
 return {
   "rebelot/kanagawa.nvim",
-  enabled = vim.g.colorscheme == "kanagawa",
-  event = { "UIEnter" },
+  cond = vim.g.colorscheme == "kanagawa",
+  event = "UIEnter", -- issues if "VeryLazy"
   config = tied.colorscheme_config,
   -- :h kanagawa.nvim-configuration
   opts = {
-    undercurl = true, -- enable undercurls
-    keywordStyle = { italic = false },
-    transparent = true, -- do not set background color
+    transparent = true,
+    undercurl = true,
+    commentStyle = { bold = false, italic = true },
+    typeStyle = { bold = false, italic = false },
+    keywordStyle = { bold = false, italic = false },
+    functionStyle = { bold = false, italic = false },
+    statementStyle = { bold = false, italic = false },
     colors = { -- add/modify theme and palette colors
       theme = {
         all = {
@@ -28,7 +32,7 @@ return {
         return {
           WinSeparator = { fg = hypr_border },
           TabLine = { bg = "none" },
-          TabLineFill = { bg = "none" },
+          -- TabLineFill = { bg = "none" },
           -- StatusLine = { bg = "none" },
         }
       end,

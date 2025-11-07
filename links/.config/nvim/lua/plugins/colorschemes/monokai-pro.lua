@@ -1,8 +1,8 @@
 ---@type LazyPluginSpec|LazyPluginSpec[]
 return {
   "loctvl842/monokai-pro.nvim",
-  enabled = vim.g.colorscheme == "monokai-pro",
-  event = { "UIEnter", }, -- issues if VeryLazy
+  cond = vim.g.colorscheme == "monokai-pro",
+  event = "UIEnter", -- issues if "VeryLazy"
   config = tied.colorscheme_config,
   -- :h monokai-pro-configuration
   opts = {

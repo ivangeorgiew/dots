@@ -22,6 +22,7 @@ M.config = {
       "r",
       "s", -- shorthand for cl
       "x", -- shorthand for dl
+      "q", -- use `#` instead
       "|",
       "~", -- use `gu`/`gU`
     } },
@@ -39,9 +40,9 @@ M.config = {
     { { "n", "v" }, "d", [["_d]],  { desc = "Delete" } },
     { { "n", "v" }, "c", [["_c]],  { desc = "Change" } },
 
-    -- Better up/down movement
-    { { "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down", expr = true } },
-    { { "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up", expr = true } },
+    -- Smoother scrolling and handle wrapped lines
+    { { "n", "x" }, "k", function() vim.cmd("noa normal! "..(vim.v.count == 0 and "g" or vim.v.count).."k") end, { desc = "Move up" } },
+    { { "n", "x" }, "j", function() vim.cmd("noa normal! "..(vim.v.count == 0 and "g" or vim.v.count).."j") end, { desc = "Move down" } },
 
     -- Cursor movement in insert mode
     { "i", "<C-h>", "<Left>",  { desc = "Move left" } },
@@ -62,10 +63,10 @@ M.config = {
     { "n", "<leader><S-l>", "<cmd>tabm +1<cr>", { desc = "Move tab to the right" } },
 
     -- Resize window
-    { "n", "<Up>",    "<cmd> resize +2<cr>",         { desc = "Increase window height" } },
-    { "n", "<Down>",  "<cmd> resize -2<cr>",         { desc = "Decrease window height" } },
-    { "n", "<Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" } },
-    { "n", "<Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" } },
+    { "n", "<C-Up>",    "<cmd> resize +2<cr>",         { desc = "Increase window height" } },
+    { "n", "<C-Down>",  "<cmd> resize -2<cr>",         { desc = "Decrease window height" } },
+    { "n", "<C-Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" } },
+    { "n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" } },
 
     -- Change window size
     { "n", "<S-Up>",    "<cmd>resize +2<cr>",          { desc = "Increase window height" } },
@@ -86,13 +87,9 @@ M.config = {
     { "n", "[e", function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = "Prev error" } },
 
     -- Quit things
-    { "n", "<leader>qa", "<cmd>qa<cr>", { desc = "Quit all" } },
-    { "n", "<leader>qt", "<cmd>tabclose<cr>", { desc = "Quit tab" } },
-    {
-      "n", "<leader>qw",
-      function() return #vim.api.nvim_list_wins() > 1 and ":confirm q<cr>" or ":bdelete<cr>" end,
-      { desc = "Quit window", expr = true, }
-    },
+    { "n", "qa", "<cmd>qa<cr>", { desc = "Quit all" } },
+    { "n", "qt", "<cmd>tabclose<cr>", { desc = "Quit tab" } },
+    { "n", "qw", function() vim.cmd(#vim.api.nvim_list_wins() > 1 and "confirm q" or "bdelete") end, { desc = "Quit window", } },
 
     -- Toggle things
     { "n", "<leader>tb", "<cmd>buffers<cr>", { desc = "Toggle buffers" } },
@@ -150,7 +147,7 @@ M.config = {
     -- Search and replace
     { "n", "<leader>s", [[:%s/\(\<<C-r><C-w>\>\)/\1/gc<Left><Left><Left>]], { desc = "Search and replace word under cursor",   silent = false } },
     { "v", "<leader>s", [["ay:%s/\(<C-r>a\)/\1/gc<Left><Left><Left>]],      { desc = "Search and replace visual selection",    silent = false } },
-    { "v", "<leader>S", [[:s/\%V/gc<Left><Left><Left>]],                    { desc = "Search and replace in visual selection", silent = false } },
+    { "v", "<leader>S", [[:s/\%V/g<Left><Left>]],                    { desc = "Search and replace in visual selection", silent = false } },
 
     -- Motion expecting operations
     { { "v", "o" }, [[a"]], [[2i"]], { desc = [[Select all in ""]] } },

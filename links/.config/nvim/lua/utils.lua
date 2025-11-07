@@ -33,6 +33,7 @@ local foreach = tie(
       ---@param iter table|function
       ---@param desc string
       ---@param on_try function
+      ---@return boolean
       function(iter, desc, on_try)
         vim.validate("iter", iter, { "table", "function", })
         vim.validate("desc", desc, "string")
@@ -46,6 +47,8 @@ local foreach = tie(
         else
           for key, val in iter do fn(key, val) end
         end
+
+        return true -- mark as success
       end,
       tied.do_nothing
     )
@@ -203,10 +206,10 @@ tied.on_plugin_load = tie(
 
     local is_loaded = lazy_config.plugins[plugin_name]._.loaded
 
-    on_load = tie(desc, on_load, tied.do_nothing)
+    on_load = vim.schedule_wrap(tie(desc, on_load, tied.do_nothing))
 
     if is_loaded then
-      vim.schedule(on_load)
+      on_load()
       return
     end
 
@@ -219,7 +222,7 @@ tied.on_plugin_load = tie(
       pattern = "LazyLoad",
       callback = function(event)
         if event.data == plugin_name then
-          vim.schedule(on_load)
+          on_load()
           return true -- clear autocmd
         end
       end,

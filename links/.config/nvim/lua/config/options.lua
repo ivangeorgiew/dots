@@ -6,10 +6,10 @@ M.setup = tie(
     -- See `:h vim.g` for more
     local g = vim.g
 
-    -- defined in the plugins/colorschemes folder
+    -- Defined in the plugins/colorschemes folder
     local colorschemes = { "kanagawa", "tokyonight", "monokai-pro", }
 
-    g.colorscheme = colorschemes[1]
+    g.colorscheme = colorschemes[2]
     g.mapleader = " "
     g.maplocalleader = "\\" -- must be different than mapleader
 
@@ -73,8 +73,7 @@ M.setup = tie(
     o.pumheight = 0 -- max entries in a popup
     o.relativenumber = false -- relative line numbers
     o.ruler = false -- toggle statusline info at the end
-    o.scroll = 20 -- lines to move on <C-d>/<C-u>
-    o.scrolloff = 10 -- min lines below and above
+    o.scrolloff = 999 -- center cursor line when scrolling
     o.selection = "old" -- don't go past line end in visual mode
     o.shiftround = true -- round indent
     o.shiftwidth = 2 -- amount of spaces on shifting

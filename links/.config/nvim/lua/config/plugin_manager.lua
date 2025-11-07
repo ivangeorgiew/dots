@@ -26,7 +26,7 @@ M.setup = tie(
         path = vim.fn.stdpath("config") .. "/lua/plugins",
         ext = "lua",
         map = tie(
-          "Require plugin file",
+          "Require a plugin file",
           function(file) return require("plugins/"..file:gsub("%.lua$", "")) end,
           function() return {} end
         ),
@@ -36,6 +36,9 @@ M.setup = tie(
         -- Set this to `true` to have all your plugins lazy-loaded by default.
         -- Only do this if you know what you are doing, as it can lead to unexpected behavior.
         lazy = true, -- should plugins be lazy-loaded?
+
+        -- version = "*", -- try installing the latest stable version for plugins that support semver
+        version = false, -- always use the latest git commit
       },
 
       ---@type table

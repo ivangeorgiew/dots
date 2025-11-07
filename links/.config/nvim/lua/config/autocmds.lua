@@ -16,13 +16,17 @@ M.config = {
       if file ~= "" and buftype ~= "nofile" and vim.g.ui_entered then
         vim.api.nvim_exec_autocmds("User", { pattern = "FilePost", modeline = false })
 
-        vim.schedule(function()
-          vim.api.nvim_exec_autocmds("FileType", {})
+        vim.schedule(tie(
+          "After FilePost event",
+          function()
+            vim.api.nvim_exec_autocmds("FileType", {})
 
-          if vim.g.editorconfig then
-            require("editorconfig").config(e.buf)
-          end
-        end)
+            if vim.g.editorconfig then
+              require("editorconfig").config(e.buf)
+            end
+          end,
+          tied.do_nothing
+        ))
 
         return true
       end
@@ -86,11 +90,11 @@ M.config = {
 
       local qf_maps = require("config.keymaps").config.quickfix
 
-      tied.each_i(qf_maps, "Assign buffer to vim keymap", function(k, _)
+      local ok = tied.each_i(qf_maps, "Assign buffer to vim keymap", function(k, _)
         qf_maps[k][4].buffer = e.buf
       end)
 
-      tied.apply_maps(qf_maps)
+      if ok then tied.apply_maps(qf_maps) end
     end
   },
 }

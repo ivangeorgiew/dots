@@ -1,12 +1,12 @@
 ---@type LazyPluginSpec|LazyPluginSpec[]
 return {
   "folke/tokyonight.nvim",
-  enabled = vim.g.colorscheme == "tokyonight",
-  event = { "UIEnter", }, -- issues if VeryLazy
+  cond = vim.g.colorscheme == "tokyonight",
+  event = "UIEnter", -- issues if "VeryLazy"
   config = tied.colorscheme_config,
   -- :h tokyonight.nvim-tokyo-night-configuration
   opts = {
-    style = "moon", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
+    style = "night", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
     light_style = "day", -- The theme is used when the background is set to light
     transparent = true, -- Enable this to disable setting the background color
     terminal_colors = true, -- Configure the colors used when opening a `:terminal` in [Neovim](https://github.com/neovim/neovim)
@@ -33,11 +33,11 @@ return {
     on_highlights = tie(
       "Colorscheme tokyonight -> config -> on_highlight",
       function(hl, _)
-        local n_col = "#8b83a8"
+        local hypr_border = "#492A78"
+        local kanagawa_TabLine = { fg= "#938aa9" }
 
-        hl.LineNr = { fg = n_col }
-        hl.CursorLineNr = { fg = n_col }
-        hl.EndOfBuffer = { fg = n_col }
+        hl.WinSeparator = { fg = hypr_border }
+        hl.TabLine = kanagawa_TabLine
       end,
       tied.do_nothing
     ),

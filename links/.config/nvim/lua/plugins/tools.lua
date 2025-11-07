@@ -40,25 +40,32 @@ return {
             "package:uninstall:success",
             "package:uninstall:failed",
           },
-          "Notify about mason event status",
+          "Add listeners for mason events",
           function(_, event)
-            mr:on(event, vim.schedule_wrap(function(payload)
-              local action, status = event:match(":(.+):(.+)$")
+            mr:on(event, vim.schedule_wrap(tie(
+              "Notify about mason event status",
+              function(payload)
+                local action, status = event:match(":(.+):(.+)$")
 
-              action = action:sub(1,1):upper() .. action:sub(2)
+                action = action:sub(1,1):upper() .. action:sub(2)
 
-              vim.notify(("[mason]: %s `%s` %s"):format(action, payload.name, status))
-            end))
+                vim.notify(("[mason]: %s `%s` %s"):format(action, payload.name, status))
+              end,
+              tied.do_nothing
+            )))
           end
         )
 
-        -- Try to load the newly installed package
-        mr:on("package:install:success", vim.schedule_wrap(function()
-          vim.api.nvim_exec_autocmds(
-            "FileType",
-            { buffer = vim.api.nvim_get_current_buf() }
-          )
-        end))
+        mr:on("package:install:success", vim.schedule_wrap(tie(
+          "Try to load the newly installed package",
+          function()
+            vim.api.nvim_exec_autocmds(
+              "FileType",
+              { buffer = vim.api.nvim_get_current_buf() }
+            )
+          end,
+          tied.do_nothing
+        )))
 
         mr.refresh(tie(
           "Manage mason packages",

@@ -41,8 +41,8 @@ return {
       },
       defer = tie(
         "Plugin which-key -> defer",
-        ---@param ctx { mode: string, operator: string }
-        function(ctx)
+        ---@param _ { mode: string, operator: string }
+        function(_)
           -- If it returns true, don't show which-key for
           -- the mode or operator until an additional key is pressed
           return (
@@ -58,21 +58,21 @@ return {
       spec = {
         {
           mode = "n",
-          { "<localleader>", group = "local leader", },
-          { "<leader>q", group = "quit", },
-          { "<leader>t", group = "toggle", },
-          { "<leader>%", group = "whole file", },
-          { "<leader>j", group = "prev", proxy = "[", },
-          { "<leader>k", group = "next", proxy = "]", },
-          { "[", group = "prev", },
-          { "]", group = "next", },
-          { "D", group = "cut", op = true },
-          { "gc", group = "toggle comment", op = true },
+          { "<localleader>", group = "Local leader", },
+          { "<leader>t", group = "Toggle", },
+          { "<leader>%", group = "Whole file", },
+          { "<leader>j", group = "Prev", proxy = "[", },
+          { "<leader>k", group = "Next", proxy = "]", },
+          { "[", group = "Prev", },
+          { "]", group = "Next", },
+          { "q", group = "Quit", },
+          { "D", group = "Cut", op = true },
+          { "gc", group = "Toggle comment", op = true },
           { "g@", desc = "Operator-pending mode" },
         },
         {
           mode = "v",
-          { "<leader>", group = "leader", }
+          { "<leader>", group = "Leader", }
         },
         {
           mode = { "n", "v" },

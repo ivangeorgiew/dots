@@ -18,6 +18,8 @@ tied.do_rethrow = function() return tied.RETHROW end
 -- don't care if they fail and there is no cleanup
 tied.do_nothing = function() end
 
+tied.is_pcalled = false
+
 -- Check if function was called with pcall or xpcall
 -- Used in `tie()` to not wrap protected calls
 local wrap_prot_call = function(orig_fn)
@@ -28,7 +30,7 @@ local wrap_prot_call = function(orig_fn)
     return unpack(results)
   end
 end
-tied.is_pcalled = false
+
 -- No need to rename pcall and xpcall
 -- they are automatically called with the local versions in
 -- all the code throughout this file
@@ -36,6 +38,29 @@ local pcall = pcall
 _G.pcall = wrap_prot_call(pcall)
 local xpcall = xpcall
 _G.xpcall = wrap_prot_call(xpcall)
+
+local notifs = {} --- @type table<string,boolean>
+
+--- @param err_msg string
+--- @param hash string
+local print_err = function(err_msg, hash)
+  vim.validate("err_msg", err_msg, "string")
+
+  -- Different hash and logic from vim.notify_once
+  -- Remove after timeout and use desc+err for hash
+  if not notifs[hash] then
+    vim.notify(err_msg, vim.log.levels.ERROR)
+    notifs[hash] = true
+    vim.defer_fn(function() notifs[hash] = nil end, 10 * 1e3)
+  end
+end
+
+---@param err string
+local print_inner_err = function(err)
+  vim.validate("err", err, "string")
+  local desc = "inner error-handling"
+  print_err(("Error in %s:\n%s"):format(desc, err), desc..err)
+end
 
 --- Stringify anything
 --- @param arg any
@@ -56,17 +81,6 @@ local stringify = function(arg)
   if str:len() > 1000 then str = ("[large %s]"):format(arg_type) end
 
   return str
-end
-
----@param err string
-local print_err = function(err)
-  vim.validate("err", err, "string")
-  vim.notify_once(err, vim.log.levels.ERROR)
-end
-
----@param err string
-local print_inner_err = function(err)
-  print_err(("Error in inner error-handling:\n%s"):format(err))
 end
 
 --- @alias OnCatchFunc fun(props: { desc: string, err: string, args: table }): any
@@ -130,7 +144,7 @@ _G.tie = function(desc, on_try, on_catch)
               local line = ("%s- %s:%d"):format(ind, source, info.currentline)
 
               if info.name and info.namewhat then
-                line = ("%s _in_ *%s* [%s]"):format(line, info.namewhat, info.name)
+                line = ("%s _in_ **%s** %s"):format(line, info.namewhat, info.name)
               end
 
               lines[#lines + 1] = line
@@ -165,7 +179,7 @@ _G.tie = function(desc, on_try, on_catch)
 
           l[#l+1] = "\n"
 
-          print_err(table.concat(l, "\n"))
+          print_err(table.concat(l, "\n"), desc..err)
         end)
         if not ok then print_inner_err(inner_err) end
 

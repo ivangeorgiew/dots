@@ -129,7 +129,10 @@ _G.vim.api.nvim_create_autocmd = tie(
         desc,
         extra_desc,
         opts.callback --[[@as function]],
-        function() return true end
+        function(props)
+          local autocmd_id = props.args[1].id
+          vim.api.nvim_del_autocmd(autocmd_id)
+        end
       )
     end
 
@@ -150,9 +153,12 @@ _G.vim.api.nvim_create_user_command = tie(
     vim.validate("opts", opts, "table")
 
     if type(command) == "function" then
-      local desc = "Usercmd -> " .. (opts.desc or name)
-
-      command = tie(desc, command, tied.do_nothing)
+      command = overwrite_tied_catch(
+        "Usercmd",
+        opts.desc or name,
+        command,
+        function() vim.api.nvim_del_user_command(name) end
+      )
     end
 
     create_usercmd(name, command, opts)
