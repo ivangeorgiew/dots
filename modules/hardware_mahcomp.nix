@@ -16,6 +16,10 @@
   # Arch
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
+  # CPU Power plan
+  # One of "ondemand", "powersave", "performance"
+  powerManagement.cpuFreqGovernor = "performance";
+
   hardware = {
     # For AMD cpu
     cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

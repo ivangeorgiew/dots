@@ -88,6 +88,9 @@
           install -Dm644 --strip target/release/libspotifyadblock.so -t $out/lib
         '';
       };
+      # TODO fix spotify version so that both hold true:
+      # 1. no memory leaks
+      # 2. music search works
       old-spotify =
         (import (fetchTarball {
             url = "https://github.com/NixOS/nixpkgs/archive/84d4f874c2bac9f3118cb6907d7113b3318dcb5e.tar.gz";
