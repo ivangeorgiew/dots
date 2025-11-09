@@ -7,7 +7,7 @@ M.config = {
     event = { "UIEnter", "BufNewFile", "BufReadPost", },
     callback = function(e)
       local file = vim.api.nvim_buf_get_name(e.buf)
-      local buftype = vim.api.nvim_get_option_value("buftype", { buf = e.buf })
+      local buftype = vim.bo[e.buf].buftype
 
       if not vim.g.ui_entered and e.event == "UIEnter" then
         vim.g.ui_entered = true
@@ -35,8 +35,8 @@ M.config = {
   {
     desc = "Reload file on change",
     event = { "FocusGained", "TermClose", "TermLeave" },
-    callback = function()
-      if vim.o.buftype ~= "nofile" then vim.cmd("checktime") end
+    callback = function(e)
+      if vim.bo[e.buf].buftype ~= "nofile" then vim.cmd("checktime") end
     end
   },
   {
@@ -90,11 +90,11 @@ M.config = {
 
       local qf_maps = require("config.keymaps").config.quickfix
 
-      local ok = tied.each_i(qf_maps, "Assign buffer to vim keymap", function(k, _)
+      for k, _ in ipairs(qf_maps) do
         qf_maps[k][4].buffer = e.buf
-      end)
+      end
 
-      if ok then tied.apply_maps(qf_maps) end
+      tied.apply_maps(qf_maps)
     end
   },
 }

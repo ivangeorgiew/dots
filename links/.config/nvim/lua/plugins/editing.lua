@@ -27,13 +27,13 @@ return {
           { "n", x:upper(), exch.cancel, { desc = "Exchange cancel" } },
         })
         tied.on_plugin_load(
-          "which-key.nvim",
-          "Add substitute.nvim mappings to which-key",
+          { "which-key.nvim" },
+          "Modify substitute.nvim mappings for which-key",
           function()
             require("which-key").add({
-              mode = "n",
-              { r, group = "replace", op = true },
-              { x, group = "exchange", op = true },
+              mode = { "n", },
+              { r, group = "Replace", op = true },
+              { x, group = "Exchange", op = true },
             })
           end
         )

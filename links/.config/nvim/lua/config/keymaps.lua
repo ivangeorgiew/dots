@@ -63,10 +63,10 @@ M.config = {
     { "n", "<leader><S-l>", "<cmd>tabm +1<cr>", { desc = "Move tab to the right" } },
 
     -- Resize window
-    { "n", "<C-Up>",    "<cmd> resize +2<cr>",         { desc = "Increase window height" } },
-    { "n", "<C-Down>",  "<cmd> resize -2<cr>",         { desc = "Decrease window height" } },
-    { "n", "<C-Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" } },
-    { "n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" } },
+    { "n", "<Up>",    "<cmd> resize +2<cr>",         { desc = "Increase window height" } },
+    { "n", "<Down>",  "<cmd> resize -2<cr>",         { desc = "Decrease window height" } },
+    { "n", "<Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" } },
+    { "n", "<Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" } },
 
     -- Change window size
     { "n", "<S-Up>",    "<cmd>resize +2<cr>",          { desc = "Increase window height" } },
@@ -118,8 +118,8 @@ M.config = {
     { "n", "M", "#", { desc = "Go to prev occurance of the word" } },
 
     -- Macros
-    { "n", "Q", "q", { desc = "Start/end macro" } },
     { "n", "#", "reg_recording() == 'e' ? 'q' : 'qe'", { desc = "Start/end default macro", expr = true } },
+    { { "n", "x" },  "Q", "q", { desc = "Start/end macro" } },
     { { "n", "v" }, "<cr>", "empty(&buftype) ? ':normal! @e<cr>' : '<cr>'", { desc = "Apply default macro", expr = true } },
 
     -- Make new line
@@ -141,13 +141,13 @@ M.config = {
 
     -- Find text in all files
     { "n", ")", ":Find ", { desc = "Find in all files", silent = false } },
-    { "n", "<leader>)", ":Find -w <C-r><C-w><cr>", { desc = "Find word under cursor in all files" } },
-    { "v", ")", "\"ay:let @a = escape(@a,'\"')<cr>:Find \"<C-r>a\"<cr>", { desc = "Find the selection in all files" } },
+    { "n", "<leader>)", ":Find -s -w <C-r><C-w><cr>", { desc = "Find word under cursor in all files" } },
+    { "v", ")", "\"ay:let @a = escape(@a,'\"')<cr>:Find -s \"<C-r>a\"<cr>", { desc = "Find the selection in all files" } },
 
     -- Search and replace
     { "n", "<leader>s", [[:%s/\(\<<C-r><C-w>\>\)/\1/gc<Left><Left><Left>]], { desc = "Search and replace word under cursor",   silent = false } },
     { "v", "<leader>s", [["ay:%s/\(<C-r>a\)/\1/gc<Left><Left><Left>]],      { desc = "Search and replace visual selection",    silent = false } },
-    { "v", "<leader>S", [[:s/\%V/g<Left><Left>]],                    { desc = "Search and replace in visual selection", silent = false } },
+    { "v", "<leader>S", [[:s/\%V/g<Left><Left>]],                           { desc = "Search and replace in visual selection", silent = false } },
 
     -- Motion expecting operations
     { { "v", "o" }, [[a"]], [[2i"]], { desc = [[Select all in ""]] } },

@@ -91,11 +91,11 @@ return {
             end)
 
             tied.each_i(to_install, "Auto-install a mason tool", function(_, tool)
-              -- Intentionally fail if tool is missing to notify about it
               if not vim.list_contains(installed, tool) then
                 local name = tool:match("^([^@]+)")
                 local version = tool:match("^[^@]+@(.+)$")
 
+                -- Intentionally fail if tool is missing to notify about it
                 mr.get_package(name):install({ version = version })
               end
             end)
@@ -106,10 +106,6 @@ return {
       tied.do_nothing
     ),
     opts = {
-      -- default "prepend"
-      ---@type '"prepend"' | '"append"' | '"skip"'
-      PATH = "prepend",
-
       ui = {
         border = "single", -- same as nvim_open_win()
         width = 0.6, -- 0-1 for a percentage of screen width.

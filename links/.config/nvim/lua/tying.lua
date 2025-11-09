@@ -78,7 +78,7 @@ local stringify = function(arg)
     str = tostring(arg)
   end
 
-  if str:len() > 1000 then str = ("[large %s]"):format(arg_type) end
+  if str:len() > 1000 then str = ("<large %s>"):format(arg_type) end
 
   return str
 end
@@ -124,7 +124,7 @@ _G.tie = function(desc, on_try, on_catch)
 
             args_string = table.concat(lines, "\n")
           else
-            args_string = ind .. "[no args]"
+            args_string = ind .. "<no args>"
           end
         end)
         if not ok then print_inner_err(inner_err) end
@@ -161,7 +161,7 @@ _G.tie = function(desc, on_try, on_catch)
         ok, inner_err = pcall(function()
           local l = {
             "Error at:",
-            ("%s[%s]"):format(ind, desc),
+            ind .. desc,
           }
 
           if args_string ~= "" then
@@ -170,7 +170,7 @@ _G.tie = function(desc, on_try, on_catch)
           end
 
           l[#l+1] = "Message:"
-          l[#l+1] = ("%s%s"):format(ind, err)
+          l[#l+1] = ind .. err
 
           if stacktrace ~= "" then
             l[#l+1] = "Stacktrace:"

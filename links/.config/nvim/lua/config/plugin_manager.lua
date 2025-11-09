@@ -2,6 +2,16 @@
 -- Plugin Settings: https://lazy.folke.io/spec
 local M = {}
 
+-- TODO Check other TODOs in the plugin dir
+-- TODO Go through the NvChad plugin files
+-- TODO Go through the pwnvim plugin files
+-- TODO Go through the kickstart-modular plugin files
+-- TODO Go through the LazyVim plugin files
+-- TODO Go through the LazyVim plugins/extras files
+-- TODO Go through the NvChad's `ui` files
+-- TODO Go through the mini and MiniMax repos
+-- TODO Check all the plugins in `awesome-neovim`
+
 M.setup = tie(
   "Setup plugin manager",
   function()
@@ -22,8 +32,9 @@ M.setup = tie(
 
     require("lazy").setup({
       -- Wrap plugins importing with error handling
-      spec = tied.get_files({
+      spec = tied.dir({
         path = vim.fn.stdpath("config") .. "/lua/plugins",
+        type = "file",
         ext = "lua",
         map = tie(
           "Require a plugin file",

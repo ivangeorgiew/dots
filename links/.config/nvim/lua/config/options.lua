@@ -71,7 +71,7 @@ M.setup = tie(
     o.path:append("**") -- include subdirectories in search
     o.pumblend = 10 -- transparency for popups
     o.pumheight = 0 -- max entries in a popup
-    o.relativenumber = false -- relative line numbers
+    o.relativenumber = true -- relative line numbers
     o.ruler = false -- toggle statusline info at the end
     o.scrolloff = 999 -- center cursor line when scrolling
     o.selection = "old" -- don't go past line end in visual mode

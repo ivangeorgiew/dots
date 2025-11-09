@@ -28,12 +28,19 @@ local foreach = tie(
   function(is_list)
     vim.validate("is_list", is_list, "boolean")
 
+    local outer_desc = (
+      is_list and
+      "Tied foreach in list" or
+      "Tied foreach in table"
+    )
+
     return tie(
-      "For each item in a table",
+      outer_desc,
+      --- Use this function when one iteration shouldn't
+      --- prevent other iterations from trying to execute
       ---@param iter table|function
       ---@param desc string
       ---@param on_try function
-      ---@return boolean
       function(iter, desc, on_try)
         vim.validate("iter", iter, { "table", "function", })
         vim.validate("desc", desc, "string")
@@ -47,8 +54,6 @@ local foreach = tie(
         else
           for key, val in iter do fn(key, val) end
         end
-
-        return true -- mark as success
       end,
       tied.do_nothing
     )
@@ -111,50 +116,50 @@ tied.apply_maps = tie(
 
     -- Order matters, first delete and then create
     if to_delete then
-      tied.each_i(to_delete, "Queue vim keymaps to delete", function(_, v)
+      for _, v in ipairs(to_delete) do
         tied.delete_maps(unpack(v))
-      end)
+      end
     end
     if to_create then
-      tied.each_i(to_create, "Queue vim keymap to create", function(_, v)
+      for _, v in ipairs(to_create) do
         tied.create_map(unpack(v))
-      end)
+      end
     end
   end,
   tied.do_nothing
 )
 
-tied.get_files = tie(
-  "Get files from a folder",
-  --- @param opts { path: string, ext: string?, map: function? }
+tied.dir = tie(
+  "Traverse a directory and return item names",
+  --- @class TiedDirOpts
+  --- @field path string
+  --- @field type "file"|"dir"
+  --- @field ext string?
+  --- @field depth number?
+  --- @field map function?
+  --- @param opts TiedDirOpts
   function(opts)
     vim.validate("opts", opts, "table")
     vim.validate("opts.path", opts.path, "string")
+    vim.validate("opts.type", opts.type, "string")
     vim.validate("opts.ext", opts.ext, "string", true)
+    vim.validate("opts.depth", opts.depth, "number", true)
     vim.validate("opts.map", opts.map, "function", true)
 
     local entries = {}
-    local map = function(file) return file end
+    local item_type = opts.type ---@type string
 
-    if opts.map then
-      map = tie(
-        "Remap file name from path: "..opts.path,
-        function(file) return opts.map(file) end,
-        function(props) return props.args[1] end
-      )
+    if opts.type == "dir" then
+      item_type = "directory"
     end
 
-    tied.each(
-      vim.fs.dir(opts.path, { depth = math.huge }),
-      "Parse file from path: "..opts.path,
-      function(name, type)
-        local matches_ext = not opts.ext or vim.endswith(name, "."..opts.ext)
+    for name, type in vim.fs.dir(opts.path, { depth = opts.depth or math.huge }) do
+      local matches_ext = not opts.ext or vim.endswith(name, "."..opts.ext)
 
-        if type == "file" and matches_ext then
-          table.insert(entries, opts.map and map(name) or name)
-        end
+      if type == item_type and matches_ext then
+        table.insert(entries, opts.map and opts.map(name) or name)
       end
-    )
+    end
 
     return entries
   end,
@@ -192,41 +197,48 @@ tied.get_fold_text = tie(
 -- From LazyVim
 tied.on_plugin_load = tie(
   "Run code if a plugin is enabled",
-  --- @param plugin_name string
+  --- @param plugin_names string[]
   --- @param desc string
   --- @param on_load function
-  function(plugin_name, desc, on_load)
-    vim.validate("plugin_name", plugin_name, "string")
+  function(plugin_names, desc, on_load)
+    vim.validate("plugin_names", plugin_names, "table")
     vim.validate("desc", desc, "string")
     vim.validate("on_load", on_load, "function")
 
-    local lazy_config = require("lazy.core.config")
-
-    if not lazy_config.plugins[plugin_name] then return end
-
-    local is_loaded = lazy_config.plugins[plugin_name]._.loaded
-
     on_load = vim.schedule_wrap(tie(desc, on_load, tied.do_nothing))
 
-    if is_loaded then
-      on_load()
-      return
+    local lazy_plugins = require("lazy.core.config").plugins
+    local plugins_loaded = {}
+
+    for _, name in ipairs(plugin_names) do
+      plugins_loaded[name] = false
+
+      if lazy_plugins[name] and lazy_plugins[name]._.loaded then
+        plugins_loaded[name] = true
+      end
     end
 
-    local group_name = "my.on_plugin_load." .. plugin_name
+    if not vim.list_contains(vim.tbl_values(plugins_loaded), false) then
+      on_load(lazy_plugins)
+    else
+      tied.create_autocmd({
+        desc = "On plugin load -> " .. desc,
+        event = "User",
+        -- Don't clear autocmds for the group
+        group = tied.create_augroup("my.on_plugin_load", false),
+        pattern = "LazyLoad",
+        callback = function(e)
+          if vim.list_contains(vim.tbl_keys(plugins_loaded), e.data) then
+            plugins_loaded[e.data] = true
+          end
 
-    tied.create_autocmd({
-      desc = desc,
-      event = "User",
-      group = tied.create_augroup(group_name, false),
-      pattern = "LazyLoad",
-      callback = function(event)
-        if event.data == plugin_name then
-          on_load()
-          return true -- clear autocmd
-        end
-      end,
-    })
+          if not vim.list_contains(vim.tbl_values(plugins_loaded), false) then
+            on_load(lazy_plugins)
+            return true -- clear autocmd
+          end
+        end,
+      })
+    end
   end,
   tied.do_nothing
 )
@@ -263,6 +275,24 @@ tied.create_autocmd = tie(
     opts.event = nil
 
     return vim.api.nvim_create_autocmd(event, opts)
+  end,
+  tied.do_rethrow
+)
+
+tied.check_keys = tie(
+  "Check if a table has nested keys",
+  ---@param tbl table
+  ---@param keys string[]
+  function(tbl, keys)
+    for _, key in ipairs(keys) do
+      if type(tbl) == "table" and tbl[key] then
+        tbl = tbl[key]
+      else
+        return false
+      end
+    end
+
+    return true
   end,
   tied.do_rethrow
 )
