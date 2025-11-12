@@ -94,17 +94,13 @@ M.config = {
     -- Toggle things
     { "n", "<leader>tb", "<cmd>buffers<cr>", { desc = "Toggle buffers" } },
     { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
-    { "n", "<leader>te", function() local h = vim.diagnostic.open_float; h();h(); end, { desc = "Toggle errors on current line" } },
+    { "n", "<leader>te", vim.diagnostic.open_float, { desc = "Toggle errors on current line" } },
     { "n", "<leader>tE", vim.diagnostic.setloclist, { desc = "Toggle errors list" } },
+    { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
     { "n", "<leader>tl", "<cmd>Lazy<cr>", { desc = "Toggle Lazy" } },
     { "n", "<leader>tm", "<cmd>Mason<cr>", { desc = "Toggle Mason" } },
+    { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.loclist')) ? ':lopen<cr>' : ':windo lclose<cr>'", { desc = "Toggle location list", expr = true } },
     { "n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle wrapping of lines" } },
-    { "n", "<leader>th", function() vim.o.hls = not vim.o.hls end, { desc = "Toggle search highlighting" } },
-    {
-      "n", "<leader>tq",
-      "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.loclist')) ? ':lopen<cr>' : ':windo lclose<cr>'",
-      { desc = "Toggle location list", expr = true }
-    },
 
     -- Command mode movement
     { "c", "<C-a>", "<Home>",    { desc = "Go to the beginning", silent = false } },
@@ -133,16 +129,15 @@ M.config = {
     { "n", "zn", "zr", { desc = "Reduce fold level" } }, -- opposite of zm
     { "n", "zN", "zR", { desc = "Open all folds" } }, -- opposite of zM
 
-    -- Search in file (delete the \c to match case)
-    { "n", "/", "/\\c", { desc = "Search for text in buffer", silent = false } },
+    -- Search in file (add \c at the end to ignore case)
     { "v", "/", "\"ay/\\V<C-r>a<cr>", { desc = "Search for the selection", } },
     { "n", "<leader>/", "/\\<<C-r><C-w>\\><cr><C-o>", { desc = "Search for word under cursor in buffer" } },
-    { "v", "<leader>/", "<esc>/\\%V\\c", { desc = "Search in visual selection", silent = false } },
+    { "v", "<leader>/", "<esc>/\\%V", { desc = "Search in visual selection", silent = false } },
 
     -- Find text in all files
     { "n", ")", ":Find ", { desc = "Find in all files", silent = false } },
-    { "n", "<leader>)", ":Find -s -w <C-r><C-w><cr>", { desc = "Find word under cursor in all files" } },
     { "v", ")", "\"ay:let @a = escape(@a,'\"')<cr>:Find -s \"<C-r>a\"<cr>", { desc = "Find the selection in all files" } },
+    { "n", "<leader>)", ":Find -s -w <C-r><C-w><cr>", { desc = "Find word under cursor in all files" } },
 
     -- Search and replace
     { "n", "<leader>s", [[:%s/\(\<<C-r><C-w>\>\)/\1/gc<Left><Left><Left>]], { desc = "Search and replace word under cursor",   silent = false } },
@@ -165,7 +160,6 @@ M.config = {
     { "n", "<leader>o", "<cmd>only<cr>",  { desc = "Leave only the current window" } },
     { "n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file executable" } },
     { "n", "J", "mzJ`z", { desc = "Join lines" } },
-    { "n", "K", function() local h = vim.lsp.buf.hover; h(); h(); end, { desc = "Enter symbol information popup" } },
     { "n", "gd", function() vim.lsp.buf.definition({ loclist = true }) end, { desc = "Go to definition" } },
     { "n", "i", "len(getline('.')) == 0 && empty(&buftype) ? '\"_cc' : 'i'", { desc = "Enter insert mode", expr = true } },
     { "n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" } },
@@ -173,6 +167,7 @@ M.config = {
     -- Command mode abbreviations
     { "ca", "te", "tabe", {} },
     { "ca", "vs", "vsplit", {} },
+    { "ca", "sort", "sort i", {} },
 
     -- Insert mode abbreviations
     { "ia", "teh", "the", {} },

@@ -16,7 +16,13 @@ M.lua_ls = {
     libs_queue = {},
   },
   config = {
-    settings = { Lua = {}, },
+    settings = {
+      Lua = {
+        hint = {
+          enable = true,
+        },
+      },
+    },
   },
 }
 
@@ -84,7 +90,6 @@ M.lua_ls.config.on_init = tie(
             "${3rd}/luv/library", -- vim.uv
             vim.fn.stdpath("data").."/lazy/lazy.nvim",
             unpack(M.lua_ls.utils.libs_queue),
-            -- TODO: vim.fn.stdpath("data").."/lazy/snacks.nvim",
           }
         },
       }

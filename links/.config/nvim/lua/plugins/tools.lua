@@ -11,6 +11,11 @@ return {
           if lsp.config then vim.lsp.config(name, lsp.config) end
           if lsp.enable ~= false then vim.lsp.enable(name) end
         end)
+
+        -- Example inlay hints configs:
+        -- https://github.com/MysticalDevil/inlay-hints.nvim/tree/master
+        vim.api.nvim_set_hl(0, "LspInlayHint", { link = "Comment" })
+        -- vim.lsp.inlay_hint.enable()
       end,
       tied.do_nothing
     ),

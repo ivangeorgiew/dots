@@ -108,6 +108,29 @@ M.setup = tie(
       opts.group = group
       tied.create_autocmd(opts)
     end)
+
+    local ctrlv_code = vim.api.nvim_replace_termcodes("<C-V>", true, true, true)
+
+    -- Can't be put in an autocmd, so use vim.on_key instead
+    vim.g.ns_clear_hls = vim.on_key(
+      tie(
+        "Clear hlsearch",
+        function(_, key)
+          local mode = vim.api.nvim_get_mode().mode:gsub(ctrlv_code, "v"):lower()
+
+          if (
+            vim.o.hlsearch and
+            mode:match("^[niv]$") and
+            not key:match("^[nN]?$")
+          ) then
+            vim.cmd("nohls")
+          end
+        end,
+        function() vim.on_key(nil, vim.g.ns_clear_hls) end
+      ),
+      vim.api.nvim_create_namespace("clear_hls")
+    )
+
   end,
   tied.do_nothing
 )

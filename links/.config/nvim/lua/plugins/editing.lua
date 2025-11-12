@@ -46,6 +46,7 @@ return {
     },
   },
   {
+    -- TODO alternative is mini.pairs with LazyVim's additions
     "windwp/nvim-autopairs",
     event = "InsertEnter",
     -- :h nvim-autopairs-default-values

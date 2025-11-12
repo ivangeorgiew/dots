@@ -5,10 +5,10 @@ _G.tied = {}
 tied.functions = setmetatable({}, { __mode = "k" })
 
 -- Indicates to rethow the error if returned in `on_catch`
-tied.RETHROW = "__tie_rethrow__"
+tied.RETHROW = "<rethrow error>"
 
 -- When no meaningful description can be provided
-tied.NO_DESC = "__no_desc__"
+tied.NO_DESC = "<no desc>"
 
 -- Should be used for functions which must return a value
 -- or you don't know how to handle an error (among other possible uses)
