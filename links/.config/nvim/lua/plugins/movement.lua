@@ -1,10 +1,12 @@
----@type LazyPluginSpec|LazyPluginSpec[]
-return {
-  {
-    -- TODO I can use Snacks.scroll as alternative
+--- @type table<string,MyLazySpec>
+local M = {
+  -- TODO: I can use Snacks.scroll as alternative
+  neoscroll = {
+    -- Smooth scrolling in files
     "karb94/neoscroll.nvim",
     event = "User FilePost",
     opts = {
+      mappings = { "<C-u>", "<C-d>", },
       hide_cursor = true,
       stop_eof = true,
       respect_scrolloff = false,
@@ -16,3 +18,5 @@ return {
     },
   }
 }
+
+return M

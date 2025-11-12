@@ -1,5 +1,3 @@
--- Configs that are setup in the nvim-lspconfig plugin
-
 ---@class LspConfig
 ---@field enable? boolean
 ---@field pkg_name? string

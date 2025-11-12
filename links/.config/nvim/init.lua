@@ -11,7 +11,7 @@ tie(
       {
         "notify",
         "options",
-        "plugin_manager",
+        "lazy",
         "keymaps",
         "usercmds",
         "autocmds",
