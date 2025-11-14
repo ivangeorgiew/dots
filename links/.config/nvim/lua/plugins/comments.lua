@@ -1,10 +1,14 @@
 --- @type table<string,MyLazySpec>
 local M = {
   ts_comments = {
-    -- TODO: Enchance native comments
+    -- Enchances native comments functionality
     "folke/ts-comments.nvim",
     event = "VeryLazy",
-    opts = {},
+    opts = {
+      lang = {
+        kitty = "# %s",
+      }
+    },
   },
   todo_comments = {
     -- Add todo, fix, note, etc type of comments

@@ -48,11 +48,11 @@ M.config = {
             function(choice)
               if type(choice) ~= "string" then return end
 
-              if choice:find("full words") then
+              if choice:match("full words") then
                 search = ("\\<%s\\>"):format(search)
               end
 
-              if choice:find("Yes") then
+              if choice:match("Yes") then
                 -- Commands are executed in each list item (buffer)
                 -- Prevent warnings/issues with the subcommands
                 -- :h cdo

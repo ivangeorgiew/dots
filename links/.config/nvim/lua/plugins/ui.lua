@@ -17,12 +17,12 @@ M.indentscope.opts = {
     n_lines = 10000, -- max lines above or below within which scope is computed
   },
   draw = {
-    -- NOTE: animation() and predicate() are setup in M.config()
+    -- animation() and predicate() are setup in M.config()
     delay = 100, -- Delay (in ms) between event and start of draw
     priority = 2, -- Increase to display on top of more symbols.
   },
   mappings = {
-    -- NOTE: Use "" to disable one.
+    -- Use "" to disable one.
     object_scope = "is", -- inside scope
     object_scope_with_border = "as", -- around scope
     goto_top = "[s", -- go to start of scope
@@ -91,9 +91,8 @@ M.indentscope.config = tie(
 
     require("mini.indentscope").setup(opts)
 
-    -- Set highlight group to "Whitespace" or "LineNr"
-    local hl_copy = vim.api.nvim_get_hl(0, { name = extra_opts.hl_group })
-    vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", hl_copy --[[@as vim.api.keyset.highlight]] )
+    -- Change the symbol color
+    vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { link = extra_opts.hl_group })
 
     tied.create_autocmd({
       desc = "Disable plugin mini.indentscope on certain buffers/filetypes",

@@ -49,9 +49,11 @@ local print_err = function(err_msg, hash)
   -- Different hash and logic from vim.notify_once
   -- Remove after timeout and use desc+err for hash
   if not notifs[hash] then
+    local seconds = 60 * 1e3
+
     vim.notify(err_msg, vim.log.levels.ERROR)
     notifs[hash] = true
-    vim.defer_fn(function() notifs[hash] = nil end, 10 * 1e3)
+    vim.defer_fn(function() notifs[hash] = nil end, seconds)
   end
 end
 
@@ -59,7 +61,7 @@ end
 local print_inner_err = function(err)
   vim.validate("err", err, "string")
   local desc = "inner error-handling"
-  print_err(("Error in %s:\n%s"):format(desc, err), desc..err)
+  print_err(("Error in %s:%s\n\n"):format(desc, err), desc..err)
 end
 
 --- Stringify anything
@@ -83,13 +85,13 @@ local stringify = function(arg)
   return str
 end
 
---- @alias OnCatchFunc fun(props: { desc: string, err: string, args: table }): any
+--- @alias tie.on_catch fun(props: { desc: string, err: string, args: table }): any
 
 --- Error-handle a function
 --- @generic F : function
 --- @param desc string
 --- @param on_try F
---- @param on_catch OnCatchFunc
+--- @param on_catch tie.on_catch
 --- @return F
 _G.tie = function(desc, on_try, on_catch)
   vim.validate("desc", desc, "string")
@@ -140,7 +142,7 @@ _G.tie = function(desc, on_try, on_catch)
             if not info then break end
 
             if info and info.what == "Lua" then
-              local source = vim.fn.fnamemodify(info.source:sub(2), ":p:~:.")
+              local source = vim.fn.fnamemodify(info.source:sub(2), ":p:~")
               local line = ("%s- %s:%d"):format(ind, source, info.currentline)
 
               if info.name and info.namewhat then

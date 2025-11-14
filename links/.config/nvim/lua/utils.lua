@@ -284,6 +284,9 @@ tied.check_keys = tie(
   ---@param tbl table
   ---@param keys string[]
   function(tbl, keys)
+    vim.validate("tbl", tbl, "table")
+    vim.validate("keys", keys, "table")
+
     for _, key in ipairs(keys) do
       if type(tbl) == "table" and tbl[key] then
         tbl = tbl[key]

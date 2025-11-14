@@ -40,9 +40,9 @@ M.config = {
     { { "n", "v" }, "d", [["_d]],  { desc = "Delete" } },
     { { "n", "v" }, "c", [["_c]],  { desc = "Change" } },
 
-    -- Smoother scrolling and handle wrapped lines
-    { { "n", "x" }, "k", function() vim.cmd("noa normal! "..(vim.v.count == 0 and "g" or vim.v.count).."k") end, { desc = "Move up" } },
-    { { "n", "x" }, "j", function() vim.cmd("noa normal! "..(vim.v.count == 0 and "g" or vim.v.count).."j") end, { desc = "Move down" } },
+    -- Handle wrapped lines
+    { { "n", "x" }, "k", function() return vim.v.count == 0 and "gk" or "k" end, { desc = "Move up", expr = true } },
+    { { "n", "x" }, "j", function() return vim.v.count == 0 and "gj" or "j" end, { desc = "Move down", expr = true } },
 
     -- Cursor movement in insert mode
     { "i", "<C-h>", "<Left>",  { desc = "Move left" } },
@@ -89,12 +89,12 @@ M.config = {
     -- Quit things
     { "n", "qa", "<cmd>qa<cr>", { desc = "Quit all" } },
     { "n", "qt", "<cmd>tabclose<cr>", { desc = "Quit tab" } },
-    { "n", "qw", function() vim.cmd(#vim.api.nvim_list_wins() > 1 and "confirm q" or "bdelete") end, { desc = "Quit window", } },
+    { "n", "qw", "<cmd>close<cr>", { desc = "Quit window", } },
 
     -- Toggle things
     { "n", "<leader>tb", "<cmd>buffers<cr>", { desc = "Toggle buffers" } },
     { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
-    { "n", "<leader>te", vim.diagnostic.open_float, { desc = "Toggle errors on current line" } },
+    { "n", "<leader>te", function() local h = vim.diagnostic.open_float; h();h(); end, { desc = "Toggle errors on current line" } },
     { "n", "<leader>tE", vim.diagnostic.setloclist, { desc = "Toggle errors list" } },
     { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
     { "n", "<leader>tl", "<cmd>Lazy<cr>", { desc = "Toggle Lazy" } },
@@ -129,10 +129,11 @@ M.config = {
     { "n", "zn", "zr", { desc = "Reduce fold level" } }, -- opposite of zm
     { "n", "zN", "zR", { desc = "Open all folds" } }, -- opposite of zM
 
-    -- Search in file (add \c at the end to ignore case)
+    -- Search in file (delete the \c to match case)
+    { "n", "/", "/\\c", { desc = "Search for case-insensitive text in buffer", silent = false } },
     { "v", "/", "\"ay/\\V<C-r>a<cr>", { desc = "Search for the selection", } },
-    { "n", "<leader>/", "/\\<<C-r><C-w>\\><cr><C-o>", { desc = "Search for word under cursor in buffer" } },
-    { "v", "<leader>/", "<esc>/\\%V", { desc = "Search in visual selection", silent = false } },
+    { "n", "<leader>/", "/", { desc = "Search for case-sensitive text in buffer", silent = false } },
+    { "v", "<leader>/", "<esc>/\\%V\\c", { desc = "Search in visual selection", silent = false } },
 
     -- Find text in all files
     { "n", ")", ":Find ", { desc = "Find in all files", silent = false } },
@@ -159,6 +160,7 @@ M.config = {
     { "t", "<C-x>", "<C-\\><C-n>", { desc = "Exit terminal mode" } },
     { "n", "<leader>o", "<cmd>only<cr>",  { desc = "Leave only the current window" } },
     { "n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file executable" } },
+    { "n", "K", function() local h = vim.lsp.buf.hover; h(); h(); end, { desc = "Enter symbol information popup" } },
     { "n", "J", "mzJ`z", { desc = "Join lines" } },
     { "n", "gd", function() vim.lsp.buf.definition({ loclist = true }) end, { desc = "Go to definition" } },
     { "n", "i", "len(getline('.')) == 0 && empty(&buftype) ? '\"_cc' : 'i'", { desc = "Enter insert mode", expr = true } },

@@ -1,7 +1,47 @@
--- NOTE: I haven't error-handled all async functions
+-- NOTE: Add global functions one by one as needed
 
--- 1. The imported code itself is error-handled
--- 2. Modules from external code have their deeply nested functions tied
+local tie_deep_table = tie(
+  "Tie functions nested deep in a table",
+  --- @param tbl_name string
+  --- @param tbl table
+  --- @param on_catch tie.on_catch
+  function(tbl_name, tbl, on_catch)
+    vim.validate("tbl_name", tbl_name, "string")
+    vim.validate("tbl", tbl, "table")
+    vim.validate("on_catch", on_catch, "function")
+
+    local queue = { { tbl, tbl_name } }
+    local seen = {} -- filled with traversed tables
+
+    while #queue > 0 do
+      local item = table.remove(queue, 1)
+      local curr_tbl = item[1]
+      local curr_path = item[2]
+
+      -- ignore global vim
+      local is_vim_table = curr_path == "vim" or vim.startswith(curr_path, "vim.")
+
+      if not seen[curr_tbl] and not is_vim_table then
+        seen[curr_tbl] = true
+
+        for key, val in pairs(curr_tbl) do
+          local val_type = type(val)
+          local full_path = curr_path .. "." .. tostring(key)
+
+          if val_type == "function" then
+            curr_tbl[key] = tie(full_path, val, on_catch)
+          elseif val_type == "table" then
+            queue[#queue + 1] = { val, full_path }
+          end
+        end
+      end
+    end
+
+    return tbl
+  end,
+  tied.do_nothing
+)
+
 local tie_import_func = tie(
   "Tie an import function",
   --- @param fn_name string
@@ -18,12 +58,17 @@ local tie_import_func = tie(
 
         local results = { orig_fn(path) }
 
-        -- NOTE: Don't handle functions nested into module table
-        -- or functions passed as arguments to other functions
-
         for idx, val in ipairs(results) do
+          local desc = path
+
+          if #results > 1 then
+            desc = ("%s[%d]"):format(path, idx)
+          end
+
           if type(val) == "function" then
-            results[idx] = tie(path, val, tied.do_rethrow)
+            results[idx] = tie(desc, val, tied.do_rethrow)
+          elseif type(val) == "table" then
+            results[idx] = tie_deep_table(desc, val, tied.do_rethrow)
           end
         end
 
@@ -35,17 +80,22 @@ local tie_import_func = tie(
   tied.do_rethrow
 )
 
-local require = require
-_G.require = tie_import_func("require", require)
-local dofile = dofile
-_G.dofile = tie_import_func("dofile", dofile)
+-- NOTE: Don't wrap the import functions,
+-- there are almost no benefits besides somewhat
+-- better desc and seeing the function args
+-- Can be uncommented in rare debugging cases
+
+-- local require = require
+-- _G.require = tie_import_func("require", require)
+-- local dofile = dofile
+-- _G.dofile = tie_import_func("dofile", dofile)
 
 local overwrite_tied_catch = tie(
   "Overwrite on_catch of tied function",
   ---@param desc string
   ---@param extra_desc string
   ---@param on_try function
-  ---@param on_catch OnCatchFunc
+  ---@param on_catch tie.on_catch
   function(desc, extra_desc, on_try, on_catch)
     vim.validate("desc", desc, "string")
     vim.validate("extra_desc", extra_desc, "string")
@@ -237,3 +287,18 @@ _G.vim.ui.select = tie(
   tied.do_nothing
 )
 
+local set_hl = vim.api.nvim_set_hl
+_G.vim.api.nvim_set_hl = tie(
+  "Tied vim.api.nvim_set_hl",
+  --- @param ns_id integer
+  --- @param name string
+  --- @param val vim.api.keyset.highlight
+  function(ns_id, name, val)
+    vim.validate("ns_id", ns_id, "number")
+    vim.validate("name", name, "string")
+    vim.validate("val", val, "table")
+
+    set_hl(ns_id, name, val)
+  end,
+  tied.do_nothing
+)

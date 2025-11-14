@@ -143,7 +143,7 @@ M.treesitter.extra_opts = {
   },
   folds = {},
   ignore = {
-    "comment" -- interferes when todo-comments.nvim
+    "comment", -- interferes when todo-comments.nvim
   },
 }
 
@@ -227,6 +227,8 @@ M.treesitter.config = tie(
         if should_enable("highlights") then
           pcall(vim.treesitter.start, ev.buf)
           -- vim.notify("Setup highlighting for: "..lang)
+        else
+          pcall(vim.treesitter.stop, ev.buf)
         end
 
         if should_enable("indents") then

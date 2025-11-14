@@ -124,10 +124,10 @@ M.tokyonight.opts = {
   on_highlights = tie(
     "Colorscheme tokyonight -> config -> on_highlight",
     function(hl, _)
-      local hypr_border = "#492A78"
+      local hypr_border = { fg = "#492A78" }
       local kanagawa_TabLine = { fg= "#938aa9" }
 
-      hl.WinSeparator = { fg = hypr_border }
+      hl.WinSeparator = hypr_border
       hl.TabLine = kanagawa_TabLine
     end,
     tied.do_nothing
