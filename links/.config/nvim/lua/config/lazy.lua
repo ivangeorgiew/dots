@@ -18,6 +18,7 @@ local M = {}
 -- TODO: Check other TODOs in the plugin dir
 -- TODO: Check all the plugins in `awesome-neovim`
 
+---@type LazyConfig
 M.opts = {
   -- Wrap plugins importing with error handling
   spec = tied.dir({
@@ -60,6 +61,7 @@ M.opts = {
   change_detection = {
     -- Automatically check for config file changes and reload the ui
     enabled = false,
+    notify = false,
   },
 
   performance = {

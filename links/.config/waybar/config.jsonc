@@ -36,7 +36,7 @@
       },
       "active-only": false,
       "on-click": "activate",
-      "persistent-workspaces": { "*": 5 },
+      "persistent-workspaces": { "*": 4 },
       "workspace-taskbar": {
         "enable": true,
         "format": "{icon}",

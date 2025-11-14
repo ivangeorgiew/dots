@@ -18,8 +18,6 @@ tied.do_rethrow = function() return tied.RETHROW end
 -- don't care if they fail and there is no cleanup
 tied.do_nothing = function() end
 
-tied.is_pcalled = false
-
 -- Check if function was called with pcall or xpcall
 -- Used in `tie()` to not wrap protected calls
 local wrap_prot_call = function(orig_fn)
@@ -85,6 +83,96 @@ local stringify = function(arg)
   return str
 end
 
+--- Create a pretty error string and log it
+--- @param desc string
+--- @param err string
+--- @param args table
+--- @param n_args number
+local log_error = function(desc, err, args, n_args)
+  vim.validate("desc", desc, "string")
+  vim.validate("err", err, "string")
+  vim.validate("args", args, "table")
+  vim.validate("n_args", n_args, "number")
+
+  local ok, inner_err = true, nil
+  local ind = "  "
+  local args_string = ""
+  local stacktrace = ""
+
+  -- Stringify args
+  ---@type boolean, unknown
+  ok, inner_err = pcall(function()
+    if n_args > 0 then
+      local lines = {}
+
+      for idx = 1, n_args do
+        lines[#lines + 1] = ("%s%d) %s"):format(ind, idx, stringify(args[idx]))
+      end
+
+      args_string = table.concat(lines, "\n")
+    else
+      args_string = ind .. "<no args>"
+    end
+  end)
+  if not ok then print_inner_err(inner_err) end
+
+  -- Gather stacktrace
+  ---@type boolean, unknown
+  ok, inner_err = pcall(function()
+    local level = 7
+    local lines = {}
+
+    while #lines < 10 do
+      local info = debug.getinfo(level, "Sln")
+
+      if not info then break end
+
+      if info and info.what == "Lua" then
+        local source = vim.fn.fnamemodify(info.source:sub(2), ":p:~")
+        local line = ("%s- %s:%d"):format(ind, source, info.currentline)
+
+        if info.name and info.namewhat then
+          line = ("%s _in_ **%s** %s"):format(line, info.namewhat, info.name)
+        end
+
+        lines[#lines + 1] = line
+      end
+
+      level = level + 1
+    end
+
+    stacktrace = table.concat(lines, "\n")
+  end)
+  if not ok then print_inner_err(inner_err) end
+
+  -- Print error message
+  ---@type boolean, unknown
+  ok, inner_err = pcall(function()
+    local l = {
+      "Error at:",
+      ind .. desc,
+    }
+
+    if args_string ~= "" then
+      l[#l+1] = "Function args:"
+      l[#l+1] = args_string
+    end
+
+    l[#l+1] = "Message:"
+    l[#l+1] = ind .. err
+
+    if stacktrace ~= "" then
+      l[#l+1] = "Stacktrace:"
+      l[#l+1] = stacktrace
+    end
+
+    l[#l+1] = "\n"
+
+    print_err(table.concat(l, "\n"), desc..err)
+  end)
+  if not ok then print_inner_err(inner_err) end
+end
+
 --- @alias tie.on_catch fun(props: { desc: string, err: string, args: table }): any
 
 --- Error-handle a function
@@ -111,79 +199,7 @@ _G.tie = function(desc, on_try, on_catch)
       -- Actual on_catch call and error logging
       ---@type boolean, unknown
       ok, inner_err = pcall(function()
-        local ind = "  "
-        local args_string = ""
-        local stacktrace = ""
-
-        -- Stringify args
-        ok, inner_err = pcall(function()
-          if n_args > 0 then
-            local lines = {}
-
-            for idx = 1, n_args do
-              lines[#lines + 1] = ("%s%d) %s"):format(ind, idx, stringify(args[idx]))
-            end
-
-            args_string = table.concat(lines, "\n")
-          else
-            args_string = ind .. "<no args>"
-          end
-        end)
-        if not ok then print_inner_err(inner_err) end
-
-        -- Gather stacktrace
-        ok, inner_err = pcall(function()
-          local level = 6
-          local lines = {}
-
-          while #lines < 10 do
-            local info = debug.getinfo(level, "Sln")
-
-            if not info then break end
-
-            if info and info.what == "Lua" then
-              local source = vim.fn.fnamemodify(info.source:sub(2), ":p:~")
-              local line = ("%s- %s:%d"):format(ind, source, info.currentline)
-
-              if info.name and info.namewhat then
-                line = ("%s _in_ **%s** %s"):format(line, info.namewhat, info.name)
-              end
-
-              lines[#lines + 1] = line
-            end
-
-            level = level + 1
-          end
-
-          stacktrace = table.concat(lines, "\n")
-        end)
-        if not ok then print_inner_err(inner_err) end
-
-        -- Print error message
-        ok, inner_err = pcall(function()
-          local l = {
-            "Error at:",
-            ind .. desc,
-          }
-
-          if args_string ~= "" then
-            l[#l+1] = "Function args:"
-            l[#l+1] = args_string
-          end
-
-          l[#l+1] = "Message:"
-          l[#l+1] = ind .. err
-
-          if stacktrace ~= "" then
-            l[#l+1] = "Stacktrace:"
-            l[#l+1] = stacktrace
-          end
-
-          l[#l+1] = "\n"
-
-          print_err(table.concat(l, "\n"), desc..err)
-        end)
-        if not ok then print_inner_err(inner_err) end
+        log_error(desc, err, args, n_args)
 
         local on_catch_results = { pcall(on_catch, { desc = desc, err = err, args = args }) }
         local on_catch_was_valid = table.remove(on_catch_results, 1)
@@ -211,9 +227,11 @@ _G.tie = function(desc, on_try, on_catch)
   end
 
   local inner_fn = function(...)
-    -- Don't notify or do anything at all when
-    -- the function was called from pcall or xpcall
-    if tied.is_pcalled then return on_try(...) end
+    -- Do nothing extra when the function
+    -- was called from pcall/xpcall and it rethrows the error
+    if tied.is_pcalled and on_catch == tied.do_rethrow then
+      return on_try(...)
+    end
 
     -- Catch all results, not just the first one
     local on_try_results = { xpcall(on_try, inner_catch(...), ...) } ---@type any[]

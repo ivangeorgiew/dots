@@ -65,12 +65,13 @@
     spotify-no-ads = let
       spotify-adblock = prev.rustPlatform.buildRustPackage {
         pname = "spotify-adblock";
-        version = "1.0.3";
+        version = "lastcommit at 2025-05-20";
         src = prev.fetchFromGitHub {
           owner = "abba23";
           repo = "spotify-adblock";
-          rev = "5a3281dee9f889afdeea7263558e7a715dcf5aab";
-          hash = "sha256-UzpHAHpQx2MlmBNKm2turjeVmgp5zXKWm3nZbEo0mYE=";
+          rev = "refs/heads/main";
+          fetchSubmodules = false;
+          hash = "sha256-nwiX2wCZBKRTNPhmrurWQWISQdxgomdNwcIKG2kSQsE=";
         };
         cargoHash = "sha256-oGpe+kBf6kBboyx/YfbQBt1vvjtXd1n2pOH6FNcbF8M=";
 
@@ -88,17 +89,17 @@
           install -Dm644 --strip target/release/libspotifyadblock.so -t $out/lib
         '';
       };
-      # TODO fix spotify version so that both hold true:
-      # 1. no memory leaks
-      # 2. music search works
-      old-spotify =
+      # NOTE: Careful for the following issues
+      # 1. memory leaks
+      # 2. music search not working
+      spotify =
         (import (fetchTarball {
-            url = "https://github.com/NixOS/nixpkgs/archive/84d4f874c2bac9f3118cb6907d7113b3318dcb5e.tar.gz";
-            sha256 = "012bb8xa6jc1a6g1wgk2s3cbzd9pacc8p0b141sv3s23r5z254wm";
+            url = "https://github.com/NixOS/nixpkgs/archive/e8f40168fbd024866f22e2c8d18fe040e3691022.tar.gz";
+            sha256 = "18fhkp37rm3mld6m1j6a4jknl3j3rgwpyqrqy3arbj9x7bzy5gkz";
           })
           nixpkgs-opts).spotify;
     in
-      old-spotify.overrideAttrs (oldAttrs: {
+      spotify.overrideAttrs (oldAttrs: {
         buildInputs = (oldAttrs.buildInputs or []) ++ (with prev; [zip unzip]);
         postInstall =
           (oldAttrs.postInstall or "")

@@ -38,6 +38,9 @@
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
     settings = {
+      # Toggles the git tree is dirty warning
+      warn-dirty = false;
+
       # Used by default in Determinate Nix
       max-jobs = "auto";
 
