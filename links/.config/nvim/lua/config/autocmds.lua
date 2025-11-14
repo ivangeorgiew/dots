@@ -97,6 +97,15 @@ M.config = {
       tied.apply_maps(qf_maps)
     end
   },
+  {
+    desc = "Remove ending whitespace",
+    event = "BufWritePre",
+    callback = function()
+      vim.cmd("normal! ms")
+      vim.cmd([[silent! %s/\s\+$//]])
+      vim.cmd("normal! `s")
+    end
+  }
 }
 
 M.setup = tie(
