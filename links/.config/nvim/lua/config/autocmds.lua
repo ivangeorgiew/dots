@@ -1,5 +1,41 @@
 local M = {}
 
+M.setup = tie(
+  "Setup autocmds",
+  function()
+    local group = tied.create_augroup("my.main", true)
+
+    tied.each_i(M.config, "Queue autocmd to create", function(_, opts)
+      opts.group = group
+      tied.create_autocmd(opts)
+    end)
+
+    local ctrlv_code = vim.api.nvim_replace_termcodes("<C-V>", true, true, true)
+
+    -- Can't be put in an autocmd, so use vim.on_key instead
+    vim.g.ns_clear_hls = vim.on_key(
+      tie(
+        "Clear hlsearch",
+        function(_, key)
+          local mode = vim.api.nvim_get_mode().mode:gsub(ctrlv_code, "v"):lower()
+
+          if (
+            vim.o.hlsearch and
+            mode:match("^[niv]$") and
+            not key:match("^[nN]?$")
+          ) then
+            vim.cmd("nohls")
+          end
+        end,
+        function() vim.on_key(nil, vim.g.ns_clear_hls) end
+      ),
+      vim.api.nvim_create_namespace("clear_hls")
+    )
+
+  end,
+  tied.do_nothing
+)
+
 ---@type MyAutocmdOpts[]
 M.config = {
   {
@@ -105,43 +141,23 @@ M.config = {
       vim.cmd([[silent! %s/\s\+$//]])
       vim.cmd("normal! `s")
     end
-  }
+  },
+  {
+    desc = "Auto-save vim session",
+    event = "VimLeavePre",
+    callback = function() tied.load_session(false) end,
+  },
+  {
+    desc = "Auto-load vim session",
+    event = "UIEnter",
+    once = true,
+    nested = true,
+    callback = function()
+      if vim.env.NVIM_RELOADED then
+        tied.load_session(true)
+      end
+    end,
+  },
 }
-
-M.setup = tie(
-  "Setup autocmds",
-  function()
-    local group = tied.create_augroup("my.main", true)
-
-    tied.each_i(M.config, "Queue autocmd to create", function(_, opts)
-      opts.group = group
-      tied.create_autocmd(opts)
-    end)
-
-    local ctrlv_code = vim.api.nvim_replace_termcodes("<C-V>", true, true, true)
-
-    -- Can't be put in an autocmd, so use vim.on_key instead
-    vim.g.ns_clear_hls = vim.on_key(
-      tie(
-        "Clear hlsearch",
-        function(_, key)
-          local mode = vim.api.nvim_get_mode().mode:gsub(ctrlv_code, "v"):lower()
-
-          if (
-            vim.o.hlsearch and
-            mode:match("^[niv]$") and
-            not key:match("^[nN]?$")
-          ) then
-            vim.cmd("nohls")
-          end
-        end,
-        function() vim.on_key(nil, vim.g.ns_clear_hls) end
-      ),
-      vim.api.nvim_create_namespace("clear_hls")
-    )
-
-  end,
-  tied.do_nothing
-)
 
 return M

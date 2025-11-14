@@ -137,8 +137,10 @@ in {
       dirs_size = "gdu"; # Windirstat for Linux (sort dirs by size)
       ps_search = "ps aux | rg"; # List a process
       ps_kill = "pkill -9"; # Force kill a process (hence the 9)
-      lazyvim = "NVIM_APPNAME=lazyvim nvim"; # use the LazyVim neovim config
-      nvchad = "NVIM_APPNAME=nvchad nvim"; # use the NvChad neovim config
+      vim = "v"; # Redirect to my nvim restarting function
+      vi = "v"; # Redirect to my nvim restarting function
+      lazyvim = "NVIM_APPNAME=lazyvim v"; # use the LazyVim neovim config
+      nvchad = "NVIM_APPNAME=nvchad v"; # use the NvChad neovim config
       neofetch = "nitch"; # Displays system info
       nix_update = "echo '> Updating flake inputs' && sudo nix flake update --flake ~/dots"; # Update the versions of packages
       nix_switch = "nix_update && nh os switch"; # Change nixos config now
@@ -219,6 +221,16 @@ in {
         end
 
         bind \cg 'go_to_project; commandline -f repaint'
+
+        # function which restarts neovim on `:cq`
+        function v
+          nvim $argv
+
+          # restart only on :cq which exits with 1
+          while test $status -eq 1
+            NVIM_RELOADED=1 nvim
+          end
+        end
 
         # Create ~/projects folder if needed
         if test ! -d "~/projects"

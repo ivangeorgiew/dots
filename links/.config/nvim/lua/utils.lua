@@ -299,3 +299,28 @@ tied.check_keys = tie(
   end,
   tied.do_rethrow
 )
+
+tied.load_session = tie(
+  "Load or save a vim session",
+  --- @param should_load boolean
+  function(should_load)
+    vim.validate("should_load", should_load, "boolean")
+
+    -- TODO: handle git repos like in
+    -- https://github.com/ruicsh/nvim-config/blob/main/plugin/custom/sessions.lua
+    local cwd = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:~"):gsub("[:\\/%s.]", "_")
+    local ses_dir = vim.fn.stdpath("data") .. "/sessions"
+    local ses_file = vim.fn.fnameescape(("%s/%s.vim"):format(ses_dir, cwd))
+
+    if not vim.uv.fs_stat(ses_dir) then
+      vim.fn.mkdir(ses_dir, "p")
+    end
+
+    if not should_load then
+      vim.cmd("mks! " .. ses_file)
+    elseif vim.fn.filereadable(ses_file) == 1 then
+      vim.cmd("source " .. ses_file)
+    end
+  end,
+  tied.do_nothing
+)

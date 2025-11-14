@@ -1,5 +1,15 @@
 local M = {}
 
+M.setup = tie(
+  "Setup usercmds",
+  function()
+    tied.each_i(M.config, "Queue usercmd to create", function(_, usercmd)
+      tied.create_usercmd(unpack(usercmd))
+    end)
+  end,
+  tied.do_nothing
+)
+
 ---@class UserCmdParams
 ---@field [1] string
 ---@field [2] string|fun(args: vim.api.keyset.create_user_command.command_args)
@@ -69,15 +79,5 @@ M.config = {
     { desc = "Replace text in files", nargs = 0 }
   },
 }
-
-M.setup = tie(
-  "Setup usercmds",
-  function()
-    tied.each_i(M.config, "Queue usercmd to create", function(_, usercmd)
-      tied.create_usercmd(unpack(usercmd))
-    end)
-  end,
-  tied.do_nothing
-)
 
 return M

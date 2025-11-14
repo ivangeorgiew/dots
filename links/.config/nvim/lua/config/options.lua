@@ -75,6 +75,7 @@ M.setup = tie(
     o.ruler = false -- toggle statusline info at the end
     o.scrolloff = 999 -- center cursor line when scrolling
     o.selection = "old" -- don't go past line end in visual mode
+    o.sessionoptions:remove({ "buffers" }) -- what to store with :mksession
     o.shiftround = true -- round indent
     o.shiftwidth = 2 -- amount of spaces on shifting
     o.shortmess:append({ W = true, I = true, c = true, C = true, s = true }) -- skip some unnecessary messages

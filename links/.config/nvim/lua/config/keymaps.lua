@@ -90,6 +90,7 @@ M.config = {
     { "n", "qa", "<cmd>qa<cr>", { desc = "Quit all" } },
     { "n", "qt", "<cmd>tabclose<cr>", { desc = "Quit tab" } },
     { "n", "qw", "<cmd>close<cr>", { desc = "Quit window", } },
+    { "n", "qq", "<cmd>cq<cr>", { desc = "Quit and reload neovim" } },
 
     -- Toggle things
     { "n", "<leader>tb", "<cmd>buffers<cr>", { desc = "Toggle buffers" } },
