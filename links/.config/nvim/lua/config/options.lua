@@ -46,13 +46,14 @@ M.setup = tie(
     o.completeopt = "fuzzy,menuone,noselect,popup" -- completion options (fuzzy only works on populated results)
     o.confirm = true -- popup to save file after some commands
     o.cursorline = true -- highlight the current cursor line
+    o.cursorlineopt = "number" -- what to highlight in cursorline
     o.diffopt:append({ "vertical", "iwhite", "algorithm:patience", "context:10", "indent-heuristic", "followwrap" }) -- https://vimways.org/2018/the-power-of-diff/
     o.expandtab = true -- change tab to use spaces
     o.fillchars:append({ foldopen = "", foldclose = "", fold = " ", foldsep = " ", eob = " ", }) -- special characters
     o.foldlevelstart = 99 -- default fold level
     o.foldmarker="region,endregion" -- markers for folding
     o.foldmethod = "marker" -- default fold method
-    o.foldtext = "v:lua.tied.get_fold_text()" -- text for closed folds
+    o.foldtext = "v:lua.tied.foldtext()" -- text for closed folds
     o.foldnestmax = 4 -- max nested fold levels
     o.grepformat = "%f:%l:%m" -- format for grep command
     o.grepprg = "rg --no-heading -n -uu -S -F" -- faster alternative to grep

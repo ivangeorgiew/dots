@@ -150,7 +150,7 @@ local log_error = function(desc, err, args, n_args)
   ok, inner_err = pcall(function()
     local l = {
       "Error at:",
-      ind .. desc,
+      ("%s<%s>"):format(ind, desc),
     }
 
     if args_string ~= "" then
@@ -205,10 +205,10 @@ _G.tie = function(desc, on_try, on_catch)
         local on_catch_was_valid = table.remove(on_catch_results, 1)
 
         if on_catch_results[1] == tied.RETHROW then
-          on_catch_results = { ("error while calling: [%s]"):format(desc) }
+          on_catch_results = { ("error while calling: <%s>"):format(desc) }
           should_rethrow = true
         elseif not on_catch_was_valid then
-          on_catch_results = { ("error in `on_catch` for: [%s]"):format(desc) }
+          on_catch_results = { ("error in `on_catch` for: <%s>"):format(desc) }
           should_rethrow = true
         end
 

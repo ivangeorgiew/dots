@@ -41,8 +41,8 @@ M.config = {
     { { "n", "v" }, "c", [["_c]],  { desc = "Change" } },
 
     -- Handle wrapped lines
-    { { "n", "x" }, "k", function() return vim.v.count == 0 and "gk" or "k" end, { desc = "Move up", expr = true } },
-    { { "n", "x" }, "j", function() return vim.v.count == 0 and "gj" or "j" end, { desc = "Move down", expr = true } },
+    { { "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up", expr = true } },
+    { { "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down", expr = true } },
 
     -- Cursor movement in insert mode
     { "i", "<C-h>", "<Left>",  { desc = "Move left" } },
@@ -88,12 +88,11 @@ M.config = {
 
     -- Quit things
     { "n", "qa", "<cmd>qa<cr>", { desc = "Quit all" } },
+    { "n", "qr", "<cmd>cq<cr>", { desc = "Quit and reload neovim" } },
     { "n", "qt", "<cmd>tabclose<cr>", { desc = "Quit tab" } },
     { "n", "qw", "<cmd>close<cr>", { desc = "Quit window", } },
-    { "n", "qq", "<cmd>cq<cr>", { desc = "Quit and reload neovim" } },
 
     -- Toggle things
-    { "n", "<leader>tb", "<cmd>buffers<cr>", { desc = "Toggle buffers" } },
     { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
     { "n", "<leader>te", vim.diagnostic.setloclist, { desc = "Toggle errors list" } },
     { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
@@ -168,6 +167,7 @@ M.config = {
     { "n", "gd", function() vim.lsp.buf.definition({ loclist = true }) end, { desc = "Go to definition" } },
     { "n", "i", "len(getline('.')) == 0 && empty(&buftype) ? '\"_cc' : 'i'", { desc = "Enter insert mode", expr = true } },
     { "n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" } },
+    { "n", "<F5>", function() tied.load_session(true) end, { desc = "Load session" } },
 
     -- Command mode abbreviations
     { "ca", "te", "tabe", {} },

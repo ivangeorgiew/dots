@@ -33,9 +33,9 @@ local M = {
 M.nvim_lspconfig.config = tie(
   "Plugin nvim-lspconfig -> config",
   function()
-    tied.each(require("config.lsp"), "Setup an LSP", function(name, lsp)
-      if lsp.config then vim.lsp.config(name, lsp.config) end
-      if lsp.enable ~= false then vim.lsp.enable(name) end
+    tied.each_i(require("lsp"), "Setup an LSP", function(_, lsp)
+      if lsp.config then vim.lsp.config(lsp.lsp_name, lsp.config) end
+      if lsp.enable ~= false then vim.lsp.enable(lsp.lsp_name) end
     end)
 
     -- Example inlay hints configs:
@@ -60,76 +60,58 @@ M.mason.config = tie(
     require("mason").setup(opts)
 
     local mr = require("mason-registry")
-
-    tied.each_i(
-      {
-        "package:install:success",
-        "package:install:failed",
-        "package:uninstall:success",
-        "package:uninstall:failed",
-      },
-      "Add listeners for mason events",
-      function(_, event)
-        mr:on(event, vim.schedule_wrap(tie(
-          "Notify about mason event status",
-          function(payload)
-            local action, status = event:match(":(.+):(.+)$")
-
-            action = action:sub(1,1):upper() .. action:sub(2)
-
-            vim.notify(("[mason]: %s `%s` %s"):format(action, payload.name, status))
-          end,
-          tied.do_nothing
-        )))
-      end
-    )
-
-    mr:on("package:install:success", vim.schedule_wrap(tie(
-      "Try to load the newly installed package",
-      function()
-        vim.api.nvim_exec_autocmds(
-          "FileType",
-          { buffer = vim.api.nvim_get_current_buf() }
-        )
-      end,
-      tied.do_nothing
-    )))
-
-    mr.refresh(tie(
-      "Manage mason packages",
-      function()
+    local install_tools = tie(
+      "Install tools with mason",
+      function(gather_tools)
         local installed = mr.get_installed_package_names()
         local to_install = {}
 
-        tied.each(require("config.lsp"), "Queue LSP for mason install", function(_, lsp)
-          if lsp.enable ~= false and lsp.pkg_name then
-            to_install[#to_install + 1] = lsp.pkg_name
-          end
-        end)
-
-        -- TODO: Add DAP tools
-        -- TODO: Add null-ls tools
-
-        tied.each_i(installed, "Auto-remove a mason tool", function(_, tool)
-          if not vim.list_contains(to_install, tool) then
-            local name = tool:match("^([^@]+)")
-
-            mr.get_package(name):uninstall()
-          end
-        end)
+        -- No need to tie, let it fail
+        gather_tools(to_install)
 
         tied.each_i(to_install, "Auto-install a mason tool", function(_, tool)
           if not vim.list_contains(installed, tool) then
-            local name = tool:match("^([^@]+)")
-            local version = tool:match("^[^@]+@(.+)$")
-
-            -- Intentionally fail if tool is missing to notify about it
-            mr.get_package(name):install({ version = version })
+            vim.cmd("MasonInstall " .. tool)
           end
         end)
       end,
       tied.do_nothing
-    ))
+    )
+
+    install_tools(function(to_install)
+      tied.each_i(require("lsp"), "Queue LSP for mason install", function(_, lsp)
+        if lsp.enable ~= false and lsp.pkg_name then
+          to_install[#to_install + 1] = lsp.pkg_name
+        end
+      end)
+    end)
+
+    tied.on_plugin_load(
+      { "conform.nvim" },
+      "Install code formatters from conform.nvim",
+      function(plugins)
+        install_tools(function(to_install)
+          tied.each(
+            plugins["conform.nvim"].opts.formatters_by_ft,
+            "Queue all code formatters for install with mason",
+            function(_, formatters)
+              tied.each_i(
+                formatters,
+                "Queue a code formatter for install with mason",
+                function(_, formatter)
+                  if type(formatter) == "string" and mr.has_package(formatter) then
+                    to_install[#to_install + 1] = formatter
+                  end
+                end
+              )
+            end
+          )
+        end)
+      end
+    )
+
+    -- TODO: Add DAP tools
+    -- TODO: Add null-ls tools
   end,
   tied.do_nothing
 )

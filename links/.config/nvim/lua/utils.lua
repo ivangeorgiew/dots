@@ -131,12 +131,6 @@ tied.apply_maps = tie(
 
 tied.dir = tie(
   "Traverse a directory and return item names",
-  --- @class TiedDirOpts
-  --- @field path string
-  --- @field type "file"|"dir"
-  --- @field ext string?
-  --- @field depth number?
-  --- @field map function?
   --- @param opts TiedDirOpts
   function(opts)
     vim.validate("opts", opts, "table")
@@ -157,7 +151,15 @@ tied.dir = tie(
       local matches_ext = not opts.ext or vim.endswith(name, "."..opts.ext)
 
       if type == item_type and matches_ext then
-        table.insert(entries, opts.map and opts.map(name) or name)
+        local entry = name
+
+        if opts.map then
+          entry = opts.map(name)
+        end
+
+        if entry ~= nil then
+          table.insert(entries, entry)
+        end
       end
     end
 
@@ -174,12 +176,13 @@ tied.colorscheme_config = tie(
 
     require(vim.g.colorscheme).setup(opts)
     vim.cmd("colorscheme "..vim.g.colorscheme)
+    vim.cmd("syntax off") -- use treesitter instead
   end,
   tied.do_nothing
 )
 
-tied.get_fold_text = tie(
-  "Get fold text",
+tied.foldtext = tie(
+  "Tied vim.o.foldtext",
   function()
     local start_line_nr = vim.v.foldstart
     local end_line_nr = vim.v.foldend
@@ -199,7 +202,7 @@ tied.on_plugin_load = tie(
   "Run code if a plugin is enabled",
   --- @param plugin_names string[]
   --- @param desc string
-  --- @param on_load function
+  --- @param on_load fun(plugins: table)
   function(plugin_names, desc, on_load)
     vim.validate("plugin_names", plugin_names, "table")
     vim.validate("desc", desc, "string")

@@ -1,14 +1,7 @@
----@class LspConfig
----@field enable? boolean
----@field pkg_name? string
----@field config? vim.lsp.Config
----@field utils? table
-
----@type table<string,LspConfig>
-local M = {}
-
-M.lua_ls = {
+---@type LspConfig
+local M = {
   enable = true,
+  lsp_name = "lua_ls",
   pkg_name = "lua-language-server",
   utils = {
     libs_queue = {},
@@ -24,7 +17,7 @@ M.lua_ls = {
   },
 }
 
-M.lua_ls.utils.add_plugin = tie(
+M.utils.add_plugin = tie(
   "LSP lua_ls -> Add nvim plugin as library",
   function(plugin_name)
     tied.on_plugin_load(
@@ -34,7 +27,7 @@ M.lua_ls.utils.add_plugin = tie(
         local plugin_dir = plugins[plugin_name].dir
 
         if not vim.g.lua_ls_loaded then
-          local queue = M.lua_ls.utils.libs_queue
+          local queue = M.utils.libs_queue
 
           if not vim.list_contains(queue, plugin_dir) then
             table.insert(queue, plugin_dir)
@@ -57,7 +50,7 @@ M.lua_ls.utils.add_plugin = tie(
   tied.do_nothing
 )
 
-M.lua_ls.config.on_init = tie(
+M.config.on_init = tie(
   "LSP lua_ls -> On init",
   function(client)
     vim.g.lua_ls_loaded = true
@@ -87,7 +80,7 @@ M.lua_ls.config.on_init = tie(
             vim.env.VIMRUNTIME,
             "${3rd}/luv/library", -- vim.uv
             vim.fn.stdpath("data").."/lazy/lazy.nvim",
-            unpack(M.lua_ls.utils.libs_queue),
+            unpack(M.utils.libs_queue),
           }
         },
       }

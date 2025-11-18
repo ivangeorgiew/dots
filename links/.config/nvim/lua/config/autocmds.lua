@@ -149,7 +149,7 @@ M.config = {
   },
   {
     desc = "Auto-load vim session",
-    event = "UIEnter",
+    event = "VimEnter",
     once = true,
     nested = true,
     callback = function()

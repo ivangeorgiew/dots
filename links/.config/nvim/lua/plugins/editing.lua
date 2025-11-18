@@ -7,7 +7,7 @@ local M = {
     event = "VeryLazy",
     -- https://github.com/gbprod/substitute.nvim?tab=readme-ov-file
     opts = {
-      highlight_substituted_text = { enabled = false, },
+      highlight_substituted_text = { enabled = false },
       preserve_cursor_position = false,
     },
   },
@@ -28,6 +28,7 @@ local M = {
     branch = "main",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
   },
+  -- TODO: config and test it
   autotag = {
     -- Auto-add closing tags for HTML, JSX, etc
     "windwp/nvim-ts-autotag",
@@ -35,41 +36,61 @@ local M = {
     event = "User FilePost",
     opts = {},
   },
+  -- TODO: config
+  conform = {
+    -- File formatter by filetype
+    "stevearc/conform.nvim",
+    event = "VeryLazy",
+    cmd = "ConformInfo",
+    config = tie("Plugin conform -> config", function(_, opts)
+      vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
+
+      require("conform").setup(opts)
+    end, tied.do_nothing),
+  },
 }
 
-M.substitute.config = tie(
-  "Plugin substitute -> config",
-  function(_, opts)
-    local subs = require("substitute")
-    local exch = require("substitute.exchange")
+M.substitute.config = tie("Plugin substitute -> config", function(_, opts)
+  local subs = require("substitute")
+  local exch = require("substitute.exchange")
 
-    local r = "r" -- replace key
-    local x = "x" -- exchange key
+  local r = "r" -- replace key
+  local x = "x" -- exchange key
 
-    subs.setup(opts)
-    tied.apply_maps({
-      { "n", r, subs.operator, { desc = "Replace" } },
-      { "x", r, subs.visual, { desc = "Replace" } },
-      { "n", r..r, subs.line, { desc = "Replace Line" } },
+  subs.setup(opts)
+  tied.apply_maps({
+    { "n", r, subs.operator, { desc = "Replace" } },
+    { "x", r, subs.visual, { desc = "Replace" } },
+    { "n", r .. r, subs.line, { desc = "Replace Line" } },
 
-      { "n", x, exch.operator, { desc = "Exchange" } },
-      { "x", x, exch.visual, { desc = "Exchange" } },
-      { "n", x..x, exch.line, { desc = "Exchange Line" } },
-      { "n", x:upper(), exch.cancel, { desc = "Exchange cancel" } },
+    { "n", x, exch.operator, { desc = "Exchange" } },
+    { "x", x, exch.visual, { desc = "Exchange" } },
+    { "n", x .. x, exch.line, { desc = "Exchange Line" } },
+    { "n", x:upper(), exch.cancel, { desc = "Exchange cancel" } },
+  })
+  tied.on_plugin_load({ "which-key.nvim" }, "Modify substitute.nvim mappings for which-key", function()
+    require("which-key").add({
+      mode = { "n" },
+      { r, group = "Replace", op = true },
+      { x, group = "Exchange", op = true },
     })
-    tied.on_plugin_load(
-      { "which-key.nvim" },
-      "Modify substitute.nvim mappings for which-key",
-      function()
-        require("which-key").add({
-          mode = { "n", },
-          { r, group = "Replace", op = true },
-          { x, group = "Exchange", op = true },
-        })
-      end
-    )
-  end,
-  tied.do_nothing
-)
+  end)
+end, tied.do_nothing)
+
+M.conform.opts = {
+  formatters_by_ft = {
+    lua = { "stylua" },
+    javascript = { "prettierd" },
+    nix = { "alejandra" },
+  },
+  notify_no_formatters = true,
+  default_format_opts = {
+    timeout_ms = 3000,
+    lsp_format = "fallback",
+  },
+  -- format_on_save = {
+  --   timeout_ms = 500,
+  -- },
+}
 
 return M

@@ -2,10 +2,6 @@
 -- Plugin Settings: https://lazy.folke.io/spec
 local M = {}
 
--- Used in plugin files
----@class MyLazySpec: LazyPluginSpec
----@field extra_opts? table
-
 -- TODO: Go through the NvChad plugin files
 -- TODO: Go through the pwnvim plugin files
 -- TODO: Go through the kickstart-modular plugin files
@@ -27,7 +23,7 @@ M.opts = {
     ext = "lua",
     map = tie(
       "Require a plugin file",
-      function(file) return vim.tbl_values(require("plugins/"..file:gsub("%.lua$", ""))) end,
+      function(file) return vim.tbl_values(require("plugins."..file:gsub("%.lua$", ""))) end,
       function() return {} end
     ),
   }),

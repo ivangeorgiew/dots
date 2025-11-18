@@ -42,9 +42,7 @@
       # blocked websites
       "0.0.0.0" = [
         "online-go.com"
-        # "9gag.com"
-        # "www.youtube.com"
-        # "www.reddit.com"
+        "9gag.com"
       ];
     };
   };
