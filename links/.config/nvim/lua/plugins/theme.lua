@@ -35,24 +35,20 @@ M.kanagawa.opts = {
           float = { bg = "none", bg_border = "none" },
           bg_gutter = "none",
           -- nontext = "#8b83a8",
-        }
-      }
+        },
+      },
     },
   },
-  overrides = tie(
-    "Colorscheme kanagawa -> overrides",
-    function()
-      local hypr_border = "#492A78"
+  overrides = tie("Colorscheme kanagawa -> overrides", function()
+    local hypr_border = "#492A78"
 
-      return {
-        WinSeparator = { fg = hypr_border },
-        TabLine = { bg = "none" },
-        -- TabLineFill = { bg = "none" },
-        -- StatusLine = { bg = "none" },
-      }
-    end,
-    tied.do_nothing
-  ),
+    return {
+      WinSeparator = { fg = hypr_border },
+      TabLine = { bg = "none" },
+      -- TabLineFill = { bg = "none" },
+      -- StatusLine = { bg = "none" },
+    }
+  end, tied.do_nothing),
 }
 
 M.monokai_pro.opts = {
@@ -125,7 +121,7 @@ M.tokyonight.opts = {
     "Colorscheme tokyonight -> config -> on_highlight",
     function(hl, _)
       local hypr_border = { fg = "#492A78" }
-      local kanagawa_TabLine = { fg= "#938aa9" }
+      local kanagawa_TabLine = { fg = "#938aa9" }
 
       hl.WinSeparator = hypr_border
       hl.TabLine = kanagawa_TabLine

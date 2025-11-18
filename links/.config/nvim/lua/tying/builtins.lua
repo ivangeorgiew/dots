@@ -19,7 +19,9 @@ local tie_deep_table = tie(
       local curr_path = item[2]
 
       -- ignore global vim
-      local is_vim_table = curr_path == "vim" or vim.startswith(curr_path, "vim.")
+      local is_vim_table = (
+        curr_path == "vim" or vim.startswith(curr_path, "vim.")
+      )
 
       if not seen[curr_tbl] and not is_vim_table then
         seen[curr_tbl] = true
@@ -51,7 +53,7 @@ local tie_import_func = tie(
     vim.validate("orig_fn", orig_fn, "function")
 
     return tie(
-      "Tied "..fn_name,
+      "Tied " .. fn_name,
       --- @param path string
       function(path)
         vim.validate("path", path, "string")
@@ -107,7 +109,7 @@ local overwrite_tied_catch = tie(
     local tied_opts = tied.functions[on_try]
 
     -- Execute on_catch without rethrowing, but still doing cleanup
-    if tied_opts and not vim.startswith(tied_opts.desc, desc..sep) then
+    if tied_opts and not vim.startswith(tied_opts.desc, desc .. sep) then
       extra_desc = tied_opts.desc
       on_try = tied_opts.on_try
       full_on_catch = function(props)
@@ -148,7 +150,10 @@ _G.vim.defer_fn = tie(
     vim.validate("fn", fn, "function")
     vim.validate("timeout", timeout, "number")
 
-    return defer_fn(overwrite_tied_catch("Deferred", "", fn, tied.do_nothing), timeout)
+    return defer_fn(
+      overwrite_tied_catch("Deferred", "", fn, tied.do_nothing),
+      timeout
+    )
   end,
   tied.do_rethrow
 )
@@ -247,8 +252,8 @@ _G.vim.ui.input = tie(
   --- @param opts table?
   --- @param on_confirm function
   function(opts, on_confirm)
-    vim.validate('opts', opts, 'table', true)
-    vim.validate('on_confirm', on_confirm, 'function')
+    vim.validate("opts", opts, "table", true)
+    vim.validate("on_confirm", on_confirm, "function")
 
     local desc = "After UI input with prompt: "
 
@@ -271,8 +276,8 @@ _G.vim.ui.select = tie(
   --- @param opts table?
   --- @param on_choice fun(item: T?, idx: integer?)
   function(items, opts, on_choice)
-    vim.validate('items', items, 'table')
-    vim.validate('on_choice', on_choice, 'function')
+    vim.validate("items", items, "table")
+    vim.validate("on_choice", on_choice, "function")
 
     local desc = "After UI selection with prompt: "
 
@@ -282,7 +287,11 @@ _G.vim.ui.select = tie(
       desc = desc .. "_none_"
     end
 
-    ui_select(items, opts, vim.schedule_wrap(tie(desc, on_choice, tied.do_nothing)))
+    ui_select(
+      items,
+      opts,
+      vim.schedule_wrap(tie(desc, on_choice, tied.do_nothing))
+    )
   end,
   tied.do_nothing
 )

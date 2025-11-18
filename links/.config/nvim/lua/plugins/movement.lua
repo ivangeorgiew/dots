@@ -6,7 +6,7 @@ local M = {
     "karb94/neoscroll.nvim",
     event = "User FilePost",
     opts = {
-      mappings = { "<C-u>", "<C-d>", },
+      mappings = { "<C-u>", "<C-d>" },
       hide_cursor = true,
       stop_eof = true,
       respect_scrolloff = false,
@@ -16,7 +16,7 @@ local M = {
       -- pre_hook = tie("Plugin neoscroll -> pre_hook", function() vim.wo.cursorline = false end, tied.do_nothing),
       -- post_hook = tie("Plugin neoscroll -> post_hook", function() vim.wo.cursorline = true end, tied.do_nothing),
     },
-  }
+  },
 }
 
 return M

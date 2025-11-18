@@ -41,11 +41,20 @@ M.indentscope.extra_opts = {
   },
   ignore = {
     ft = {
-      "checkhealth", "gitcommit", "help", "lspinfo", "man", "",
-      "TelescopePrompt", "TelescopeResults",
+      "checkhealth",
+      "gitcommit",
+      "help",
+      "lspinfo",
+      "man",
+      "",
+      "TelescopePrompt",
+      "TelescopeResults",
     },
     bt = {
-      "nofile", "prompt", "quickfix", "terminal",
+      "nofile",
+      "prompt",
+      "quickfix",
+      "terminal",
     },
   },
 }
@@ -63,8 +72,7 @@ M.indentscope.config = tie(
         local scope_lines = scope.border.bottom - scope.border.top
 
         return (
-          not scope.body.is_incomplete and
-          scope_lines > extra_opts.min_lines
+          not scope.body.is_incomplete and scope_lines > extra_opts.min_lines
         )
       end,
       function() return false end
@@ -78,8 +86,12 @@ M.indentscope.config = tie(
       function(step, n_steps)
         local anim_tbl = require("mini.indentscope").gen_animation
         local anim_types = {
-          "none", "linear", "quadratic",
-          "cubic", "quartic", "exponential"
+          "none",
+          "linear",
+          "quadratic",
+          "cubic",
+          "quartic",
+          "exponential",
         }
         local anim_opts = extra_opts.anim_opts
         local anim_type = anim_types[anim_opts.equation_idx]
@@ -92,7 +104,11 @@ M.indentscope.config = tie(
     require("mini.indentscope").setup(opts)
 
     -- Change the symbol color
-    vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { link = extra_opts.hl_group })
+    vim.api.nvim_set_hl(
+      0,
+      "MiniIndentscopeSymbol",
+      { link = extra_opts.hl_group }
+    )
 
     tied.create_autocmd({
       desc = "Disable plugin mini.indentscope on certain buffers/filetypes",
@@ -100,10 +116,10 @@ M.indentscope.config = tie(
       group = tied.create_augroup("my.mini.indentscope.ignore", true),
       callback = function(e)
         vim.b[e.buf].miniindentscope_disable = (
-          vim.list_contains(extra_opts.ignore.bt, vim.bo[e.buf].buftype) or
-          vim.list_contains(extra_opts.ignore.ft, vim.bo[e.buf].filetype)
+          vim.list_contains(extra_opts.ignore.bt, vim.bo[e.buf].buftype)
+          or vim.list_contains(extra_opts.ignore.ft, vim.bo[e.buf].filetype)
         )
-      end
+      end,
     })
 
     tied.on_plugin_load(
@@ -127,7 +143,7 @@ M.indentscope.config = tie(
         end
 
         if #maps > 0 then
-          maps.mode = { "o", "x", }
+          maps.mode = { "o", "x" }
           require("which-key").add(maps)
         end
       end

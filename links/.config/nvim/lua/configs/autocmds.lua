@@ -1,46 +1,38 @@
 local M = {}
 
-M.setup = tie(
-  "Setup autocmds",
-  function()
-    local group = tied.create_augroup("my.main", true)
+M.setup = tie("Setup autocmds", function()
+  local group = tied.create_augroup("my.main", true)
 
-    tied.each_i(M.config, "Queue autocmd to create", function(_, opts)
-      opts.group = group
-      tied.create_autocmd(opts)
-    end)
+  tied.each_i(M.config, "Queue autocmd to create", function(_, opts)
+    opts.group = group
+    tied.create_autocmd(opts)
+  end)
 
-    local ctrlv_code = vim.api.nvim_replace_termcodes("<C-V>", true, true, true)
+  local ctrlv_code = vim.api.nvim_replace_termcodes("<C-V>", true, true, true)
 
-    -- Can't be put in an autocmd, so use vim.on_key instead
-    vim.g.ns_clear_hls = vim.on_key(
-      tie(
-        "Clear hlsearch",
-        function(_, key)
-          local mode = vim.api.nvim_get_mode().mode:gsub(ctrlv_code, "v"):lower()
+  -- Can't be put in an autocmd, so use vim.on_key instead
+  vim.g.ns_clear_hls = vim.on_key(
+    tie("Clear hlsearch", function(_, key)
+      local mode = vim.api.nvim_get_mode().mode:gsub(ctrlv_code, "v"):lower()
 
-          if (
-            vim.o.hlsearch and
-            mode:match("^[niv]$") and
-            not key:match("^[nN]?$")
-          ) then
-            vim.cmd("nohls")
-          end
-        end,
-        function() vim.on_key(nil, vim.g.ns_clear_hls) end
-      ),
-      vim.api.nvim_create_namespace("clear_hls")
-    )
+      if
+        vim.o.hlsearch
+        and mode:match("^[niv]$")
+        and not key:match("^[nN]?$")
+      then
+        vim.cmd("nohls")
+      end
+    end, function() vim.on_key(nil, vim.g.ns_clear_hls) end),
 
-  end,
-  tied.do_nothing
-)
+    vim.api.nvim_create_namespace("clear_hls")
+  )
+end, tied.do_nothing)
 
 ---@type MyAutocmdOpts[]
 M.config = {
   {
     desc = "Create user event FilePost",
-    event = { "UIEnter", "BufNewFile", "BufReadPost", },
+    event = { "UIEnter", "BufNewFile", "BufReadPost" },
     callback = function(e)
       local file = vim.api.nvim_buf_get_name(e.buf)
       local buftype = vim.bo[e.buf].buftype
@@ -50,19 +42,18 @@ M.config = {
       end
 
       if file ~= "" and buftype ~= "nofile" and vim.g.ui_entered then
-        vim.api.nvim_exec_autocmds("User", { pattern = "FilePost", modeline = false })
+        vim.api.nvim_exec_autocmds("User", {
+          pattern = "FilePost",
+          modeline = false,
+        })
 
-        vim.schedule(tie(
-          "After FilePost event",
-          function()
-            vim.api.nvim_exec_autocmds("FileType", {})
+        vim.schedule(tie("After FilePost event", function()
+          vim.api.nvim_exec_autocmds("FileType", {})
 
-            if vim.g.editorconfig then
-              require("editorconfig").config(e.buf)
-            end
-          end,
-          tied.do_nothing
-        ))
+          if vim.g.editorconfig then
+            require("editorconfig").config(e.buf)
+          end
+        end, tied.do_nothing))
 
         return true
       end
@@ -72,8 +63,10 @@ M.config = {
     desc = "Reload file on change",
     event = { "FocusGained", "TermClose", "TermLeave" },
     callback = function(e)
-      if vim.bo[e.buf].buftype ~= "nofile" then vim.cmd("checktime") end
-    end
+      if vim.bo[e.buf].buftype ~= "nofile" then
+        vim.cmd("checktime")
+      end
+    end,
   },
   {
     desc = "Highlight on yank",
@@ -95,14 +88,14 @@ M.config = {
     event = "FileType",
     callback = function(e)
       local l = vim.opt_local
-      local should_wrap = vim.list_contains(
-        { "gitcommit", "markdown" },
-        e.match
-      )
+      local should_wrap =
+        vim.list_contains({ "gitcommit", "markdown" }, e.match)
 
       l.formatoptions = "tcrqnlj"
 
-      if should_wrap then l.wrap = true end
+      if should_wrap then
+        l.wrap = true
+      end
     end,
   },
   {
@@ -114,7 +107,7 @@ M.config = {
       if vim.fn.isdirectory(dir) == 0 then
         vim.fn.mkdir(dir, "p")
       end
-    end
+    end,
   },
   {
     desc = "On quickfix/location lists",
@@ -124,14 +117,15 @@ M.config = {
       -- move to the bottom of all other windows
       vim.cmd("wincmd J")
 
-      local qf_maps = require("config.keymaps").config.quickfix
-
-      for k, _ in ipairs(qf_maps) do
-        qf_maps[k][4].buffer = e.buf
-      end
-
-      tied.apply_maps(qf_maps)
-    end
+      tied.each_i(
+        require("configs.keymaps").config.quickfix,
+        "Create quickfix/loc list keymap",
+        function(_, map_opts)
+          map_opts[4].buffer = e.buf
+          tied.create_map(unpack(map_opts))
+        end
+      )
+    end,
   },
   {
     desc = "Remove ending whitespace",
@@ -140,7 +134,7 @@ M.config = {
       vim.cmd("normal! ms")
       vim.cmd([[silent! %s/\s\+$//]])
       vim.cmd("normal! `s")
-    end
+    end,
   },
   {
     desc = "Auto-save vim session",

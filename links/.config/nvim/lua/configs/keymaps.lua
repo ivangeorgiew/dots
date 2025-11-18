@@ -3,30 +3,34 @@ local M = {}
 M.config = {
   to_delete = {
     { "n", { "ZZ", "<C-z>", "<C-f>", "<C-b>" } },
-    { { "n", "v" }, {
-      "#", -- use `m` instead
-      "&",
-      "(",
-      ")",
-      "*", -- use `M` instead
-      "+",
-      "-",
-      "H",
-      "L",
-      "M",
-      "R",
-      "S", -- shorthand for cc
-      "X", -- shorthand for dh
-      "Z",
-      "_",
-      "r",
-      "s", -- shorthand for cl
-      "x", -- shorthand for dl
-      "q", -- use `#` instead
-      "|",
-      "~", -- use `gu`/`gU`
-    } },
+    {
+      { "n", "v" },
+      {
+        "#", -- use `m` instead
+        "&",
+        "(",
+        ")",
+        "*", -- use `M` instead
+        "+",
+        "-",
+        "H",
+        "L",
+        "M",
+        "R",
+        "S", -- shorthand for cc
+        "X", -- shorthand for dh
+        "Z",
+        "_",
+        "r",
+        "s", -- shorthand for cl
+        "x", -- shorthand for dl
+        "q", -- use `#` instead
+        "|",
+        "~", -- use `gu`/`gU`
+      },
+    },
   },
+  -- stylua: ignore
   to_create = {
     -- Escape mappings
     { { "i", "n", "v" }, "<Esc>", "<cmd>lua vim.snippet.stop()<cr><esc>", { desc = "Escape" } },
@@ -179,6 +183,7 @@ M.config = {
     { "ia", "cosnt", "const", {} },
     { "ia", "prosp", "props", {} },
   },
+  -- stylua: ignore
   quickfix = {
     { "n", "<C-r>", "<cmd>Replace<cr>", { desc = "Replace text in files" } },
     { "n", "<C-t>", "<C-w><CR><C-w>T", { desc = "Open list item in new tab" } },
@@ -189,9 +194,7 @@ M.config = {
 
 M.setup = tie(
   "Setup keymaps",
-  function()
-    tied.apply_maps(M.config.to_create, M.config.to_delete)
-  end,
+  function() tied.apply_maps(M.config.to_create, M.config.to_delete) end,
   tied.do_nothing
 )
 

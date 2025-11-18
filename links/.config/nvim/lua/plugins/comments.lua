@@ -7,7 +7,7 @@ local M = {
     opts = {
       lang = {
         kitty = "# %s",
-      }
+      },
     },
   },
   todo_comments = {
@@ -15,13 +15,14 @@ local M = {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     event = "VeryLazy",
-  }
+  },
 }
 
 M.todo_comments.opts = {
   signs = true, -- show icons in the signs column
   sign_priority = 8, -- sign priority
   -- keywords recognized as todo comments
+  -- stylua: ignore
   keywords = {
     FIX = {
       icon = " ", -- icon used for the sign, and in search results
@@ -29,9 +30,9 @@ M.todo_comments.opts = {
       alt = { "FIXME", "FIXIT", "BUG", "ISSUE", "ERROR" }, -- a set of other keywords that all map to this FIX keywords
       -- signs = false, -- configure signs for some keywords individually
     },
-    TODO = { icon = " ", color = "warning", alt = { "WARN", "HACK", "PERF" } },
-    NOTE = { icon = " ", color = "info", alt = { "INFO" } },
-    TEST = { icon = " ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+    TODO = { icon = " ", color = "warning", alt = { "WARN", "HACK", "PERF" }, },
+    NOTE = { icon = " ", color = "info", alt = { "INFO" }, },
+    TEST = { icon = " ", color = "test", alt = { "TESTING", "PASSED", "FAILED" }, },
   },
   gui_style = {
     fg = "NONE", -- The gui style to use for the fg highlight group.
@@ -83,27 +84,24 @@ M.todo_comments.opts = {
   },
 }
 
-M.todo_comments.config = tie(
-  "Plugin todo-comments -> config",
-  function(_, opts)
-    local todo = require("todo-comments")
+M.todo_comments.config = tie("Plugin todo-comments -> config", function(_, opts)
+  local todo = require("todo-comments")
 
-    todo.setup(opts)
+  todo.setup(opts)
 
-    tied.apply_maps({
-      { "n", "[t", todo.jump_prev, { desc = "Prev special comment" } },
-      { "n", "]t", todo.jump_next, { desc = "Next special comment" } },
+  -- stylua: ignore
+  tied.apply_maps({
+    { "n", "[t", todo.jump_prev, { desc = "Prev special comment" } },
+    { "n", "]t", todo.jump_next, { desc = "Next special comment" } },
 
-      -- Always use location list instead of quickfix list
-      { "n", "<leader>tc", "<cmd>TodoLocList keywords=TODO,FIX<cr>", { desc = "Toggle Comments (TODO,FIX,etc)" } },
-      { "ca", "TodoLocList", "TodoLocList keywords=TODO,FIX", {} },
-      { "ca", "TodoQuickFix", "TodoLocList keywords=TODO,FIX", {} },
+    -- Always use location list instead of quickfix list
+    { "n", "<leader>tc", "<cmd>TodoLocList keywords=TODO,FIX<cr>", { desc = "Toggle Comments (TODO,FIX,etc)" } },
+    { "ca", "TodoLocList", "TodoLocList keywords=TODO,FIX", {} },
+    { "ca", "TodoQuickFix", "TodoLocList keywords=TODO,FIX", {} },
 
-      -- TODO: integrate with Telescope.nvim (:TodoTelescope)
-      -- TODO: integrate with Trouble.nvim (:TodoTrouble)
-    })
-  end,
-  tied.do_nothing
-)
+    -- TODO: integrate with Telescope.nvim (:TodoTelescope)
+    -- TODO: integrate with Trouble.nvim (:TodoTrouble)
+  })
+end, tied.do_nothing)
 
 return M

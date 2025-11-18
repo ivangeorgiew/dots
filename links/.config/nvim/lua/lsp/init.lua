@@ -7,7 +7,7 @@ local M = tied.dir({
     if file_name ~= "init.lua" then
       return require("lsp." .. file_name:gsub("%.lua$", ""))
     end
-  end
+  end,
 })
 
 return M

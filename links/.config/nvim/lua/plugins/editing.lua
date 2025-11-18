@@ -68,13 +68,17 @@ M.substitute.config = tie("Plugin substitute -> config", function(_, opts)
     { "n", x .. x, exch.line, { desc = "Exchange Line" } },
     { "n", x:upper(), exch.cancel, { desc = "Exchange cancel" } },
   })
-  tied.on_plugin_load({ "which-key.nvim" }, "Modify substitute.nvim mappings for which-key", function()
-    require("which-key").add({
-      mode = { "n" },
-      { r, group = "Replace", op = true },
-      { x, group = "Exchange", op = true },
-    })
-  end)
+  tied.on_plugin_load(
+    { "which-key.nvim" },
+    "Modify substitute.nvim mappings for which-key",
+    function()
+      require("which-key").add({
+        mode = { "n" },
+        { r, group = "Replace", op = true },
+        { x, group = "Exchange", op = true },
+      })
+    end
+  )
 end, tied.do_nothing)
 
 M.conform.opts = {
@@ -84,13 +88,12 @@ M.conform.opts = {
     nix = { "alejandra" },
   },
   notify_no_formatters = true,
+  notify_on_error = false,
   default_format_opts = {
     timeout_ms = 3000,
     lsp_format = "fallback",
   },
-  -- format_on_save = {
-  --   timeout_ms = 500,
-  -- },
+  format_on_save = true,
 }
 
 return M

@@ -5,18 +5,18 @@
 local M = {
   plenary = {
     -- Useful functions for other plugins
-    "nvim-lua/plenary.nvim"
+    "nvim-lua/plenary.nvim",
   },
   devicons = {
     -- Pretty icons
     -- https://github.com/nvim-tree/nvim-web-devicons?tab=readme-ov-file#setup
-    "nvim-tree/nvim-web-devicons"
+    "nvim-tree/nvim-web-devicons",
   },
   mini_icons = {
     -- Pretty icons
     -- https://github.com/nvim-mini/mini.icons?tab=readme-ov-file#default-config
     "nvim-mini/mini.icons",
-    version = false
+    version = false,
   },
   lastplace = {
     -- Restore cursor position

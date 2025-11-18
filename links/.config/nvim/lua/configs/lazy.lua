@@ -23,7 +23,9 @@ M.opts = {
     ext = "lua",
     map = tie(
       "Require a plugin file",
-      function(file) return vim.tbl_values(require("plugins."..file:gsub("%.lua$", ""))) end,
+      function(file)
+        return vim.tbl_values(require("plugins." .. file:gsub("%.lua$", "")))
+      end,
       function() return {} end
     ),
   }),
@@ -86,27 +88,27 @@ M.opts = {
   },
 }
 
-M.setup = tie(
-  "Setup lazy plugin manager",
-  function()
-    local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+M.setup = tie("Setup lazy plugin manager", function()
+  local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-    if not vim.uv.fs_stat(lazypath) then
-      print("Installing lazy.nvim...")
+  if not vim.uv.fs_stat(lazypath) then
+    print("Installing lazy.nvim...")
 
-      vim.fn.system({
-        "git", "clone", "--filter=blob:none",
-        "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath,
-      })
+    vim.fn.system({
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "https://github.com/folke/lazy.nvim.git",
+      "--branch=stable",
+      lazypath,
+    })
 
-      print("Done.")
-    end
+    print("Done.")
+  end
 
-    vim.opt.rtp:prepend(lazypath)
+  vim.opt.rtp:prepend(lazypath)
 
-    require("lazy").setup(M.opts)
-  end,
-  tied.do_nothing
-)
+  require("lazy").setup(M.opts)
+end, tied.do_nothing)
 
 return M

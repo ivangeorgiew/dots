@@ -29,9 +29,7 @@ local foreach = tie(
     vim.validate("is_list", is_list, "boolean")
 
     local outer_desc = (
-      is_list and
-      "Tied foreach in list" or
-      "Tied foreach in table"
+      is_list and "Tied foreach in list" or "Tied foreach in table"
     )
 
     return tie(
@@ -42,7 +40,7 @@ local foreach = tie(
       ---@param desc string
       ---@param on_try function
       function(iter, desc, on_try)
-        vim.validate("iter", iter, { "table", "function", })
+        vim.validate("iter", iter, { "table", "function" })
         vim.validate("desc", desc, "string")
         vim.validate("on_try", on_try, "function")
 
@@ -50,9 +48,13 @@ local foreach = tie(
 
         if type(iter) == "table" then
           local create = is_list and ipairs or pairs
-          for key, val in create(iter) do fn(key, val) end
+          for key, val in create(iter) do
+            fn(key, val)
+          end
         else
-          for key, val in iter do fn(key, val) end
+          for key, val in iter do
+            fn(key, val)
+          end
         end
       end,
       tied.do_nothing
@@ -77,7 +79,9 @@ tied.create_map = tie(
 
     opts = opts or {}
 
-    local isnt_abbrev = type(modes) == "table" or (modes ~= "ca" and modes ~= "!a")
+    local isnt_abbrev = (
+      type(modes) == "table" or (modes ~= "ca" and modes ~= "!a")
+    )
 
     if opts.silent == nil and isnt_abbrev then
       opts.silent = true
@@ -94,7 +98,7 @@ tied.delete_maps = tie(
   --- @param modes string|table
   --- @param commands table
   function(modes, commands)
-    vim.validate("modes", modes, { "string", "table", })
+    vim.validate("modes", modes, { "string", "table" })
     vim.validate("commands", commands, "table")
 
     tied.each_i(commands, "Delete vim keymap", function(_, lhs)
@@ -148,7 +152,7 @@ tied.dir = tie(
     end
 
     for name, type in vim.fs.dir(opts.path, { depth = opts.depth or math.huge }) do
-      local matches_ext = not opts.ext or vim.endswith(name, "."..opts.ext)
+      local matches_ext = not opts.ext or vim.endswith(name, "." .. opts.ext)
 
       if type == item_type and matches_ext then
         local entry = name
@@ -175,27 +179,21 @@ tied.colorscheme_config = tie(
     vim.validate("opts", opts, "table")
 
     require(vim.g.colorscheme).setup(opts)
-    vim.cmd("colorscheme "..vim.g.colorscheme)
+    vim.cmd("colorscheme " .. vim.g.colorscheme)
     vim.cmd("syntax off") -- use treesitter instead
   end,
   tied.do_nothing
 )
 
-tied.foldtext = tie(
-  "Tied vim.o.foldtext",
-  function()
-    local start_line_nr = vim.v.foldstart
-    local end_line_nr = vim.v.foldend
-    local first_line = vim.fn.getline(start_line_nr)
-    local fold_lines_nr = end_line_nr - start_line_nr + 1
-    local text = string.format("%s ⮞ [%d lines]", first_line, fold_lines_nr)
+tied.foldtext = tie("Tied vim.o.foldtext", function()
+  local start_line_nr = vim.v.foldstart
+  local end_line_nr = vim.v.foldend
+  local first_line = vim.fn.getline(start_line_nr)
+  local fold_lines_nr = end_line_nr - start_line_nr + 1
+  local text = string.format("%s ⮞ [%d lines]", first_line, fold_lines_nr)
 
-    return text
-  end,
-  function()
-    return vim.fn.getline(vim.v.foldstart)
-  end
-)
+  return text
+end, function() return vim.fn.getline(vim.v.foldstart) end)
 
 -- From LazyVim
 tied.on_plugin_load = tie(
@@ -311,7 +309,8 @@ tied.load_session = tie(
 
     -- TODO: handle git repos like in
     -- https://github.com/ruicsh/nvim-config/blob/main/plugin/custom/sessions.lua
-    local cwd = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:~"):gsub("[:\\/%s.]", "_")
+    local cwd =
+      vim.fn.fnamemodify(vim.fn.getcwd(), ":p:~"):gsub("[:\\/%s.]", "_")
     local ses_dir = vim.fn.stdpath("data") .. "/sessions"
     local ses_file = vim.fn.fnameescape(("%s/%s.vim"):format(ses_dir, cwd))
 
@@ -319,10 +318,25 @@ tied.load_session = tie(
       vim.fn.mkdir(ses_dir, "p")
     end
 
-    if not should_load then
-      vim.cmd("mks! " .. ses_file)
-    elseif vim.fn.filereadable(ses_file) == 1 then
+    if should_load and vim.fn.filereadable(ses_file) == 1 then
       vim.cmd("source " .. ses_file)
+    end
+
+    if not should_load then
+      tied.each_i(
+        vim.api.nvim_list_wins(),
+        "Close non-file windows",
+        function(_, win)
+          local buf = vim.api.nvim_win_get_buf(win)
+          local buf_name = vim.api.nvim_buf_get_name(buf)
+
+          if vim.bo[buf].buftype ~= "" or buf_name == "" then
+            vim.api.nvim_buf_delete(buf, { force = true })
+          end
+        end
+      )
+
+      vim.cmd("mks! " .. ses_file)
     end
   end,
   tied.do_nothing

@@ -58,8 +58,10 @@ end
 ---@param err string
 local print_inner_err = function(err)
   vim.validate("err", err, "string")
+
   local desc = "inner error-handling"
-  print_err(("Error in %s:%s\n\n"):format(desc, err), desc..err)
+
+  print_err(("Error in %s:%s\n\n"):format(desc, err), desc .. err)
 end
 
 --- Stringify anything
@@ -78,7 +80,9 @@ local stringify = function(arg)
     str = tostring(arg)
   end
 
-  if str:len() > 1000 then str = ("<large %s>"):format(arg_type) end
+  if str:len() > 1000 then
+    str = ("<large %s>"):format(arg_type)
+  end
 
   return str
 end
@@ -114,7 +118,9 @@ local log_error = function(desc, err, args, n_args)
       args_string = ind .. "<no args>"
     end
   end)
-  if not ok then print_inner_err(inner_err) end
+  if not ok then
+    print_inner_err(inner_err)
+  end
 
   -- Gather stacktrace
   ---@type boolean, unknown
@@ -125,7 +131,9 @@ local log_error = function(desc, err, args, n_args)
     while #lines < 10 do
       local info = debug.getinfo(level, "Sln")
 
-      if not info then break end
+      if not info then
+        break
+      end
 
       if info and info.what == "Lua" then
         local source = vim.fn.fnamemodify(info.source:sub(2), ":p:~")
@@ -143,7 +151,9 @@ local log_error = function(desc, err, args, n_args)
 
     stacktrace = table.concat(lines, "\n")
   end)
-  if not ok then print_inner_err(inner_err) end
+  if not ok then
+    print_inner_err(inner_err)
+  end
 
   -- Print error message
   ---@type boolean, unknown
@@ -154,23 +164,25 @@ local log_error = function(desc, err, args, n_args)
     }
 
     if args_string ~= "" then
-      l[#l+1] = "Function args:"
-      l[#l+1] = args_string
+      l[#l + 1] = "Function args:"
+      l[#l + 1] = args_string
     end
 
-    l[#l+1] = "Message:"
-    l[#l+1] = ind .. err
+    l[#l + 1] = "Message:"
+    l[#l + 1] = ind .. err
 
     if stacktrace ~= "" then
-      l[#l+1] = "Stacktrace:"
-      l[#l+1] = stacktrace
+      l[#l + 1] = "Stacktrace:"
+      l[#l + 1] = stacktrace
     end
 
-    l[#l+1] = "\n"
+    l[#l + 1] = "\n"
 
-    print_err(table.concat(l, "\n"), desc..err)
+    print_err(table.concat(l, "\n"), desc .. err)
   end)
-  if not ok then print_inner_err(inner_err) end
+  if not ok then
+    print_inner_err(inner_err)
+  end
 end
 
 --- @alias tie.on_catch fun(props: { desc: string, err: string, args: table }): any
@@ -186,10 +198,12 @@ _G.tie = function(desc, on_try, on_catch)
   vim.validate("on_try", on_try, "function")
   vim.validate("on_catch", on_catch, "function")
 
-  if tied.functions[on_try] then return on_try end
+  if tied.functions[on_try] then
+    return on_try
+  end
 
   local inner_catch = function(...)
-    local args = {...}
+    local args = { ... }
     local n_args = select("#", ...) -- num of args must be gathered here
 
     return function(err)
@@ -201,7 +215,8 @@ _G.tie = function(desc, on_try, on_catch)
       ok, inner_err = pcall(function()
         log_error(desc, err, args, n_args)
 
-        local on_catch_results = { pcall(on_catch, { desc = desc, err = err, args = args }) }
+        local on_catch_results =
+          { pcall(on_catch, { desc = desc, err = err, args = args }) }
         local on_catch_was_valid = table.remove(on_catch_results, 1)
 
         if on_catch_results[1] == tied.RETHROW then
@@ -256,8 +271,11 @@ _G.tie = function(desc, on_try, on_catch)
   tied.functions[inner_fn] = {
     desc = desc,
     on_try = on_try,
-    on_catch = on_catch
+    on_catch = on_catch,
   }
 
   return inner_fn
 end
+
+require("tying.builtins") -- replace some global builtins
+require("tying.utils") -- add global utils
