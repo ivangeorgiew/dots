@@ -18,14 +18,8 @@ M.which_key.config = tie("Plugin which-key -> config", function(_, opts)
 
   wk.setup(opts)
 
-  tied.apply_maps({
-    {
-      "n",
-      "<leader>?",
-      function() wk.show({ global = false }) end,
-      { desc = "Buffer Keymaps (which-key)" },
-    },
-  })
+  -- stylua: ignore
+  tied.create_map("n", "<leader>?", function() wk.show({ global = false }) end, { desc = "Buffer Keymaps (which-key)" })
 end, tied.do_nothing)
 
 M.which_key.opts = {

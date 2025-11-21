@@ -277,5 +277,5 @@ _G.tie = function(desc, on_try, on_catch)
   return inner_fn
 end
 
-require("tying.builtins") -- replace some global builtins
-require("tying.utils") -- add global utils
+require("tie.builtins") -- replace some global builtins
+require("tie.utils") -- add global utils

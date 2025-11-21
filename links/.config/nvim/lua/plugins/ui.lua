@@ -13,7 +13,7 @@ M.indentscope.opts = {
   symbol = "▏",
   options = {
     indent_at_cursor = false, -- if true use cursor column instead of cursor line
-    try_as_border = false, -- if true mark start and end lines as part of the inner scope
+    try_as_border = true, -- if true mark start and end lines as part of the inner scope
     n_lines = 10000, -- max lines above or below within which scope is computed
   },
   draw = {
@@ -127,25 +127,26 @@ M.indentscope.config = tie(
       "Modify mini.indentscope mappings for which-key",
       function()
         local maps = {}
-        local desc_tbl = {
-          object_scope = "inner scope",
-          object_scope_with_border = "scope",
-          goto_top = "Scope start",
-          goto_bottom = "Scope end",
-        }
 
-        for k, v in pairs(desc_tbl) do
-          local lhs = opts.mappings[k]
+        tied.each(
+          {
+            object_scope = { desc = "inner scope", mode = { "o", "x" } },
+            object_scope_with_border = { desc = "scope", mode = { "o", "x" } },
+            goto_top = { desc = "Prev scope start" },
+            goto_bottom = { desc = "Next scope end" },
+          },
+          "Plugin mini.indentscope -> Change keymap desc for which-key",
+          function(k, v)
+            local lhs = opts.mappings[k]
 
-          if lhs ~= "" then
-            maps[#maps + 1] = { lhs, desc = v }
+            if lhs ~= "" then
+              v[1] = lhs
+              maps[#maps + 1] = v
+            end
           end
-        end
+        )
 
-        if #maps > 0 then
-          maps.mode = { "o", "x" }
-          require("which-key").add(maps)
-        end
+        if #maps > 0 then require("which-key").add(maps) end
       end
     )
   end,

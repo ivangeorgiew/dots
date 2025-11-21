@@ -29,7 +29,7 @@ local foreach = tie(
     vim.validate("is_list", is_list, "boolean")
 
     local outer_desc = (
-      is_list and "Tied foreach in list" or "Tied foreach in table"
+      is_list and "Tied for-each in list" or "Tied for-each in table"
     )
 
     return tie(
@@ -44,7 +44,11 @@ local foreach = tie(
         vim.validate("desc", desc, "string")
         vim.validate("on_try", on_try, "function")
 
-        local fn = tie(desc, on_try, tied.do_nothing)
+        local fn = tie(
+          ("For-each in %s -> %s"):format(is_list and "list" or "table", desc),
+          on_try,
+          tied.do_nothing
+        )
 
         if type(iter) == "table" then
           local create = is_list and ipairs or pairs
@@ -83,9 +87,7 @@ tied.create_map = tie(
       type(modes) == "table" or (modes ~= "ca" and modes ~= "!a")
     )
 
-    if opts.silent == nil and isnt_abbrev then
-      opts.silent = true
-    end
+    if opts.silent == nil and isnt_abbrev then opts.silent = true end
 
     -- rhs is tied in builtins if function
     vim.keymap.set(modes, lhs, rhs, opts)
@@ -93,42 +95,17 @@ tied.create_map = tie(
   tied.do_nothing
 )
 
-tied.delete_maps = tie(
-  "Delete vim keymaps",
-  --- @param modes string|table
-  --- @param commands table
-  function(modes, commands)
+tied.delete_map = tie(
+  "Delete vim keymap",
+  --- @param lhs string
+  --- @param modes string|string[]
+  function(lhs, modes)
+    vim.validate("lhs", lhs, "string")
     vim.validate("modes", modes, { "string", "table" })
-    vim.validate("commands", commands, "table")
 
-    tied.each_i(commands, "Delete vim keymap", function(_, lhs)
-      -- vim.keymap.del() can fail if the mapping doesn't exist
-      -- so use create_map instead
-      tied.create_map(modes, lhs, "<nop>", { desc = "Nothing" })
-    end)
-  end,
-  tied.do_nothing
-)
-
-tied.apply_maps = tie(
-  "Apply vim keymaps",
-  --- @param to_create table?
-  --- @param to_delete table?
-  function(to_create, to_delete)
-    vim.validate("to_create", to_create, "table", true)
-    vim.validate("to_delete", to_delete, "table", true)
-
-    -- Order matters, first delete and then create
-    if to_delete then
-      for _, v in ipairs(to_delete) do
-        tied.delete_maps(unpack(v))
-      end
-    end
-    if to_create then
-      for _, v in ipairs(to_create) do
-        tied.create_map(unpack(v))
-      end
-    end
+    -- vim.keymap.del() can fail if the mapping doesn't exist
+    -- so use create_map instead
+    tied.create_map(modes, lhs, "<nop>", { desc = "Nothing" })
   end,
   tied.do_nothing
 )
@@ -147,9 +124,7 @@ tied.dir = tie(
     local entries = {}
     local item_type = opts.type ---@type string
 
-    if opts.type == "dir" then
-      item_type = "directory"
-    end
+    if opts.type == "dir" then item_type = "directory" end
 
     for name, type in vim.fs.dir(opts.path, { depth = opts.depth or math.huge }) do
       local matches_ext = not opts.ext or vim.endswith(name, "." .. opts.ext)
@@ -157,13 +132,9 @@ tied.dir = tie(
       if type == item_type and matches_ext then
         local entry = name
 
-        if opts.map then
-          entry = opts.map(name)
-        end
+        if opts.map then entry = opts.map(name) end
 
-        if entry ~= nil then
-          table.insert(entries, entry)
-        end
+        if entry ~= nil then table.insert(entries, entry) end
       end
     end
 
@@ -301,7 +272,7 @@ tied.check_keys = tie(
   tied.do_rethrow
 )
 
-tied.load_session = tie(
+tied.manage_session = tie(
   "Load or save a vim session",
   --- @param should_load boolean
   function(should_load)
@@ -309,14 +280,13 @@ tied.load_session = tie(
 
     -- TODO: handle git repos like in
     -- https://github.com/ruicsh/nvim-config/blob/main/plugin/custom/sessions.lua
-    local cwd =
+    local cwd = (
       vim.fn.fnamemodify(vim.fn.getcwd(), ":p:~"):gsub("[:\\/%s.]", "_")
+    )
     local ses_dir = vim.fn.stdpath("data") .. "/sessions"
     local ses_file = vim.fn.fnameescape(("%s/%s.vim"):format(ses_dir, cwd))
 
-    if not vim.uv.fs_stat(ses_dir) then
-      vim.fn.mkdir(ses_dir, "p")
-    end
+    if not vim.uv.fs_stat(ses_dir) then vim.fn.mkdir(ses_dir, "p") end
 
     if should_load and vim.fn.filereadable(ses_file) == 1 then
       vim.cmd("source " .. ses_file)
@@ -325,13 +295,13 @@ tied.load_session = tie(
     if not should_load then
       tied.each_i(
         vim.api.nvim_list_wins(),
-        "Close non-file windows",
-        function(_, win)
-          local buf = vim.api.nvim_win_get_buf(win)
-          local buf_name = vim.api.nvim_buf_get_name(buf)
+        "Close non-file window before session save",
+        function(_, winnr)
+          local bufnr = vim.api.nvim_win_get_buf(winnr)
+          local buf_name = vim.api.nvim_buf_get_name(bufnr)
 
-          if vim.bo[buf].buftype ~= "" or buf_name == "" then
-            vim.api.nvim_buf_delete(buf, { force = true })
+          if vim.bo[bufnr].buftype ~= "" or buf_name == "" then
+            vim.api.nvim_buf_delete(bufnr, { force = true })
           end
         end
       )

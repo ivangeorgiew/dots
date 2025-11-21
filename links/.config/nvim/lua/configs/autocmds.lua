@@ -50,9 +50,7 @@ M.config = {
         vim.schedule(tie("After FilePost event", function()
           vim.api.nvim_exec_autocmds("FileType", {})
 
-          if vim.g.editorconfig then
-            require("editorconfig").config(e.buf)
-          end
+          if vim.g.editorconfig then require("editorconfig").config(e.buf) end
         end, tied.do_nothing))
 
         return true
@@ -63,9 +61,7 @@ M.config = {
     desc = "Reload file on change",
     event = { "FocusGained", "TermClose", "TermLeave" },
     callback = function(e)
-      if vim.bo[e.buf].buftype ~= "nofile" then
-        vim.cmd("checktime")
-      end
+      if vim.bo[e.buf].buftype ~= "nofile" then vim.cmd("checktime") end
     end,
   },
   {
@@ -93,9 +89,7 @@ M.config = {
 
       l.formatoptions = "tcrqnlj"
 
-      if should_wrap then
-        l.wrap = true
-      end
+      if should_wrap then l.wrap = true end
     end,
   },
   {
@@ -104,9 +98,7 @@ M.config = {
     callback = function()
       local dir = vim.fn.expand("<afile>:p:h")
 
-      if vim.fn.isdirectory(dir) == 0 then
-        vim.fn.mkdir(dir, "p")
-      end
+      if vim.fn.isdirectory(dir) == 0 then vim.fn.mkdir(dir, "p") end
     end,
   },
   {
@@ -139,7 +131,7 @@ M.config = {
   {
     desc = "Auto-save vim session",
     event = "VimLeavePre",
-    callback = function() tied.load_session(false) end,
+    callback = function() tied.manage_session(false) end,
   },
   {
     desc = "Auto-load vim session",
@@ -147,9 +139,7 @@ M.config = {
     once = true,
     nested = true,
     callback = function()
-      if vim.env.NVIM_RELOADED then
-        tied.load_session(true)
-      end
+      if vim.env.NVIM_RELOADED then tied.manage_session(true) end
     end,
   },
 }

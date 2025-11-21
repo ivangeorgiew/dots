@@ -90,18 +90,24 @@ M.todo_comments.config = tie("Plugin todo-comments -> config", function(_, opts)
   todo.setup(opts)
 
   -- stylua: ignore
-  tied.apply_maps({
-    { "n", "[t", todo.jump_prev, { desc = "Prev special comment" } },
-    { "n", "]t", todo.jump_next, { desc = "Next special comment" } },
+  tied.each_i(
+    {
+      { "n", "[t", todo.jump_prev, { desc = "Prev special comment" } },
+      { "n", "]t", todo.jump_next, { desc = "Next special comment" } },
 
-    -- Always use location list instead of quickfix list
-    { "n", "<leader>tc", "<cmd>TodoLocList keywords=TODO,FIX<cr>", { desc = "Toggle Comments (TODO,FIX,etc)" } },
-    { "ca", "TodoLocList", "TodoLocList keywords=TODO,FIX", {} },
-    { "ca", "TodoQuickFix", "TodoLocList keywords=TODO,FIX", {} },
+      -- Always use location list instead of quickfix list
+      { "n", "<leader>tc", "<cmd>TodoLocList keywords=TODO,FIX<cr>", { desc = "Toggle Comments (TODO,FIX,etc)" } },
+      { "ca", "TodoLocList", "TodoLocList keywords=TODO,FIX", {} },
+      { "ca", "TodoQuickFix", "TodoLocList keywords=TODO,FIX", {} },
 
-    -- TODO: integrate with Telescope.nvim (:TodoTelescope)
-    -- TODO: integrate with Trouble.nvim (:TodoTrouble)
-  })
+      -- TODO: integrate with Telescope.nvim (:TodoTelescope)
+      -- TODO: integrate with Trouble.nvim (:TodoTrouble)
+    },
+    "Plugin todo-comments -> Create keymap",
+    function(_, map_opts)
+      tied.create_map(unpack(map_opts))
+    end
+  )
 end, tied.do_nothing)
 
 return M

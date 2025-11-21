@@ -15,7 +15,7 @@ local M = {
   mason = {
     --- External tools installer
     "mason-org/mason.nvim",
-    event = "VeryLazy", -- always needed to provide binaries
+    cmd = { "Mason" },
     build = ":MasonUpdate",
   },
 
@@ -37,22 +37,30 @@ local M = {
 
 -- :h lspconfig
 M.nvim_lspconfig.config = tie("Plugin nvim-lspconfig -> config", function()
+  local to_install = {}
+
   tied.each_i(require("lsp"), "Setup an LSP", function(_, lsp)
     if lsp.config then
       vim.lsp.config(lsp.lsp_name, lsp.config)
     end
     if lsp.enable ~= false then
       vim.lsp.enable(lsp.lsp_name)
+
+      if lsp.pkg_name then
+        to_install[#to_install + 1] = lsp.pkg_name
+      end
     end
   end)
+
+  vim.g.mason_install(to_install)
 
   -- Example inlay hints configs:
   -- https://github.com/MysticalDevil/inlay-hints.nvim/tree/master
   vim.api.nvim_set_hl(0, "LspInlayHint", { link = "Comment" })
-  -- vim.lsp.inlay_hint.enable()
 end, tied.do_nothing)
 
 M.mason.opts = {
+  PATH = "skip", -- I add it manually
   ui = {
     border = "single", -- same as nvim_open_win()
     width = 0.6, -- 0-1 for a percentage of screen width.
@@ -60,60 +68,31 @@ M.mason.opts = {
   },
 }
 
-M.mason.config = tie("Plugin mason -> config", function(_, opts)
-  require("mason").setup(opts)
-
+M.mason.init = tie("Plugin mason -> init", function()
   local mr = require("mason-registry")
-  local install_tools = tie("Install tools with mason", function(gather_tools)
-    local installed = mr.get_installed_package_names()
-    local to_install = {}
 
-    -- No need to tie, let it fail
-    gather_tools(to_install)
-
-    tied.each_i(to_install, "Auto-install a mason tool", function(_, tool)
-      if not vim.list_contains(installed, tool) then
-        vim.cmd("MasonInstall " .. tool)
-      end
-    end)
-  end, tied.do_nothing)
-
-  install_tools(function(to_install)
-    tied.each_i(require("lsp"), "Queue LSP for mason install", function(_, lsp)
-      if lsp.enable ~= false and lsp.pkg_name then
-        to_install[#to_install + 1] = lsp.pkg_name
-      end
-    end)
-  end)
-
-  tied.on_plugin_load(
-    { "conform.nvim" },
-    "Install code formatters from conform.nvim",
-    function(plugins)
-      install_tools(function(to_install)
-        tied.each(
-          plugins["conform.nvim"].opts.formatters_by_ft,
-          "Queue all code formatters for install with mason",
-          function(_, formatters)
-            tied.each_i(
-              formatters,
-              "Queue a code formatter for install with mason",
-              function(_, formatter)
-                if
-                  type(formatter) == "string" and mr.has_package(formatter)
-                then
-                  to_install[#to_install + 1] = formatter
-                end
-              end
-            )
-          end
-        )
-      end)
-    end
+  vim.env.PATH = ("%s/mason/bin:%s"):format(
+    vim.fn.stdpath("data"),
+    vim.env.PATH
   )
+  vim.g.mason_install = tie(
+    "Install tools with mason",
+    --- @param to_install string[]
+    function(to_install)
+      vim.validate("to_install", to_install, "table")
 
-  -- TODO: Add DAP tools
-  -- TODO: Add null-ls tools
+      if #to_install < 1 then return end
+
+      local installed = mr.get_installed_package_names()
+
+      tied.each_i(to_install, "Auto-install a mason tool", function(_, tool)
+        if not vim.list_contains(installed, tool) then
+          vim.cmd("MasonInstall " .. tool)
+        end
+      end)
+    end,
+    tied.do_nothing
+  )
 end, tied.do_nothing)
 
 -- :h nvim-treesitter.txt
@@ -172,12 +151,8 @@ M.treesitter.config = tie("Plugin nvim-treesitter -> config", function(_, opts)
     end
   )
 
-  if #to_delete > 0 then
-    ts.uninstall(to_delete, { summary = true })
-  end
-  if #to_install > 0 then
-    ts.install(to_install, { summary = true })
-  end
+  if #to_delete > 0 then ts.uninstall(to_delete, { summary = true }) end
+  if #to_install > 0 then ts.install(to_install, { summary = true }) end
 
   tied.create_autocmd({
     desc = "Setup treesitter for a filetype",

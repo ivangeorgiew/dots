@@ -1,4 +1,4 @@
-require("tying") -- error handling logic
+require("tie") -- error handling logic
 
 tied.each_i(
   -- Order matters

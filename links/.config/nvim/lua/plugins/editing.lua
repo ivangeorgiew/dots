@@ -43,9 +43,8 @@ local M = {
     event = "VeryLazy",
     cmd = "ConformInfo",
     config = tie("Plugin conform -> config", function(_, opts)
-      vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
-
       require("conform").setup(opts)
+      vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
     end, tied.do_nothing),
   },
 }
@@ -58,16 +57,20 @@ M.substitute.config = tie("Plugin substitute -> config", function(_, opts)
   local x = "x" -- exchange key
 
   subs.setup(opts)
-  tied.apply_maps({
-    { "n", r, subs.operator, { desc = "Replace" } },
-    { "x", r, subs.visual, { desc = "Replace" } },
-    { "n", r .. r, subs.line, { desc = "Replace Line" } },
+  tied.each_i(
+    {
+      { "n", r, subs.operator, { desc = "Replace" } },
+      { "x", r, subs.visual, { desc = "Replace" } },
+      { "n", r .. r, subs.line, { desc = "Replace Line" } },
 
-    { "n", x, exch.operator, { desc = "Exchange" } },
-    { "x", x, exch.visual, { desc = "Exchange" } },
-    { "n", x .. x, exch.line, { desc = "Exchange Line" } },
-    { "n", x:upper(), exch.cancel, { desc = "Exchange cancel" } },
-  })
+      { "n", x, exch.operator, { desc = "Exchange" } },
+      { "x", x, exch.visual, { desc = "Exchange" } },
+      { "n", x .. x, exch.line, { desc = "Exchange Line" } },
+      { "n", x:upper(), exch.cancel, { desc = "Exchange cancel" } },
+    },
+    "Plugin substitute -> Create keymap",
+    function(_, map_opts) tied.create_map(unpack(map_opts)) end
+  )
   tied.on_plugin_load(
     { "which-key.nvim" },
     "Modify substitute.nvim mappings for which-key",
@@ -88,12 +91,37 @@ M.conform.opts = {
     nix = { "alejandra" },
   },
   notify_no_formatters = true,
-  notify_on_error = false,
+  notify_on_error = true,
   default_format_opts = {
     timeout_ms = 3000,
     lsp_format = "fallback",
   },
   format_on_save = true,
 }
+
+M.conform.config = tie("Plugin conform -> config", function(_, opts)
+  local to_install = {}
+  local mr = require("mason-registry")
+
+  tied.each(
+    opts.formatters_by_ft,
+    "Queue all code formatters for install with mason",
+    function(_, formatters)
+      tied.each_i(
+        formatters,
+        "Queue a code formatter for install with mason",
+        function(_, formatter)
+          if type(formatter) == "string" and mr.has_package(formatter) then
+            to_install[#to_install + 1] = formatter
+          end
+        end
+      )
+    end
+  )
+
+  vim.g.mason_install(to_install)
+
+  require("conform").setup(opts)
+end, tied.do_nothing)
 
 return M

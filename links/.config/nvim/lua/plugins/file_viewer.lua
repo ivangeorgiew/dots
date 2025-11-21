@@ -150,7 +150,7 @@ M.nvim_tree.opts = {
 
     tied.each_i(
       maps,
-      "Create NvimTree keymap",
+      "Plugin nvim_tree -> Create keymap",
       function(_, map)
         tied.create_map(
           "n",
@@ -164,6 +164,8 @@ M.nvim_tree.opts = {
 }
 
 M.nvim_tree.config = tie("Plugin nvim-tree -> config", function(_, opts)
+  require("nvim-tree").setup(opts)
+
   vim.api.nvim_set_hl(0, "NvimTreeWinSeparator", { link = "WinSeparator" })
 
   tied.create_map(
@@ -172,8 +174,6 @@ M.nvim_tree.config = tie("Plugin nvim-tree -> config", function(_, opts)
     "<cmd>NvimTreeToggle<cr><cmd>wincmd =<cr>",
     { desc = "Toggle NvimTree" }
   )
-
-  require("nvim-tree").setup(opts)
 end, tied.do_nothing)
 
 return M

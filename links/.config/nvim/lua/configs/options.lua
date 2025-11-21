@@ -8,7 +8,7 @@ M.setup = tie("Setup options", function()
   -- Defined in the plugins/colorschemes folder
   local colorschemes = { "kanagawa", "tokyonight", "monokai-pro" }
 
-  g.colorscheme = colorschemes[2]
+  g.colorscheme = colorschemes[1]
   g.mapleader = " "
   g.maplocalleader = "\\" -- must be different than mapleader
 
@@ -54,8 +54,8 @@ M.setup = tie("Setup options", function()
   o.foldmethod = "marker" -- default fold method
   o.foldtext = "v:lua.tied.foldtext()" -- text for closed folds
   o.foldnestmax = 4 -- max nested fold levels
-  o.grepformat = "%f:%l:%c:%m" -- format for grep command
-  o.grepprg = "rg --vimgrep --no-heading -uu -S -F" -- faster alternative to grep
+  o.grepformat = "%f:%l:%m" -- format for grep command
+  o.grepprg = "rg -n --no-heading -uu -S -F" -- faster alternative to grep
   o.hidden = false -- ask to save before closing buffers
   o.hlsearch = true -- highlighting search results
   o.ignorecase = false -- see smartcase option (affects :s too)

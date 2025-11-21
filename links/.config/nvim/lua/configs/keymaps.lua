@@ -2,33 +2,30 @@ local M = {}
 
 M.config = {
   to_delete = {
-    { "n", { "ZZ", "<C-z>", "<C-f>", "<C-b>" } },
-    {
-      { "n", "v" },
-      {
-        "#", -- use `m` instead
-        "&",
-        "(",
-        ")",
-        "*", -- use `M` instead
-        "+",
-        "-",
-        "H",
-        "L",
-        "M",
-        "R",
-        "S", -- shorthand for cc
-        "X", -- shorthand for dh
-        "Z",
-        "_",
-        "r",
-        "s", -- shorthand for cl
-        "x", -- shorthand for dl
-        "q", -- use `#` instead
-        "|",
-        "~", -- use `gu`/`gU`
-      },
-    },
+    { "#", { "n", "v" } }, -- use `m` instead
+    { "&", { "n", "v" } },
+    { "(", { "n", "v" } },
+    { ")", { "n", "v" } },
+    { "*", { "n", "v" } }, -- use `M` instead
+    { "+", { "n", "v" } },
+    { "-", { "n", "v" } },
+    { "<C-b>", "n" },
+    { "<C-f>", "n" },
+    { "<C-z>", "n" },
+    { "_", { "n", "v" } },
+    { "H", { "n", "v" } },
+    { "L", { "n", "v" } },
+    { "M", { "n", "v" } },
+    { "q", { "n", "v" } }, -- use `#` instead
+    { "R", { "n", "v" } },
+    { "r", { "n", "v" } },
+    { "S", { "n", "v" } }, -- shorthand for cc
+    { "s", { "n", "v" } }, -- shorthand for cl
+    { "X", { "n", "v" } }, -- shorthand for dh
+    { "x", { "n", "v" } }, -- shorthand for dl
+    { "Z", { "n", "v" } },
+    { "ZZ", "n" },
+    { "|", { "n", "v" } },
   },
   -- stylua: ignore
   to_create = {
@@ -99,7 +96,6 @@ M.config = {
     -- Toggle things
     { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
     { "n", "<leader>te", vim.diagnostic.setloclist, { desc = "Toggle errors list" } },
-    { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
     { "n", "<leader>tl", "<cmd>Lazy<cr>", { desc = "Toggle Lazy" } },
     { "n", "<leader>tm", "<cmd>Mason<cr>", { desc = "Toggle Mason" } },
     { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.loclist')) ? ':lopen<cr>' : ':windo lclose<cr>'", { desc = "Toggle location list", expr = true } },
@@ -158,20 +154,16 @@ M.config = {
     { "n", "<leader>%y", "msggyGg`s", { desc = "Yank whole file" } },
     { "n", "<leader>%r", "ggVGpgg",   { desc = "Replace whole file" } },
 
-    -- Hover popups
-    { "n", "K", function() local h = vim.lsp.buf.hover; h(); h(); end, { desc = "Show symbol information" } },
-    { "n", "E", function() local h = vim.diagnostic.open_float; h();h(); end, { desc = "Show errors on current line" } },
-
     -- Unrelated mappings
     { "n", "X", "<C-a>", { desc = "Increment number under cursor" } },
     { "t", "<C-x>", "<C-\\><C-n>", { desc = "Exit terminal mode" } },
     { "n", "<leader>o", "<cmd>only<cr>",  { desc = "Leave only the current window" } },
     { "n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file executable" } },
     { "n", "J", "mzJ`z", { desc = "Join lines" } },
-    { "n", "gd", function() vim.lsp.buf.definition({ loclist = true }) end, { desc = "Go to definition" } },
+    { "n", "E", function() local h = vim.diagnostic.open_float; h();h(); end, { desc = "Show errors on current line" } },
     { "n", "i", "len(getline('.')) == 0 && empty(&buftype) ? '\"_cc' : 'i'", { desc = "Enter insert mode", expr = true } },
     { "n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" } },
-    { "n", "<F5>", function() tied.load_session(true) end, { desc = "Load session" } },
+    { "n", "<F5>", function() tied.manage_session(true) end, { desc = "Load session" } },
 
     -- Command mode abbreviations
     { "ca", "te", "tabe", {} },
@@ -192,10 +184,18 @@ M.config = {
   },
 }
 
-M.setup = tie(
-  "Setup keymaps",
-  function() tied.apply_maps(M.config.to_create, M.config.to_delete) end,
-  tied.do_nothing
-)
+M.setup = tie("Setup keymaps", function()
+  -- First delete, then create
+  tied.each_i(
+    M.config.to_delete,
+    "Delete keymap",
+    function(_, map) tied.delete_map(unpack(map)) end
+  )
+  tied.each_i(
+    M.config.to_create,
+    "Create keymap",
+    function(_, map) tied.create_map(unpack(map)) end
+  )
+end, tied.do_nothing)
 
 return M
