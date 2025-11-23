@@ -11,5 +11,5 @@ tied.each_i(
     "autocmds",
   },
   "Initialize a config file",
-  function(_, file) require("configs." .. file).setup() end
+  function(_, file) require("config." .. file).setup() end
 )

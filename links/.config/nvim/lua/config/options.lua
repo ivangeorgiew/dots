@@ -8,7 +8,7 @@ M.setup = tie("Setup options", function()
   -- Defined in the plugins/colorschemes folder
   local colorschemes = { "kanagawa", "tokyonight", "monokai-pro" }
 
-  g.colorscheme = colorschemes[1]
+  g.colorscheme = colorschemes[2]
   g.mapleader = " "
   g.maplocalleader = "\\" -- must be different than mapleader
 

@@ -12,8 +12,13 @@ M.config = {
     { "<C-b>", "n" },
     { "<C-f>", "n" },
     { "<C-z>", "n" },
+    { "<Down>", { "n", "v" } },
+    { "<Left>", { "n", "v" } },
+    { "<Right>", { "n", "v" } },
+    { "<Up>", { "n", "v" } },
     { "_", { "n", "v" } },
     { "H", { "n", "v" } },
+    { "K", { "n", "v" } },
     { "L", { "n", "v" } },
     { "M", { "n", "v" } },
     { "q", { "n", "v" } }, -- use `#` instead
@@ -63,12 +68,6 @@ M.config = {
     { "n", "<leader><S-h>", "<cmd>tabm -1<cr>", { desc = "Move tab to the left" } },
     { "n", "<leader><S-l>", "<cmd>tabm +1<cr>", { desc = "Move tab to the right" } },
 
-    -- Resize window
-    { "n", "<Up>",    "<cmd> resize +2<cr>",         { desc = "Increase window height" } },
-    { "n", "<Down>",  "<cmd> resize -2<cr>",         { desc = "Decrease window height" } },
-    { "n", "<Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" } },
-    { "n", "<Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" } },
-
     -- Change window size
     { "n", "<S-Up>",    "<cmd>resize +2<cr>",          { desc = "Increase window height" } },
     { "n", "<S-Down>",  "<cmd>resize -2<cr>",          { desc = "Decrease window height" } },
@@ -92,6 +91,7 @@ M.config = {
     { "n", "qr", "<cmd>cq<cr>", { desc = "Quit and reload neovim" } },
     { "n", "qt", "<cmd>tabclose<cr>", { desc = "Quit tab" } },
     { "n", "qw", "<cmd>close<cr>", { desc = "Quit window", } },
+    { "n", "qo", "<cmd>only<cr>",  { desc = "Quit other windows" } },
 
     -- Toggle things
     { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
@@ -157,10 +157,8 @@ M.config = {
     -- Unrelated mappings
     { "n", "X", "<C-a>", { desc = "Increment number under cursor" } },
     { "t", "<C-x>", "<C-\\><C-n>", { desc = "Exit terminal mode" } },
-    { "n", "<leader>o", "<cmd>only<cr>",  { desc = "Leave only the current window" } },
     { "n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file executable" } },
-    { "n", "J", "mzJ`z", { desc = "Join lines" } },
-    { "n", "E", function() local h = vim.diagnostic.open_float; h();h(); end, { desc = "Show errors on current line" } },
+    { "n", "J", "mzJg`z", { desc = "Join lines" } },
     { "n", "i", "len(getline('.')) == 0 && empty(&buftype) ? '\"_cc' : 'i'", { desc = "Enter insert mode", expr = true } },
     { "n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" } },
     { "n", "<F5>", function() tied.manage_session(true) end, { desc = "Load session" } },

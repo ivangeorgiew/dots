@@ -2,7 +2,7 @@
 
 -- Used in plugin files
 --- @class MyLazySpec: LazyPluginSpec
---- @field extra_opts? table
+--- @field extra? table
 
 -- Used in lsp config files
 --- @class LspConfig
@@ -10,7 +10,7 @@
 --- @field lsp_name string
 --- @field pkg_name? string
 --- @field config? vim.lsp.Config
---- @field utils? table
+--- @field extra? table
 
 -- For tied.dir
 --- @class TiedDirOpts

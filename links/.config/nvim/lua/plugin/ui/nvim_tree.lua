@@ -1,95 +1,95 @@
---- @type table<string,MyLazySpec>
-local M = {
-  -- TODO: check the wiki: https://github.com/nvim-tree/nvim-tree.lua/wiki
-  nvim_tree = {
-    -- File tree viewer
-    "nvim-tree/nvim-tree.lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    event = "VeryLazy",
-  },
-}
+-- TODO: check the wiki: https://github.com/nvim-tree/nvim-tree.lua/wiki
 
--- More options at
--- :h nvim-tree-opts
-M.nvim_tree.opts = {
-  hijack_cursor = true, -- keep cursor on first letter of filenames
-  disable_netrw = true,
-  sync_root_with_cwd = true, -- sync on event DirChanged
-  select_prompts = true, -- use vim.ui.select
-  sort = {
-    sorter = "case_sensitive",
-  },
-  view = {
-    width = 30,
-    preserve_window_proportions = true,
-  },
-  live_filter = {
-    prefix = "Filter: ",
-    always_show_folders = false,
-  },
-  renderer = {
-    add_trailing = true, -- add / after folders
-    group_empty = true, -- group empty folders
-    root_folder_label = false, -- disable root folder label
-    special_files = {}, -- remove highlights of special files
-    symlink_destination = true, -- show symlinks
-    hidden_display = "simple", -- show how many hidden files
-    highlight_git = "none",
-    highlight_diagnostics = "name",
-    indent_markers = { enable = true },
-    icons = {
-      show = {
-        git = false,
-        folder_arrow = false,
+--- @type MyLazySpec
+local M = {
+  -- File tree viewer
+  "nvim-tree/nvim-tree.lua",
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  event = "VeryLazy",
+  opts = {
+    hijack_cursor = true, -- keep cursor on first letter of filenames
+    disable_netrw = true,
+    sync_root_with_cwd = true, -- sync on event DirChanged
+    select_prompts = true, -- use vim.ui.select
+    sort = {
+      sorter = "case_sensitive",
+    },
+    view = {
+      width = 30,
+      preserve_window_proportions = true,
+    },
+    live_filter = {
+      prefix = "Filter: ",
+      always_show_folders = false,
+    },
+    renderer = {
+      add_trailing = true, -- add / after folders
+      group_empty = true, -- group empty folders
+      root_folder_label = false, -- disable root folder label
+      special_files = {}, -- remove highlights of special files
+      symlink_destination = true, -- show symlinks
+      hidden_display = "simple", -- show how many hidden files
+      highlight_git = "none",
+      highlight_diagnostics = "name",
+      indent_markers = { enable = true },
+      icons = {
+        show = {
+          git = false,
+          folder_arrow = false,
+        },
+      },
+    },
+    update_focused_file = {
+      enable = true,
+      update_root = { enable = false },
+    },
+    diagnostics = {
+      enable = true,
+      debounce_delay = 250,
+      show_on_dirs = true,
+      severity = {
+        min = vim.diagnostic.severity.WARN,
+      },
+    },
+    actions = {
+      open_file = {
+        quit_on_open = false,
+      },
+    },
+    tab = {
+      sync = {
+        open = true,
+        close = true,
+      },
+    },
+    ui = {
+      confirm = {
+        default_yes = true,
       },
     },
   },
-  update_focused_file = {
-    enable = true,
-    update_root = { enable = false },
-  },
-  diagnostics = {
-    enable = true,
-    debounce_delay = 250,
-    show_on_dirs = true,
-    severity = {
-      min = vim.diagnostic.severity.WARN,
-    },
-  },
-  actions = {
-    open_file = {
-      quit_on_open = true,
-    },
-  },
-  tab = {
-    sync = {
-      open = true,
-      close = true,
-    },
-  },
-  ui = {
-    confirm = {
-      default_yes = true,
-    },
-  },
-  on_attach = tie("Plugin nvim-tree -> On attach", function(bufnr)
-    -- See the default mappings with
-    -- :h nvim-tree-mappings-default
+}
 
-    local api = require("nvim-tree.api")
+M.opts.on_attach = tie("Plugin nvim-tree -> On attach", function(bufnr)
+  -- See the default mappings with
+  -- :h nvim-tree-mappings-default
 
-    local toggle_folder = function()
-      local node = api.tree.get_node_under_cursor()
+  local api = require("nvim-tree.api")
 
-      if node.nodes ~= nil then
-        api.node.open.edit()
-      else
-        api.node.navigate.parent_close()
-      end
+  -- Usen in a mapping, so no need to tie
+  local toggle_folder = function()
+    local node = api.tree.get_node_under_cursor()
+
+    if node.nodes ~= nil then
+      api.node.open.edit()
+    else
+      api.node.navigate.parent_close()
     end
+  end
 
-    -- NOTE: don't delete them, just un/comment and change if needed
-    local maps = {
+  -- NOTE: don't delete maps, just un/comment and change if needed
+  tied.each_i(
+    {
       -- { api.fs.copy.basename, "yn", "Yank file name" },
       -- { api.fs.copy.filename, "yf", "Yank full file name" },
       { api.fs.copy.absolute_path, "yP", "Yank absolute path" },
@@ -118,8 +118,8 @@ M.nvim_tree.opts = {
       { api.node.navigate.parent, "P", "Parent Directory" },
       { api.node.navigate.sibling.first, "K", "First Sibling" },
       { api.node.navigate.sibling.last, "J", "Last Sibling" },
-      { api.node.navigate.sibling.next, ">", "Next Sibling" },
-      { api.node.navigate.sibling.prev, "<", "Previous Sibling" },
+      -- { api.node.navigate.sibling.next, ">", "Next Sibling" },
+      -- { api.node.navigate.sibling.prev, "<", "Previous Sibling" },
       { api.node.open.preview, "o", "Open preview" },
       { api.node.open.edit, "<CR>", "Open" },
       { api.node.open.horizontal, "<C-i>", "Open: Horizontal Split" },
@@ -146,34 +146,26 @@ M.nvim_tree.opts = {
       -- { api.tree.toggle_hidden_filter, "H", "Toggle Filter: Dotfiles" },
       -- { api.tree.toggle_no_bookmark_filter, "M", "Toggle Filter: No Bookmark" },
       -- { api.tree.toggle_no_buffer_filter, "B", "Toggle Filter: No Buffer" },
-    }
+    },
+    "Plugin nvim_tree -> Create keymap",
+    function(_, map_opts)
+      local lhs = map_opts[2]
+      local rhs = map_opts[1]
+      local desc = "NvimTree -> " .. map_opts[3]
 
-    tied.each_i(
-      maps,
-      "Plugin nvim_tree -> Create keymap",
-      function(_, map)
-        tied.create_map(
-          "n",
-          map[2],
-          map[1],
-          { desc = "NvimTree -> " .. map[3], buffer = bufnr, nowait = true }
-        )
-      end
-    )
-  end, tied.do_nothing),
-}
+      -- stylua: ignore
+      tied.create_map("n", lhs, rhs, { desc = desc, buffer = bufnr, nowait = true })
+    end
+  )
+end, tied.do_nothing)
 
-M.nvim_tree.config = tie("Plugin nvim-tree -> config", function(_, opts)
+M.config = tie("Plugin nvim-tree -> config", function(_, opts)
   require("nvim-tree").setup(opts)
 
-  vim.api.nvim_set_hl(0, "NvimTreeWinSeparator", { link = "WinSeparator" })
+  tied.set_hl(0, "NvimTreeWinSeparator", { link = "WinSeparator" })
 
-  tied.create_map(
-    "n",
-    "<leader>ta",
-    "<cmd>NvimTreeToggle<cr><cmd>wincmd =<cr>",
-    { desc = "Toggle NvimTree" }
-  )
+  -- stylua: ignore
+  tied.create_map("n", "<leader>ta", "<cmd>NvimTreeToggle<cr><cmd>wincmd =<cr>", { desc = "Toggle NvimTree" })
 end, tied.do_nothing)
 
 return M

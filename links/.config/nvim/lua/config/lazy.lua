@@ -16,16 +16,13 @@ local M = {}
 
 ---@type LazyConfig
 M.opts = {
-  -- Wrap plugins importing with error handling
   spec = tied.dir({
-    path = vim.fn.stdpath("config") .. "/lua/plugins",
+    path = vim.fn.stdpath("config") .. "/lua/plugin",
     type = "file",
     ext = "lua",
     map = tie(
-      "Require a plugin file",
-      function(file)
-        return vim.tbl_values(require("plugins." .. file:gsub("%.lua$", "")))
-      end,
+      "Get plugin spec",
+      function(file) return require("plugin." .. file:gsub("%.lua$", "")) end,
       function() return {} end
     ),
   }),

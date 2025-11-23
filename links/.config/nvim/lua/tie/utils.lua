@@ -21,6 +21,7 @@
 tied.create_usercmd = vim.api.nvim_create_user_command
 tied.ui_input = vim.ui.input
 tied.ui_select = vim.ui.select
+tied.set_hl = vim.api.nvim_set_hl
 
 local foreach = tie(
   "Foreach wrapper",
@@ -69,6 +70,21 @@ local foreach = tie(
 tied.each_i = foreach(true)
 tied.each = foreach(false)
 
+tied.do_block = tie(
+  "Execute tied code block",
+  --- Useful when a block of code is a separate logic,
+  --- but there is no point in moving it to a function
+  ---@param desc string
+  ---@param on_try function
+  function(desc, on_try)
+    vim.validate("desc", desc, "string")
+    vim.validate("on_try", on_try, "function")
+
+    tie(desc, on_try, tied.do_nothing)()
+  end,
+  tied.do_nothing
+)
+
 tied.create_map = tie(
   "Create vim keymap",
   --- @param modes string|string[]
@@ -87,7 +103,9 @@ tied.create_map = tie(
       type(modes) == "table" or (modes ~= "ca" and modes ~= "!a")
     )
 
-    if opts.silent == nil and isnt_abbrev then opts.silent = true end
+    if opts.silent == nil and isnt_abbrev then
+      opts.silent = true
+    end
 
     -- rhs is tied in builtins if function
     vim.keymap.set(modes, lhs, rhs, opts)
@@ -124,7 +142,9 @@ tied.dir = tie(
     local entries = {}
     local item_type = opts.type ---@type string
 
-    if opts.type == "dir" then item_type = "directory" end
+    if opts.type == "dir" then
+      item_type = "directory"
+    end
 
     for name, type in vim.fs.dir(opts.path, { depth = opts.depth or math.huge }) do
       local matches_ext = not opts.ext or vim.endswith(name, "." .. opts.ext)
@@ -132,9 +152,13 @@ tied.dir = tie(
       if type == item_type and matches_ext then
         local entry = name
 
-        if opts.map then entry = opts.map(name) end
+        if opts.map then
+          entry = opts.map(name)
+        end
 
-        if entry ~= nil then table.insert(entries, entry) end
+        if entry ~= nil then
+          table.insert(entries, entry)
+        end
       end
     end
 
@@ -286,9 +310,22 @@ tied.manage_session = tie(
     local ses_dir = vim.fn.stdpath("data") .. "/sessions"
     local ses_file = vim.fn.fnameescape(("%s/%s.vim"):format(ses_dir, cwd))
 
-    if not vim.uv.fs_stat(ses_dir) then vim.fn.mkdir(ses_dir, "p") end
+    if not vim.uv.fs_stat(ses_dir) then
+      vim.fn.mkdir(ses_dir, "p")
+    end
 
     if should_load and vim.fn.filereadable(ses_file) == 1 then
+      tied.each_i(
+        vim.api.nvim_list_wins(),
+        "Close floating window",
+        function(_, winnr)
+          local config = vim.api.nvim_win_get_config(winnr)
+
+          if config.relative ~= "" then
+            vim.api.nvim_win_close(winnr, true)
+          end
+        end
+      )
       vim.cmd("source " .. ses_file)
     end
 
