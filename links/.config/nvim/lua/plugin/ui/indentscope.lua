@@ -1,4 +1,4 @@
--- NOTE: Alternatives are "saghen/blink.indent", "folke/snacks.nvim".indent
+-- TODO: Alternatives are "saghen/blink.indent", "folke/snacks.nvim".indent
 
 --- @type MyLazySpec
 local M = {

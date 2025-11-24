@@ -1,0 +1,98 @@
+-- NOTE: Docs https://neovim.io/doc/user/lsp.html
+
+local S = vim.diagnostic.severity
+
+---@type LspConfig
+local M = {
+  enable = false, -- not an actual LSP
+  lsp_name = "*",
+  config = {
+    -- TODO: Check plugins like https://github.com/antosha417/nvim-lsp-file-operations
+    -- capabilities = vim.lsp.protocol.make_client_capabilities(),
+  },
+  extra = {
+    use_semantic_tokens = true,
+    map_prefix = "-",
+    map_list_opts = { loclist = true },
+    diagnostics = {
+      update_in_insert = false,
+      severity_sort = true,
+      underline = false,
+      virtual_lines = false,
+      virtual_text = {
+        source = false,
+        prefix = "",
+        spacing = 1,
+      },
+      signs = {
+        text = {
+          [S.ERROR] = "󰅙",
+          [S.WARN] = "",
+          [S.INFO] = "",
+          [S.HINT] = "󰌵",
+        },
+      },
+      float = {
+        source = false,
+        severity_sort = true,
+        -- no severity filter
+      },
+      jump = {
+        float = false,
+        wrap = true,
+        severity = { S.ERROR, S.WARN },
+      },
+    },
+  },
+}
+
+-- stylua: ignore
+M.extra.keys = {
+  { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
+
+  -- NOTE: `_` is substituted with `map_prefix`
+  { "n", "_e", function() vim.diagnostic.open_float() end, { desc = "Show line errors" } },
+  { "n", "_h", function() vim.lsp.buf.hover() end, { desc = "Show hover popup" } },
+  { "n", "_s", function() vim.lsp.buf.signature_help() end, { desc = "Show function signature" } },
+  { "n", "_u", function() vim.lsp.buf.rename() end, { desc = "Rename variable" } },
+  { "n", "_D", function() vim.lsp.buf.declaration(M.extra.map_list_opts) end, { desc = "Go to declaration" } }, -- prefer `implementation`
+  { "n", "_d", function() vim.lsp.buf.definition(M.extra.map_list_opts) end, { desc = "Go to definition" } }, -- prefer `implementation`
+  { "n", "_i", function() vim.lsp.buf.implementation(M.extra.map_list_opts) end, { desc = "Go to implementation" } },
+  { "n", "_t", function() vim.lsp.buf.type_definition(M.extra.map_list_opts) end, { desc = "Go to type definition" } },
+  { "n", "_r", function() vim.lsp.buf.references(nil, M.extra.map_list_opts) end, { desc = "Show references" } },
+  { { "n", "v" }, "_a", function() vim.lsp.buf.code_action() end, { desc = "Select code action" } },
+}
+
+M.config.on_attach = tie("LSP * -> on_attach", function(client, bufnr)
+  tied.do_block("Create LSP keymaps", function()
+    tied.each_i(M.extra.keys, "Create LSP keymap", function(_, map_opts)
+      map_opts[2] = map_opts[2]:gsub("^_", M.extra.map_prefix)
+      map_opts[4].buffer = bufnr
+
+      tied.create_map(unpack(map_opts))
+    end)
+
+    tied.on_plugin_load(
+      { "which-key.nvim" },
+      "Modify LSP maps in which-key",
+      function() require("which-key").add({ M.extra.map_prefix, group = "LSP" }) end
+    )
+  end)
+
+  -- NOTE: can use :Inspect to show hl group and priority used at cursor
+  tied.do_block("Change LSP semantic tokens priority", function()
+    if
+      not M.extra.use_semantic_tokens
+      and client:supports_method("textDocument/semanticTokens")
+    then
+      vim.highlight.priorities.semantic_tokens = 95
+    end
+  end)
+
+  tied.do_block(
+    "Set vim.diagnostic options",
+    function() vim.diagnostic.config(M.extra.diagnostics) end
+  )
+end, tied.do_nothing)
+
+return M

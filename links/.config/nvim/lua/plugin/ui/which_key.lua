@@ -27,8 +27,8 @@ local M = {
     },
     defer = tie(
       "Plugin which-key -> defer",
-      ---@param _ { mode: string, operator: string }
-      function(_)
+      ---@param ctx { mode: string, operator: string }
+      function(ctx)
         -- If it returns true, don't show which-key for
         -- the mode or operator until an additional key is pressed
         return false

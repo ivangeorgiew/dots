@@ -10,6 +10,7 @@ M.config = {
     { "+", { "n", "v" } },
     { "-", { "n", "v" } },
     { "<C-b>", "n" },
+    { "<C-e>", "n" },
     { "<C-f>", "n" },
     { "<C-z>", "n" },
     { "<Down>", { "n", "v" } },
@@ -83,8 +84,8 @@ M.config = {
     -- Go to next/prev thing
     { "n", "<leader>k", "]", { desc = "Next thing", remap = true } },
     { "n", "<leader>j", "[", { desc = "Prev thing", remap = true } },
-    { "n", "]e", function() vim.diagnostic.jump({ count =  1, float = true }) end, { desc = "Next error" } },
-    { "n", "[e", function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = "Prev error" } },
+    { "n", "]e", function() vim.diagnostic.jump({ count =  1 }) end, { desc = "Next error" } },
+    { "n", "[e", function() vim.diagnostic.jump({ count = -1 }) end, { desc = "Prev error" } },
 
     -- Quit things
     { "n", "qa", "<cmd>qa<cr>", { desc = "Quit all" } },
@@ -92,6 +93,8 @@ M.config = {
     { "n", "qt", "<cmd>tabclose<cr>", { desc = "Quit tab" } },
     { "n", "qw", "<cmd>close<cr>", { desc = "Quit window", } },
     { "n", "qo", "<cmd>only<cr>",  { desc = "Quit other windows" } },
+    { "t", "<C-x>", "<C-\\><C-n>", { desc = "Exit terminal mode" } },
+    { "n", "<C-e>", "<cmd>fclose<cr>", { desc = "Close floating window" } },
 
     -- Toggle things
     { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
@@ -156,7 +159,6 @@ M.config = {
 
     -- Unrelated mappings
     { "n", "X", "<C-a>", { desc = "Increment number under cursor" } },
-    { "t", "<C-x>", "<C-\\><C-n>", { desc = "Exit terminal mode" } },
     { "n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file executable" } },
     { "n", "J", "mzJg`z", { desc = "Join lines" } },
     { "n", "i", "len(getline('.')) == 0 && empty(&buftype) ? '\"_cc' : 'i'", { desc = "Enter insert mode", expr = true } },
@@ -187,7 +189,7 @@ M.setup = tie("Setup keymaps", function()
   tied.each_i(
     M.config.to_delete,
     "Delete keymap",
-    function(_, map) tied.delete_map(unpack(map)) end
+    function(_, map) tied.delete_map(map[2], map[1]) end
   )
   tied.each_i(
     M.config.to_create,

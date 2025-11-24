@@ -103,7 +103,6 @@ M.config = tie("Plugin nvim-treesitter -> config", function(_, opts)
   ts.setup(opts)
 
   M.extra.installed = ts.get_installed()
-
   M.extra.install_parsers()
 
   tied.create_autocmd({

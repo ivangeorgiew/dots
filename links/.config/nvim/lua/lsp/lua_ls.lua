@@ -2,17 +2,27 @@
 local M = {
   lsp_name = "lua_ls",
   pkg_name = "lua-language-server",
-  config = {
-    settings = {
-      Lua = {
-        hint = {
-          enable = true,
+  extra = {
+    libs_queue = {},
+    nvim_settings = {
+      runtime = {
+        version = "LuaJIT",
+        path = { "lua/?.lua", "lua/?/init.lua" },
+      },
+      workspace = {
+        checkThirdParty = false,
+        library = {
+          vim.env.VIMRUNTIME,
+          "${3rd}/luv/library", -- vim.uv
+          vim.fn.stdpath("data") .. "/lazy/lazy.nvim",
         },
       },
     },
   },
-  extra = {
-    libs_queue = {},
+  config = {
+    settings = {
+      Lua = {},
+    },
   },
 }
 
@@ -70,23 +80,11 @@ M.config.on_init = tie("LSP lua_ls -> On init", function(client)
   )
 
   if vim.g.is_nvim_project then
-    client.config.settings.Lua = (
-      vim.tbl_deep_extend("force", client.config.settings.Lua, {
-        runtime = {
-          version = "LuaJIT",
-          path = { "lua/?.lua", "lua/?/init.lua" },
-        },
-        workspace = {
-          checkThirdParty = false,
-          library = {
-            vim.env.VIMRUNTIME,
-            "${3rd}/luv/library", -- vim.uv
-            vim.fn.stdpath("data") .. "/lazy/lazy.nvim",
-            unpack(M.extra.libs_queue),
-          },
-        },
-      })
-    )
+    local s = client.config.settings
+
+    s.Lua = vim.tbl_deep_extend("force", s.Lua, M.extra.nvim_settings)
+
+    vim.list_extend(s.Lua.workspace.library, M.extra.libs_queue)
   end
 end, tied.do_nothing)
 

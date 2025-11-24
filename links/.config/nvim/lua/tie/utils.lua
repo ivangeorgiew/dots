@@ -117,13 +117,21 @@ tied.delete_map = tie(
   "Delete vim keymap",
   --- @param lhs string
   --- @param modes string|string[]
-  function(lhs, modes)
+  --- @param opts table?
+  function(modes, lhs, opts)
     vim.validate("lhs", lhs, "string")
     vim.validate("modes", modes, { "string", "table" })
+    vim.validate("opts", opts, "table", true)
 
-    -- vim.keymap.del() can fail if the mapping doesn't exist
-    -- so use create_map instead
-    tied.create_map(modes, lhs, "<nop>", { desc = "Nothing" })
+    opts = opts or {}
+
+    local ok = pcall(vim.keymap.del, modes, lhs, opts)
+
+    if not ok then
+      opts.desc = "Nothing"
+
+      tied.create_map(modes, lhs, "<nop>", opts)
+    end
   end,
   tied.do_nothing
 )
@@ -347,4 +355,36 @@ tied.manage_session = tie(
     end
   end,
   tied.do_nothing
+)
+
+tied.keys_in_win = tie(
+  "Feed normal mode keys in a vim window",
+  ---@param winnr number
+  ---@param keys string
+  ---@param fallback boolean|string|nil
+  ---@return boolean
+  function(winnr, keys, fallback)
+    vim.validate("winnr", winnr, "number")
+    vim.validate("keys", keys, "string")
+    vim.validate("fallback", fallback, { "boolean", "string" }, true)
+
+    local feed_keys = function()
+      keys = vim.api.nvim_replace_termcodes(keys, true, false, true)
+      vim.cmd("normal! " .. keys)
+    end
+
+    if not vim.api.nvim_win_is_valid(winnr) then
+      if fallback then
+        keys = type(fallback) == "string" and fallback or keys
+        feed_keys()
+      end
+
+      return false
+    end
+
+    vim.api.nvim_win_call(winnr, feed_keys)
+
+    return true
+  end,
+  function() return false end
 )

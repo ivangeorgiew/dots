@@ -5,7 +5,7 @@ local M = {
   dependencies = { "nvim-lua/plenary.nvim" },
   event = "VeryLazy",
   opts = {
-    signs = true, -- show icons in the signs column
+    signs = false, -- show icons in the signs column
     sign_priority = 8, -- sign priority
     -- keywords recognized as todo comments
     -- stylua: ignore
@@ -76,9 +76,9 @@ M.config = tie("Plugin todo-comments -> config", function(_, opts)
 
   todo.setup(opts)
 
-  -- stylua: ignore
   tied.each_i(
     {
+      -- stylua: ignore start
       { "n", "[t", todo.jump_prev, { desc = "Prev special comment" } },
       { "n", "]t", todo.jump_next, { desc = "Next special comment" } },
       { "n", "<leader>tc", "<cmd>TodoLocList keywords=TODO,FIX<cr>", { desc = "Toggle Comments (TODO,FIX,etc)" } },
@@ -87,6 +87,7 @@ M.config = tie("Plugin todo-comments -> config", function(_, opts)
 
       -- TODO: integrate with Telescope.nvim (:TodoTelescope)
       -- TODO: integrate with Trouble.nvim (:TodoTrouble)
+      -- stylua: ignore end
     },
     "Plugin todo-comments -> Create keymap",
     function(_, map_opts) tied.create_map(unpack(map_opts)) end

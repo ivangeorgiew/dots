@@ -10,8 +10,8 @@ local M = {
       javascript = { "prettierd" },
       nix = { "alejandra" },
     },
-    notify_no_formatters = true,
-    notify_on_error = true,
+    notify_no_formatters = false,
+    notify_on_error = false,
     default_format_opts = {
       timeout_ms = 3000,
       lsp_format = "fallback",

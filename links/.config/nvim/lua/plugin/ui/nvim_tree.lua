@@ -44,9 +44,10 @@ local M = {
       update_root = { enable = false },
     },
     diagnostics = {
-      enable = true,
+      enable = false,
       debounce_delay = 250,
       show_on_dirs = true,
+      diagnostic_opts = true,
       severity = {
         min = vim.diagnostic.severity.WARN,
       },

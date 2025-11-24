@@ -156,6 +156,36 @@ M.config = {
       end
     end,
   },
+  {
+    desc = "Set float window settings",
+    event = "WinNew",
+    callback = function()
+      local winnr = vim.api.nvim_get_current_win()
+      local win_config = vim.api.nvim_win_get_config(winnr)
+      local is_float = win_config.relative ~= ""
+
+      if not is_float then
+        return
+      end
+
+      tied.each_i(
+        {
+          -- stylua: ignore start
+          -- NOTE: Close with <C-e>
+          { "n", "<C-Space>", function() pcall(vim.api.nvim_set_current_win, winnr) end, { desc = "Enter floating window" } },
+          { "n", "<C-f>", function() tied.keys_in_win(winnr, "<C-f>", true) end, { desc = "Scroll down" } },
+          { "n", "<C-b>", function() tied.keys_in_win(winnr, "<C-b>", true) end, { desc = "Scroll up" } },
+          -- stylua: ignore end
+        },
+        "Create a floating window keymap",
+        function(_, map_opts)
+          map_opts[4].buffer = true
+
+          tied.create_map(unpack(map_opts))
+        end
+      )
+    end,
+  },
 }
 
 return M

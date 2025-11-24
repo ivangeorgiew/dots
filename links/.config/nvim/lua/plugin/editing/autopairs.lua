@@ -1,4 +1,4 @@
--- TODO: alternative is mini.pairs with LazyVim's additions
+-- TODO: alternative are blink.pairs or mini.pairs with LazyVim's additions
 
 --- @type MyLazySpec
 local M = {
