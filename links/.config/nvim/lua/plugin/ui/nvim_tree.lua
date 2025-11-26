@@ -5,7 +5,7 @@ local M = {
   -- File tree viewer
   "nvim-tree/nvim-tree.lua",
   dependencies = { "nvim-tree/nvim-web-devicons" },
-  event = "VeryLazy",
+  event = tied.LazyEvent,
   opts = {
     hijack_cursor = true, -- keep cursor on first letter of filenames
     disable_netrw = true,
@@ -89,75 +89,74 @@ M.opts.on_attach = tie("Plugin nvim-tree -> On attach", function(bufnr)
   end
 
   -- NOTE: don't delete maps, just un/comment and change if needed
-  tied.each_i(
-    {
-      -- { api.fs.copy.basename, "yn", "Yank file name" },
-      -- { api.fs.copy.filename, "yf", "Yank full file name" },
-      { api.fs.copy.absolute_path, "yP", "Yank absolute path" },
-      { api.fs.copy.relative_path, "yp", "Yank relative path" },
-      { api.fs.copy.node, "c", "Copy file" },
-      { api.fs.create, "a", "Create file or directory" },
-      { api.fs.cut, "x", "Cut file" },
-      { api.fs.paste, "p", "Paste file" },
-      { api.fs.remove, "d", "Delete file" },
-      { api.fs.rename, "r", "Rename file" },
-      -- { api.fs.rename_basename, "e", "Rename: Basename" },
-      -- { api.fs.rename_full, "u", "Rename: Full Path" },
-      -- { api.fs.rename_sub, "<C-r>", "Rename: Omit Filename" },
-      -- { api.fs.trash, "D", "Trash" },
-      { api.live_filter.clear, "F", "Live Filter: Clear" },
-      { api.live_filter.start, "f", "Live Filter: Start" },
-      -- { api.marks.bulk.delete, "bd", "Delete Bookmarked" },
-      -- { api.marks.bulk.move, "bmv", "Move Bookmarked" },
-      -- { api.marks.bulk.trash, "bt", "Trash Bookmarked" },
-      -- { api.marks.toggle, "m", "Toggle Bookmark" },
-      -- { api.node.navigate.diagnostics.next, "]e", "Next Diagnostic" },
-      -- { api.node.navigate.diagnostics.prev, "[e", "Prev Diagnostic" },
-      -- { api.node.navigate.git.next, "]c", "Next Git" },
-      -- { api.node.navigate.git.prev, "[c", "Prev Git" },
-      -- { api.node.navigate.parent_close, "<BS>", "Close Directory" },
-      { api.node.navigate.parent, "P", "Parent Directory" },
-      { api.node.navigate.sibling.first, "K", "First Sibling" },
-      { api.node.navigate.sibling.last, "J", "Last Sibling" },
-      -- { api.node.navigate.sibling.next, ">", "Next Sibling" },
-      -- { api.node.navigate.sibling.prev, "<", "Previous Sibling" },
-      { api.node.open.preview, "o", "Open preview" },
-      { api.node.open.edit, "<CR>", "Open" },
-      { api.node.open.horizontal, "<C-i>", "Open: Horizontal Split" },
-      { api.node.open.tab, "<C-t>", "Open: New Tab" },
-      { api.node.open.vertical, "<C-v>", "Open: Vertical Split" },
-      -- { api.node.open.no_window_picker, "O", "Open: No Window Picker" },
-      -- { api.node.open.replace_tree_buffer, "<C-e>", "Open: In Place" },
-      -- { api.node.open.toggle_group_empty, "L", "Toggle Group Empty" },
-      -- { api.node.run.cmd, ".", "Run Command" },
-      -- { api.node.run.system, "s", "Run System" },
-      -- { api.node.show_info_popup, "<C-k>", "Info" },
-      { api.tree.change_root_to_node, "_", "Change root dir" },
-      { api.tree.change_root_to_parent, "-", "Up root dir" },
-      -- { api.tree.close, "q", "Close" },
-      { api.tree.collapse_all, "W", "Collapse All" },
-      { api.tree.expand_all, "C", "Expand All" },
-      { toggle_folder, "e", "Toggle folder" },
-      -- { api.tree.reload, "R", "Refresh" },
-      -- { api.tree.search_node, "S", "Search" },
-      -- { api.tree.toggle_custom_filter, "U", "Toggle Filter: Hidden" },
-      -- { api.tree.toggle_git_clean_filter, "C", "Toggle Filter: Git Clean" },
-      -- { api.tree.toggle_gitignore_filter, "I", "Toggle Filter: Git Ignore" },
-      { api.tree.toggle_help, "?", "Help" },
-      -- { api.tree.toggle_hidden_filter, "H", "Toggle Filter: Dotfiles" },
-      -- { api.tree.toggle_no_bookmark_filter, "M", "Toggle Filter: No Bookmark" },
-      -- { api.tree.toggle_no_buffer_filter, "B", "Toggle Filter: No Buffer" },
-    },
-    "Plugin nvim_tree -> Create keymap",
-    function(_, map_opts)
-      local lhs = map_opts[2]
-      local rhs = map_opts[1]
-      local desc = "NvimTree -> " .. map_opts[3]
+  ---@type [function, string, string][]
+  local maps = {
+    -- { api.fs.copy.basename, "yn", "Yank file name" },
+    -- { api.fs.copy.filename, "yf", "Yank full file name" },
+    { api.fs.copy.absolute_path, "yP", "Yank absolute path" },
+    { api.fs.copy.relative_path, "yp", "Yank relative path" },
+    { api.fs.copy.node, "c", "Copy file" },
+    { api.fs.create, "a", "Create file or directory" },
+    { api.fs.cut, "x", "Cut file" },
+    { api.fs.paste, "p", "Paste file" },
+    { api.fs.remove, "d", "Delete file" },
+    { api.fs.rename, "r", "Rename file" },
+    -- { api.fs.rename_basename, "e", "Rename: Basename" },
+    -- { api.fs.rename_full, "u", "Rename: Full Path" },
+    -- { api.fs.rename_sub, "<C-r>", "Rename: Omit Filename" },
+    -- { api.fs.trash, "D", "Trash" },
+    { api.live_filter.clear, "F", "Live Filter: Clear" },
+    { api.live_filter.start, "f", "Live Filter: Start" },
+    -- { api.marks.bulk.delete, "bd", "Delete Bookmarked" },
+    -- { api.marks.bulk.move, "bmv", "Move Bookmarked" },
+    -- { api.marks.bulk.trash, "bt", "Trash Bookmarked" },
+    -- { api.marks.toggle, "m", "Toggle Bookmark" },
+    -- { api.node.navigate.diagnostics.next, "]e", "Next Diagnostic" },
+    -- { api.node.navigate.diagnostics.prev, "[e", "Prev Diagnostic" },
+    -- { api.node.navigate.git.next, "]c", "Next Git" },
+    -- { api.node.navigate.git.prev, "[c", "Prev Git" },
+    -- { api.node.navigate.parent_close, "<BS>", "Close Directory" },
+    { api.node.navigate.parent, "P", "Parent Directory" },
+    { api.node.navigate.sibling.first, "K", "First Sibling" },
+    { api.node.navigate.sibling.last, "J", "Last Sibling" },
+    -- { api.node.navigate.sibling.next, ">", "Next Sibling" },
+    -- { api.node.navigate.sibling.prev, "<", "Previous Sibling" },
+    { api.node.open.preview, "o", "Open preview" },
+    { api.node.open.edit, "<CR>", "Open" },
+    { api.node.open.horizontal, "<C-i>", "Open: Horizontal Split" },
+    { api.node.open.tab, "<C-t>", "Open: New Tab" },
+    { api.node.open.vertical, "<C-v>", "Open: Vertical Split" },
+    -- { api.node.open.no_window_picker, "O", "Open: No Window Picker" },
+    -- { api.node.open.replace_tree_buffer, "<C-e>", "Open: In Place" },
+    -- { api.node.open.toggle_group_empty, "L", "Toggle Group Empty" },
+    -- { api.node.run.cmd, ".", "Run Command" },
+    -- { api.node.run.system, "s", "Run System" },
+    -- { api.node.show_info_popup, "<C-k>", "Info" },
+    { api.tree.change_root_to_node, "_", "Change root dir" },
+    { api.tree.change_root_to_parent, "-", "Up root dir" },
+    -- { api.tree.close, "q", "Close" },
+    { api.tree.collapse_all, "W", "Collapse All" },
+    { api.tree.expand_all, "C", "Expand All" },
+    { toggle_folder, "e", "Toggle folder" },
+    -- { api.tree.reload, "R", "Refresh" },
+    -- { api.tree.search_node, "S", "Search" },
+    -- { api.tree.toggle_custom_filter, "U", "Toggle Filter: Hidden" },
+    -- { api.tree.toggle_git_clean_filter, "C", "Toggle Filter: Git Clean" },
+    -- { api.tree.toggle_gitignore_filter, "I", "Toggle Filter: Git Ignore" },
+    { api.tree.toggle_help, "?", "Help" },
+    -- { api.tree.toggle_hidden_filter, "H", "Toggle Filter: Dotfiles" },
+    -- { api.tree.toggle_no_bookmark_filter, "M", "Toggle Filter: No Bookmark" },
+    -- { api.tree.toggle_no_buffer_filter, "B", "Toggle Filter: No Buffer" },
+  }
 
-      -- stylua: ignore
-      tied.create_map("n", lhs, rhs, { desc = desc, buffer = bufnr, nowait = true })
-    end
-  )
+  tied.each_i("Plugin nvim_tree -> Create keymap", maps, function(_, map_opts)
+    local lhs = map_opts[2]
+    local rhs = map_opts[1]
+    local desc = "NvimTree -> " .. map_opts[3]
+
+    -- stylua: ignore
+    tied.create_map("n", lhs, rhs, { desc = desc, buffer = bufnr, nowait = true })
+  end)
 end, tied.do_nothing)
 
 M.config = tie("Plugin nvim-tree -> config", function(_, opts)

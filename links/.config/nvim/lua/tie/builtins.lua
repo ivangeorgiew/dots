@@ -140,6 +140,19 @@ _G.vim.schedule = tie(
   end,
   tied.do_nothing
 )
+_G.vim.schedule_wrap = tie(
+  "Tied vim.schedule_wrap",
+  ---@param fn function
+  function(fn)
+    vim.validate("fn", fn, "function")
+
+    return tie("Call scheduled function", function(...)
+      local args = vim.F.pack_len(...)
+      vim.schedule(function() fn(vim.F.unpack_len(args)) end)
+    end, tied.do_nothing)
+  end,
+  tied.do_rethrow
+)
 
 local defer_fn = vim.defer_fn
 _G.vim.defer_fn = tie(
@@ -154,6 +167,21 @@ _G.vim.defer_fn = tie(
       overwrite_tied_catch("Deferred", "", fn, tied.do_nothing),
       timeout
     )
+  end,
+  tied.do_rethrow
+)
+_G.vim.defer_wrap = tie(
+  "Tied vim.defer_wrap",
+  ---@param fn function
+  ---@param timeout number
+  function(fn, timeout)
+    vim.validate("fn", fn, "function")
+    vim.validate("timeout", timeout, "number")
+
+    return tie("Call deferred function", function(...)
+      local args = vim.F.pack_len(...)
+      return vim.defer_fn(function() fn(vim.F.unpack_len(args)) end, timeout)
+    end, tied.do_rethrow)
   end,
   tied.do_rethrow
 )

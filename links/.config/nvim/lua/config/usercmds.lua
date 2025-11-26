@@ -2,18 +2,18 @@ local M = {}
 
 M.setup = tie("Setup usercmds", function()
   tied.each_i(
-    M.config,
     "Queue usercmd to create",
+    M.config,
     function(_, usercmd) tied.create_usercmd(unpack(usercmd)) end
   )
 end, tied.do_nothing)
 
----@class UserCmdParams
+---@class UserCmdArgs
 ---@field [1] string
 ---@field [2] string|fun(args: vim.api.keyset.create_user_command.command_args)
 ---@field [3] vim.api.keyset.user_command
 
----@type UserCmdParams[]
+---@type UserCmdArgs[]
 M.config = {
   {
     "Navigate",
@@ -77,9 +77,7 @@ M.config = {
               end
 
               if choice:match("Yes") then
-                -- Commands are executed in each list item (buffer)
-                -- Prevent warnings/issues with the subcommands
-                -- :h cdo
+                vim.cmd("lfirst | only | lopen")
                 vim.cmd(
                   ("%s %%sno@%s@%s@gIe | update | bdelete"):format(
                     "silent noautocmd keepjumps keepalt lfdo",

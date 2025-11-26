@@ -3,14 +3,14 @@ local M = {
   -- Provides good default LSP configs
   -- :h lspconfig
   "neovim/nvim-lspconfig",
-  event = "User FilePost",
+  event = tied.LazyEvent,
 }
 
 M.config = tie("Plugin nvim-lspconfig -> config", function()
   tied.do_block("Config, enable and install LSPs", function()
     local to_install = {}
 
-    tied.each_i(require("lsp"), "Setup an LSP", function(_, lsp)
+    tied.each_i("Setup an LSP", require("lsp"), function(_, lsp)
       if lsp.config then
         vim.lsp.config(lsp.lsp_name, lsp.config)
       end
@@ -28,7 +28,7 @@ M.config = tie("Plugin nvim-lspconfig -> config", function()
   end)
 
   -- NOTE: Example inlay hints configs: https://github.com/MysticalDevil/inlay-hints.nvim/tree/master
-  tied.set_hl(0, "LspInlayHint", { link = "Comment" })
+  -- tied.set_hl(0, "LspInlayHint", { link = "Comment" })
 end, tied.do_nothing)
 
 return M

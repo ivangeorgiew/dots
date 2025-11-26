@@ -8,22 +8,20 @@ local M = {
   lsp_name = "*",
   config = {
     -- TODO: Check plugins like https://github.com/antosha417/nvim-lsp-file-operations
-    -- capabilities = vim.lsp.protocol.make_client_capabilities(),
+    capabilities = vim.lsp.protocol.make_client_capabilities(),
   },
   extra = {
     use_semantic_tokens = true,
     map_prefix = "-",
+    --- @type vim.lsp.LocationOpts
     map_list_opts = { loclist = true },
+    --- @type vim.diagnostic.Opts
     diagnostics = {
       update_in_insert = false,
       severity_sort = true,
-      underline = false,
-      virtual_lines = false,
-      virtual_text = {
-        source = false,
-        prefix = "",
-        spacing = 1,
-      },
+      underline = true,
+      -- virtual_lines = { current_line = false },
+      virtual_text = { source = false, prefix = "", spacing = 1 },
       signs = {
         text = {
           [S.ERROR] = "󰅙",
@@ -35,7 +33,6 @@ local M = {
       float = {
         source = false,
         severity_sort = true,
-        -- no severity filter
       },
       jump = {
         float = false,
@@ -46,6 +43,7 @@ local M = {
   },
 }
 
+---@type KeymapSetArgs[]
 -- stylua: ignore
 M.extra.keys = {
   { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
@@ -60,12 +58,12 @@ M.extra.keys = {
   { "n", "_i", function() vim.lsp.buf.implementation(M.extra.map_list_opts) end, { desc = "Go to implementation" } },
   { "n", "_t", function() vim.lsp.buf.type_definition(M.extra.map_list_opts) end, { desc = "Go to type definition" } },
   { "n", "_r", function() vim.lsp.buf.references(nil, M.extra.map_list_opts) end, { desc = "Show references" } },
-  { { "n", "v" }, "_a", function() vim.lsp.buf.code_action() end, { desc = "Select code action" } },
+  { { "n", "x" }, "_a", function() vim.lsp.buf.code_action() end, { desc = "Select code action" } },
 }
 
 M.config.on_attach = tie("LSP * -> on_attach", function(client, bufnr)
   tied.do_block("Create LSP keymaps", function()
-    tied.each_i(M.extra.keys, "Create LSP keymap", function(_, map_opts)
+    tied.each_i("Create LSP keymap", M.extra.keys, function(_, map_opts)
       map_opts[2] = map_opts[2]:gsub("^_", M.extra.map_prefix)
       map_opts[4].buffer = bufnr
 
@@ -73,7 +71,7 @@ M.config.on_attach = tie("LSP * -> on_attach", function(client, bufnr)
     end)
 
     tied.on_plugin_load(
-      { "which-key.nvim" },
+      "which-key.nvim",
       "Modify LSP maps in which-key",
       function() require("which-key").add({ M.extra.map_prefix, group = "LSP" }) end
     )

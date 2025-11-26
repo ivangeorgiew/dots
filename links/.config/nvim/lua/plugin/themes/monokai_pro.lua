@@ -2,7 +2,7 @@
 local M = {
   "loctvl842/monokai-pro.nvim",
   cond = vim.g.colorscheme == "monokai-pro",
-  event = "UIEnter", -- issues if "VeryLazy"
+  event = "UIEnter",
   config = tied.colorscheme_config,
   opts = {
     filter = "spectrum", -- classic | octagon | pro | machine | ristretto | spectrum

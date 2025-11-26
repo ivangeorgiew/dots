@@ -37,22 +37,11 @@ _G.pcall = wrap_prot_call(pcall)
 local xpcall = xpcall
 _G.xpcall = wrap_prot_call(xpcall)
 
-local notifs = {} --- @type table<string,boolean>
-
 --- @param err_msg string
---- @param hash string
-local print_err = function(err_msg, hash)
+local print_err = function(err_msg)
   vim.validate("err_msg", err_msg, "string")
 
-  -- Different hash and logic from vim.notify_once
-  -- Remove after timeout and use desc+err for hash
-  if not notifs[hash] then
-    local seconds = 60 * 1e3
-
-    vim.notify(err_msg, vim.log.levels.ERROR)
-    notifs[hash] = true
-    vim.defer_fn(function() notifs[hash] = nil end, seconds)
-  end
+  vim.notify_once(err_msg, vim.log.levels.ERROR)
 end
 
 ---@param err string
@@ -61,7 +50,7 @@ local print_inner_err = function(err)
 
   local desc = "inner error-handling"
 
-  print_err(("Error in %s:%s\n\n"):format(desc, err), desc .. err)
+  print_err(("Error in %s:%s\n\n"):format(desc, err))
 end
 
 --- Stringify anything
@@ -91,12 +80,10 @@ end
 --- @param desc string
 --- @param err string
 --- @param args table
---- @param n_args number
-local log_error = function(desc, err, args, n_args)
+local log_error = function(desc, err, args)
   vim.validate("desc", desc, "string")
   vim.validate("err", err, "string")
   vim.validate("args", args, "table")
-  vim.validate("n_args", n_args, "number")
 
   local ok, inner_err = true, nil
   local ind = "  "
@@ -106,10 +93,10 @@ local log_error = function(desc, err, args, n_args)
   -- Stringify args
   ---@type boolean, unknown
   ok, inner_err = pcall(function()
-    if n_args > 0 then
+    if args.n > 0 then
       local lines = {}
 
-      for idx = 1, n_args do
+      for idx = 1, args.n do
         lines[#lines + 1] = ("%s%d) %s"):format(ind, idx, stringify(args[idx]))
       end
 
@@ -160,7 +147,7 @@ local log_error = function(desc, err, args, n_args)
   ok, inner_err = pcall(function()
     local l = {
       "Error at:",
-      ("%s<%s>"):format(ind, desc),
+      ("%s[%s]"):format(ind, desc),
     }
 
     if args_string ~= "" then
@@ -178,7 +165,7 @@ local log_error = function(desc, err, args, n_args)
 
     l[#l + 1] = "\n"
 
-    print_err(table.concat(l, "\n"), desc .. err)
+    print_err(table.concat(l, "\n"))
   end)
   if not ok then
     print_inner_err(inner_err)
@@ -202,10 +189,7 @@ _G.tie = function(desc, on_try, on_catch)
     return on_try
   end
 
-  local inner_catch = function(...)
-    local args = { ... }
-    local n_args = select("#", ...) -- num of args must be gathered here
-
+  local inner_catch = function(args)
     return function(err)
       local should_rethrow, results = false, {}
       local ok, inner_err = true, nil
@@ -213,17 +197,17 @@ _G.tie = function(desc, on_try, on_catch)
       -- Actual on_catch call and error logging
       ---@type boolean, unknown
       ok, inner_err = pcall(function()
-        log_error(desc, err, args, n_args)
+        log_error(desc, err, args)
 
         local on_catch_results =
           { pcall(on_catch, { desc = desc, err = err, args = args }) }
         local on_catch_was_valid = table.remove(on_catch_results, 1)
 
         if on_catch_results[1] == tied.RETHROW then
-          on_catch_results = { ("error while calling: <%s>"):format(desc) }
+          on_catch_results = { ("error while calling: [%s]"):format(desc) }
           should_rethrow = true
         elseif not on_catch_was_valid then
-          on_catch_results = { ("error in `on_catch` for: <%s>"):format(desc) }
+          on_catch_results = { ("error in `on_catch` for: [%s]"):format(desc) }
           should_rethrow = true
         end
 
@@ -242,18 +226,22 @@ _G.tie = function(desc, on_try, on_catch)
   end
 
   local inner_fn = function(...)
+    -- If unpacked later, must use vim.F.unpack_len(args)
+    local args = vim.F.pack_len(...)
+
     -- Do nothing extra when the function
     -- was called from pcall/xpcall and it rethrows the error
     if tied.is_pcalled and on_catch == tied.do_rethrow then
-      return on_try(...)
+      return on_try(vim.F.unpack_len(args))
     end
 
     -- Catch all results, not just the first one
-    local on_try_results = { xpcall(on_try, inner_catch(...), ...) } ---@type any[]
+    local on_try_results =
+      { xpcall(on_try, inner_catch(args), vim.F.unpack_len(args)) }
     local on_try_was_valid = table.remove(on_try_results, 1)
 
     if not on_try_was_valid then
-      local inner_catch_results = on_try_results[1]
+      local inner_catch_results = on_try_results[1] --[[@as table]]
       local should_rethrow = table.remove(inner_catch_results, 1)
 
       if should_rethrow then

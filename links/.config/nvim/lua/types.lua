@@ -19,3 +19,9 @@
 --- @field ext string?
 --- @field depth number?
 --- @field map function?
+
+--- @class KeymapSetArgs
+--- @field [1] string|string[]
+--- @field [2] string
+--- @field [3] string|function
+--- @field [4] vim.keymap.set.Opts?

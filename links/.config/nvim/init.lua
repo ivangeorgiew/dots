@@ -1,6 +1,7 @@
 require("tie") -- error handling logic
 
 tied.each_i(
+  "Initialize a config file",
   -- Order matters
   {
     "notify",
@@ -10,6 +11,5 @@ tied.each_i(
     "usercmds",
     "autocmds",
   },
-  "Initialize a config file",
   function(_, file) require("config." .. file).setup() end
 )

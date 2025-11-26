@@ -1,51 +1,81 @@
-local M = {}
+local M = { rhs = {} }
+
+M.rhs.toggle_bool = function()
+  local word = vim.fn.expand("<cword>")
+  ---@type [string, string][]
+  local bools = {
+    { "true", "false" },
+    { "TRUE", "FALSE" },
+    { "True", "False" },
+    { "yes", "no" },
+    { "1", "0" },
+  }
+
+  tied.each_i("Toggle bool-like under cursor", bools, function(_, pair)
+    local contra_idx
+
+    if word == pair[1] then
+      contra_idx = 2
+    elseif word == pair[2] then
+      contra_idx = 1
+    end
+
+    if contra_idx ~= nil then
+      vim.cmd("normal! ms")
+      vim.cmd("silent noautocmd normal! ciw" .. pair[contra_idx])
+      vim.cmd("normal! g`s")
+    end
+  end)
+end
 
 M.config = {
+  ---@type [string, string[]|string] []
   to_delete = {
-    { "#", { "n", "v" } }, -- use `m` instead
-    { "&", { "n", "v" } },
-    { "(", { "n", "v" } },
-    { ")", { "n", "v" } },
-    { "*", { "n", "v" } }, -- use `M` instead
-    { "+", { "n", "v" } },
-    { "-", { "n", "v" } },
+    { "#", { "n", "x" } }, -- use `m` instead
+    { "&", { "n", "x" } },
+    { "(", { "n", "x" } },
+    { ")", { "n", "x" } },
+    { "*", { "n", "x" } }, -- use `M` instead
+    { "+", { "n", "x" } },
+    { "-", { "n", "x" } },
     { "<C-b>", "n" },
     { "<C-e>", "n" },
     { "<C-f>", "n" },
     { "<C-z>", "n" },
-    { "<Down>", { "n", "v" } },
-    { "<Left>", { "n", "v" } },
-    { "<Right>", { "n", "v" } },
-    { "<Up>", { "n", "v" } },
-    { "_", { "n", "v" } },
-    { "H", { "n", "v" } },
-    { "K", { "n", "v" } },
-    { "L", { "n", "v" } },
-    { "M", { "n", "v" } },
-    { "q", { "n", "v" } }, -- use `#` instead
-    { "R", { "n", "v" } },
-    { "r", { "n", "v" } },
-    { "S", { "n", "v" } }, -- shorthand for cc
-    { "s", { "n", "v" } }, -- shorthand for cl
-    { "X", { "n", "v" } }, -- shorthand for dh
-    { "x", { "n", "v" } }, -- shorthand for dl
-    { "Z", { "n", "v" } },
+    { "<Down>", { "n", "x" } },
+    { "<Left>", { "n", "x" } },
+    { "<Right>", { "n", "x" } },
+    { "<Up>", { "n", "x" } },
+    { "_", { "n", "x" } },
+    { "H", { "n", "x" } },
+    { "K", { "n", "x" } },
+    { "L", { "n", "x" } },
+    { "M", { "n", "x" } },
+    { "q", { "n", "x" } }, -- use `#` instead
+    { "R", { "n", "x" } },
+    { "r", { "n", "x" } },
+    { "S", { "n", "x" } }, -- shorthand for cc
+    { "s", { "n", "x" } }, -- shorthand for cl
+    { "X", { "n", "x" } }, -- shorthand for dh
+    { "x", { "n", "x" } }, -- shorthand for dl
+    { "Z", { "n", "x" } },
     { "ZZ", "n" },
-    { "|", { "n", "v" } },
+    { "|", { "n", "x" } },
   },
+  ---@type KeymapSetArgs[]
   -- stylua: ignore
   to_create = {
     -- Escape mappings
-    { { "i", "n", "v" }, "<Esc>", "<cmd>lua vim.snippet.stop()<cr><esc>", { desc = "Escape" } },
-    { { "i", "n", "v" }, "<C-c>", "<esc>", { desc = "Escape", remap = true } },
-    { { "i", "n", "v" }, "<C-s>", "<cmd>w<bar>diffupdate<bar>normal! <C-l><cr><esc>", { desc = "Save file", remap = true } },
+    { { "i", "n", "x" }, "<Esc>", "<cmd>lua vim.snippet.stop()<cr><esc>", { desc = "Escape" } },
+    { { "i", "n", "x" }, "<C-c>", "<esc>", { desc = "Escape", remap = true } },
+    { { "i", "n", "x" }, "<C-s>", "<cmd>w<bar>diffupdate<bar>normal! <C-l><cr><esc>", { desc = "Save file", remap = true } },
 
     -- Don't copy to buffer on certain commands
-    { "v", "p", "P", { desc = "Paste" } },
+    { "x", "p", "P", { desc = "Paste" } },
     { "n", "DD", "dd", { desc = "Cut Line" } },
-    { { "n", "v" }, "D", "d", { desc = "Cut" } },
-    { { "n", "v" }, "d", [["_d]],  { desc = "Delete" } },
-    { { "n", "v" }, "c", [["_c]],  { desc = "Change" } },
+    { { "n", "x" }, "D", "d", { desc = "Cut" } },
+    { { "n", "x" }, "d", [["_d]],  { desc = "Delete" } },
+    { { "n", "x" }, "c", [["_c]],  { desc = "Change" } },
 
     -- Handle wrapped lines
     { { "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up", expr = true } },
@@ -54,8 +84,6 @@ M.config = {
     -- Cursor movement in insert mode
     { "i", "<C-h>", "<Left>",  { desc = "Move left" } },
     { "i", "<C-l>", "<Right>", { desc = "Move right" } },
-    { "i", "<C-k>", "<Up>",    { desc = "Move up" } },
-    { "i", "<C-j>", "<Down>",  { desc = "Move down" } },
 
     -- Split navigation
     { "n", "<C-h>", "<cmd>Navigate h<cr>", { desc = "Go to left split"  } },
@@ -76,10 +104,10 @@ M.config = {
     { "n", "<S-Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" } },
 
     -- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
-    { "n",          "n", "'Nn'[v:searchforward].'zv'",     { desc = "Next search result", expr = true } },
-    { "n",          "N", "'nN'[v:searchforward].'zv'",     { desc = "Prev search result", expr = true } },
-    { { "x", "o" }, "n", "'Nn'[v:searchforward]",          { desc = "Next search result", expr = true } },
-    { { "x", "o" }, "N", "'nN'[v:searchforward]",          { desc = "Prev search result", expr = true } },
+    { "n",          "n", "'Nn'[v:searchforward].'zv'", { desc = "Next search result", expr = true } },
+    { "n",          "N", "'nN'[v:searchforward].'zv'", { desc = "Prev search result", expr = true } },
+    { { "x", "o" }, "n", "'Nn'[v:searchforward]",      { desc = "Next search result", expr = true } },
+    { { "x", "o" }, "N", "'nN'[v:searchforward]",      { desc = "Prev search result", expr = true } },
 
     -- Go to next/prev thing
     { "n", "<leader>k", "]", { desc = "Next thing", remap = true } },
@@ -98,6 +126,7 @@ M.config = {
 
     -- Toggle things
     { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
+    { "n", "<leader>tD", function() vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end , { desc = "Toggle diagnostics on/off" } },
     { "n", "<leader>te", vim.diagnostic.setloclist, { desc = "Toggle errors list" } },
     { "n", "<leader>tl", "<cmd>Lazy<cr>", { desc = "Toggle Lazy" } },
     { "n", "<leader>tm", "<cmd>Mason<cr>", { desc = "Toggle Mason" } },
@@ -118,7 +147,7 @@ M.config = {
     -- Macros
     { "n", "#", "reg_recording() == 'e' ? 'q' : 'qe'", { desc = "Start/end default macro", expr = true } },
     { { "n", "x" },  "Q", "q", { desc = "Start/end macro" } },
-    { { "n", "v" }, "<cr>", "empty(&buftype) ? ':normal! @e<cr>' : '<cr>'", { desc = "Apply default macro", expr = true } },
+    { { "n", "x" }, "<cr>", "empty(&buftype) ? ':normal! @e<cr>' : '<cr>'", { desc = "Apply default macro", expr = true } },
 
     -- Make new line
     { "n", "zj", "o<esc>k", { desc = "Make a new line below" } },
@@ -134,36 +163,41 @@ M.config = {
     -- Search in file
     { "n", "/", "/\\c", { desc = "Case-insensitive search", silent = false } },
     { "n", "<leader>/", "/", { desc = "Case-sensitive search", silent = false } },
-    { "v", "/", "\"ay/\\V<C-r>a<cr>", { desc = "Search for the selection", } },
-    { "v", "<leader>/", "<esc>/\\%V\\c", { desc = "Search in visual selection", silent = false } },
+    { "x", "/", "\"ay/\\V<C-r>a<cr>", { desc = "Search for the selection", } },
+    { "x", "<leader>/", "<esc>/\\%V\\c", { desc = "Search in visual selection", silent = false } },
 
     -- Find text in all files
     { "n", ")", ":Find ", { desc = "Find in all files", silent = false } },
     { "n", "<leader>)", ":Find -s -w <C-r><C-w><cr>", { desc = "Find word under cursor in all files" } },
-    { "v", ")", "\"ay:let @a = escape(@a,'\"')<cr>:Find -s \"<C-r>a\"<cr>", { desc = "Find the selection in all files" } },
+    { "x", ")", "\"ay:let @a = escape(@a,'\"')<cr>:Find -s \"<C-r>a\"<cr>", { desc = "Find the selection in all files" } },
 
     -- Search and replace
     { "n", "<leader>s", [[:%s/\(\<<C-r><C-w>\>\)/\1/gc<Left><Left><Left>]], { desc = "Search and replace word under cursor",   silent = false } },
-    { "v", "<leader>s", [["ay:%s/\(<C-r>a\)/\1/gc<Left><Left><Left>]],      { desc = "Search and replace visual selection",    silent = false } },
-    { "v", "<leader>S", [[:s/\%V/g<Left><Left>]],                           { desc = "Search and replace in visual selection", silent = false } },
+    { "x", "<leader>s", [["ay:%s/\(<C-r>a\)/\1/gc<Left><Left><Left>]],      { desc = "Search and replace visual selection",    silent = false } },
+    { "x", "<leader>S", [[:s/\%V/g<Left><Left>]],                           { desc = "Search and replace in visual selection", silent = false } },
 
     -- Motion expecting operations
-    { { "v", "o" }, [[a"]], [[2i"]], { desc = [[Select all in ""]] } },
-    { { "v", "o" }, [[a']], [[2i']], { desc = [[Select all in '']] } },
-    { { "v", "o" }, [[a`]], [[2i`]], { desc = [[Select all in ``]] } },
+    { { "x", "o" }, [[a"]], [[2i"]], { desc = [[Select all in ""]] } },
+    { { "x", "o" }, [[a']], [[2i']], { desc = [[Select all in '']] } },
+    { { "x", "o" }, [[a`]], [[2i`]], { desc = [[Select all in ``]] } },
 
     -- Operate on whole file
     { "n", "<leader>%=", "msgg=Gg`s", { desc = "Indent whole file" } },
     { "n", "<leader>%y", "msggyGg`s", { desc = "Yank whole file" } },
     { "n", "<leader>%r", "ggVGpgg",   { desc = "Replace whole file" } },
 
+    -- Change number under cursor
+    { "n", "+", "<C-a>", { desc = "Increment number" } },
+    { "n", "?", "<C-x>", { desc = "Decrement number" } },
+
     -- Unrelated mappings
-    { "n", "X", "<C-a>", { desc = "Increment number under cursor" } },
-    { "n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file executable" } },
     { "n", "J", "mzJg`z", { desc = "Join lines" } },
     { "n", "i", "len(getline('.')) == 0 && empty(&buftype) ? '\"_cc' : 'i'", { desc = "Enter insert mode", expr = true } },
     { "n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" } },
     { "n", "<F5>", function() tied.manage_session(true) end, { desc = "Load session" } },
+    { "n", "<BS>", "dh", { desc = "Delete prev letter" } },
+    { "n", "<C-x>", M.rhs.toggle_bool, { desc = "Toggle boolean under cursor" } },
+    -- { "n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file executable" } },
 
     -- Command mode abbreviations
     { "ca", "te", "tabe", {} },
@@ -175,6 +209,7 @@ M.config = {
     { "ia", "cosnt", "const", {} },
     { "ia", "prosp", "props", {} },
   },
+  ---@type KeymapSetArgs[]
   -- stylua: ignore
   quickfix = {
     { "n", "<C-r>", "<cmd>Replace<cr>", { desc = "Replace text in files" } },
@@ -187,13 +222,13 @@ M.config = {
 M.setup = tie("Setup keymaps", function()
   -- First delete, then create
   tied.each_i(
-    M.config.to_delete,
     "Delete keymap",
+    M.config.to_delete,
     function(_, map) tied.delete_map(map[2], map[1]) end
   )
   tied.each_i(
-    M.config.to_create,
     "Create keymap",
+    M.config.to_create,
     function(_, map) tied.create_map(unpack(map)) end
   )
 end, tied.do_nothing)

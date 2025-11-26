@@ -1,6 +1,5 @@
 local M = {}
 
--- stylua: ignore
 M.setup = tie("Setup options", function()
   -- See `:h vim.g` for more
   local g = vim.g
@@ -33,6 +32,7 @@ M.setup = tie("Setup options", function()
   -- See `:h vim.opt` for more
   local o = vim.opt
 
+  -- stylua: ignore start
   o.autoindent = true -- copy indent level from previous line
   o.autowrite = true -- smart auto-save on some commands
   o.autowriteall = true -- smart auto-save on some commands
@@ -103,6 +103,7 @@ M.setup = tie("Setup options", function()
   o.winborder = "rounded" -- border around floating windows
   o.winminwidth = 5 -- min width of a window
   o.wrap = false -- line wrap
+  -- stylua: ignore end
 end, tied.do_nothing)
 
 return M

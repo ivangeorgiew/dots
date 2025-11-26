@@ -2,7 +2,7 @@
 local M = {
   "rebelot/kanagawa.nvim",
   cond = vim.g.colorscheme == "kanagawa",
-  event = "UIEnter", -- issues if "VeryLazy"
+  event = "UIEnter",
   config = tied.colorscheme_config,
   opts = {
     transparent = true,

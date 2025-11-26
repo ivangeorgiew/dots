@@ -3,7 +3,7 @@ local M = {
   -- Add todo, fix, note, etc type of comments
   "folke/todo-comments.nvim",
   dependencies = { "nvim-lua/plenary.nvim" },
-  event = "VeryLazy",
+  event = tied.LazyEvent,
   opts = {
     signs = false, -- show icons in the signs column
     sign_priority = 8, -- sign priority
@@ -76,22 +76,26 @@ M.config = tie("Plugin todo-comments -> config", function(_, opts)
 
   todo.setup(opts)
 
-  tied.each_i(
-    {
+  tied.do_block("Plugin todo-comments -> Create all keymaps", function()
+    ---@type KeymapSetArgs[]
+    local maps = {
       -- stylua: ignore start
       { "n", "[t", todo.jump_prev, { desc = "Prev special comment" } },
       { "n", "]t", todo.jump_next, { desc = "Next special comment" } },
       { "n", "<leader>tc", "<cmd>TodoLocList keywords=TODO,FIX<cr>", { desc = "Toggle Comments (TODO,FIX,etc)" } },
       { "ca", "TodoLocList", "TodoLocList keywords=TODO,FIX", {} },
       { "ca", "TodoQuickFix", "TodoLocList keywords=TODO,FIX", {} },
-
       -- TODO: integrate with Telescope.nvim (:TodoTelescope)
       -- TODO: integrate with Trouble.nvim (:TodoTrouble)
       -- stylua: ignore end
-    },
-    "Plugin todo-comments -> Create keymap",
-    function(_, map_opts) tied.create_map(unpack(map_opts)) end
-  )
+    }
+
+    tied.each_i(
+      "Plugin todo-comments -> Create a keymap",
+      maps,
+      function(_, map_opts) tied.create_map(unpack(map_opts)) end
+    )
+  end)
 end, tied.do_nothing)
 
 return M

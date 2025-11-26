@@ -2,8 +2,9 @@
 local M = {
   -- Show keybind hints on key press
   "ivangeorgiew/which-key.nvim",
+  -- cond = false,
   -- dev = true,
-  event = "VeryLazy",
+  event = tied.LazyEvent,
   dependencies = { "nvim-mini/mini.icons", "nvim-tree/nvim-web-devicons" },
   opts = {
     preset = "helix",
@@ -23,7 +24,7 @@ local M = {
       -- Can be removed to have only manual triggers
       { "<auto>", mode = "nixsotc" },
       -- Add manual triggers below
-      -- { "<leader>", mode = { "n", "v" } },
+      -- { "<leader>", mode = { "n", "x" } },
     },
     defer = tie(
       "Plugin which-key -> defer",
@@ -38,24 +39,21 @@ local M = {
     spec = {
       {
         mode = "n",
-        { "<localleader>", group = "Local leader" },
         { "<leader>t", group = "Toggle" },
         { "<leader>%", group = "Whole file" },
-        { "<leader>j", group = "Prev", proxy = "[" },
-        { "<leader>k", group = "Next", proxy = "]" },
-        { "[", group = "Prev" },
-        { "]", group = "Next" },
         { "q", group = "Quit" },
         { "D", group = "Cut", op = true },
         { "gc", group = "Toggle comment", op = true },
         { "g@", desc = "Operator-pending mode" },
       },
       {
-        mode = "v",
+        mode = { "n", "x" },
         { "<leader>", group = "Leader" },
-      },
-      {
-        mode = { "n", "v" },
+        { "<localleader>", group = "Local leader" },
+        { "<leader>j", group = "Prev", proxy = "[" },
+        { "<leader>k", group = "Next", proxy = "]" },
+        { "[", group = "Prev" },
+        { "]", group = "Next" },
         { "gx", desc = "Open with system app" },
       },
     },

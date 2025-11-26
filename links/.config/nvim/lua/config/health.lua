@@ -24,28 +24,26 @@ return {
       )
     end
 
-    tied.each_i(
-      {
-        "curl",
-        "fd",
-        "fswatch",
-        "fzf",
-        "git",
-        "lazygit",
-        "make",
-        "rg",
-        "unzip",
-      },
-      "Warn if executable is missing",
-      function(_, exe)
-        local is_executable = vim.fn.executable(exe) == 1
+    local exes = {
+      "curl",
+      "fd",
+      "fswatch",
+      "fzf",
+      "git",
+      "lazygit",
+      "make",
+      "rg",
+      "unzip",
+    }
 
-        if is_executable then
-          h.ok(string.format("Executable found: '%s'", exe))
-        else
-          h.warn(string.format("Could not find: '%s'", exe))
-        end
+    tied.each_i("Warn if executable is missing", exes, function(_, exe)
+      local is_executable = vim.fn.executable(exe) == 1
+
+      if is_executable then
+        h.ok(string.format("Executable found: '%s'", exe))
+      else
+        h.warn(string.format("Could not find: '%s'", exe))
       end
-    )
+    end)
   end, tied.do_nothing),
 }

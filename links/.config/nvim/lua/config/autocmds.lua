@@ -4,7 +4,7 @@ M.setup = tie("Setup autocmds", function()
   tied.do_block("Create autocmds", function()
     local group = tied.create_augroup("my.main", true)
 
-    tied.each_i(M.config, "Queue autocmd to create", function(_, opts)
+    tied.each_i("Queue autocmd to create", M.config, function(_, opts)
       opts.group = group
       tied.create_autocmd(opts)
     end)
@@ -35,29 +35,44 @@ end, tied.do_nothing)
 ---@type MyAutocmdOpts[]
 M.config = {
   {
+    desc = "Auto-save vim session",
+    event = "VimLeavePre",
+    callback = function() tied.manage_session(false) end,
+  },
+  {
+    desc = "Auto-load vim session",
+    event = "UIEnter",
+    once = true,
+    nested = true,
+    callback = function()
+      if vim.env.NVIM_RELOADED then
+        tied.manage_session(true)
+      end
+    end,
+  },
+  {
     desc = "Create user event FilePost",
     event = { "UIEnter", "BufNewFile", "BufReadPost" },
     callback = function(e)
-      local file = vim.api.nvim_buf_get_name(e.buf)
-      local buftype = vim.bo[e.buf].buftype
-
       if not vim.g.ui_entered and e.event == "UIEnter" then
         vim.g.ui_entered = true
       end
 
-      if file ~= "" and buftype ~= "nofile" and vim.g.ui_entered then
+      if vim.g.ui_entered and tied.check_if_buf_is_file(e.buf) then
         vim.api.nvim_exec_autocmds("User", {
           pattern = "FilePost",
           modeline = false,
         })
 
-        vim.schedule(tie("After FilePost event", function()
-          vim.api.nvim_exec_autocmds("FileType", {})
+        -- Do not schedule/defer or there can be issues
+        vim.api.nvim_exec_autocmds(
+          "FileType",
+          { buffer = e.buf, modeline = false }
+        )
 
-          if vim.g.editorconfig then
-            require("editorconfig").config(e.buf)
-          end
-        end, tied.do_nothing))
+        if vim.g.editorconfig then
+          require("editorconfig").config(e.buf)
+        end
 
         return true
       end
@@ -122,8 +137,8 @@ M.config = {
       vim.cmd("wincmd J")
 
       tied.each_i(
-        require("config.keymaps").config.quickfix,
         "Create quickfix/loc list keymap",
+        require("config.keymaps").config.quickfix,
         function(_, map_opts)
           map_opts[4].buffer = e.buf
           tied.create_map(unpack(map_opts))
@@ -137,23 +152,7 @@ M.config = {
     callback = function()
       vim.cmd("normal! ms")
       vim.cmd([[silent! %s/\s\+$//]])
-      vim.cmd("normal! `s")
-    end,
-  },
-  {
-    desc = "Auto-save vim session",
-    event = "VimLeavePre",
-    callback = function() tied.manage_session(false) end,
-  },
-  {
-    desc = "Auto-load vim session",
-    event = "VimEnter",
-    once = true,
-    nested = true,
-    callback = function()
-      if vim.env.NVIM_RELOADED then
-        tied.manage_session(true)
-      end
+      vim.cmd("normal! g`s")
     end,
   },
   {
@@ -168,22 +167,27 @@ M.config = {
         return
       end
 
-      tied.each_i(
-        {
+      tied.do_block("Create floating window keymaps", function()
+        ---@type KeymapSetArgs[]
+        local maps = {
           -- stylua: ignore start
           -- NOTE: Close with <C-e>
           { "n", "<C-Space>", function() pcall(vim.api.nvim_set_current_win, winnr) end, { desc = "Enter floating window" } },
           { "n", "<C-f>", function() tied.keys_in_win(winnr, "<C-f>", true) end, { desc = "Scroll down" } },
           { "n", "<C-b>", function() tied.keys_in_win(winnr, "<C-b>", true) end, { desc = "Scroll up" } },
           -- stylua: ignore end
-        },
-        "Create a floating window keymap",
-        function(_, map_opts)
-          map_opts[4].buffer = true
+        }
 
-          tied.create_map(unpack(map_opts))
-        end
-      )
+        tied.each_i(
+          "Create a floating window keymap",
+          maps,
+          function(_, map_opts)
+            map_opts[4].buffer = true
+
+            tied.create_map(unpack(map_opts))
+          end
+        )
+      end)
     end,
   },
 }

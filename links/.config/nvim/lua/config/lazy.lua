@@ -16,16 +16,7 @@ local M = {}
 
 ---@type LazyConfig
 M.opts = {
-  spec = tied.dir({
-    path = vim.fn.stdpath("config") .. "/lua/plugin",
-    type = "file",
-    ext = "lua",
-    map = tie(
-      "Get plugin spec",
-      function(file) return require("plugin." .. file:gsub("%.lua$", "")) end,
-      function() return {} end
-    ),
-  }),
+  spec = {},
 
   defaults = {
     -- Set this to `true` to have all your plugins lazy-loaded by default.
@@ -55,7 +46,7 @@ M.opts = {
 
   change_detection = {
     -- Automatically check for config file changes and reload the ui
-    enabled = false,
+    enabled = true,
     notify = false,
   },
 
@@ -104,6 +95,56 @@ M.setup = tie("Setup lazy plugin manager", function()
   end
 
   vim.opt.rtp:prepend(lazypath)
+
+  tied.create_autocmd({
+    desc = "Install missing plugins",
+    group = tied.create_augroup("my.lazy.reload", true),
+    event = "User",
+    pattern = "LazyReload",
+    callback = function()
+      local lazy = require("lazy")
+      local plugins = require("lazy.core.config").plugins
+      local to_install = {}
+      local to_update = {}
+
+      tied.each(
+        "Queue plugin for install or update",
+        plugins,
+        function(plugin_name, plugin)
+          if not plugin._.installed and plugin._.kind ~= "disabled" then
+            to_install[#to_install + 1] = plugin_name
+          end
+
+          if plugin._.updates ~= nil then
+            to_update[#to_update + 1] = plugin_name
+          end
+        end
+      )
+
+      -- Always install to make sure that there are updates to be made
+      lazy.install({ wait = true, show = (#to_install > 0 or #to_update > 0) })
+
+      if #to_update > 0 then
+        lazy.update({ wait = false, show = true, plugins = to_update })
+      end
+
+      -- Don't reload - not sure of side effects
+      -- Don't clean - can cause errors in current session
+    end,
+  })
+
+  M.opts.spec = tied.dir({
+    path = vim.fn.stdpath("config") .. "/lua/plugin",
+    type = "dir",
+    map = function(dir)
+      local plugin_path = "plugin." .. dir:gsub("[\\/]", ".")
+
+      -- Use import so that change_detection works
+      -- and there is no need to require the plugin
+      -- lazy uses pcall for each import anyways
+      return { import = plugin_path }
+    end,
+  })
 
   require("lazy").setup(M.opts)
 end, tied.do_nothing)

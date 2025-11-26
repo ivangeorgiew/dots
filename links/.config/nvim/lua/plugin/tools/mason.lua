@@ -14,7 +14,7 @@ local M = {
   },
 }
 
--- Executed even when the plugin isn't loaded
+-- Executed even when the plugin isn't loaded yet
 M.init = tie("Plugin mason -> init", function()
   tied.do_block(
     "Plugin mason -> Add tools to PATH",
@@ -44,7 +44,31 @@ M.init = tie("Plugin mason -> init", function()
       local mr = require("mason-registry")
       local installed = mr.get_installed_package_names()
 
-      tied.each_i(to_install, "Auto-install a mason tool", function(_, tool)
+      mr:on(
+        "package:install:success",
+        vim.defer_wrap(
+          tie("Plugin mason -> Start newly installed LSPs", function()
+            tied.each_i(
+              "Start LSP in opened file",
+              vim.api.nvim_list_wins(),
+              function(_, winnr)
+                local bufnr = vim.api.nvim_win_get_buf(winnr)
+
+                if tied.check_if_buf_is_file(bufnr) then
+                  vim.api.nvim_exec_autocmds("FileType", {
+                    buffer = bufnr,
+                    group = "nvim.lsp.enable",
+                    modeline = false,
+                  })
+                end
+              end
+            )
+          end, tied.do_nothing),
+          100
+        )
+      )
+
+      tied.each_i("Auto-install a mason tool", to_install, function(_, tool)
         if mr.has_package(tool) and not vim.list_contains(installed, tool) then
           vim.cmd("MasonInstall " .. tool)
         end

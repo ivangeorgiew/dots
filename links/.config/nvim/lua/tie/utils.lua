@@ -17,6 +17,8 @@
 -- local ctrlc = vim.api.nvim_replace_termcodes("<C-c>", true, false, true)
 -- vim.api.nvim_feedkeys(ctrlc .. ":'<,'>", "n", false)
 
+tied.LazyEvent = { "User FilePost", "VeryLazy" }
+
 -- Aliases for tied global builtins
 tied.create_usercmd = vim.api.nvim_create_user_command
 tied.ui_input = vim.ui.input
@@ -24,25 +26,22 @@ tied.ui_select = vim.ui.select
 tied.set_hl = vim.api.nvim_set_hl
 
 local foreach = tie(
-  "Foreach wrapper",
+  "For-each wrapper",
   ---@param is_list boolean
   function(is_list)
     vim.validate("is_list", is_list, "boolean")
 
-    local outer_desc = (
-      is_list and "Tied for-each in list" or "Tied for-each in table"
-    )
-
     return tie(
-      outer_desc,
+      is_list and "For-each in list" or "For-each in table",
       --- Use this function when one iteration shouldn't
       --- prevent other iterations from trying to execute
-      ---@param iter table|function
+      ---@generic T
       ---@param desc string
-      ---@param on_try function
-      function(iter, desc, on_try)
-        vim.validate("iter", iter, { "table", "function" })
+      ---@param iter T[]|table|function
+      ---@param on_try fun(key: any, val: T)
+      function(desc, iter, on_try)
         vim.validate("desc", desc, "string")
+        vim.validate("iter", iter, { "table", "function" })
         vim.validate("on_try", on_try, "function")
 
         local fn = tie(
@@ -53,6 +52,7 @@ local foreach = tie(
 
         if type(iter) == "table" then
           local create = is_list and ipairs or pairs
+
           for key, val in create(iter) do
             fn(key, val)
           end
@@ -154,15 +154,23 @@ tied.dir = tie(
       item_type = "directory"
     end
 
+    local map = tie(
+      ("Traverse a dir -> Map %s name"):format(item_type),
+      function(name)
+        if opts.map then
+          return opts.map(name)
+        else
+          return name
+        end
+      end,
+      tied.do_nothing
+    )
+
     for name, type in vim.fs.dir(opts.path, { depth = opts.depth or math.huge }) do
       local matches_ext = not opts.ext or vim.endswith(name, "." .. opts.ext)
 
       if type == item_type and matches_ext then
-        local entry = name
-
-        if opts.map then
-          entry = opts.map(name)
-        end
+        local entry = map(name)
 
         if entry ~= nil then
           table.insert(entries, entry)
@@ -198,14 +206,33 @@ tied.foldtext = tie("Tied vim.o.foldtext", function()
   return text
 end, function() return vim.fn.getline(vim.v.foldstart) end)
 
+tied.has_plugin = tie(
+  "Check if a plugin exists",
+  ---@param required string
+  ---@return boolean
+  ---@return LazyPlugin?
+  function(required)
+    vim.validate("required", required, "string")
+
+    local plugin = require("lazy.core.config").plugins[required]
+
+    if plugin then
+      return true, plugin
+    else
+      return false
+    end
+  end,
+  function() return false end
+)
+
 -- From LazyVim
 tied.on_plugin_load = tie(
-  "Run code if a plugin is enabled",
-  --- @param plugin_names string[]
+  "Run code if a plugin is loaded",
+  --- @param required string|string[]
   --- @param desc string
   --- @param on_load fun(plugins: table)
-  function(plugin_names, desc, on_load)
-    vim.validate("plugin_names", plugin_names, "table")
+  function(required, desc, on_load)
+    vim.validate("required", required, { "string", "table" })
     vim.validate("desc", desc, "string")
     vim.validate("on_load", on_load, "function")
 
@@ -213,6 +240,7 @@ tied.on_plugin_load = tie(
 
     local lazy_plugins = require("lazy.core.config").plugins
     local plugins_loaded = {}
+    local plugin_names = type(required) == "string" and { required } or required --[[@as string[] ]]
 
     for _, name in ipairs(plugin_names) do
       plugins_loaded[name] = false
@@ -304,6 +332,24 @@ tied.check_keys = tie(
   tied.do_rethrow
 )
 
+tied.check_if_buf_is_file = tie(
+  "Check if a buffer is an opened file",
+  ---@param bufnr number
+  ---@return boolean
+  function(bufnr)
+    vim.validate("bufnr", bufnr, "number")
+
+    if not vim.api.nvim_buf_is_loaded(bufnr) then
+      return false
+    end
+
+    local buf_name = vim.api.nvim_buf_get_name(bufnr)
+
+    return vim.bo[bufnr].buftype == "" and buf_name ~= ""
+  end,
+  tied.do_rethrow
+)
+
 tied.manage_session = tie(
   "Load or save a vim session",
   --- @param should_load boolean
@@ -324,8 +370,8 @@ tied.manage_session = tie(
 
     if should_load and vim.fn.filereadable(ses_file) == 1 then
       tied.each_i(
-        vim.api.nvim_list_wins(),
         "Close floating window",
+        vim.api.nvim_list_wins(),
         function(_, winnr)
           local config = vim.api.nvim_win_get_config(winnr)
 
@@ -339,13 +385,12 @@ tied.manage_session = tie(
 
     if not should_load then
       tied.each_i(
-        vim.api.nvim_list_wins(),
         "Close non-file window before session save",
+        vim.api.nvim_list_wins(),
         function(_, winnr)
           local bufnr = vim.api.nvim_win_get_buf(winnr)
-          local buf_name = vim.api.nvim_buf_get_name(bufnr)
 
-          if vim.bo[bufnr].buftype ~= "" or buf_name == "" then
+          if not tied.check_if_buf_is_file(bufnr) then
             vim.api.nvim_buf_delete(bufnr, { force = true })
           end
         end
@@ -387,4 +432,11 @@ tied.keys_in_win = tie(
     return true
   end,
   function() return false end
+)
+
+-- Can be used as lazy_plugin.init
+tied.add_module = tie(
+  "Add lazy plugin as lua_ls library",
+  function(plugin) require("lsp.lua_ls").extra.add_library(plugin.name) end,
+  tied.do_nothing
 )

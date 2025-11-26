@@ -2,7 +2,7 @@
 local M = {
   -- Enchances native comments functionality
   "folke/ts-comments.nvim",
-  event = "VeryLazy",
+  event = tied.LazyEvent,
   opts = {
     lang = {
       kitty = "# %s",

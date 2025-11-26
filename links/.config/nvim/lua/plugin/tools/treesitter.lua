@@ -5,7 +5,7 @@ local M = {
   "nvim-treesitter/nvim-treesitter",
   branch = "main",
   build = ":TSUpdate",
-  event = "User FilePost",
+  event = tied.LazyEvent,
   cmd = {
     "TSUpdate",
     "TSInstall",
@@ -32,8 +32,8 @@ M.extra.delete_ignored = tie("Plugin treesitter -> Delete parsers", function()
   local to_delete = {}
 
   tied.each_i(
-    M.extra.installed,
     "Add treesitter parser for deletion",
+    M.extra.installed,
     function(_, parser)
       if vim.list_contains(M.extra.ignore, parser) then
         to_delete[#to_delete + 1] = parser
@@ -56,8 +56,8 @@ M.extra.install_parsers = tie("Plugin treesitter -> Install parsers", function()
   local to_install = {}
 
   tied.each_i(
-    ensure_installed,
     "Add treesitter parser for installation",
+    ensure_installed,
     function(_, parser)
       if
         not vim.list_contains(M.extra.installed, parser)

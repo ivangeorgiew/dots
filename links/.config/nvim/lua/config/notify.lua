@@ -42,8 +42,8 @@ M.setup = tie("Setup notifications delay", function()
     )
 
     tied.each_i(
-      M.notifs,
       "Play stored delayed notification",
+      M.notifs,
       vim.schedule_wrap(
         function(_, notif) vim.notify(vim.F.unpack_len(notif)) end
       )

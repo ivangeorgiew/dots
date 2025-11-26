@@ -2,7 +2,7 @@
 local M = {
   -- File formatter by filetype
   "stevearc/conform.nvim",
-  event = "VeryLazy",
+  event = tied.LazyEvent,
   cmd = "ConformInfo",
   opts = {
     formatters_by_ft = {
@@ -32,12 +32,12 @@ M.config = tie("Plugin conform -> config", function(_, opts)
     local to_install = {}
 
     tied.each(
-      opts.formatters_by_ft,
       "Go through all conform formatters",
+      opts.formatters_by_ft,
       function(_, formatters)
         tied.each_i(
-          formatters,
           "Queue a code formatter for install with mason",
+          formatters,
           function(_, formatter)
             if type(formatter) == "string" then
               to_install[#to_install + 1] = formatter

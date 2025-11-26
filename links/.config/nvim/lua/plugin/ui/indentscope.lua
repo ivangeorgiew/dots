@@ -5,7 +5,7 @@ local M = {
   -- Show virtual line for current code scope
   "nvim-mini/mini.indentscope",
   version = false,
-  event = "User FilePost",
+  event = tied.LazyEvent,
   opts = {
     symbol = "▏",
     options = {
@@ -34,24 +34,6 @@ local M = {
       easing = "in", --- @type "in"|"out"|"in-out" (default "in-out")
       duration = 10, --- @type number (default 20)
       unit = "step", --- @type "step"|"total" (default "step")
-    },
-    ignore = {
-      ft = {
-        "checkhealth",
-        "gitcommit",
-        "help",
-        "lspinfo",
-        "man",
-        "",
-        "TelescopePrompt",
-        "TelescopeResults",
-      },
-      bt = {
-        "nofile",
-        "prompt",
-        "quickfix",
-        "terminal",
-      },
     },
   },
 }
@@ -102,26 +84,26 @@ M.config = tie("Plugin mini.indentscope -> config", function(_, opts)
     group = tied.create_augroup("my.mini.indentscope.ignore", true),
     callback = function(e)
       vim.b[e.buf].miniindentscope_disable = (
-        vim.list_contains(M.extra.ignore.bt, vim.bo[e.buf].buftype)
-        or vim.list_contains(M.extra.ignore.ft, vim.bo[e.buf].filetype)
+        not tied.check_if_buf_is_file(e.buf)
       )
     end,
   })
 
   tied.on_plugin_load(
-    { "which-key.nvim" },
+    "which-key.nvim",
     "Modify mini.indentscope mappings for which-key",
     function()
       local maps = {}
+      local hint_opts = {
+        object_scope = { desc = "inner scope", mode = { "o", "x" } },
+        object_scope_with_border = { desc = "scope", mode = { "o", "x" } },
+        goto_top = { desc = "Prev scope start", mode = { "n", "x" } },
+        goto_bottom = { desc = "Next scope end", mode = { "n", "x" } },
+      }
 
       tied.each(
-        {
-          object_scope = { desc = "inner scope", mode = { "o", "x" } },
-          object_scope_with_border = { desc = "scope", mode = { "o", "x" } },
-          goto_top = { desc = "Prev scope start" },
-          goto_bottom = { desc = "Next scope end" },
-        },
         "Plugin mini.indentscope -> Change keymap desc for which-key",
+        hint_opts,
         function(k, v)
           local lhs = opts.mappings[k]
 
