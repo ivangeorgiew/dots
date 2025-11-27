@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @class MyLazySpec
 local M = {
   "folke/tokyonight.nvim",
   cond = vim.g.colorscheme == "tokyonight",

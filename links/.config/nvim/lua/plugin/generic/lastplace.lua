@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @class MyLazySpec
 local M = {
   -- Restore cursor position
   -- https://github.com/ethanholz/nvim-lastplace

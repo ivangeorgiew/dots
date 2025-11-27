@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @class MyLazySpec
 local M = {
   "loctvl842/monokai-pro.nvim",
   cond = vim.g.colorscheme == "monokai-pro",

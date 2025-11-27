@@ -1,6 +1,6 @@
 -- TODO: alternative are blink.pairs or mini.pairs with LazyVim's additions
 
---- @type MyLazySpec
+--- @class MyLazySpec
 local M = {
   -- Adds closing pairs (), "", etc
   "windwp/nvim-autopairs",

@@ -311,27 +311,6 @@ tied.create_autocmd = tie(
   tied.do_rethrow
 )
 
-tied.check_keys = tie(
-  "Check if a table has nested keys",
-  ---@param tbl table
-  ---@param keys string[]
-  function(tbl, keys)
-    vim.validate("tbl", tbl, "table")
-    vim.validate("keys", keys, "table")
-
-    for _, key in ipairs(keys) do
-      if type(tbl) == "table" and tbl[key] then
-        tbl = tbl[key]
-      else
-        return false
-      end
-    end
-
-    return true
-  end,
-  tied.do_rethrow
-)
-
 tied.check_if_buf_is_file = tie(
   "Check if a buffer is an opened file",
   ---@param bufnr number
@@ -402,7 +381,7 @@ tied.manage_session = tie(
   tied.do_nothing
 )
 
-tied.keys_in_win = tie(
+tied.do_keys_in_win = tie(
   "Feed normal mode keys in a vim window",
   ---@param winnr number
   ---@param keys string

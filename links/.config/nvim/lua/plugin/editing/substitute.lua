@@ -1,6 +1,6 @@
 -- TODO: fix indentation after replace and paste
 
---- @type MyLazySpec
+--- @class MyLazySpec
 local M = {
   -- Adds replace and exchange commands
   "gbprod/substitute.nvim",

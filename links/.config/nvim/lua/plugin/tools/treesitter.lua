@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @class MyLazySpec
 local M = {
   -- Language parsing which provides better highlight, indentation, etc.
   -- :h nvim-treesitter.txt

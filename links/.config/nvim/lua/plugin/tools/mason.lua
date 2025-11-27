@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @class MyLazySpec
 local M = {
   --- External tools installer
   "mason-org/mason.nvim",

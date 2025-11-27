@@ -1,6 +1,6 @@
 -- TODO: config and test it
 
---- @type MyLazySpec
+--- @class MyLazySpec
 local M = {
   -- Auto-add closing tags for HTML, JSX, etc
   "windwp/nvim-ts-autotag",

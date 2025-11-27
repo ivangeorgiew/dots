@@ -2,7 +2,7 @@
 
 local S = vim.diagnostic.severity
 
----@type LspConfig
+---@class LspConfig
 local M = {
   enable = false, -- not an actual LSP
   lsp_name = "*",

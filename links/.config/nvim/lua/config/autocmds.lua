@@ -173,8 +173,8 @@ M.config = {
           -- stylua: ignore start
           -- NOTE: Close with <C-e>
           { "n", "<C-Space>", function() pcall(vim.api.nvim_set_current_win, winnr) end, { desc = "Enter floating window" } },
-          { "n", "<C-f>", function() tied.keys_in_win(winnr, "<C-f>", true) end, { desc = "Scroll down" } },
-          { "n", "<C-b>", function() tied.keys_in_win(winnr, "<C-b>", true) end, { desc = "Scroll up" } },
+          { "n", "<C-f>", function() tied.do_keys_in_win(winnr, "<C-f>", true) end, { desc = "Scroll down" } },
+          { "n", "<C-b>", function() tied.do_keys_in_win(winnr, "<C-b>", true) end, { desc = "Scroll up" } },
           -- stylua: ignore end
         }
 

@@ -1,7 +1,8 @@
 --- @meta
 
 -- Used in plugin files
---- @class MyLazySpec: LazyPluginSpec
+--- @module "lazy"
+--- @class MyLazySpec : LazyPluginSpec
 --- @field extra? table
 
 -- Used in lsp config files

@@ -1,6 +1,6 @@
 -- TODO: check the wiki: https://github.com/nvim-tree/nvim-tree.lua/wiki
 
---- @type MyLazySpec
+---@class MyLazySpec
 local M = {
   -- File tree viewer
   "nvim-tree/nvim-tree.lua",

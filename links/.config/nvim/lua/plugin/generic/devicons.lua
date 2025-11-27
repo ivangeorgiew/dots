@@ -1,4 +1,4 @@
----@type MyLazySpec
+---@class MyLazySpec
 local M = {
   -- Pretty icons
   -- https://github.com/nvim-tree/nvim-web-devicons?tab=readme-ov-file#setup
