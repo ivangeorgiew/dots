@@ -1,4 +1,4 @@
-require("tie") -- error handling logic
+require("ropework") -- error handling logic
 
 tied.each_i(
   "Initialize a config file",

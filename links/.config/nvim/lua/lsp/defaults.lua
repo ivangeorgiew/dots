@@ -20,7 +20,7 @@ local M = {
       update_in_insert = false,
       severity_sort = true,
       underline = true,
-      -- virtual_lines = { current_line = false },
+      -- virtual_lines = { current_line = true },
       virtual_text = { source = false, prefix = "", spacing = 1 },
       signs = {
         text = {
@@ -78,12 +78,9 @@ M.config.on_attach = tie("LSP * -> on_attach", function(client, bufnr)
   end)
 
   -- NOTE: can use :Inspect to show hl group and priority used at cursor
-  tied.do_block("Change LSP semantic tokens priority", function()
-    if
-      not M.extra.use_semantic_tokens
-      and client:supports_method("textDocument/semanticTokens")
-    then
-      vim.highlight.priorities.semantic_tokens = 95
+  tied.do_block("Toggle LSP semantic tokens", function()
+    if not M.extra.use_semantic_tokens then
+      client.server_capabilities.semanticTokensProvider = nil
     end
   end)
 

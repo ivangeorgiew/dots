@@ -312,13 +312,13 @@ tied.create_autocmd = tie(
 )
 
 tied.check_if_buf_is_file = tie(
-  "Check if a buffer is an opened file",
+  "Check if a buffer is a file",
   ---@param bufnr number
   ---@return boolean
   function(bufnr)
     vim.validate("bufnr", bufnr, "number")
 
-    if not vim.api.nvim_buf_is_loaded(bufnr) then
+    if not vim.api.nvim_buf_is_valid(bufnr) then
       return false
     end
 
@@ -411,11 +411,4 @@ tied.do_keys_in_win = tie(
     return true
   end,
   function() return false end
-)
-
--- Can be used as lazy_plugin.init
-tied.add_module = tie(
-  "Add lazy plugin as lua_ls library",
-  function(plugin) require("lsp.lua_ls").extra.add_library(plugin.name) end,
-  tied.do_nothing
 )

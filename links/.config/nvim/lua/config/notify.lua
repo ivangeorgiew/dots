@@ -26,8 +26,9 @@ M.setup = tie("Setup notifications delay", function()
   vim.notify = M.temp_notify
 
   local on_notify_change = tie("After vim.notify has changed", function()
-    timer:stop()
     check:stop()
+    timer:stop()
+    timer:close()
 
     -- In case the timer passed
     M.restore_notify()

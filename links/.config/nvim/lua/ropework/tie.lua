@@ -1,5 +1,3 @@
-_G.tied = {}
-
 -- All functions which are wrapped with `tie()`
 -- Keep weak references in order to be able to garbage collect
 tied.functions = setmetatable({}, { __mode = "k" })
@@ -264,6 +262,3 @@ _G.tie = function(desc, on_try, on_catch)
 
   return inner_fn
 end
-
-require("tie.builtins") -- replace some global builtins
-require("tie.utils") -- add global utils
