@@ -1,4 +1,4 @@
---- @class MyLazySpec
+--- @type MyLazySpec
 local M = {
   -- Garbage collector that stops inactive LSP clients to free RAM
   "zeioth/garbage-day.nvim",

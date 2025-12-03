@@ -1,4 +1,4 @@
---- @class MyLazySpec
+--- @type MyLazySpec
 local M = {
   -- Language parsing which provides better highlight, indentation, etc.
   -- :h nvim-treesitter.txt
@@ -6,13 +6,6 @@ local M = {
   branch = "main",
   build = ":TSUpdate",
   event = tied.LazyEvent,
-  cmd = {
-    "TSUpdate",
-    "TSInstall",
-    "TSInstallFromGrammar",
-    "TSLog",
-    "TSUninstall",
-  },
   extra = {
     installed = {},
     --- @type table<string, { enable: boolean?, ignore: table? }>
@@ -104,34 +97,34 @@ M.config = tie("Plugin nvim-treesitter -> config", function(_, opts)
 
   M.extra.installed = ts.get_installed()
   M.extra.install_parsers()
+end, tied.do_nothing)
 
+M.init = tie("Plugin treesitter -> init", function()
   tied.create_autocmd({
-    desc = "Enable treesitter queries",
+    desc = "Setup treesitter for a buffer",
     group = tied.create_augroup("my.treesitter.on_filetype", true),
     event = "FileType",
     callback = function(ev)
       local lang = vim.treesitter.language.get_lang(ev.match)
 
-      if not lang or not vim.list_contains(M.extra.installed, lang) then
+      -- Don't check if lang is installed
+      if not lang then
         return
       end
 
       if M.extra.should_enable(lang, "highlights") then
         pcall(vim.treesitter.start, ev.buf)
-        -- vim.notify("Setup highlighting for: "..lang)
       else
         pcall(vim.treesitter.stop, ev.buf)
       end
 
       if M.extra.should_enable(lang, "indents") then
         vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-        -- vim.notify("Setup indenting for: "..lang)
       end
 
       if M.extra.should_enable(lang, "folds") then
         vim.wo.foldmethod = "expr"
         vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-        -- vim.notify("Setup folding for: "..lang)
       end
     end,
   })

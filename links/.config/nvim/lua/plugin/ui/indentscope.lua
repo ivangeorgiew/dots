@@ -1,6 +1,6 @@
 -- TODO: Alternatives are "saghen/blink.indent", "folke/snacks.nvim".indent
 
---- @class MyLazySpec
+--- @type MyLazySpec
 local M = {
   -- Show virtual line for current code scope
   "nvim-mini/mini.indentscope",

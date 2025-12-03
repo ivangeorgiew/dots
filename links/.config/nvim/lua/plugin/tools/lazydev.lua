@@ -1,4 +1,4 @@
---- @class MyLazySpec
+--- @type MyLazySpec
 local M = {
   "ivangeorgiew/lazydev.nvim",
   event = tied.LazyEvent,
@@ -6,7 +6,7 @@ local M = {
   ---@type lazydev.Config
   opts = {
     library = {
-      -- "${3rd}/luv/library", -- always load
+      vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy/types.lua",
       { path = "${3rd}/luv/library", words = { "vim%.uv" } },
       { path = "snacks.nvim", words = { "Snacks" } },
     },

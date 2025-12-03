@@ -1,27 +1,23 @@
 --- @meta
 
--- Used in plugin files
---- @module "lazy"
---- @class MyLazySpec : LazyPluginSpec
+--- @class MyLazySpec : LazyPluginSpec Used in plugin files
 --- @field extra? table
 
--- Used in lsp config files
---- @class LspConfig
+--- @class LspConfig Used in lsp config files
 --- @field enable? boolean
 --- @field lsp_name string
 --- @field pkg_name? string
 --- @field config? vim.lsp.Config
 --- @field extra? table
 
--- For tied.dir
---- @class TiedDirOpts
+--- @class TiedDirOpts For tied.dir
 --- @field path string
 --- @field type "file"|"dir"
 --- @field ext string?
 --- @field depth number?
 --- @field map function?
 
---- @class KeymapSetArgs
+--- @class KeymapSetArgs All vim.keymap.set arguments
 --- @field [1] string|string[]
 --- @field [2] string
 --- @field [3] string|function

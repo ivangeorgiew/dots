@@ -1,4 +1,4 @@
---- @class MyLazySpec
+--- @type MyLazySpec
 local M = {
   -- Show keybind hints on key press
   "ivangeorgiew/which-key.nvim",

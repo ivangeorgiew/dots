@@ -14,7 +14,6 @@ local M = {}
 -- TODO: Check other TODOs in the plugin dir
 -- TODO: Check all the plugins in `awesome-neovim`
 
----@module "lazy"
 ---@type LazyConfig
 M.opts = {
   spec = {},

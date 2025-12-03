@@ -1,4 +1,4 @@
---- @class MyLazySpec
+--- @type MyLazySpec
 local M = {
   "rebelot/kanagawa.nvim",
   cond = vim.g.colorscheme == "kanagawa",

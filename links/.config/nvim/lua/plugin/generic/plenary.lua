@@ -1,4 +1,4 @@
---- @class MyLazySpec
+--- @type MyLazySpec
 local M = {
   -- Useful functions for other plugins
   "nvim-lua/plenary.nvim",

@@ -1,6 +1,6 @@
 -- TODO: config and enable nvim-treesitter-textobjects
 
---- @class MyLazySpec
+--- @type MyLazySpec
 local M = {
   -- Add textobjects that depend on treesitter
   -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects/tree/main
