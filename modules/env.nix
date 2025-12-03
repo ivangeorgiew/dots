@@ -130,6 +130,7 @@ in {
       ll = "lsd -lA1"; # List files and directories
       tree = "lsd --tree"; # Better tree command
       rm = "rm -rI"; # Ask for each file before deleting
+      rmdir = "rm -fr"; # Delete dir and files inside it
       mkdir = "mkdir -p"; # Make dirs recursively
       cp = "cp -r"; # Copy recursively
       cat = "bat"; # Show file contents
