@@ -61,6 +61,7 @@ in {
       tree-sitter # used by neovim
       unzip # required by some programs
       wget # download files
+      custom.lua_ls # my fork of lua-language-server
 
       # GUI apps
       vlc # video player

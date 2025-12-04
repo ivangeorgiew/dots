@@ -11,21 +11,30 @@ M.rhs.toggle_bool = function()
     { "1", "0" },
   }
 
-  tied.each_i("Toggle bool-like under cursor", bools, function(_, pair)
-    local contra_idx
+  for _, pair in ipairs(bools) do
+    local pair_idx
 
     if word == pair[1] then
-      contra_idx = 2
+      pair_idx = 1
     elseif word == pair[2] then
-      contra_idx = 1
+      pair_idx = 2
     end
 
-    if contra_idx ~= nil then
-      vim.cmd("normal! ms")
-      vim.cmd("silent noautocmd normal! ciw" .. pair[contra_idx])
+    if pair_idx ~= nil then
+      vim.cmd("normal! msl")
+
+      vim.cmd("normal! b")
+      local col = vim.api.nvim_win_get_cursor(0)[2] + 1
+
+      local search = pair[pair_idx]
+      local replace = pair[2 * (1 / pair_idx)]
+      vim.cmd(("s/\\%%%dc%s/%s/"):format(col, search, replace))
+
       vim.cmd("normal! g`s")
+
+      return
     end
-  end)
+  end
 end
 
 M.config = {
@@ -66,9 +75,9 @@ M.config = {
   -- stylua: ignore
   to_create = {
     -- Escape mappings
-    { { "i", "n", "x" }, "<Esc>", "<cmd>lua vim.snippet.stop()<cr><esc>", { desc = "Escape" } },
+    { { "i", "n", "x" }, "<Esc>", "<cmd>nohls<bar>lua vim.snippet.stop()<cr><esc>", { desc = "Escape" } },
     { { "i", "n", "x" }, "<C-c>", "<esc>", { desc = "Escape", remap = true } },
-    { { "i", "n", "x" }, "<C-s>", "<cmd>w<bar>diffupdate<bar>normal! <C-l><cr><esc>", { desc = "Save file", remap = true } },
+    { { "i", "n", "x" }, "<C-s>", "<cmd>w<bar>diffupdate<cr><esc>", { desc = "Save file", remap = true } },
 
     -- Don't copy to buffer on certain commands
     { "x", "p", "P", { desc = "Paste" } },
@@ -76,6 +85,10 @@ M.config = {
     { { "n", "x" }, "D", "d", { desc = "Cut" } },
     { { "n", "x" }, "d", [["_d]],  { desc = "Delete" } },
     { { "n", "x" }, "c", [["_c]],  { desc = "Change" } },
+
+    -- Yank (copy)
+    { "n", "yp", "<cmd>let @+ = expand('%')<cr>", { desc = "Relative file path" } },
+    { "n", "yP", "<cmd>let @+ = expand('%:p')<cr>", { desc = "Absolute file path" } },
 
     -- Handle wrapped lines
     { { "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up", expr = true } },
@@ -190,8 +203,11 @@ M.config = {
     { "n", "+", "<C-a>", { desc = "Increment number" } },
     { "n", "?", "<C-x>", { desc = "Decrement number" } },
 
-    -- Unrelated mappings
+    -- Join/split line
     { "n", "J", "mzJg`z", { desc = "Join lines" } },
+    { "n", "K", "mzf<space>cl<cr><esc>g`z",{ desc = "Split line" } },
+
+    -- Unrelated mappings
     { "n", "i", "len(getline('.')) == 0 && empty(&buftype) ? '\"_cc' : 'i'", { desc = "Enter insert mode", expr = true } },
     { "n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" } },
     { "n", "<F5>", function() tied.manage_session(true) end, { desc = "Load session" } },

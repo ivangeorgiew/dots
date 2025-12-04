@@ -1,34 +1,11 @@
 local M = {}
 
 M.setup = tie("Setup autocmds", function()
-  tied.do_block("Create autocmds", function()
-    local group = tied.create_augroup("my.main", true)
+  local group = tied.create_augroup("my.main", true)
 
-    tied.each_i("Queue autocmd to create", M.config, function(_, opts)
-      opts.group = group
-      tied.create_autocmd(opts)
-    end)
-  end)
-
-  tied.do_block("Auto-clear hlsearch", function()
-    local ctrlv_code = vim.api.nvim_replace_termcodes("<C-V>", true, true, true)
-
-    -- Can't be put in an autocmd, so use vim.on_key instead
-    vim.g.ns_clear_hls = vim.on_key(
-      tie("Clear hlsearch", function(_, key)
-        local mode = vim.api.nvim_get_mode().mode:gsub(ctrlv_code, "v"):lower()
-
-        if
-          vim.o.hlsearch
-          and mode:match("^[niv]$")
-          and not key:match("^[nN]?$")
-        then
-          vim.cmd("nohls")
-        end
-      end, function() vim.on_key(nil, vim.g.ns_clear_hls) end),
-
-      vim.api.nvim_create_namespace("clear_hls")
-    )
+  tied.each_i("Queue autocmd to create", M.config, function(_, opts)
+    opts.group = group
+    tied.create_autocmd(opts)
   end)
 end, tied.do_nothing)
 

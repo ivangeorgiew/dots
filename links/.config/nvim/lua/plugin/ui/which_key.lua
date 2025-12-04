@@ -43,6 +43,7 @@ local M = {
         { "<leader>%", group = "Whole file" },
         { "q", group = "Quit" },
         { "D", group = "Cut", op = true },
+        { "y", group = "Yank", op = true },
         { "gc", group = "Toggle comment", op = true },
         { "g@", desc = "Operator-pending mode" },
       },

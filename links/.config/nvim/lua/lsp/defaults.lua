@@ -19,9 +19,9 @@ local M = {
     diagnostics = {
       update_in_insert = false,
       severity_sort = true,
-      underline = false,
-      virtual_lines = { current_line = true },
-      -- virtual_text = { source = false, prefix = "", spacing = 1 },
+      underline = true,
+      -- virtual_lines = { current_line = true },
+      virtual_text = { source = false, prefix = "", spacing = 1 },
       signs = {
         text = {
           [S.ERROR] = "󰅙",
@@ -50,8 +50,8 @@ M.extra.keys = {
 
   -- NOTE: `_` is substituted with `map_prefix`
   { "n", "_e", function() vim.diagnostic.open_float() end, { desc = "Show line errors" } },
-  { "n", "_h", function() vim.lsp.buf.hover() end, { desc = "Show hover popup" } },
-  { "n", "_s", function() vim.lsp.buf.signature_help() end, { desc = "Show function signature" } },
+  { "n", "_k", function() vim.lsp.buf.hover() end, { desc = "Show documentation popup" } },
+  { "n", "_j", function() vim.lsp.buf.signature_help() end, { desc = "Show function signature" } },
   { "n", "_u", function() vim.lsp.buf.rename() end, { desc = "Rename variable" } },
   { "n", "_D", function() vim.lsp.buf.declaration(M.extra.map_list_opts) end, { desc = "Go to declaration" } }, -- prefer `implementation`
   { "n", "_d", function() vim.lsp.buf.definition(M.extra.map_list_opts) end, { desc = "Go to definition" } }, -- prefer `implementation`

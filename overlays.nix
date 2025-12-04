@@ -45,6 +45,20 @@
     # Latest nvim version
     # neovim-nightly = inputs.neovim-nightly.packages.${prev.system}.default;
 
+    # Use my fork of lua_ls until the bugfix is merged: https://github.com/LuaLS/lua-language-server/pull/3307
+    lua_ls = prev.lua-language-server.overrideAttrs (oldAttrs:
+      with prev; {
+        version = "3.16.0";
+        nativeBuildInputs = (oldAttrs.nativeBuildInputs or []) ++ (with pkgs; [libunwind libbfd_2_38]);
+        src = fetchFromGitHub {
+          owner = "ivangeorgiew";
+          repo = "lua-language-server";
+          rev = "4ff491cbac27";
+          hash = "sha256-p34Uqgg74y6wmztyECaYayFTmSzrR9c9TS4w0t8uocg=";
+          fetchSubmodules = true;
+        };
+      });
+
     viber = prev.viber.overrideAttrs (oldAttrs:
       with prev; {
         installPhase =

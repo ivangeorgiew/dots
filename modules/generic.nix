@@ -69,10 +69,20 @@
     # environment.shellInit = ''
     #   export NIX_LD=${pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"}
     # ''
-    nix-ld = {
+    nix-ld = let
+      # lua_ls_libs = pkgs.symlinkJoin {
+      #   name = "lua_ls_libs";
+      #   paths = with pkgs; [libunwind libbfd_2_38];
+      #   postBuild = ''
+      #     mkdir -p $out/lib
+      #     ln -s ${pkgs.libbfd_2_38}/lib/libbfd-2.38.so $out/lib/libbfd-2.38-system.so
+      #   '';
+      # };
+    in {
       enable = true;
       # package = pkgs.nix-ld;
-      # libraries = []; # extra libraries to include
+      # Extra libraries to include
+      # libraries = lib.mkAfter (with pkgs; [lua_ls_libs]);
     };
 
     # Better nix CLI

@@ -178,7 +178,7 @@ end
 --- @param on_try F
 --- @param on_catch tie.on_catch
 --- @return F
-_G.tie = function(desc, on_try, on_catch)
+local tie = function(desc, on_try, on_catch)
   vim.validate("desc", desc, "string")
   vim.validate("on_try", on_try, "function")
   vim.validate("on_catch", on_catch, "function")
@@ -262,3 +262,4 @@ _G.tie = function(desc, on_try, on_catch)
 
   return inner_fn
 end
+_G.tie = tie
