@@ -7,8 +7,8 @@ local M = {
   opts = {
     formatters_by_ft = {
       lua = { "stylua" },
-      javascript = { "prettierd" },
       nix = { "alejandra" },
+      -- javascript = { "prettierd" },
     },
     notify_no_formatters = false,
     notify_on_error = false,

@@ -88,8 +88,8 @@ M.opts.keymap = {
   preset = "none",
 
   -- stylua: ignore start
-  ["<C-e>"] = { "cancel", "show", "fallback_to_mappings" },
-  ["<C-Space>"] = { "select_and_accept", "fallback" },
+  ["<C-e>"] = { "cancel", "fallback" },
+  ["<C-Space>"] = { "select_and_accept", "show", "fallback" },
 
   ["<C-p>"] = { "select_prev", "snippet_backward", "fallback" },
   ["<C-n>"] = { "select_next", "snippet_forward", "fallback" },

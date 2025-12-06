@@ -42,6 +42,7 @@ M.config = {
         })
 
         -- Do not schedule/defer or there can be issues
+        -- with wrong bufnr being provided
         vim.api.nvim_exec_autocmds(
           "FileType",
           { buffer = e.buf, modeline = false }
@@ -113,14 +114,20 @@ M.config = {
       -- move to the bottom of all other windows
       vim.cmd("wincmd J")
 
-      tied.each_i(
-        "Create quickfix/loc list keymap",
-        require("config.keymaps").config.quickfix,
-        function(_, map_opts)
-          map_opts[4].buffer = e.buf
-          tied.create_map(unpack(map_opts))
-        end
-      )
+      ---@type KeymapSetArgs[]
+      local maps = {
+        -- stylua: ignore start
+        { "n", "<C-r>", "<cmd>Replace<cr>", { desc = "Replace text in files" } },
+        { "n", "<C-t>", "<C-w><CR><C-w>T", { desc = "Open list item in new tab" } },
+        { "n", "<C-s>", "<C-w><CR>", { desc = "Open list item in hor. split" } },
+        { "n", "<C-v>", "<C-w><CR>:windo lclose<cr><C-w>L:lopen<cr><cr>", { desc = "Open list item in vert. split" } },
+        -- stylua: ignore end
+      }
+
+      tied.each_i("Create quickfix/loc list keymap", maps, function(_, map_opts)
+        map_opts[4].buffer = e.buf
+        tied.create_map(unpack(map_opts))
+      end)
     end,
   },
   {
@@ -165,6 +172,22 @@ M.config = {
           end
         )
       end)
+    end,
+  },
+  {
+    desc = "Change cursor to last position",
+    event = "BufWinEnter",
+    callback = function(ev)
+      if not tied.check_if_buf_is_file(ev.buf) or vim.fn.line(".") > 1 then
+        return
+      end
+
+      local prev_line = vim.fn.line([['"]])
+      local last_line = vim.fn.line("$")
+
+      if prev_line > 0 and prev_line <= last_line then
+        vim.cmd([[silent noautocmd keepjumps normal! g`"zvzz]])
+      end
     end,
   },
 }

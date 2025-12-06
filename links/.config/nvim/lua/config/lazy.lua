@@ -140,7 +140,7 @@ M.setup = tie("Setup lazy plugin manager", function()
       local plugin_path = "plugin." .. dir:gsub("[\\/]", ".")
 
       -- Use import so that change_detection works
-      -- and there is no need to require the plugin
+      -- and there is no need to `require` plugins,
       -- lazy uses pcall for each import anyways
       return { import = plugin_path }
     end,

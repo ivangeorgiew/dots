@@ -25,6 +25,7 @@ in {
 
     systemPackages = with pkgs; [
       # CLI apps
+      alejandra # nix code formatter
       babelfish # translate bash scripts to fish
       bat # better alternative to cat
       btop # system monitor

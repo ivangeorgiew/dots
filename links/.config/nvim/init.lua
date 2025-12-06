@@ -7,9 +7,9 @@ tied.each_i(
     "notify",
     "options",
     "lazy",
-    "keymaps",
-    "usercmds",
     "autocmds",
+    "usercmds",
+    "keymaps",
   },
   function(_, file) require("config." .. file).setup() end
 )

@@ -104,7 +104,7 @@ M.init = tie("Plugin treesitter -> init", function()
     desc = "Setup treesitter for a buffer",
     group = tied.create_augroup("my.treesitter.on_filetype", true),
     event = "FileType",
-    callback = function(ev)
+    callback = vim.schedule_wrap(function(ev)
       local lang = vim.treesitter.language.get_lang(ev.match)
 
       -- Don't check if lang is installed
@@ -126,7 +126,7 @@ M.init = tie("Plugin treesitter -> init", function()
         vim.wo.foldmethod = "expr"
         vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
       end
-    end,
+    end),
   })
 end, tied.do_nothing)
 

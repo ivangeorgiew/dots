@@ -1,3 +1,5 @@
+_G.tied = {}
+
 -- All functions which are wrapped with `tie()`
 -- Keep weak references in order to be able to garbage collect
 tied.functions = setmetatable({}, { __mode = "k" })
