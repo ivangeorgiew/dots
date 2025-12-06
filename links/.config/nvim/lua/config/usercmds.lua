@@ -1,17 +1,12 @@
 local M = {}
 
-M.setup = tie("Setup usercmds", function()
+M.setup = vim.schedule_wrap(tie("Setup usercmds", function()
   tied.each_i(
     "Queue usercmd to create",
     M.config,
     function(_, usercmd) tied.create_usercmd(unpack(usercmd)) end
   )
-end, tied.do_nothing)
-
----@class UserCmdArgs
----@field [1] string
----@field [2] string|fun(args: vim.api.keyset.create_user_command.command_args)
----@field [3] vim.api.keyset.user_command
+end, tied.do_nothing))
 
 ---@type UserCmdArgs[]
 M.config = {

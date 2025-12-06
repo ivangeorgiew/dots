@@ -89,13 +89,13 @@ M.opts.keymap = {
 
   -- stylua: ignore start
   ["<C-e>"] = { "cancel", "show", "fallback_to_mappings" },
-  ["<C-Space>"] = { "select_and_accept", "fallback" },
+  ["<C-Space>"] = { "select_and_accept", "fallback_to_mappings" },
 
-  ["<C-p>"] = { "select_prev", "snippet_backward", "fallback" },
-  ["<C-n>"] = { "select_next", "snippet_forward", "fallback" },
+  ["<C-p>"] = { "select_prev", "snippet_backward", "fallback_to_mappings" },
+  ["<C-n>"] = { "select_next", "snippet_forward", "fallback_to_mappings" },
 
-  ["<C-b>"] = { "scroll_documentation_up", "fallback" },
-  ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+  ["<C-b>"] = { "scroll_documentation_up", "fallback_to_mappings" },
+  ["<C-f>"] = { "scroll_documentation_down", "fallback_to_mappings" },
 
   ["<S-Tab>"] = { "snippet_backward", "fallback" }, -- prefer <C-p>
   ["<Tab>"] = { "snippet_forward", "fallback" }, -- prefer <C-n>
