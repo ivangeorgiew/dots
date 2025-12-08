@@ -115,7 +115,7 @@
     services.NetworkManager-wait-online.enable = false;
 
     # Shorter timers for services
-    extraConfig = "DefaultTimeoutStartSec=5s\nDefaultTimeoutStopSec=5s\nDefaultTimeoutAbortSec=5s";
+    settings.Manager = {DefaultTimeoutStopSec = "10s";};
     user.extraConfig = "DefaultTimeoutStopSec=10s";
   };
 

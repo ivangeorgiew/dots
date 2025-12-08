@@ -69,14 +69,14 @@ in {
       custom.viber # messaging app
       easyeffects # sound effects
       gedit # basic text editor GUI
+      kdePackages.ark # 7-zip alternative
       kdePackages.kolourpaint # MS Paint for linux
       keepassxc # password manager
       kitty # terminal
-      libsForQt5.ark # 7-zip alternative
       loupe # image viewer
       mpv # video player
       nautilus # file manager
-      onlyoffice-bin_latest # MS Office alternative
+      onlyoffice-desktopeditors # MS Office alternative
       qbittorrent # torrent downloading
       unstable.firefox-bin # browser
       unstable.google-chrome # browser

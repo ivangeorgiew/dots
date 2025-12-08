@@ -62,7 +62,7 @@ in {
             "--time"
           ];
         in {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet ${tuigreet_flags}";
+          command = "${pkgs.tuigreet}/bin/tuigreet ${tuigreet_flags}";
           user = "greeter";
         };
       };
@@ -148,7 +148,7 @@ in {
       nwg-look # GTK theme changing
       nwg-icon-picker # GTK icons search
       playerctl # controls media players
-      rofi-wayland # app launcher for wayland
+      rofi # app launcher for wayland
     ];
 
     # Adds some needed folders in /run/current-system/sw

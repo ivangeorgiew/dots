@@ -33,9 +33,9 @@
   # Unstable wrapper, not unstable neovim
   # Overrides python3 packages to fix pynvim version `:checkhealth` warning
   # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/applications/editors/neovim/wrapper.nix
-  wrapNeovimUnstable = unstable.wrapNeovimUnstable.override {
-    python3 = unstable.python312;
-  };
+  # wrapNeovimUnstable = unstable.wrapNeovimUnstable.override {
+  #   python3 = unstable.python312;
+  # };
 
   custom =
     outputs.packages.${system}
