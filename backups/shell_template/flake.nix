@@ -41,10 +41,10 @@
         default = mkShell {
           name = "shell";
 
-          # alias for nativeBuildInputs
-          packages = [];
+          # used at build-time
+          nativeBuildInputs = [];
 
-          # will not be added to $PATH
+          # used at run-time
           buildInputs = [];
 
           # env variables

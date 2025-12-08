@@ -1,8 +1,7 @@
 ---@type LspConfig
 local M = {
   lsp_name = "lua_ls",
-  -- NOTE: Using my fork with nixpkgs instead
-  -- pkg_name = "lua-language-server",
+  pkg_name = "lua-language-server",
   config = {
     settings = {
       -- https://github.com/LuaLS/lua-language-server/wiki/Settings

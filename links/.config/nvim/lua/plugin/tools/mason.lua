@@ -32,10 +32,10 @@ M.init = tie("Plugin mason -> init", function()
     function(to_install)
       vim.validate("to_install", to_install, "table")
 
-      to_install = vim.tbl_filter(
-        function(exe) return vim.fn.executable(exe) == 0 end,
-        to_install
-      )
+      to_install = vim.tbl_filter(function(tool)
+        local name = tool:match("^([^@]+)@?(.*)$")
+        return vim.fn.executable(name) == 0
+      end, to_install)
 
       if #to_install == 0 then
         return
@@ -69,7 +69,9 @@ M.init = tie("Plugin mason -> init", function()
       )
 
       tied.each_i("Auto-install a mason tool", to_install, function(_, tool)
-        if mr.has_package(tool) and not vim.list_contains(installed, tool) then
+        local name = tool:match("^([^@]+)@?(.*)$")
+
+        if mr.has_package(name) and not vim.list_contains(installed, name) then
           vim.cmd("MasonInstall " .. tool)
         end
       end)

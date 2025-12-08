@@ -53,10 +53,9 @@
       # Users which have rights to modify binary caches and other stuff
       extra-trusted-users = ["root" "@wheel"];
 
-      # Binary caches (yes we want substituters, not trusted-substituters)
+      # Binary caches
       extra-substituters = ["https://nix-community.cachix.org"];
-
-      # Public keys for the above caches
+      extra-trusted-substituters = ["https://nix-community.cachix.org"];
       extra-trusted-public-keys = ["nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="];
     };
   };
@@ -69,20 +68,21 @@
     # environment.shellInit = ''
     #   export NIX_LD=${pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker"}
     # ''
-    nix-ld = let
-      # lua_ls_libs = pkgs.symlinkJoin {
-      #   name = "lua_ls_libs";
-      #   paths = with pkgs; [libunwind libbfd_2_38];
-      #   postBuild = ''
-      #     mkdir -p $out/lib
-      #     ln -s ${pkgs.libbfd_2_38}/lib/libbfd-2.38.so $out/lib/libbfd-2.38-system.so
-      #   '';
-      # };
-    in {
+    nix-ld = {
       enable = true;
       # package = pkgs.nix-ld;
+
       # Extra libraries to include
-      # libraries = lib.mkAfter (with pkgs; [lua_ls_libs]);
+      # libraries = lib.mkAfter (with pkgs; [
+      #   (symlinkJoin {
+      #     name = "lua_ls_libs";
+      #     paths = [libunwind libbfd_2_38];
+      #     postBuild = ''
+      #       mkdir -p $out/lib
+      #       ln -s ${libbfd_2_38}/lib/libbfd-2.38.so $out/lib/libbfd-2.38-system.so
+      #     '';
+      #   })
+      # ]);
     };
 
     # Better nix CLI
@@ -116,6 +116,7 @@
 
     # Shorter timers for services
     extraConfig = "DefaultTimeoutStartSec=5s\nDefaultTimeoutStopSec=5s\nDefaultTimeoutAbortSec=5s";
+    user.extraConfig = "DefaultTimeoutStopSec=10s";
   };
 
   # Select internationalisation properties.

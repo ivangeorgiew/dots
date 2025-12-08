@@ -1,6 +1,9 @@
 # Whether there is a new line between each prompt
 add_newline = false
 
+# Time (in ms) to check files under the current directory
+scan_timeout = 100
+
 # Which palette to use
 palette = "catppuccin_mocha"
 

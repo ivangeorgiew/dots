@@ -1,6 +1,5 @@
 {
   inputs,
-  outputs,
   lib,
   config,
   pkgs,
@@ -32,6 +31,7 @@ in {
       cava # audio visualizer
       cmatrix # cool effect
       curl # download files
+      custom.lua_ls # lua-language-server
       dash # fastest shell
       devbox # version manager (npm, pnpm, go, python, etc)
       fd # better alternative to find
@@ -41,6 +41,7 @@ in {
       fswatch # file change monitor required by some programs
       fzf # fuzzy file searcher
       gcc # c compiler
+      gdu # windirstat for linux (sort dirs by size)
       gh # github authenticator
       git # obvious
       glibc # need by some apps
@@ -49,7 +50,6 @@ in {
       killall # kill a running process
       lazygit # terminal UI for git commands
       lsd # better ls command
-      gdu # windirstat for linux (sort dirs by size)
       nerdfix # removes obsolete nerd font icons
       nitch # alternative to neofetch
       p7zip # archiving and compression
@@ -62,10 +62,8 @@ in {
       tree-sitter # used by neovim
       unzip # required by some programs
       wget # download files
-      custom.lua_ls # my fork of lua-language-server
 
       # GUI apps
-      vlc # video player
       custom.spotify-no-ads # music player
       custom.vesktop # discord + additions
       custom.viber # messaging app
@@ -83,6 +81,7 @@ in {
       unstable.firefox-bin # browser
       unstable.google-chrome # browser
       unstable.obsidian # note-taking app
+      vlc # video player
 
       # Programming apps
       (python312.withPackages (ps: with ps; [pip]))

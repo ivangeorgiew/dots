@@ -7,11 +7,12 @@
   graphicsCard,
   ...
 }: let
-  use_uwsm = true; # make sure to disable UWSM stuff in hyprland config
+  use_uwsm = true; # make sure to enable/disable UWSM stuff in hyprland config
 in {
   nix.settings = {
     # Add hyprland binary cache
     extra-substituters = lib.mkAfter ["https://hyprland.cachix.org"];
+    extra-trusted-substituters = lib.mkAfter ["https://hyprland.cachix.org"];
     extra-trusted-public-keys = lib.mkAfter ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
   };
 
@@ -142,7 +143,7 @@ in {
       wl-clipboard # copy/paste on wayland
 
       # GUI apps
-      hland.hyprviz # GUI for configuring Hyprland
+      unstable.hyprviz # GUI for configuring Hyprland
       networkmanagerapplet # manage wifi
       nwg-look # GTK theme changing
       nwg-icon-picker # GTK icons search
@@ -174,7 +175,7 @@ in {
       withUWSM = use_uwsm;
     };
 
-    # uwsm.package = pkgs.unstable.uwsm;
+    uwsm.package = pkgs.custom.uwsm;
 
     # app for gnome-keyring passwords management
     seahorse.enable = true;

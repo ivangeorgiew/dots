@@ -14,8 +14,6 @@
       url = "github:hyprwm/hyprland-plugins/v0.51.0";
       inputs.hyprland.follows = "hyprland";
     };
-
-    hyprviz.url = "github:timasoft/hyprviz/v0.5.2";
   };
 
   outputs = inputs @ {
@@ -31,22 +29,19 @@
       inherit system;
       config.allowUnfree = true;
     };
+    pkgs = nixpkgs.legacyPackages.${system};
 
-    # Probably don't need unfree packages here
-    # but if you do -> (import nixpkgs nixpkgs-opts)
-    forAllSystems = (
-      func:
-        lib.genAttrs ["x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"] (
-          system: func nixpkgs.legacyPackages.${system}
-        )
-    );
+    forAllSystems = func:
+      lib.genAttrs ["x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"] (
+        sys: func nixpkgs.legacyPackages.${sys}
+        # sys: func (import nixpkgs (nixpkgs-opts // {system = sys;}))
+      );
   in {
     # Formatter for your nix files, available through 'nix fmt'
-    formatter = forAllSystems (pkgs: pkgs.alejandra);
+    formatter.${system} = pkgs.alejandra;
 
     # Custom packages, to use through `nix build`, `nix shell`, etc.
-    # packages = forAllSystems
-    # (pkgs: import ./pkgs.nix { inherit pkgs; });
+    packages.${system} = import ./pkgs {inherit pkgs;};
 
     # Flake templates
     # templates.default = {
@@ -55,7 +50,7 @@
     # };
 
     # Package overlays
-    overlays.default = import ./overlays.nix {inherit inputs lib nixpkgs-opts;};
+    overlays.default = import ./overlays.nix {inherit inputs outputs lib system nixpkgs-opts;};
 
     # NixOS Modules
     nixosModules = import ./modules {inherit lib;};

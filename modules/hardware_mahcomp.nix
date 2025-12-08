@@ -36,17 +36,15 @@
 
       # Hardware video acceleration
       # Verification: https://wiki.archlinux.org/title/Hardware_video_acceleration#Verification
-      # You don't to add any other packages. They are either not needed or automatically used.
       extraPackages = with pkgs; [
-        # Not needed for now
-        # nvidia-vaapi-driver # VA-API -> VDPAU on NVIDIA (64-bit only)
-        #libvdpau # VDPAU loader (harmless to add explicitly)
-        #libva-vdpau-driver # VA-API → VDPAU bridge
+        # Not needed
+        # libvdpau # VDPAU loader (harmless to add explicitly)
+        # libva-vdpau-driver # VA-API → VDPAU bridge
       ];
 
       extraPackages32 = with pkgs.driversi686Linux; [
-        # Not needed for now
-        #libva-vdpau-driver # VA-API → VDPAU bridge
+        # Not needed
+        # libva-vdpau-driver # VA-API → VDPAU bridge
       ];
     };
 
