@@ -7,8 +7,6 @@
   ...
 }: let
   iconTheme = "Papirus-Dark";
-  themeName = "adw-gtk3-dark";
-  fontName = "Noto Sans Medium 11";
   cursorTheme = "Bibata-Modern-Classic";
   cursorSize = "24";
 in {
@@ -96,7 +94,7 @@ in {
       php83Packages.composer
 
       # Theme apps
-      adw-gtk3 # used for GTK theming
+      gnome-themes-extra # used for GTK theming
       bibata-cursors # cursors
       dconf-editor # check dconf settings (GTK)
       papirus-icon-theme # icons for GTK
@@ -108,7 +106,6 @@ in {
       FILE_MANAGER = "nautilus";
       HISTCONTROL = "ignoreboth:erasedups";
       LESSHISTFILE = "-";
-      GTK_THEME = themeName;
       XCURSOR_THEME = cursorTheme;
       XCURSOR_SIZE = cursorSize;
       XDG_CONFIG_HOME = "$HOME/.config";
@@ -157,25 +154,23 @@ in {
     etc = {
       # GTK theming - just in case of old/broken apps
       "gtk-2.0/gtkrc".text = ''
-        gtk-icon-theme-name = "${iconTheme}"
-        gtk-theme-name = "${themeName}"
-        gtk-font-name = "${fontName}"
+        gtk-theme-name="Adwaita-dark"
+        gtk-icon-theme-name="${iconTheme}"
         gtk-cursor-theme-name="${cursorTheme}"
         gtk-cursor-theme-size=${cursorSize}
       '';
       "gtk-3.0/settings.ini".text = ''
         [Settings]
+        gtk-application-prefer-dark-theme=true
         gtk-icon-theme-name=${iconTheme}
-        gtk-theme-name=${themeName}
-        gtk-font-name = ${fontName}
         gtk-cursor-theme-name=${cursorTheme}
         gtk-cursor-theme-size=${cursorSize}
       '';
       "gtk-4.0/settings.ini".text = ''
         [Settings]
+        gtk-application-prefer-dark-theme=true
+        gtk-interface-color-scheme=2
         gtk-icon-theme-name=${iconTheme}
-        gtk-theme-name=${themeName}
-        gtk-font-name = ${fontName}
         gtk-cursor-theme-name=${cursorTheme}
         gtk-cursor-theme-size=${cursorSize}
       '';
@@ -315,11 +310,8 @@ in {
       profiles.user.databases = [
         {
           settings."org/gnome/desktop/interface" = {
-            gtk-theme = themeName;
+            color-scheme = "prefer-dark";
             icon-theme = iconTheme;
-            font-name = fontName;
-            document-font-name = fontName;
-            monospace-font-name = fontName;
             cursor-theme = cursorTheme;
             cursor-size = cursorSize;
           };

@@ -37,13 +37,5 @@
       ethernet.macAddress = "stable";
       wifi.macAddress = "stable";
     };
-
-    hosts = {
-      # blocked websites
-      "0.0.0.0" = [
-        "online-go.com"
-        "9gag.com"
-      ];
-    };
   };
 }

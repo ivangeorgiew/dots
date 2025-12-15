@@ -38,6 +38,7 @@ window#waybar {
   color: #7a95c9;
   padding-left: 4px;
   padding-right: 4px;
+  border-width: 0px;
 }
 
 #workspaces button.active {
