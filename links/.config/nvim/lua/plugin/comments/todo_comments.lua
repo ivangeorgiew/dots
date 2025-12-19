@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @type LazyPluginSpec
 local M = {
   -- Add todo, fix, note, etc type of comments
   "folke/todo-comments.nvim",

@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @type LazyPluginSpec
 local M = {
   "ivangeorgiew/lazydev.nvim",
   event = tied.LazyEvent,

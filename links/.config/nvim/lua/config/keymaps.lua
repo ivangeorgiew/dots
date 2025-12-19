@@ -40,14 +40,19 @@ end
 -- Delete some builtin keymaps
 ---@type [string, string[]|string] []
 M.to_delete = {
-  { "<C-b>", "n" },
   { "<C-e>", "n" },
-  { "<C-f>", "n" },
+  { "<C-s>", "i" },
   { "<C-z>", "n" },
   { "<Down>", { "n", "x" } },
   { "<Left>", { "n", "x" } },
   { "<Right>", { "n", "x" } },
   { "<Up>", { "n", "x" } },
+  { "gO", "n" },
+  { "gra", { "n", "x" } },
+  { "gri", "n" },
+  { "grn", "n" },
+  { "grr", "n" },
+  { "grt", "n" },
   { "q", { "n", "x" } },
   { "Z", { "n", "x" } },
   { "ZZ", "n" },
@@ -128,6 +133,19 @@ M.to_create = {
   { "n", "<leader>tm", "<cmd>Mason<cr>", { desc = "Toggle Mason" } },
   { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.loclist')) ? ':lopen<cr>' : ':windo lclose<cr>'", { desc = "Toggle location list", expr = true } },
   { "n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle wrapping of lines" } },
+  { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
+
+  -- LSP
+  { "n", "-e", function() vim.diagnostic.open_float() end, { desc = "Show line errors" } },
+  { "n", "-k", function() vim.lsp.buf.hover() end, { desc = "Show documentation popup" } },
+  { "n", "-j", function() vim.lsp.buf.signature_help() end, { desc = "Show function signature" } },
+  { "n", "-u", function() vim.lsp.buf.rename() end, { desc = "Rename variable" } },
+  { "n", "-D", function() vim.lsp.buf.declaration({ loclist = true }) end, { desc = "Go to declaration" } }, -- prefer `implementation`
+  { "n", "-d", function() vim.lsp.buf.definition({ loclist = true }) end, { desc = "Go to definition" } }, -- prefer `implementation`
+  { "n", "-i", function() vim.lsp.buf.implementation({ loclist = true }) end, { desc = "Go to implementation" } },
+  { "n", "-t", function() vim.lsp.buf.type_definition({ loclist = true }) end, { desc = "Go to type definition" } },
+  { "n", "-r", function() vim.lsp.buf.references(nil, { loclist = true }) end, { desc = "Show references" } },
+  { { "n", "x" }, "-a", function() vim.lsp.buf.code_action() end, { desc = "Select code action" } },
 
   -- Command mode movement
   { "c", "<C-a>", "<Home>",    { desc = "Go to the beginning", silent = false } },

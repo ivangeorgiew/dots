@@ -1,8 +1,5 @@
 --- @meta
 
---- @class MyLazySpec : LazyPluginSpec Used in plugin files
---- @field extra? table
-
 --- @class LspConfig Used in lsp config files
 --- @field enable? boolean
 --- @field lsp_name string

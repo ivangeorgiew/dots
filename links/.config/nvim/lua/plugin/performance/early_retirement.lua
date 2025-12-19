@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @type LazyPluginSpec
 local M = {
   -- Auto-close unneeded buffers
   "chrisgrieser/nvim-early-retirement",

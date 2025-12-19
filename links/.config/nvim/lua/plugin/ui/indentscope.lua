@@ -1,6 +1,6 @@
 -- TODO: Alternatives are "saghen/blink.indent", "folke/snacks.nvim".indent
 
---- @type MyLazySpec
+--- @type LazyPluginSpec
 local M = {
   -- Show virtual line for current code scope
   "nvim-mini/mini.indentscope",
@@ -25,15 +25,15 @@ local M = {
       goto_top = "[s", -- go to start of scope
       goto_bottom = "]s", -- go to end of scope
     },
-  },
-  extra = {
-    min_lines = 2, -- Min lines to show scope for
-    hl_group = "LineNr", -- Highlight group to use (ex: "LineNr" or "Whitespace")
-    anim_opts = {
-      equation_idx = 2, -- 1 for no animation
-      easing = "in", --- @type "in"|"out"|"in-out" (default "in-out")
-      duration = 10, --- @type number (default 20)
-      unit = "step", --- @type "step"|"total" (default "step")
+    custom = {
+      min_lines = 2, -- Min lines to show scope for
+      hl_group = "LineNr", -- Highlight group to use (ex: "LineNr" or "Whitespace")
+      anim_opts = {
+        equation_idx = 2, -- 1 for no animation
+        easing = "in", --- @type "in"|"out"|"in-out" (default "in-out")
+        duration = 10, --- @type number (default 20)
+        unit = "step", --- @type "step"|"total" (default "step")
+      },
     },
   },
 }
@@ -45,7 +45,9 @@ M.opts.draw.predicate = tie(
   function(scope)
     local scope_lines = scope.border.bottom - scope.border.top
 
-    return (not scope.body.is_incomplete and scope_lines > M.extra.min_lines)
+    return (
+      not scope.body.is_incomplete and scope_lines > M.opts.custom.min_lines
+    )
   end,
   function() return false end
 )
@@ -65,7 +67,7 @@ M.opts.draw.animation = tie(
       "quartic",
       "exponential",
     }
-    local anim_opts = M.extra.anim_opts
+    local anim_opts = M.opts.custom.anim_opts
     local anim_type = anim_types[anim_opts.equation_idx]
 
     return anim_tbl[anim_type](anim_opts)(step, n_steps)
@@ -76,7 +78,7 @@ M.opts.draw.animation = tie(
 M.config = tie("Plugin mini.indentscope -> config", function(_, opts)
   require("mini.indentscope").setup(opts)
 
-  tied.set_hl(0, "MiniIndentscopeSymbol", { link = M.extra.hl_group })
+  tied.set_hl(0, "MiniIndentscopeSymbol", { link = M.opts.custom.hl_group })
 
   tied.create_autocmd({
     desc = "Disable plugin mini.indentscope on certain buffers/filetypes",

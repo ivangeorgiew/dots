@@ -1,5 +1,5 @@
 --- @module "blink-cmp"
---- @type MyLazySpec
+--- @type LazyPluginSpec
 local M = {
   -- Autocompletion
   "saghen/blink.cmp",
@@ -8,11 +8,11 @@ local M = {
   -- and setup: https://cmp.saghen.dev/configuration/snippets.html
   -- dependencies = { "rafamadriz/friendly-snippets" },
   event = "ModeChanged",
-  extra = {},
 }
 
 --- @type blink.cmp.Config
 M.opts = {
+  custom = {},
   appearance = {
     nerd_font_variant = "mono",
   },
@@ -127,7 +127,7 @@ M.opts.cmdline = {
 M.opts.term = { enabled = false }
 
 --- @type blink.cmp.Config
-M.extra.lazydev_opts = {
+M.opts.custom.lazydev_opts = {
   sources = {
     per_filetype = {
       lua = { inherit_defaults = true, "lazydev" },
@@ -143,6 +143,11 @@ M.extra.lazydev_opts = {
 }
 
 M.config = tie("Plugin blink.cmp", function(_, opts)
+  local custom = vim.deepcopy(opts.custom)
+
+  -- Remove so blink.cmp doesn't complain
+  opts.custom = nil
+
   tied.do_block(
     "Plugin blink.cmp -> Add lazydev completions to lua files",
     function()
@@ -150,7 +155,7 @@ M.config = tie("Plugin blink.cmp", function(_, opts)
         return
       end
 
-      opts = vim.tbl_deep_extend("force", opts, M.extra.lazydev_opts)
+      opts = vim.tbl_deep_extend("force", opts, custom.lazydev_opts)
     end
   )
 

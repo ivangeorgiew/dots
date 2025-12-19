@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @type LazyPluginSpec
 local M = {
   -- Provides good default LSP configs
   -- :h lspconfig

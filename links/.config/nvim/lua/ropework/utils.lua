@@ -26,7 +26,7 @@ tied.ui_select = vim.ui.select
 tied.set_hl = vim.api.nvim_set_hl
 
 local foreach = tie(
-  "For-each wrapper",
+  "Create for-each wrapper",
   ---@param is_list boolean
   function(is_list)
     vim.validate("is_list", is_list, "boolean")
@@ -392,10 +392,10 @@ tied.do_keys_in_win = tie(
     vim.validate("keys", keys, "string")
     vim.validate("fallback", fallback, { "boolean", "string" }, true)
 
-    local feed_keys = function()
+    local feed_keys = tie("Feed normal mode keys", function()
       keys = vim.api.nvim_replace_termcodes(keys, true, false, true)
       vim.cmd("normal! " .. keys)
-    end
+    end, tied.do_nothing)
 
     if not vim.api.nvim_win_is_valid(winnr) then
       if fallback then
@@ -404,11 +404,11 @@ tied.do_keys_in_win = tie(
       end
 
       return false
+    else
+      vim.api.nvim_win_call(winnr, feed_keys)
+
+      return true
     end
-
-    vim.api.nvim_win_call(winnr, feed_keys)
-
-    return true
   end,
   function() return false end
 )

@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @type LazyPluginSpec
 local M = {
   -- Show keybind hints on key press
   "ivangeorgiew/which-key.nvim",
@@ -42,6 +42,7 @@ local M = {
         { "<leader>t", group = "Toggle" },
         { "<leader>%", group = "Whole file" },
         { "q", group = "Quit" },
+        { "-", group = "LSP" },
         { "D", group = "Cut", op = true },
         { "y", group = "Yank", op = true },
         { "gc", group = "Toggle comment", op = true },

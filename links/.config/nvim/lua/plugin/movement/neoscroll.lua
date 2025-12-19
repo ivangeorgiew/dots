@@ -1,6 +1,6 @@
 -- TODO: I can use Snacks.scroll as alternative
 
---- @type MyLazySpec
+--- @type LazyPluginSpec
 local M = {
   -- Smooth scrolling in files
   "karb94/neoscroll.nvim",

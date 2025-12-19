@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @type LazyPluginSpec
 local M = {
   -- File formatter by filetype
   "stevearc/conform.nvim",

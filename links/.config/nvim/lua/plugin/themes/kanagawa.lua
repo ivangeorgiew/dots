@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @type LazyPluginSpec
 local M = {
   "rebelot/kanagawa.nvim",
   cond = vim.g.colorscheme == "kanagawa",

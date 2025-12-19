@@ -5,10 +5,10 @@ _G.tied = {}
 tied.functions = setmetatable({}, { __mode = "k" })
 
 -- Indicates to rethow the error if returned in `on_catch`
-tied.RETHROW = "<rethrow error>"
+tied.RETHROW = "[rethrow error]"
 
 -- When no meaningful description can be provided
-tied.NO_DESC = "<no desc>"
+tied.NO_DESC = "[no desc]"
 
 -- Should be used for functions which must return a value
 -- or you don't know how to handle an error (among other possible uses)
@@ -41,7 +41,7 @@ _G.xpcall = wrap_prot_call(xpcall)
 local print_err = function(err_msg)
   vim.validate("err_msg", err_msg, "string")
 
-  vim.notify_once(err_msg, vim.log.levels.ERROR)
+  vim.notify_once(err_msg, vim.log.levels.ERROR, { title = "Runtime Error" })
 end
 
 ---@param err string
@@ -50,7 +50,7 @@ local print_inner_err = function(err)
 
   local desc = "inner error-handling"
 
-  print_err(("Error in %s:%s\n\n"):format(desc, err))
+  print_err(("# Error at [%s]:\n%s\n\n"):format(desc, err))
 end
 
 --- Stringify anything
@@ -70,7 +70,7 @@ local stringify = function(arg)
   end
 
   if str:len() > 1000 then
-    str = ("<large %s>"):format(arg_type)
+    str = ("[large %s]"):format(arg_type)
   end
 
   return str
@@ -97,12 +97,12 @@ local log_error = function(desc, err, args)
       local lines = {}
 
       for idx = 1, args.n do
-        lines[#lines + 1] = ("%s%d) %s"):format(ind, idx, stringify(args[idx]))
+        lines[#lines + 1] = ("%s%d. %s"):format(ind, idx, stringify(args[idx]))
       end
 
       args_string = table.concat(lines, "\n")
     else
-      args_string = ind .. "<no args>"
+      args_string = ind .. "[no args]"
     end
   end)
   if not ok then
@@ -146,24 +146,24 @@ local log_error = function(desc, err, args)
   ---@type boolean, unknown
   ok, inner_err = pcall(function()
     local l = {
-      "Error at:",
+      "# Error at:",
       ("%s[%s]"):format(ind, desc),
     }
 
     if args_string ~= "" then
-      l[#l + 1] = "Function args:"
+      l[#l + 1] = "# Function args:"
       l[#l + 1] = args_string
     end
 
-    l[#l + 1] = "Message:"
+    l[#l + 1] = "# Message:"
     l[#l + 1] = ind .. err
 
     if stacktrace ~= "" then
-      l[#l + 1] = "Stacktrace:"
+      l[#l + 1] = "# Stacktrace:"
       l[#l + 1] = stacktrace
     end
 
-    l[#l + 1] = "\n"
+    -- l[#l + 1] = "\n"
 
     print_err(table.concat(l, "\n"))
   end)

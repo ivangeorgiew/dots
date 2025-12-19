@@ -1,4 +1,4 @@
---- @type MyLazySpec
+--- @type LazyPluginSpec
 local M = {
   -- Enchances native comments functionality
   "folke/ts-comments.nvim",

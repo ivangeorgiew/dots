@@ -1,49 +1,67 @@
 [user]
-    name = Ivan Georgiev
-    email = ivan_georgiew@yahoo.com
+  name = Ivan Georgiev
+  email = ivan_georgiew@yahoo.com
 [alias]
-    ac = !git add -A && git commit -m ; add all files and commit them
-    ad = !git add -A ; add all files to be commited
-    cl = clone
-    cm = !git commit -m ; commit the added files
-    cp = cherry-pick ; apply 1 or more commits from another branch to current one
-    ct = checkout ; switch between branches
-    df = diff; show only unstaged changes
-    dfa = diff HEAD; show staged + unstaged changes
-    dfs = diff --staged; show only staged changes
-    dl = branch -D ; delete local branch
-    dr = push origin --delete ; delete remote branch
-    fa = fetch --all
-    lg = log --graph --full-history --color --pretty=format:"%x1b[35m%h%x20%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n%x1b[0m%s%n"
-    lga = log --graph --full-history --all --color --pretty=format:"%x1b[35m%h%x20%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n%x1b[0m%s%n"
-    lst = !git branch --sort=committerdate ; sort branches by commit date
-    ma = merge --abort
-    me = merge --ff
-    ph = push -u
-    pl = pull
-    pre = checkout @{-1} ; go to previous branch/commit
-    rs = restore --staged ; remove file/s from added list
-    rt = reset HEAD~1 ; go back 1 commit and show changes as unstaged
-    sa = submodule add
-    sch = !git branch --all | grep ; search branch names
-    sh = stash --keep-index --include-untracked ; stash all uncommited changes
-    sha = "!git stash apply --index stash@{\"$1\"} #" ; apply stash with a number
-    shs = "!git stash show stash@{\"$1\"} #" ; show stash with a number
-    ss = status
-    su = !git submodule sync && git submodule update --init --recursive
-    w = worktree
+  ac = !git add -A && git commit -m ; add all files and commit them
+  ad = !git add -A ; add all files to be commited
+  cl = clone
+  cm = !git commit -m ; commit the added files
+  cp = cherry-pick ; apply 1 or more commits from another branch to current one
+  ct = checkout ; switch between branches
+  df = diff; show only unstaged changes
+  dfa = diff HEAD; show staged + unstaged changes
+  dfs = diff --staged; show only staged changes
+  dl = branch -D ; delete local branch
+  dr = push origin --delete ; delete remote branch
+  fa = fetch --all
+  lg = log --graph --full-history --color --pretty=format:"%x1b[35m%h%x20%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n%x1b[0m%s%n"
+  lga = log --graph --full-history --all --color --pretty=format:"%x1b[35m%h%x20%x1b[36m%an%x20%x1b[34m%x28%cr%x29%x1b[32m%d%n%x1b[0m%s%n"
+  lst = !git branch --sort=committerdate ; sort branches by commit date
+  ma = merge --abort
+  me = merge --ff
+  ph = push -u
+  pl = pull
+  pre = checkout @{-1} ; go to previous branch/commit
+  rs = restore --staged ; remove file/s from added list
+  rt = reset HEAD~1 ; go back 1 commit and show changes as unstaged
+  sa = submodule add
+  sch = !git branch --all | grep ; search branch names
+  sh = stash --keep-index --include-untracked ; stash all uncommited changes
+  sha = "!git stash apply --index stash@{\"$1\"} #" ; apply stash with a number
+  shs = "!git stash show stash@{\"$1\"} #" ; show stash with a number
+  ss = status
+  su = !git submodule sync && git submodule update --init --recursive
+  w = worktree
 [core]
-    autocrlf = input
-    hooksPath = .git-hooks ; git hooks folder location
+  autocrlf = input
+  hooksPath = .git-hooks ; git hooks folder location
+[column]
+  ui = auto
+[branch]
+  sort = -committerdate
+[tag]
+  sort = version:refname
 [diff]
-    algorithm = patience
+  algorithm = histogram
+  colorMoved = plain
+  mnemonicPrefix = true
+  renames = true
 [include]
-    path = .gitconfig.local
+  path = .gitconfig.local
 [credential "https://github.com"]
-    helper = !gh auth git-credential
+  helper = !gh auth git-credential
+[push]
+  default = simple
+  autoSetupRemote = true
+  followTags = true
 [pull]
-    rebase = false
+  rebase = false
 [init]
-    defaultBranch = main
+  defaultBranch = main
 [http]
-    postBuffer = 157286400
+  postBuffer = 157286400
+[help]
+  autocorrect = prompt
+[rerere]
+  enabled = true
+  autoupdate = true
