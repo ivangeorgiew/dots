@@ -124,9 +124,9 @@ M.config = {
         -- stylua: ignore end
       }
 
-      tied.each_i("Create quickfix/loc list keymap", maps, function(_, map_opts)
-        map_opts[4].buffer = e.buf
-        tied.create_map(unpack(map_opts))
+      tied.each_i("Create quickfix/loc list keymap", maps, function(_, map_args)
+        map_args[4].buffer = e.buf
+        tied.create_map(unpack(map_args))
       end)
     end,
   },
@@ -165,10 +165,10 @@ M.config = {
         tied.each_i(
           "Create a floating window keymap",
           maps,
-          function(_, map_opts)
-            map_opts[4].buffer = true
+          function(_, map_args)
+            map_args[4].buffer = true
 
-            tied.create_map(unpack(map_opts))
+            tied.create_map(unpack(map_args))
           end
         )
       end)

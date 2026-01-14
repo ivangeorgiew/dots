@@ -92,7 +92,7 @@ M.opts.custom.should_enable = tie(
     local c = M.opts.custom.queries[query]
     local query_enabled = c.enable ~= false
     local lang_not_ignored = not vim.list_contains(c.ignore or {}, lang)
-    local lang_supports_query = (vim.treesitter.query.get(lang, query) ~= nil)
+    local lang_supports_query = vim.treesitter.query.get(lang, query) ~= nil
 
     return query_enabled and lang_not_ignored and lang_supports_query
   end,
@@ -115,7 +115,7 @@ end, tied.do_nothing)
 M.init = tie("Plugin treesitter -> init", function()
   tied.create_autocmd({
     desc = "Setup treesitter for a buffer",
-    group = tied.create_augroup("my.treesitter.on_filetype", true),
+    group = tied.create_augroup("my.treesitter.setup", true),
     event = "FileType",
     callback = vim.schedule_wrap(function(ev)
       local lang = vim.treesitter.language.get_lang(ev.match)

@@ -93,7 +93,7 @@ M.config = tie("Plugin todo-comments -> config", function(_, opts)
     tied.each_i(
       "Plugin todo-comments -> Create a keymap",
       maps,
-      function(_, map_opts) tied.create_map(unpack(map_opts)) end
+      function(_, map_args) tied.create_map(unpack(map_args)) end
     )
   end)
 end, tied.do_nothing)

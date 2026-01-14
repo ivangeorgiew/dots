@@ -39,7 +39,7 @@ M.setup = tie("Setup notifications delay", function()
     vim.notify = tie(
       "Tied vim.notify",
       new_notify,
-      function(props) pcall(M.orig_notify, unpack(props.args)) end
+      function(props) pcall(M.orig_notify, vim.F.unpack_len(props.args)) end
     )
 
     tied.each_i(

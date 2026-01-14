@@ -37,7 +37,7 @@ M.config = tie("Plugin substitute -> config", function(_, opts)
     tied.each_i(
       "Plugin substitute -> Create keymap",
       maps,
-      function(_, map_opts) tied.create_map(unpack(map_opts)) end
+      function(_, map_args) tied.create_map(unpack(map_args)) end
     )
 
     tied.on_plugin_load(

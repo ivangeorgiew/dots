@@ -41,7 +41,9 @@ _G.xpcall = wrap_prot_call(xpcall)
 local print_err = function(err_msg)
   vim.validate("err_msg", err_msg, "string")
 
-  vim.notify_once(err_msg, vim.log.levels.ERROR, { title = "Runtime Error" })
+  local opts = { title = "Runtime Error", timeout = 0 }
+
+  vim.notify_once(err_msg, vim.log.levels.ERROR, opts)
 end
 
 ---@param err string

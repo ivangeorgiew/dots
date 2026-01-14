@@ -21,16 +21,15 @@ M.rhs.toggle_bool = function()
     end
 
     if pair_idx ~= nil then
-      vim.cmd("normal! msl")
+      vim.cmd("normal! mslb")
 
-      vim.cmd("normal! b")
       local col = vim.api.nvim_win_get_cursor(0)[2] + 1
-
       local search = pair[pair_idx]
       local replace = pair[2 * (1 / pair_idx)]
-      vim.cmd(("s/\\%%%dc%s/%s/"):format(col, search, replace))
 
+      vim.cmd(("s/\\%%%dc%s/%s/"):format(col, search, replace))
       vim.cmd("normal! g`s")
+      vim.cmd("nohls")
 
       return
     end
@@ -103,6 +102,10 @@ M.to_create = {
   { "n", "<S-Down>",  "<cmd>resize -2<cr>",          { desc = "Decrease window height" } },
   { "n", "<S-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" } },
   { "n", "<S-Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" } },
+
+  -- Move line
+  { "n", "<Down>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move line down" } },
+  { "n", "<Up>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move line up" } },
 
   -- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
   { "n",          "n", "'Nn'[v:searchforward].'zv'", { desc = "Next search result", expr = true } },

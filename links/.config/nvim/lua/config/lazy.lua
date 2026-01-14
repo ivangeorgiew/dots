@@ -50,6 +50,11 @@ M.opts = {
     notify = false,
   },
 
+  profiling = {
+    require = false, -- Track each new require in Lazy profiling tab
+    loader = false, -- Enables extra stats in Lazy profiling tab
+  },
+
   performance = {
     rtp = {
       -- Disable autoloaded files from $VIMRUNTIME/plugin

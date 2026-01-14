@@ -149,10 +149,10 @@ M.opts.on_attach = tie("Plugin nvim-tree -> On attach", function(bufnr)
     -- { api.tree.toggle_no_buffer_filter, "B", "Toggle Filter: No Buffer" },
   }
 
-  tied.each_i("Plugin nvim_tree -> Create keymap", maps, function(_, map_opts)
-    local lhs = map_opts[2]
-    local rhs = map_opts[1]
-    local desc = "NvimTree -> " .. map_opts[3]
+  tied.each_i("Plugin nvim_tree -> Create keymap", maps, function(_, map_args)
+    local lhs = map_args[2]
+    local rhs = map_args[1]
+    local desc = "NvimTree -> " .. map_args[3]
 
     -- stylua: ignore
     tied.create_map("n", lhs, rhs, { desc = desc, buffer = bufnr, nowait = true })
