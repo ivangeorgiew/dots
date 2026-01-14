@@ -312,7 +312,7 @@ in {
 
       wallpaper = merge exec_common {
         enable = true;
-        description = "Set wallpaper";
+        description = "Static wallpaper";
         partOf = ["graphical-session.target" "reload-hypr.service"];
         after = ["graphical-session.target" "reload-hypr.service"];
         script = "swaybg -o DP-1 -m fill -i ~/.config/wall.png >/dev/null";

@@ -6,6 +6,7 @@
   username,
   ...
 }: let
+  theme = "Adwaita-dark";
   iconTheme = "Papirus-Dark";
   cursorTheme = "Bibata-Modern-Classic";
   cursorSize = "24";
@@ -53,7 +54,7 @@ in {
       p7zip # archiving and compression
       pavucontrol # audio control
       pstree # prints tree of pids
-      qalculate-gtk # calculator
+      qalculate-qt # calculator
       ripgrep # newest silver searcher + grep
       shared-mime-info # add new custom mime types (check arch wiki)
       stow # symlink dotfiles
@@ -154,7 +155,7 @@ in {
     etc = {
       # GTK theming - just in case of old/broken apps
       "gtk-2.0/gtkrc".text = ''
-        gtk-theme-name="Adwaita-dark"
+        gtk-theme-name="${theme}"
         gtk-icon-theme-name="${iconTheme}"
         gtk-cursor-theme-name="${cursorTheme}"
         gtk-cursor-theme-size=${cursorSize}
