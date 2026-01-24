@@ -63,6 +63,7 @@ in {
       wget # download files
 
       # GUI apps
+      anki-bin # SRS (flashcards)
       custom.spotify-no-ads # music player
       custom.vesktop # discord + additions
       custom.viber # messaging app

@@ -103,10 +103,6 @@ M.to_create = {
   { "n", "<S-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" } },
   { "n", "<S-Left>",  "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" } },
 
-  -- Move line
-  { "n", "<Down>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move line down" } },
-  { "n", "<Up>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move line up" } },
-
   -- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
   { "n",          "n", "'Nn'[v:searchforward].'zv'", { desc = "Next search result", expr = true } },
   { "n",          "N", "'nN'[v:searchforward].'zv'", { desc = "Prev search result", expr = true } },
