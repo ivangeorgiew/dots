@@ -175,7 +175,7 @@ in {
       withUWSM = use_uwsm;
     };
 
-    uwsm.package = pkgs.custom.uwsm;
+    uwsm.package = pkgs.unstable.uwsm;
 
     # app for gnome-keyring passwords management
     seahorse.enable = true;

@@ -30,7 +30,6 @@ in {
       cava # audio visualizer
       cmatrix # cool effect
       curl # download files
-      custom.lua_ls # lua-language-server
       dash # fastest shell
       devbox # version manager (npm, pnpm, go, python, etc)
       fd # better alternative to find
@@ -59,6 +58,7 @@ in {
       shared-mime-info # add new custom mime types (check arch wiki)
       stow # symlink dotfiles
       tree-sitter # used by neovim
+      unstable.lua-language-server # lua-language-server
       unzip # required by some programs
       wget # download files
 
@@ -66,7 +66,6 @@ in {
       anki-bin # SRS (flashcards)
       custom.spotify-no-ads # music player
       custom.vesktop # discord + additions
-      custom.viber # messaging app
       easyeffects # sound effects
       gedit # basic text editor GUI
       kdePackages.ark # 7-zip alternative
@@ -81,6 +80,7 @@ in {
       unstable.firefox-bin # browser
       unstable.google-chrome # browser
       unstable.obsidian # note-taking app
+      viber # messaging app
       vlc # video player
 
       # Programming apps
@@ -138,10 +138,8 @@ in {
       dirs_size = "gdu"; # Windirstat for Linux (sort dirs by size)
       ps_search = "ps aux | rg"; # List a process
       ps_kill = "pkill -9"; # Force kill a process (hence the 9)
-      vim = "v"; # Redirect to my nvim restarting function
-      vi = "v"; # Redirect to my nvim restarting function
-      lazyvim = "NVIM_APPNAME=lazyvim v"; # use the LazyVim neovim config
-      nvchad = "NVIM_APPNAME=nvchad v"; # use the NvChad neovim config
+      vim = "nvim"; # Redirect to my nvim restarting function
+      vi = "nvim"; # Redirect to my nvim restarting function
       neofetch = "nitch"; # Displays system info
       nix_update = "echo '> Updating flake inputs' && sudo nix flake update --flake ~/dots"; # Update the versions of packages
       nix_switch = "nix_update && nh os switch"; # Change nixos config now
@@ -221,16 +219,6 @@ in {
 
         bind \cg 'go_to_project; commandline -f repaint'
 
-        # function which restarts neovim on `:cq`
-        function v
-          nvim $argv
-
-          # restart only on :cq which exits with 1
-          while test $status -eq 1
-            NVIM_RELOADED=1 nvim
-          end
-        end
-
         # Create ~/projects folder if needed
         if test ! -d "~/projects"
           mkdir ~/projects
@@ -271,7 +259,6 @@ in {
     neovim = {
       enable = true;
 
-      # Don't use neovim-nightly (0.12) for now, cuz of issues
       package = pkgs.unstable.neovim-unwrapped;
 
       defaultEditor = true;

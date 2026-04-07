@@ -117,7 +117,7 @@ M.to_create = {
 
   -- Quit things
   { "n", "qa", "<cmd>qa<cr>", { desc = "Quit all" } },
-  { "n", "qr", "<cmd>cq<cr>", { desc = "Quit and reload neovim" } },
+  { "n", "qr", "<cmd>restart lua vim.env.NVIM_RELOADED = 1<cr>", { desc = "Quit and reload neovim" } },
   { "n", "qt", "<cmd>tabclose<cr>", { desc = "Quit tab" } },
   { "n", "qw", "<cmd>close<cr>", { desc = "Quit window", } },
   { "n", "qo", "<cmd>only<cr>",  { desc = "Quit other windows" } },

@@ -5,8 +5,8 @@
   # ALWAYS use tag or specific commit for each input
   # Don't use inputs.<>.follows due to cache misses and issues. Only when absolutely necessary.
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/c97c47f2bac4fa59e2cbdeba289686ae615f8ed4"; # branch nixos-25.05
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/f61125a668a320878494449750330ca58b78c557"; # branch nixos-unstable
+    nixpkgs.url = "github:nixos/nixpkgs/36a601196c4ebf49e035270e10b2d103fe39076b"; # branch nixos-25.11
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/68d8aa3d661f0e6bd5862291b5bb263b2a6595c9"; # branch nixos-unstable
 
     hyprland.url = "github:hyprwm/Hyprland/v0.52.2";
     hyprland-plugins = {

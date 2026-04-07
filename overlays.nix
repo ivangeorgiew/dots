@@ -46,44 +46,6 @@
       # Latest nvim version
       # neovim-nightly = inputs.neovim-nightly.packages.${system}.default;
 
-      #TODO: remove once nixpkgs updates version
-      lua_ls = prev.lua-language-server.overrideAttrs (oldAttrs: rec {
-        version = "3.16.1";
-        nativeBuildInputs = (oldAttrs.nativeBuildInputs or []) ++ (with prev.pkgs; [libunwind libbfd_2_38]);
-        src = prev.fetchFromGitHub {
-          owner = "LuaLS";
-          repo = "lua-language-server";
-          tag = version;
-          hash = "sha256-HYtnTJYII548+/tp+1UjRgsBaTuDz27AIc2MvBjBh8o=";
-          fetchSubmodules = true;
-        };
-      });
-
-      # TODO: remove once nixpkgs updates version
-      uwsm = prev.uwsm.overrideAttrs (oldAttrs: rec {
-        version = "0.25.0";
-        src = prev.fetchFromGitHub {
-          owner = "Vladimir-csp";
-          repo = "uwsm";
-          tag = "v${version}";
-          hash = "sha256-qfP4BnU+VtzgUpkEPQY3NfKPeLbFokOCJTjSo+vN5pE=";
-        };
-      });
-
-      viber = prev.viber.overrideAttrs (oldAttrs: {
-        installPhase =
-          (oldAttrs.installPhase or "")
-          + ''
-            # Revert change
-            substituteInPlace $out/share/applications/viber.desktop \
-              --replace $out/opt/viber/ /opt/viber/
-
-            # Apply it correctly
-            substituteInPlace $out/share/applications/viber.desktop \
-              --replace /opt/viber/ $out/opt/viber/
-          '';
-      });
-
       # Spotify without ads
       # https://github.com/NL-TCH/nur-packages/blob/master/pkgs/spotify-adblock/default.nix
       spotify-no-ads = let
@@ -113,17 +75,8 @@
             install -Dm644 --strip target/release/libspotifyadblock.so -t $out/lib
           '';
         };
-        # NOTE: Careful for the following issues
-        # 1. memory leaks
-        # 2. music search not working
-        spotify =
-          (import (fetchTarball {
-              url = "https://github.com/NixOS/nixpkgs/archive/e8f40168fbd024866f22e2c8d18fe040e3691022.tar.gz";
-              sha256 = "18fhkp37rm3mld6m1j6a4jknl3j3rgwpyqrqy3arbj9x7bzy5gkz";
-            })
-            nixpkgs-opts).spotify;
       in
-        spotify.overrideAttrs (oldAttrs: {
+        prev.spotify.overrideAttrs (oldAttrs: {
           buildInputs = (oldAttrs.buildInputs or []) ++ (with prev; [zip unzip]);
           postInstall =
             (oldAttrs.postInstall or "")
@@ -133,9 +86,9 @@
                 --set LD_PRELOAD "${spotify-adblock}/lib/libspotifyadblock.so"
 
               # Hide placeholder for advert banner
-              unzip -p $out/share/spotify/Apps/xpui.spa xpui.js | sed 's/adsEnabled:\!0/adsEnabled:false/' > $out/share/spotify/Apps/xpui.js
-              zip --junk-paths --update $out/share/spotify/Apps/xpui.spa $out/share/spotify/Apps/xpui.js
-              rm $out/share/spotify/Apps/xpui.js
+              unzip -p $out/share/spotify/Apps/xpui.spa xpui-snapshot.js | sed 's/adsEnabled:\!0/adsEnabled:false/' > $out/share/spotify/Apps/xpui-snapshot.js
+              zip --junk-paths --update $out/share/spotify/Apps/xpui.spa $out/share/spotify/Apps/xpui-snapshot.js
+              rm $out/share/spotify/Apps/xpui-snapshot.js
             '';
         });
     };
