@@ -47,7 +47,7 @@ in {
           command =
             if use_uwsm
             then "uwsm start hyprland-uwsm.desktop"
-            else "Hyprland";
+            else "start-hyprland";
           user = username;
         };
 
@@ -136,6 +136,7 @@ in {
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
       unstable.app2unit # UWSM related
+      unstable.hyprpicker # color picker
       unstable.waybar # status bar
       vulkan-tools # to debug issues with vulkan
       virtualglLib # provides glxinfo for debugging
@@ -175,7 +176,15 @@ in {
       withUWSM = use_uwsm;
     };
 
-    uwsm.package = pkgs.unstable.uwsm;
+    uwsm = {
+      package = pkgs.unstable.uwsm;
+      waylandCompositors = {
+        hyprland = {
+          # Must use `start-hyprland` instead of `Hyprland` here
+          binPath = lib.mkForce "/run/current-system/sw/bin/start-hyprland";
+        };
+      };
+    };
 
     # app for gnome-keyring passwords management
     seahorse.enable = true;

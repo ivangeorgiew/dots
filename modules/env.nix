@@ -79,7 +79,7 @@ in {
       qbittorrent # torrent downloading
       unstable.firefox-bin # browser
       unstable.google-chrome # browser
-      unstable.obsidian # note-taking app
+      obsidian # note-taking app
       viber # messaging app
       vlc # video player
 

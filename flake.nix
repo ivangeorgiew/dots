@@ -6,11 +6,11 @@
   # Don't use inputs.<>.follows due to cache misses and issues. Only when absolutely necessary.
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/36a601196c4ebf49e035270e10b2d103fe39076b"; # branch nixos-25.11
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/68d8aa3d661f0e6bd5862291b5bb263b2a6595c9"; # branch nixos-unstable
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/4c1018dae018162ec878d42fec712642d214fdfa"; # branch nixos-unstable
 
-    hyprland.url = "github:hyprwm/Hyprland/v0.52.2";
+    hyprland.url = "github:hyprwm/Hyprland/v0.54.3";
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins/v0.52.0";
+      url = "github:hyprwm/hyprland-plugins/b85a56b9531013c79f2f3846fd6ee2ff014b8960"; # TODO: change to tag when added
       inputs.hyprland.follows = "hyprland";
     };
   };
