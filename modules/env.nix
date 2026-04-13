@@ -6,7 +6,7 @@
   username,
   ...
 }: let
-  theme = "Adwaita-dark";
+  theme = "Arc-Dark";
   iconTheme = "Papirus-Dark";
   cursorTheme = "Bibata-Modern-Classic";
   cursorSize = "24";
@@ -74,7 +74,7 @@ in {
       kitty # terminal
       loupe # image viewer
       mpv # video player
-      nautilus # file manager
+      nemo-with-extensions # file manager
       onlyoffice-desktopeditors # MS Office alternative
       qbittorrent # torrent downloading
       unstable.firefox-bin # browser
@@ -97,6 +97,7 @@ in {
 
       # Theme apps
       gnome-themes-extra # used for GTK theming
+      arc-theme # GTK theme
       bibata-cursors # cursors
       dconf-editor # check dconf settings (GTK)
       papirus-icon-theme # icons for GTK
@@ -105,7 +106,7 @@ in {
     sessionVariables = {
       TERMINAL = "kitty";
       BROWSER = "firefox";
-      FILE_MANAGER = "nautilus";
+      FILE_MANAGER = "nemo";
       HISTCONTROL = "ignoreboth:erasedups";
       LESSHISTFILE = "-";
       XCURSOR_THEME = cursorTheme;
@@ -161,15 +162,17 @@ in {
       '';
       "gtk-3.0/settings.ini".text = ''
         [Settings]
-        gtk-application-prefer-dark-theme=true
+        gtk-application-prefer-dark-theme=1
+        gtk-theme-name=${theme}
         gtk-icon-theme-name=${iconTheme}
         gtk-cursor-theme-name=${cursorTheme}
         gtk-cursor-theme-size=${cursorSize}
       '';
       "gtk-4.0/settings.ini".text = ''
         [Settings]
-        gtk-application-prefer-dark-theme=true
+        gtk-application-prefer-dark-theme=1
         gtk-interface-color-scheme=2
+        gtk-theme-name=${theme}
         gtk-icon-theme-name=${iconTheme}
         gtk-cursor-theme-name=${cursorTheme}
         gtk-cursor-theme-size=${cursorSize}
@@ -294,15 +297,33 @@ in {
     dconf = {
       enable = true;
 
-      # check different values with dconf-editor
-      # example config: https://github.com/Electrostasy/dots/blob/c62895040a8474bba8c4d48828665cfc1791c711/profiles/system/gnome/default.nix#L123-L287
       profiles.user.databases = [
         {
-          settings."org/gnome/desktop/interface" = {
-            color-scheme = "prefer-dark";
-            icon-theme = iconTheme;
-            cursor-theme = cursorTheme;
-            cursor-size = cursorSize;
+          settings = {
+            # check different values with dconf-editor
+            # example config: https://github.com/Electrostasy/dots/blob/c62895040a8474bba8c4d48828665cfc1791c711/profiles/system/gnome/default.nix#L123-L287
+            "org/gnome/desktop/interface" = {
+              color-scheme = "prefer-dark";
+              gtk-theme = theme;
+              icon-theme = iconTheme;
+              cursor-theme = cursorTheme;
+              cursor-size = cursorSize;
+            };
+            "org/nemo/preferences" = {
+              click-policy = "double";
+              date-format = "iso";
+              show-advanced-permissions = true;
+              show-hidden-files = true;
+              show-toggle-extra-pane-toolbar = true;
+              size-prefixes = "base-10";
+              tooltips-in-icon-view = false;
+              tooltips-in-list-view = false;
+            };
+            "org/nemo/preferences/menu-config" = {
+              selection-menu-open-as-root = false;
+              selection-menu-open-in-new-tab = false;
+              selection-menu-pin = false;
+            };
           };
         }
       ];
@@ -324,6 +345,7 @@ in {
       browser = "firefox.desktop";
       torrent = "org.qbittorrent.qBittorrent.desktop";
       imgviewer = "org.kde.gwenview.desktop";
+      file_manager = "nemo.desktop";
     in {
       defaultApplications = {
         "text/html" = "${browser}";
@@ -341,6 +363,9 @@ in {
         "image/bmp" = "${imgviewer}";
         "image/svg+xml" = "${imgviewer}";
         "image/tiff" = "${imgviewer}";
+
+        "inode/directory" = "${file_manager}";
+        "application/x-gnome-saved-search" = "${file_manager}";
       };
     };
 }
