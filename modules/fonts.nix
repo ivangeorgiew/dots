@@ -32,7 +32,6 @@
     packages = with pkgs; [
       # Nerd Fonts with icons
       nerd-fonts.symbols-only
-      nerd-fonts.iosevka
       nerd-fonts.fira-code
       nerd-fonts.jetbrains-mono
 

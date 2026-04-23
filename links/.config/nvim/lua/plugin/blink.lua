@@ -151,11 +151,9 @@ M.config = tie("Plugin blink.cmp", function(_, opts)
   tied.do_block(
     "Plugin blink.cmp -> Add lazydev completions to lua files",
     function()
-      if not tied.has_plugin("lazydev.nvim") then
-        return
+      if tied.has_plugin("lazydev.nvim") then
+        opts = vim.tbl_deep_extend("force", opts, custom.lazydev_opts)
       end
-
-      opts = vim.tbl_deep_extend("force", opts, custom.lazydev_opts)
     end
   )
 

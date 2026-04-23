@@ -1,7 +1,5 @@
 -- NOTE: Coding guide for nvim development -> :h dev
--- NOTE: Docs:
--- https://neovim.io/doc/user/lua.html
--- https://neovim.io/doc/user/lua-guide
+-- NOTE: Docs: https://neovim.io/doc/user/lua.html https://neovim.io/doc/user/lua-guide
 -- NOTE: Useful API:
 -- vim.g - set or get global variable
 -- vim.o or vim.opt - set option
@@ -70,12 +68,12 @@ local foreach = tie(
 tied.each_i = foreach(true)
 tied.each = foreach(false)
 
+-- Useful when a block of code is a separate logic,
+-- but there is no point in moving it to a function
 tied.do_block = tie(
   "Execute tied code block",
-  --- Useful when a block of code is a separate logic,
-  --- but there is no point in moving it to a function
-  ---@param desc string
-  ---@param on_try function
+  --- @param desc string
+  --- @param on_try function
   function(desc, on_try)
     vim.validate("desc", desc, "string")
     vim.validate("on_try", on_try, "function")
@@ -191,7 +189,6 @@ tied.colorscheme_config = tie(
 
     require(vim.g.colorscheme).setup(opts)
     vim.cmd("colorscheme " .. vim.g.colorscheme)
-    vim.cmd("syntax off") -- use treesitter instead
   end,
   tied.do_nothing
 )
@@ -288,10 +285,6 @@ tied.create_augroup = tie(
   end,
   tied.do_rethrow
 )
-
----@class MyAutocmdOpts : vim.api.keyset.create_autocmd
----@field desc string
----@field event string|string[]
 
 tied.create_autocmd = tie(
   "Create autocmd",

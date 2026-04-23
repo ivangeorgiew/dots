@@ -283,12 +283,12 @@ _G.vim.ui.input = tie(
     vim.validate("opts", opts, "table", true)
     vim.validate("on_confirm", on_confirm, "function")
 
-    local desc = "After UI input with prompt: "
+    local desc = ""
 
     if opts and type(opts.prompt) == "string" then
-      desc = desc .. opts.prompt
+      desc = "After UI input with prompt: " .. opts.prompt
     else
-      desc = desc .. "_none_"
+      desc = "After UI input without prompt"
     end
 
     ui_input(opts, vim.schedule_wrap(tie(desc, on_confirm, tied.do_nothing)))
@@ -307,12 +307,12 @@ _G.vim.ui.select = tie(
     vim.validate("items", items, "table")
     vim.validate("on_choice", on_choice, "function")
 
-    local desc = "After UI selection with prompt: "
+    local desc = ""
 
     if opts and type(opts.prompt) == "string" then
-      desc = desc .. opts.prompt
+      desc = "After UI selection with prompt: " .. opts.prompt
     else
-      desc = desc .. "_none_"
+      desc = "After UI selection without prompt"
     end
 
     ui_select(

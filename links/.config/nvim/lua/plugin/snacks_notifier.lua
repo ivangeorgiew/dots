@@ -15,7 +15,7 @@ M.opts.notifier = {
     debug = "",
     trace = "",
   },
-  custom = { show_lsp_progress = true },
+  custom = { show_lsp_progress = false },
 }
 
 ---@type snacks.win.Config
@@ -58,15 +58,10 @@ M.opts.notifier.custom.maps = {
     "n",
     "<leader>ns",
     function()
-      ---@diagnostic disable-next-line: undefined-field
-      if Snacks.config.picker and Snacks.config.picker.enabled then
-        Snacks.picker.notifications()
-      else
-        Snacks.notifier.show_history({
-          filter = M.opts.notifier.filter,
-          reverse = true,
-        })
-      end
+      Snacks.notifier.show_history({
+        filter = M.opts.notifier.filter,
+        reverse = true,
+      })
     end,
     { desc = "Notifications Show" },
   },

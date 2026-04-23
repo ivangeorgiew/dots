@@ -24,3 +24,7 @@
 --- @field [1] string
 --- @field [2] string|fun(args: vim.api.keyset.create_user_command.command_args)
 --- @field [3] vim.api.keyset.user_command
+
+--- @class MyAutocmdOpts : vim.api.keyset.create_autocmd
+--- @field desc string
+--- @field event string|string[]

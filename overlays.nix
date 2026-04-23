@@ -43,8 +43,16 @@
       # Discord client
       vesktop = prev.vesktop.override {withSystemVencord = false;};
 
-      # Latest nvim version
-      # neovim-nightly = inputs.neovim-nightly.packages.${system}.default;
+      # Latest nvim stable version
+      neovim-unwrapped = unstable.neovim-unwrapped.overrideAttrs (oldAttrs: rec {
+        version = "0.12.2";
+        src = prev.fetchFromGitHub {
+          owner = "neovim";
+          repo = "neovim";
+          tag = "v${version}";
+          hash = "sha256-V+jZiNv0SvG/GOOUPzmBkOQGrnrN3UW2BY2n9NxP2Eg=";
+        };
+      });
 
       # Spotify without ads
       # https://github.com/NL-TCH/nur-packages/blob/master/pkgs/spotify-adblock/default.nix

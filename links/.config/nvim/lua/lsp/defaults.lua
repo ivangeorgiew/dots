@@ -32,7 +32,6 @@ local M = {
         severity_sort = true,
       },
       jump = {
-        float = false,
         wrap = true,
         severity = { S.ERROR, S.WARN },
       },

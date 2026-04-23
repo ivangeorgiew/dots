@@ -262,7 +262,7 @@ in {
     neovim = {
       enable = true;
 
-      package = pkgs.unstable.neovim-unwrapped;
+      package = pkgs.custom.neovim-unwrapped;
 
       defaultEditor = true;
       viAlias = true;

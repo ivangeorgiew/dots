@@ -16,7 +16,10 @@ local M = {}
 
 ---@type LazyConfig
 M.opts = {
-  spec = {},
+  spec = {
+    { import = "plugin" },
+    { import = "plugin.themes" },
+  },
 
   defaults = {
     -- Set this to `true` to have all your plugins lazy-loaded by default.
@@ -135,19 +138,6 @@ M.setup = tie("Setup lazy plugin manager", function()
 
       -- Don't reload - not sure of side effects
       -- Don't clean - can cause errors in current session
-    end,
-  })
-
-  M.opts.spec = tied.dir({
-    path = vim.fn.stdpath("config") .. "/lua/plugin",
-    type = "dir",
-    map = function(dir)
-      local plugin_path = "plugin." .. dir:gsub("[\\/]", ".")
-
-      -- Use import so that change_detection works
-      -- and there is no need to `require` plugins,
-      -- lazy uses pcall for each import anyways
-      return { import = plugin_path }
     end,
   })
 

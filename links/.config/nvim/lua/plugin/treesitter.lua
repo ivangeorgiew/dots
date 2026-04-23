@@ -1,9 +1,13 @@
+-- TODO: nvim-treesitter is currently archived
+-- Replace with https://github.com/romus204/tree-sitter-manager.nvim or something similar
+
 --- @type LazyPluginSpec
 local M = {
   -- Language parsing which provides better highlight, indentation, etc.
   -- :h nvim-treesitter.txt
   "nvim-treesitter/nvim-treesitter",
-  branch = "main",
+  -- branch = "main",
+  commit = "e08ad49dbd62d68789930ca87068da89e71cb71a",
   build = ":TSUpdate",
   event = tied.LazyEvent,
   opts = {

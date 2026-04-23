@@ -139,7 +139,6 @@
     "custom/keyboard": {
       "exec": "~/.config/waybar/scripts/show_kb.sh",
       "on-click": "~/.config/waybar/scripts/switch_kb.sh",
-      "interval": 0, // interval is controlled by the script itself
       "format": "󰗊 {}",
       "tooltip": false
     },

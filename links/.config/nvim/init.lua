@@ -1,9 +1,4 @@
--- TODO: after moving to nvim 0.12
--- 1. :restart instead of my custom vim alias
--- 2. Look at https://github.com/mezdelex/NeovimConfig/tree/main
--- 3. vim.loader.enable
--- 4. vim.pack.add
-
+vim.loader.enable() -- Cached loader (should increase startup time)
 require("ropework") -- Error handling logic
 
 tied.each_i(

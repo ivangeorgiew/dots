@@ -1,3 +1,4 @@
+-- Global table holding all things related to error-handling
 _G.tied = {}
 
 -- All functions which are wrapped with `tie()`
@@ -14,13 +15,17 @@ tied.NO_DESC = "[no desc]"
 -- or you don't know how to handle an error (among other possible uses)
 tied.do_rethrow = function() return tied.RETHROW end
 
--- Should be used for functions which return nothing or you
--- don't care if they fail and there is no cleanup
+-- Should be used for functions which return nothing,
+-- you don't care if they fail and there is no cleanup
 tied.do_nothing = function() end
 
--- Check if function was called with pcall or xpcall
--- Used in `tie()` to not wrap protected calls
+--- Check if function was called with pcall or xpcall
+--- Used in `tie()` to not wrap protected calls
+--- @param orig_fn function
+--- @return function
 local wrap_prot_call = function(orig_fn)
+  vim.validate("orig_fn", orig_fn, "function")
+
   return function(...)
     tied.is_pcalled = true
     local results = { orig_fn(...) }
@@ -41,16 +46,17 @@ _G.xpcall = wrap_prot_call(xpcall)
 local print_err = function(err_msg)
   vim.validate("err_msg", err_msg, "string")
 
+  -- Options for snacks.notify plugin
   local opts = { title = "Runtime Error", timeout = 0 }
 
   vim.notify_once(err_msg, vim.log.levels.ERROR, opts)
 end
 
----@param err string
+--- @param err string
 local print_inner_err = function(err)
   vim.validate("err", err, "string")
 
-  local desc = "inner error-handling"
+  local desc = "Inner error-handling"
 
   print_err(("# Error at [%s]:\n%s\n\n"):format(desc, err))
 end
@@ -92,8 +98,8 @@ local log_error = function(desc, err, args)
   local args_string = ""
   local stacktrace = ""
 
-  -- Stringify args
-  ---@type boolean, unknown
+  --- Stringify args
+  --- @type boolean, unknown
   ok, inner_err = pcall(function()
     if args.n > 0 then
       local lines = {}
@@ -111,8 +117,8 @@ local log_error = function(desc, err, args)
     print_inner_err(inner_err)
   end
 
-  -- Gather stacktrace
-  ---@type boolean, unknown
+  --- Gather stacktrace
+  --- @type boolean, unknown
   ok, inner_err = pcall(function()
     local level = 7
     local lines = {}
@@ -144,8 +150,8 @@ local log_error = function(desc, err, args)
     print_inner_err(inner_err)
   end
 
-  -- Print error message
-  ---@type boolean, unknown
+  --- Print error message
+  --- @type boolean, unknown
   ok, inner_err = pcall(function()
     local l = {
       "# Error at:",
@@ -191,8 +197,14 @@ local tie = function(desc, on_try, on_catch)
     return on_try
   end
 
-  local inner_catch = function(args)
-    return function(err)
+  --- Stores the args for use in case of error
+  --- @param args table
+  --- @return function
+  local wrap_inner_catch = function(args)
+    --- On catch logic that executes in case `on_try` fails
+    --- @param err string
+    --- @return table
+    local inner_catch = function(err)
       local should_rethrow, results = false, {}
       local ok, inner_err = true, nil
 
@@ -225,10 +237,11 @@ local tie = function(desc, on_try, on_catch)
 
       return { should_rethrow, unpack(results) }
     end
+
+    return inner_catch
   end
 
   local inner_fn = function(...)
-    -- If unpacked later, must use vim.F.unpack_len(args)
     local args = vim.F.pack_len(...)
 
     -- Do nothing extra when the function
@@ -239,7 +252,7 @@ local tie = function(desc, on_try, on_catch)
 
     -- Catch all results, not just the first one
     local on_try_results =
-      { xpcall(on_try, inner_catch(args), vim.F.unpack_len(args)) }
+      { xpcall(on_try, wrap_inner_catch(args), vim.F.unpack_len(args)) }
     local on_try_was_valid = table.remove(on_try_results, 1)
 
     if not on_try_was_valid then
