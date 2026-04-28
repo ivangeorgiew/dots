@@ -2,7 +2,7 @@
 return {
   check = tie("Check health", function()
     local h = vim.health
-    local min_ver = { 0, 11, 2 }
+    local min_ver = { 0, 12, 0 }
     local ver_str = string.format(
       "%s.%s.%s",
       vim.version().major,
@@ -13,7 +13,7 @@ return {
     h.start("Global Checks")
 
     if vim.version.cmp and vim.version.cmp(vim.version(), min_ver) >= 0 then
-      h.ok(string.format("Neovim version is: '%s'", ver_str))
+      h.ok(("Neovim version is: '%s'"):format(ver_str))
     else
       h.error(
         string.format(
@@ -40,9 +40,9 @@ return {
       local is_executable = vim.fn.executable(exe) == 1
 
       if is_executable then
-        h.ok(string.format("Executable found: '%s'", exe))
+        h.ok(("Executable found: '%s'"):format(exe))
       else
-        h.warn(string.format("Could not find: '%s'", exe))
+        h.warn(("Could not find: '%s'"):format(exe))
       end
     end)
   end, tied.do_nothing),

@@ -57,7 +57,7 @@ in {
       ripgrep # newest silver searcher + grep
       shared-mime-info # add new custom mime types (check arch wiki)
       stow # symlink dotfiles
-      tree-sitter # used by neovim
+      unstable.tree-sitter # used by neovim
       unstable.lua-language-server # lua-language-server
       unzip # required by some programs
       wget # download files

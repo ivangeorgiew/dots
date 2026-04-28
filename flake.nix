@@ -6,7 +6,7 @@
   # Don't use inputs.<>.follows due to cache misses and issues. Only when absolutely necessary.
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/36a601196c4ebf49e035270e10b2d103fe39076b"; # branch nixos-25.11
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/4c1018dae018162ec878d42fec712642d214fdfa"; # branch nixos-unstable
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/0726a0ecb6d4e08f6adced58726b95db924cef57"; # branch nixos-unstable
 
     hyprland.url = "github:hyprwm/Hyprland/v0.54.3";
     hyprland-plugins = {

@@ -60,7 +60,7 @@ M.config = {
     desc = "Reload file on change",
     event = { "FocusGained", "TermClose", "TermLeave" },
     callback = function(e)
-      if vim.bo[e.buf].buftype ~= "nofile" then
+      if tied.check_if_buf_is_file(e.buf) then
         vim.cmd("checktime")
       end
     end,
@@ -107,6 +107,15 @@ M.config = {
     end,
   },
   {
+    desc = "Remove ending whitespace",
+    event = "BufWritePre",
+    callback = function()
+      vim.cmd("normal! ms")
+      vim.cmd([[silent! %s/\s\+$//]])
+      vim.cmd("normal! g`s")
+    end,
+  },
+  {
     desc = "On quickfix/location lists",
     event = "Filetype",
     pattern = "qf", -- matches both quickfix and location lists
@@ -125,18 +134,9 @@ M.config = {
       }
 
       tied.each_i("Create quickfix/loc list keymap", maps, function(_, map_args)
-        map_args[4].buffer = e.buf
+        map_args[4].buf = e.buf
         tied.create_map(unpack(map_args))
       end)
-    end,
-  },
-  {
-    desc = "Remove ending whitespace",
-    event = "BufWritePre",
-    callback = function()
-      vim.cmd("normal! ms")
-      vim.cmd([[silent! %s/\s\+$//]])
-      vim.cmd("normal! g`s")
     end,
   },
   {
@@ -166,7 +166,7 @@ M.config = {
           "Create a floating window keymap",
           maps,
           function(_, map_args)
-            map_args[4].buffer = true
+            map_args[4].buf = 0
 
             tied.create_map(unpack(map_args))
           end

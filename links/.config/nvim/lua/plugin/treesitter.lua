@@ -1,13 +1,15 @@
--- TODO: nvim-treesitter is currently archived
--- Replace with https://github.com/romus204/tree-sitter-manager.nvim or something similar
+-- TODO: `nvim-treesitter/nvim-treesitter` is currently archived
+-- So for now it's replaced by `neovim-treesitter/nvim-treesitter`
+-- Check https://github.com/arborist-ts/arborist.nvim
+-- Check https://github.com/romus204/tree-sitter-manager.nvim
 
 --- @type LazyPluginSpec
 local M = {
   -- Language parsing which provides better highlight, indentation, etc.
   -- :h nvim-treesitter.txt
-  "nvim-treesitter/nvim-treesitter",
-  -- branch = "main",
-  commit = "e08ad49dbd62d68789930ca87068da89e71cb71a",
+  "neovim-treesitter/nvim-treesitter",
+  dependencies = { "neovim-treesitter/treesitter-parser-registry" },
+  branch = "main",
   build = ":TSUpdate",
   event = tied.LazyEvent,
   opts = {
@@ -26,9 +28,12 @@ local M = {
   },
 }
 
-M.opts.custom.delete_ignored = tie(
+M.opts.custom.delete_parsers = tie(
   "Plugin treesitter -> Delete parsers",
-  function()
+  ---@param ensure_installed string[]
+  function(ensure_installed)
+    vim.validate("ensure_installed", ensure_installed, "table")
+
     local ts = require("nvim-treesitter")
     local custom = M.opts.custom
     local to_delete = {}
@@ -37,14 +42,17 @@ M.opts.custom.delete_ignored = tie(
       "Add treesitter parser for deletion",
       custom.installed,
       function(_, parser)
-        if vim.list_contains(custom.ignore, parser) then
+        if
+          not vim.list_contains(ensure_installed, parser)
+          or vim.list_contains(custom.ignore, parser)
+        then
           to_delete[#to_delete + 1] = parser
         end
       end
     )
 
     if #to_delete > 0 then
-      ts.uninstall(to_delete, { summary = true })
+      ts.uninstall(to_delete, { max_jobs = 8, summary = true })
         :await(function() custom.installed = ts.get_installed() end)
     end
   end,
@@ -56,10 +64,7 @@ M.opts.custom.install_parsers = tie(
   function()
     local ts = require("nvim-treesitter")
     local custom = M.opts.custom
-    local ensure_installed = {
-      unpack(ts.get_available(1)), -- stable
-      unpack(ts.get_available(2)), -- unstable
-    }
+    local ensure_installed = ts.get_available()
     local to_install = {}
 
     tied.each_i(
@@ -76,10 +81,12 @@ M.opts.custom.install_parsers = tie(
     )
 
     if #to_install > 0 then
-      ts.install(to_install, { summary = true }):await(function()
+      ts.install(to_install, { max_jobs = 8, summary = true }):await(function()
         custom.installed = ts.get_installed()
-        custom.delete_ignored()
+        custom.delete_parsers(ensure_installed)
       end)
+    else
+      custom.delete_parsers(ensure_installed)
     end
   end,
   tied.do_nothing
@@ -106,9 +113,6 @@ M.opts.custom.should_enable = tie(
 M.config = tie("Plugin nvim-treesitter -> config", function(_, opts)
   local ts = require("nvim-treesitter")
   local custom = M.opts.custom
-
-  -- Make sure we're on the "main" branch
-  assert(ts.get_installed, "You need to update `nvim-treesitter`")
 
   ts.setup(opts)
 

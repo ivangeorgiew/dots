@@ -4,6 +4,7 @@
 local M = {
   -- Auto-add closing tags for HTML, JSX, etc
   "windwp/nvim-ts-autotag",
+  enabled = false,
   dependencies = { "nvim-treesitter/nvim-treesitter" },
   event = tied.LazyEvent,
   opts = {},
