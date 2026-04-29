@@ -207,9 +207,6 @@
     # Toggles flatpak
     flatpak.enable = false;
 
-    # Populates /bin and /usr/bin as on other Linux distros
-    envfs.enable = true;
-
     # for auto mounting of disks
     gvfs.enable = true;
     udisks2.enable = true;

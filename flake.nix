@@ -8,6 +8,12 @@
     nixpkgs.url = "github:nixos/nixpkgs/36a601196c4ebf49e035270e10b2d103fe39076b"; # branch nixos-25.11
     nixpkgs-unstable.url = "github:nixos/nixpkgs/0726a0ecb6d4e08f6adced58726b95db924cef57"; # branch nixos-unstable
 
+    # Fixes the failed mount of /usr/bin during boot with just `services.envfs.enable = true;`
+    envfs = {
+      url = "github:Mic92/envfs/a92d24718e5b9122f16655b953ae98f0cb2a19a9";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     hyprland.url = "github:hyprwm/Hyprland/v0.54.3";
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins/b85a56b9531013c79f2f3846fd6ee2ff014b8960"; # TODO: change to tag when added
@@ -63,7 +69,12 @@
           username = "ivangeorgiew";
           graphicsCard = "nvidia";
         };
-        modules = (builtins.attrValues outputs.nixosModules) ++ [./modules/hardware_mahcomp.nix];
+        modules =
+          (builtins.attrValues outputs.nixosModules)
+          ++ [
+            ./modules/hardware_mahcomp.nix
+            inputs.envfs.nixosModules.envfs
+          ];
       };
     };
   };
