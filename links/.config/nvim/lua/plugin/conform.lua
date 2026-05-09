@@ -31,11 +31,11 @@ M.config = tie("Plugin conform -> config", function(_, opts)
   tied.do_block("Plugin conform -> Install formatters with mason", function()
     local to_install = {}
 
-    tied.each(
+    tied.for_table(
       "Go through all conform formatters",
       opts.formatters_by_ft,
       function(_, formatters)
-        tied.each_i(
+        tied.for_list(
           "Queue a code formatter for install with mason",
           formatters,
           function(_, formatter)

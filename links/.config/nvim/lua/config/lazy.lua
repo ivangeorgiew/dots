@@ -2,18 +2,6 @@
 -- Plugin Settings: https://lazy.folke.io/spec
 local M = {}
 
--- TODO: Go through the NvChad plugin files
--- TODO: Go through the pwnvim plugin files
--- TODO: Go through the kickstart-modular plugin files
--- TODO: Go through the LazyVim plugin files
--- TODO: Go through the LazyVim plugins/extras files
--- TODO: Go through the NvChad's `ui` files
--- TODO: Go through the mini and MiniMax repos
--- TODO: Go through the Snacks repo
--- TODO: Go through my nvim bookmarks
--- TODO: Check other TODOs in the plugin dir
--- TODO: Check all the plugins in `awesome-neovim`
-
 ---@type LazyConfig
 M.opts = {
   spec = {
@@ -115,7 +103,7 @@ M.setup = tie("Setup lazy plugin manager", function()
       local to_install = {}
       local to_update = {}
 
-      tied.each(
+      tied.for_table(
         "Queue plugin for install or update",
         plugins,
         function(plugin_name, plugin)

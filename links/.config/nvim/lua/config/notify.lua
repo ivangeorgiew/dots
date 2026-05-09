@@ -42,7 +42,7 @@ M.setup = tie("Setup notifications delay", function()
       function(props) pcall(M.orig_notify, vim.F.unpack_len(props.args)) end
     )
 
-    tied.each_i(
+    tied.for_list(
       "Play stored delayed notification",
       M.notifs,
       vim.schedule_wrap(

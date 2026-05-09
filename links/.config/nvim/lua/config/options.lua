@@ -18,6 +18,16 @@ M.setup = tie("Setup options", function()
   -- g.loaded_node_provider = 0
   g.node_host_prog = "~/.npm-global/node_modules/.bin/neovim-node-host"
 
+  -- Disable some built-in plugins
+  g.loaded_netrwPlugin = 1 -- built-in file browser
+  g.loaded_matchparen = 1 -- highlight parens
+  g.loaded_tutor_mode_plugin = 1 -- vim tutorial
+  g.loaded_gzip = 1 -- edit compressed files
+  g.loaded_man = 1 -- view man pages in vim
+  g.loaded_spellfile_plugin = 1 -- used for spelling mistakes
+  g.loaded_tarPlugin = 1 -- browse tarfiles
+  g.loaded_zipPlugin = 1 -- browse zipfiles
+
   -- Add custom file types
   -- see `:h vim.filetype.add`
   -- vim.filetype.add({

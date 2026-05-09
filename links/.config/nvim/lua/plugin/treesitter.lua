@@ -38,7 +38,7 @@ M.opts.custom.delete_parsers = tie(
     local custom = M.opts.custom
     local to_delete = {}
 
-    tied.each_i(
+    tied.for_list(
       "Add treesitter parser for deletion",
       custom.installed,
       function(_, parser)
@@ -67,7 +67,7 @@ M.opts.custom.install_parsers = tie(
     local ensure_installed = ts.get_available()
     local to_install = {}
 
-    tied.each_i(
+    tied.for_list(
       "Add treesitter parser for installation",
       ensure_installed,
       function(_, parser)

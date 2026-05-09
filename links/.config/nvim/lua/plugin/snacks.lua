@@ -13,7 +13,7 @@ local M = {
 M.config = tie("Plugin snacks -> config", function(_, opts)
   require("snacks").setup(opts)
 
-  tied.each(
+  tied.for_table(
     "Plugin snacks -> Traverse modules",
     opts,
     function(module_name, module)
@@ -31,7 +31,7 @@ M.config = tie("Plugin snacks -> config", function(_, opts)
 
       tied.do_block(desc_start .. "Create keymaps", function()
         if vim.tbl_get(module, "custom", "maps") then
-          tied.each_i(
+          tied.for_list(
             "Plugin snacks -> Create a keymap",
             module.custom.maps,
             function(_, map_args) tied.create_map(unpack(map_args)) end

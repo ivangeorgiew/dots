@@ -4,7 +4,7 @@ local M = {
   pkg_name = "lua-language-server",
   config = {
     settings = {
-      -- https://github.com/LuaLS/lua-language-server/wiki/Settings
+      -- https://luals.github.io/wiki/settings/
       Lua = {
         completion = {
           callSnippet = "Both",

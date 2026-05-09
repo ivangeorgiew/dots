@@ -103,7 +103,7 @@ M.config = tie("Plugin mini.indentscope -> config", function(_, opts)
         goto_bottom = { desc = "Next scope end", mode = { "n", "x" } },
       }
 
-      tied.each(
+      tied.for_table(
         "Plugin mini.indentscope -> Change keymap desc for which-key",
         hint_opts,
         function(k, v)

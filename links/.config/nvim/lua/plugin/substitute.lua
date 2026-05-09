@@ -34,7 +34,7 @@ M.config = tie("Plugin substitute -> config", function(_, opts)
       { "n", x:upper(), exch.cancel, { desc = "Exchange cancel" } },
     }
 
-    tied.each_i(
+    tied.for_list(
       "Plugin substitute -> Create keymap",
       maps,
       function(_, map_args) tied.create_map(unpack(map_args)) end

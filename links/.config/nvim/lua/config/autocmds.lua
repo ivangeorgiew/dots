@@ -3,7 +3,7 @@ local M = {}
 M.setup = tie("Setup autocmds", function()
   local group = tied.create_augroup("my.main", true)
 
-  tied.each_i("Queue autocmd to create", M.config, function(_, opts)
+  tied.for_list("Queue autocmd to create", M.config, function(_, opts)
     opts.group = group
     tied.create_autocmd(opts)
   end)
@@ -22,6 +22,11 @@ M.config = {
     once = true,
     nested = true,
     callback = function()
+      vim.g.startup_time = ("Startup time: %.2f ms"):format(
+        1e-6 * (vim.uv.hrtime() - vim.g.startup_time)
+      )
+      -- vim.notify(vim.g.startup_time)
+
       if vim.env.NVIM_RELOADED then
         tied.manage_session(true)
       end
@@ -133,7 +138,7 @@ M.config = {
         -- stylua: ignore end
       }
 
-      tied.each_i("Create quickfix/loc list keymap", maps, function(_, map_args)
+      tied.for_list("Create quickfix/loc list keymap", maps, function(_, map_args)
         map_args[4].buf = e.buf
         tied.create_map(unpack(map_args))
       end)
@@ -162,7 +167,7 @@ M.config = {
           -- stylua: ignore end
         }
 
-        tied.each_i(
+        tied.for_list(
           "Create a floating window keymap",
           maps,
           function(_, map_args)

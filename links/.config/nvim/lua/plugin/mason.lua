@@ -48,7 +48,7 @@ M.init = tie("Plugin mason -> init", function()
         "package:install:success",
         vim.defer_wrap(
           tie("Plugin mason -> Start newly installed LSPs", function()
-            tied.each_i(
+            tied.for_list(
               "Start LSP in opened file",
               vim.api.nvim_list_wins(),
               function(_, winnr)
@@ -68,7 +68,7 @@ M.init = tie("Plugin mason -> init", function()
         )
       )
 
-      tied.each_i("Auto-install a mason tool", to_install, function(_, tool)
+      tied.for_list("Auto-install a mason tool", to_install, function(_, tool)
         local name = tool:match("^([^@]+)@?(.*)$")
 
         if mr.has_package(name) and not vim.list_contains(installed, name) then

@@ -1,7 +1,7 @@
 local M = {}
 
 M.setup = vim.schedule_wrap(tie("Setup usercmds", function()
-  tied.each_i(
+  tied.for_list(
     "Queue usercmd to create",
     M.config,
     function(_, usercmd) tied.create_usercmd(unpack(usercmd)) end

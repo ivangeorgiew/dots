@@ -1,8 +1,9 @@
 --- @type LazyPluginSpec
 local M = {
   -- Add todo, fix, note, etc type of comments
-  "folke/todo-comments.nvim",
-  dependencies = { "nvim-lua/plenary.nvim" },
+  -- Fork that removes the archived dependancy
+  "dtor/todo-comments.nvim",
+  branch = "remove-plenary",
   event = tied.LazyEvent,
   opts = {
     signs = false, -- show icons in the signs column
@@ -90,7 +91,7 @@ M.config = tie("Plugin todo-comments -> config", function(_, opts)
       -- stylua: ignore end
     }
 
-    tied.each_i(
+    tied.for_list(
       "Plugin todo-comments -> Create a keymap",
       maps,
       function(_, map_args) tied.create_map(unpack(map_args)) end

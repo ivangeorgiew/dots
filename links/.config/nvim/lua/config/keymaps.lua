@@ -144,6 +144,7 @@ M.to_create = {
    { "n", "-i", function() vim.lsp.buf.implementation({ loclist = true }) end, { desc = "Go to implementation" } },
    { "n", "-t", function() vim.lsp.buf.type_definition({ loclist = true }) end, { desc = "Go to type definition" } },
    { "n", "-r", function() vim.lsp.buf.references(nil, { loclist = true }) end, { desc = "Show references" } },
+   { "n", "-c", function() vim.lsp.document_color.color_presentation() end, { desc = "Change color representation" } },
    { { "n", "x" }, "-a", function() vim.lsp.buf.code_action() end, { desc = "Select code action" } },
 
   -- Command mode movement
@@ -230,12 +231,12 @@ M.to_create = {
 }
 
 M.setup = vim.schedule_wrap(tie("Setup keymaps", function()
-  tied.each_i(
+  tied.for_list(
     "Delete keymap",
     M.to_delete,
     function(_, map) tied.delete_map(map[2], map[1]) end
   )
-  tied.each_i(
+  tied.for_list(
     "Create keymap",
     M.to_create,
     function(_, map) tied.create_map(unpack(map)) end

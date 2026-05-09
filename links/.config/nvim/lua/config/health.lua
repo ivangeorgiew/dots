@@ -36,7 +36,7 @@ return {
       "unzip",
     }
 
-    tied.each_i("Warn if executable is missing", exes, function(_, exe)
+    tied.for_list("Warn if executable is missing", exes, function(_, exe)
       local is_executable = vim.fn.executable(exe) == 1
 
       if is_executable then

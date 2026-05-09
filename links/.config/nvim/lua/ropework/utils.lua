@@ -15,8 +15,6 @@
 -- local ctrlc = vim.api.nvim_replace_termcodes("<C-c>", true, false, true)
 -- vim.api.nvim_feedkeys(ctrlc .. ":'<,'>", "n", false)
 
-tied.LazyEvent = { "User FilePost", "VeryLazy" }
-
 -- Aliases for tied global builtins
 tied.create_usercmd = vim.api.nvim_create_user_command
 tied.ui_input = vim.ui.input
@@ -65,8 +63,8 @@ local foreach = tie(
   end,
   tied.do_rethrow
 )
-tied.each_i = foreach(true)
-tied.each = foreach(false)
+tied.for_list = foreach(true)
+tied.for_table = foreach(false)
 
 -- Useful when a block of code is a separate logic,
 -- but there is no point in moving it to a function
@@ -203,75 +201,6 @@ tied.foldtext = tie("Tied vim.o.foldtext", function()
   return text
 end, function() return vim.fn.getline(vim.v.foldstart) end)
 
-tied.has_plugin = tie(
-  "Check if a plugin exists",
-  ---@param required string
-  ---@return boolean
-  ---@return LazyPlugin?
-  function(required)
-    vim.validate("required", required, "string")
-
-    local plugin = require("lazy.core.config").plugins[required]
-
-    if plugin then
-      return true, plugin
-    else
-      return false
-    end
-  end,
-  function() return false end
-)
-
--- From LazyVim
-tied.on_plugin_load = tie(
-  "Run code if a plugin is loaded",
-  --- @param required string|string[]
-  --- @param desc string
-  --- @param on_load fun(plugins: table)
-  function(required, desc, on_load)
-    vim.validate("required", required, { "string", "table" })
-    vim.validate("desc", desc, "string")
-    vim.validate("on_load", on_load, "function")
-
-    on_load = vim.schedule_wrap(tie(desc, on_load, tied.do_nothing))
-
-    local lazy_plugins = require("lazy.core.config").plugins
-    local plugins_loaded = {}
-    local plugin_names = type(required) == "string" and { required } or required --[[@as string[] ]]
-
-    for _, name in ipairs(plugin_names) do
-      plugins_loaded[name] = false
-
-      if lazy_plugins[name] and lazy_plugins[name]._.loaded then
-        plugins_loaded[name] = true
-      end
-    end
-
-    if not vim.list_contains(vim.tbl_values(plugins_loaded), false) then
-      on_load(lazy_plugins)
-    else
-      tied.create_autocmd({
-        desc = "On plugin load -> " .. desc,
-        event = "User",
-        -- Don't clear autocmds for the group
-        group = tied.create_augroup("my.on_plugin_load", false),
-        pattern = "LazyLoad",
-        callback = function(e)
-          if vim.list_contains(vim.tbl_keys(plugins_loaded), e.data) then
-            plugins_loaded[e.data] = true
-          end
-
-          if not vim.list_contains(vim.tbl_values(plugins_loaded), false) then
-            on_load(lazy_plugins)
-            return true -- clear autocmd
-          end
-        end,
-      })
-    end
-  end,
-  tied.do_nothing
-)
-
 tied.create_augroup = tie(
   "Create augroup",
   --- @param name string
@@ -341,7 +270,7 @@ tied.manage_session = tie(
     end
 
     if should_load and vim.fn.filereadable(ses_file) == 1 then
-      tied.each_i(
+      tied.for_list(
         "Close floating window",
         vim.api.nvim_list_wins(),
         function(_, winnr)
@@ -356,7 +285,7 @@ tied.manage_session = tie(
     end
 
     if not should_load then
-      tied.each_i(
+      tied.for_list(
         "Close non-file window before session save",
         vim.api.nvim_list_wins(),
         function(_, winnr)
@@ -404,4 +333,77 @@ tied.do_keys_in_win = tie(
     end
   end,
   function() return false end
+)
+
+-- TODO: change everything below this line when lazy.nvim is removed
+
+tied.LazyEvent = { "User FilePost", "VeryLazy" }
+
+tied.has_plugin = tie(
+  "Check if a plugin exists",
+  ---@param required string
+  ---@return boolean
+  ---@return LazyPlugin?
+  function(required)
+    vim.validate("required", required, "string")
+
+    local plugin = require("lazy.core.config").plugins[required]
+
+    if plugin then
+      return true, plugin
+    else
+      return false
+    end
+  end,
+  function() return false end
+)
+
+-- From LazyVim
+tied.on_plugin_load = tie(
+  "Run code if a plugin is loaded",
+  --- @param required string|string[]
+  --- @param desc string
+  --- @param on_load fun(plugins: table)
+  function(required, desc, on_load)
+    vim.validate("required", required, { "string", "table" })
+    vim.validate("desc", desc, "string")
+    vim.validate("on_load", on_load, "function")
+
+    on_load = vim.schedule_wrap(tie(desc, on_load, tied.do_nothing))
+
+    local lazy_plugins = require("lazy.core.config").plugins
+    local plugins_loaded = {}
+    local plugin_names = type(required) == "string" and { required } or required --[[@as string[] ]]
+
+    for _, name in ipairs(plugin_names) do
+      if lazy_plugins[name] and lazy_plugins[name]._.loaded then
+        plugins_loaded[name] = true
+      else
+        plugins_loaded[name] = false
+      end
+    end
+
+    if not vim.list_contains(vim.tbl_values(plugins_loaded), false) then
+      on_load(lazy_plugins)
+    else
+      tied.create_autocmd({
+        desc = "On plugin load -> " .. desc,
+        event = "User",
+        -- Don't clear autocmds for the group
+        group = tied.create_augroup("my.on_plugin_load", false),
+        pattern = "LazyLoad",
+        callback = function(e)
+          if vim.list_contains(vim.tbl_keys(plugins_loaded), e.data) then
+            plugins_loaded[e.data] = true
+          end
+
+          if not vim.list_contains(vim.tbl_values(plugins_loaded), false) then
+            on_load(lazy_plugins)
+            return true -- clear autocmd
+          end
+        end,
+      })
+    end
+  end,
+  tied.do_nothing
 )

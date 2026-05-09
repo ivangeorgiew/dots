@@ -1,16 +1,44 @@
+local S = vim.diagnostic.severity
+
 --- @type LazyPluginSpec
 local M = {
   -- Provides good default LSP configs
   -- :h lspconfig
   "neovim/nvim-lspconfig",
   event = tied.LazyEvent,
+  opts = {
+    --- @type vim.diagnostic.Opts
+    diagnostics = {
+      update_in_insert = false,
+      severity_sort = true,
+      underline = true,
+      -- virtual_lines = { current_line = true },
+      virtual_text = { source = false, prefix = "", spacing = 1 },
+      signs = {
+        text = {
+          [S.ERROR] = "󰅙",
+          [S.WARN] = "",
+          [S.INFO] = "",
+          [S.HINT] = "󰌵",
+        },
+      },
+      float = {
+        source = false,
+        severity_sort = true,
+      },
+      jump = {
+        wrap = true,
+        severity = { S.ERROR, S.WARN },
+      },
+    },
+  },
 }
 
-M.config = tie("Plugin nvim-lspconfig -> config", function()
+M.config = tie("Plugin nvim-lspconfig -> config", function(_, opts)
   tied.do_block("Config, enable and install LSPs", function()
     local to_install = {}
 
-    tied.each_i("Setup an LSP", require("lsp"), function(_, lsp)
+    tied.for_list("Setup an LSP", require("lsp"), function(_, lsp)
       if lsp.config then
         vim.lsp.config(lsp.lsp_name, lsp.config)
       end
@@ -27,8 +55,18 @@ M.config = tie("Plugin nvim-lspconfig -> config", function()
     tied.mason_install(to_install)
   end)
 
+  tied.do_block(
+    "Set color highlighting",
+    function() vim.lsp.document_color.enable(true, {}, { style = "virtual" }) end
+  )
+
+  tied.do_block(
+    "Set vim.diagnostic options",
+    function() vim.diagnostic.config(opts.diagnostics) end
+  )
+
   -- NOTE: Example inlay hints configs: https://github.com/MysticalDevil/inlay-hints.nvim/tree/master
-  -- tied.set_hl(0, "LspInlayHint", { link = "Comment" })
+  tied.set_hl(0, "LspInlayHint", { link = "Comment" })
 end, tied.do_nothing)
 
 return M
