@@ -1,17 +1,17 @@
 -- NOTE: Add global functions one by one as needed
 
-local tie_deep_table = tie(
+local tie_table_deep = tie(
   "Tie functions nested deep in a table",
-  --- @param tbl_name string
+  --- @param tbl_path string
   --- @param tbl table
   --- @param on_catch tie.on_catch
-  function(tbl_name, tbl, on_catch)
-    vim.validate("tbl_name", tbl_name, "string")
+  function(tbl_path, tbl, on_catch)
+    vim.validate("tbl_path", tbl_path, "string")
     vim.validate("tbl", tbl, "table")
     vim.validate("on_catch", on_catch, "function")
 
-    local queue = { { tbl, tbl_name } }
-    local seen = {} -- filled with traversed tables
+    local queue = { { tbl, tbl_path } }
+    local seen = {}
 
     while #queue > 0 do
       local item = table.remove(queue, 1)
@@ -28,7 +28,7 @@ local tie_deep_table = tie(
 
         for key, val in pairs(curr_tbl) do
           local val_type = type(val)
-          local full_path = curr_path .. "." .. tostring(key)
+          local full_path = ("%s.%s"):format(curr_path, tostring(key))
 
           if val_type == "function" then
             curr_tbl[key] = tie(full_path, val, on_catch)
@@ -70,7 +70,7 @@ local tie_import_func = tie(
           if type(val) == "function" then
             results[idx] = tie(desc, val, tied.do_rethrow)
           elseif type(val) == "table" then
-            results[idx] = tie_deep_table(desc, val, tied.do_rethrow)
+            results[idx] = tie_table_deep(desc, val, tied.do_rethrow)
           end
         end
 
@@ -82,10 +82,11 @@ local tie_import_func = tie(
   tied.do_rethrow
 )
 
--- NOTE: Don't wrap the import functions,
--- there are almost no benefits besides somewhat
--- better desc and seeing the function args
+-- NOTE: Don't wrap the import functions.
+-- Many plugins have functions that are safe to fail,
+-- so you will get errors which are not actual errors.
 -- Can be uncommented in rare debugging cases
+-- to see file path and func args in foreign code
 
 -- local require = require
 -- _G.require = tie_import_func("require", require)

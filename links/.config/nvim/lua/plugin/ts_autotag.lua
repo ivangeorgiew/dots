@@ -6,7 +6,7 @@ local M = {
   "windwp/nvim-ts-autotag",
   enabled = false,
   dependencies = { "nvim-treesitter/nvim-treesitter" },
-  event = tied.LazyEvent,
+  event = "VeryLazy",
   opts = {},
 }
 

@@ -4,7 +4,7 @@ local M = {
   "ivangeorgiew/which-key.nvim",
   -- cond = false,
   -- dev = true,
-  event = tied.LazyEvent,
+  event = "VeryLazy",
   dependencies = { "nvim-mini/mini.icons", "nvim-tree/nvim-web-devicons" },
   opts = {
     preset = "helix",

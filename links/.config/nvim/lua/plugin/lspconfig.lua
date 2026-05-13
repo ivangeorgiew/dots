@@ -5,7 +5,7 @@ local M = {
   -- Provides good default LSP configs
   -- :h lspconfig
   "neovim/nvim-lspconfig",
-  event = tied.LazyEvent,
+  event = "VeryLazy",
   opts = {
     --- @type vim.diagnostic.Opts
     diagnostics = {

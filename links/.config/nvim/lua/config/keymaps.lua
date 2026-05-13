@@ -186,9 +186,9 @@ M.to_create = {
   { "x", ")", "\"ay:let @a = escape(@a,'\"')<cr>:Find -s \"<C-r>a\"<cr>", { desc = "Find the selection in all files" } },
 
   -- Search and replace
-  { "n", "<leader>s", [[:%s/\(\<<C-r><C-w>\>\)/\1/gc<Left><Left><Left>]], { desc = "Search and replace word under cursor",   silent = false } },
-  { "x", "<leader>s", [["ay:%s/\(<C-r>a\)/\1/gc<Left><Left><Left>]],      { desc = "Search and replace visual selection",    silent = false } },
-  { "x", "<leader>S", [[:s/\%V/g<Left><Left>]],                           { desc = "Search and replace in visual selection", silent = false } },
+  { "n", "<leader>s", [[:%s/\(\<<C-r><C-w>\>\)//gc<Left><Left><Left>]], { desc = "Search and replace word under cursor",   silent = false } },
+  { "x", "<leader>s", [["ay:%s/\(<C-r>a\)//gc<Left><Left><Left>]],      { desc = "Search and replace visual selection",    silent = false } },
+  { "x", "<leader>S", [[:s/\%V/g<Left><Left>]],                         { desc = "Search and replace in visual selection", silent = false } },
 
   -- Motion expecting operations
   { { "x", "o" }, [[a"]], [[2i"]], { desc = [[Select all in ""]] } },
@@ -206,16 +206,15 @@ M.to_create = {
 
   -- Join/split line
   { "n", "J", "mzJg`z", { desc = "Join lines" } },
-  { "n", "K", "mzf<space>cl<cr><esc>g`z",{ desc = "Split line" } },
+  { "n", "K", "mzhf<space>cl<cr><esc>g`z",{ desc = "Split line" } },
 
   -- Unrelated mappings
-  { "n", "i", "len(getline('.')) == 0 && empty(&buftype) ? '\"_cc' : 'i'", { desc = "Enter insert mode", expr = true } },
+  { "n", "i", [[len(getline('.')) == 0 && empty(&buftype) ? '"_cc' : 'i']], { desc = "Enter insert mode", expr = true } },
   { "n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" } },
   { "n", "<F5>", function() tied.manage_session(true) end, { desc = "Load session" } },
   { "n", "<BS>", "dh", { desc = "Delete prev letter" } },
   { "n", "<C-x>", M.rhs.toggle_bool, { desc = "Toggle boolean under cursor" } },
   { "n", "<leader>cd", function() vim.fn.chdir(vim.fn.expand('%:p:h')) end, { desc = "Change vim dir to current file location"} },
-  -- { "n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file executable" } },
 
   -- Command mode abbreviations
   { "ca", "te", "tabe", {} },
@@ -226,8 +225,7 @@ M.to_create = {
   { "ia", "teh", "the", {} },
   { "ia", "cosnt", "const", {} },
   { "ia", "prosp", "props", {} },
-
-  -- stylua: ignore start
+  -- stylua: ignore end
 }
 
 M.setup = vim.schedule_wrap(tie("Setup keymaps", function()

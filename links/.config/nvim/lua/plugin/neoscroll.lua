@@ -4,7 +4,7 @@
 local M = {
   -- Smooth scrolling in files
   "karb94/neoscroll.nvim",
-  event = tied.LazyEvent,
+  event = "VeryLazy",
   opts = {
     mappings = { "<C-u>", "<C-d>" },
     hide_cursor = true,

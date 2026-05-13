@@ -4,7 +4,7 @@
 local M = {
   -- Adds replace and exchange commands
   "gbprod/substitute.nvim",
-  event = tied.LazyEvent,
+  event = "VeryLazy",
   -- https://github.com/gbprod/substitute.nvim?tab=readme-ov-file
   opts = {
     highlight_substituted_text = { enabled = false },

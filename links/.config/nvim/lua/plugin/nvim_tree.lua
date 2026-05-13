@@ -5,7 +5,7 @@ local M = {
   -- File tree viewer
   "nvim-tree/nvim-tree.lua",
   dependencies = { "nvim-tree/nvim-web-devicons" },
-  event = tied.LazyEvent,
+  event = "VeryLazy",
   opts = {
     hijack_cursor = true, -- keep cursor on first letter of filenames
     disable_netrw = true,

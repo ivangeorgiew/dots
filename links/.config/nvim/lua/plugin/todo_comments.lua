@@ -4,7 +4,7 @@ local M = {
   -- Fork that removes the archived dependancy
   "dtor/todo-comments.nvim",
   branch = "remove-plenary",
-  event = tied.LazyEvent,
+  event = "VeryLazy",
   opts = {
     signs = false, -- show icons in the signs column
     sign_priority = 8, -- sign priority

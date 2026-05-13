@@ -22,42 +22,8 @@ M.config = {
     once = true,
     nested = true,
     callback = function()
-      vim.g.startup_time = ("Startup time: %.2f ms"):format(
-        1e-6 * (vim.uv.hrtime() - vim.g.startup_time)
-      )
-      -- vim.notify(vim.g.startup_time)
-
       if vim.env.NVIM_RELOADED then
         tied.manage_session(true)
-      end
-    end,
-  },
-  {
-    desc = "Create user event FilePost",
-    event = { "UIEnter", "BufNewFile", "BufReadPost" },
-    callback = function(e)
-      if not vim.g.ui_entered and e.event == "UIEnter" then
-        vim.g.ui_entered = true
-      end
-
-      if vim.g.ui_entered and tied.check_if_buf_is_file(e.buf) then
-        vim.api.nvim_exec_autocmds("User", {
-          pattern = "FilePost",
-          modeline = false,
-        })
-
-        -- Do not schedule/defer or there can be issues
-        -- with wrong bufnr being provided
-        vim.api.nvim_exec_autocmds(
-          "FileType",
-          { buffer = e.buf, modeline = false }
-        )
-
-        if vim.g.editorconfig then
-          require("editorconfig").config(e.buf)
-        end
-
-        return true
       end
     end,
   },
@@ -138,10 +104,14 @@ M.config = {
         -- stylua: ignore end
       }
 
-      tied.for_list("Create quickfix/loc list keymap", maps, function(_, map_args)
-        map_args[4].buf = e.buf
-        tied.create_map(unpack(map_args))
-      end)
+      tied.for_list(
+        "Create quickfix/loc list keymap",
+        maps,
+        function(_, map_args)
+          map_args[4].buf = e.buf
+          tied.create_map(unpack(map_args))
+        end
+      )
     end,
   },
   {

@@ -1,7 +1,7 @@
 --- @type LazyPluginSpec
 local M = {
   "ivangeorgiew/lazydev.nvim",
-  event = tied.LazyEvent,
+  event = "VeryLazy",
   ---@module "lazydev"
   ---@type lazydev.Config
   opts = {

@@ -337,8 +337,6 @@ tied.do_keys_in_win = tie(
 
 -- TODO: change everything below this line when lazy.nvim is removed
 
-tied.LazyEvent = { "User FilePost", "VeryLazy" }
-
 tied.has_plugin = tie(
   "Check if a plugin exists",
   ---@param required string
@@ -399,7 +397,7 @@ tied.on_plugin_load = tie(
 
           if not vim.list_contains(vim.tbl_values(plugins_loaded), false) then
             on_load(lazy_plugins)
-            return true -- clear autocmd
+            vim.api.nvim_del_autocmd(e.id)
           end
         end,
       })

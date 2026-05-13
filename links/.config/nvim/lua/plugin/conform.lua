@@ -2,7 +2,7 @@
 local M = {
   -- File formatter by filetype
   "stevearc/conform.nvim",
-  event = tied.LazyEvent,
+  event = "VeryLazy",
   cmd = "ConformInfo",
   opts = {
     formatters_by_ft = {
