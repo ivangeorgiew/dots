@@ -1,21 +1,4 @@
---- @type LazyPluginSpec
-local M = {
-  --- External tools installer
-  "mason-org/mason.nvim",
-  cmd = { "Mason" },
-  build = ":MasonUpdate",
-  opts = {
-    PATH = "skip", -- I add it manually
-    ui = {
-      border = "single", -- same as nvim_open_win()
-      width = 0.6, -- 0-1 for a percentage of screen width.
-      height = 0.8, -- 0-1 for a percentage of screen height.
-    },
-  },
-}
-
--- Executed even when the plugin isn't loaded yet
-M.init = tie("Plugin mason -> init", function()
+local mason_init = tie("Plugin mason -> init", function()
   tied.do_block(
     "Plugin mason -> Add tools to PATH",
     function()
@@ -43,6 +26,8 @@ M.init = tie("Plugin mason -> init", function()
 
       local mr = require("mason-registry")
       local installed = mr.get_installed_package_names()
+
+      require("mason-lock") -- Load the lockfile plugin after mason is loaded
 
       mr:on(
         "package:install:success",
@@ -79,5 +64,31 @@ M.init = tie("Plugin mason -> init", function()
     tied.do_nothing
   )
 end, tied.do_nothing)
+
+--- @type LazyPluginSpec[]
+local M = {
+  {
+    --- External tools installer
+    "mason-org/mason.nvim",
+    cmd = { "Mason" },
+    build = ":MasonUpdate",
+    opts = {
+      PATH = "skip", -- I add it manually
+      ui = {
+        border = "single", -- same as nvim_open_win()
+        width = 0.6, -- 0-1 for a percentage of screen width.
+        height = 0.8, -- 0-1 for a percentage of screen height.
+      },
+    },
+    init = mason_init, -- Executed even when the plugin isn't loaded yet
+  },
+  {
+    -- Lockfile for mason
+    "zapling/mason-lock.nvim",
+    dependencies = { "mason-org/mason.nvim" },
+    cmd = { "Mason", "MasonLock", "MasonLockRestore" },
+    opts = {},
+  },
+}
 
 return M

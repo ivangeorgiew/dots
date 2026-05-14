@@ -79,8 +79,7 @@ M.setup = tie("Setup options", function()
   o.mouse = "" -- disable mouse
   o.number = true -- line numbers
   o.path:append("**") -- include subdirectories in search
-  o.pumblend = 10 -- transparency for popups
-  o.pumheight = 0 -- max entries in a popup
+  o.pumheight = 10 -- max entries in a popup
   o.relativenumber = true -- relative line numbers
   o.ruler = false -- toggle statusline info at the end
   o.scrolloff = 999 -- center cursor line when scrolling
