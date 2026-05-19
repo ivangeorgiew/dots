@@ -97,8 +97,8 @@ M.opts.keymap = {
   ["<C-b>"] = { "scroll_documentation_up", "fallback" },
   ["<C-f>"] = { "scroll_documentation_down", "fallback" },
 
-  ["<S-Tab>"] = { "snippet_backward", "fallback" }, -- prefer <C-p>
-  ["<Tab>"] = { "snippet_forward", "fallback" }, -- prefer <C-n>
+  ["<S-Tab>"] = { "snippet_backward", "select_prev", "fallback" }, -- prefer <C-p>
+  ["<Tab>"] = { "snippet_forward", "select_next", "fallback" }, -- prefer <C-n>
 
   ["<C-k>"] = { "show_documentation", "hide_documentation", "fallback_to_mappings" },
   ["<C-j>"] = { "show_signature", "hide_signature", "fallback_to_mappings" },
@@ -142,7 +142,7 @@ M.opts.custom.lazydev_opts = {
   },
 }
 
-M.config = tie("Plugin blink.cmp", function(_, opts)
+M.config = tie("Plugin blink.cmp -> Config", function(_, opts)
   local custom = vim.deepcopy(opts.custom)
 
   -- Remove so blink.cmp doesn't complain

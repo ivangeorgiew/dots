@@ -23,10 +23,7 @@ local M = {
 M.config = tie("Plugin conform -> config", function(_, opts)
   require("conform").setup(opts)
 
-  tied.do_block(
-    "Plugin conform -> Set formatexpr",
-    function() vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()" end
-  )
+  vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
 
   tied.do_block("Plugin conform -> Install formatters with mason", function()
     local to_install = {}

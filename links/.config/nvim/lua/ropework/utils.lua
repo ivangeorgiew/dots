@@ -163,7 +163,7 @@ tied.dir = tie(
     )
 
     for name, type in vim.fs.dir(opts.path, { depth = opts.depth or math.huge }) do
-      local matches_ext = not opts.ext or vim.endswith(name, "." .. opts.ext)
+      local matches_ext = not opts.ext or vim.endswith(name, opts.ext)
 
       if type == item_type and matches_ext then
         local entry = map(name)
@@ -212,12 +212,12 @@ tied.create_augroup = tie(
 
     return vim.api.nvim_create_augroup(name, { clear = clear })
   end,
-  tied.do_rethrow
+  tied.do_nothing -- return nil as group id on error
 )
 
 tied.create_autocmd = tie(
   "Create autocmd",
-  --- @param opts MyAutocmdOpts
+  --- @param opts TiedAutocmdOpts
   --- @return integer
   function(opts)
     vim.validate("opts", opts, "table")
@@ -230,7 +230,7 @@ tied.create_autocmd = tie(
 
     return vim.api.nvim_create_autocmd(event, opts)
   end,
-  tied.do_rethrow
+  tied.do_nothing -- return nil as autocmd id on error
 )
 
 tied.check_if_buf_is_file = tie(
@@ -353,7 +353,7 @@ tied.has_plugin = tie(
       return false
     end
   end,
-  function() return false end
+  tied.do_rethrow
 )
 
 -- From LazyVim

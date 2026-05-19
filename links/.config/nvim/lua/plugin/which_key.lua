@@ -2,7 +2,7 @@
 local M = {
   -- Show keybind hints on key press
   "ivangeorgiew/which-key.nvim",
-  -- cond = false,
+  -- enabled = false,
   -- dev = true,
   event = "VeryLazy",
   dependencies = { "nvim-mini/mini.icons", "nvim-tree/nvim-web-devicons" },

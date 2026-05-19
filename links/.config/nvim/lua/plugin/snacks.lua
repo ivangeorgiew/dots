@@ -4,7 +4,6 @@
 ---@type LazyPluginSpec
 local M = {
   "ivangeorgiew/snacks.nvim",
-  priority = 1000,
   lazy = false,
   ---@type snacks.Config
   opts = {},
@@ -23,6 +22,10 @@ M.config = tie("Plugin snacks -> config", function(_, opts)
 
       local desc_start = ("Plugin snacks.%s -> "):format(module_name)
 
+      -- NOTE:
+      -- Don't check for proper types of module.custom.whatever
+      -- Let them fail so you notice there's an error
+
       tied.do_block(desc_start .. "Custom config", function()
         if vim.tbl_get(module, "custom", "config") then
           module.custom.config(_, opts)
@@ -38,6 +41,14 @@ M.config = tie("Plugin snacks -> config", function(_, opts)
           )
         end
       end)
+
+      if vim.tbl_get(module, "custom", "which_key") then
+        tied.on_plugin_load(
+          "which-key.nvim",
+          desc_start .. "Modify which-key mappings",
+          function() require("which-key").add(module.custom.which_key) end
+        )
+      end
     end
   )
 end, tied.do_nothing)

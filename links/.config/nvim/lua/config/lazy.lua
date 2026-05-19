@@ -130,6 +130,10 @@ M.setup = tie("Setup lazy plugin manager", function()
   })
 
   require("lazy").setup(M.opts)
+
+  -- Enable built-in plugins after lazy setup,
+  -- because there is an error otherwise
+  vim.cmd("packadd nvim.undotree")
 end, tied.do_nothing)
 
 return M

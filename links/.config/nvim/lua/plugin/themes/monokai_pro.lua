@@ -1,7 +1,7 @@
 --- @type LazyPluginSpec
 local M = {
   "loctvl842/monokai-pro.nvim",
-  cond = vim.g.colorscheme == "monokai-pro",
+  enabled = vim.g.colorscheme == "monokai-pro",
   event = "UIEnter",
   config = tied.colorscheme_config,
   opts = {

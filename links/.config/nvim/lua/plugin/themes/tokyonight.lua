@@ -1,7 +1,7 @@
 --- @type LazyPluginSpec
 local M = {
   "folke/tokyonight.nvim",
-  cond = vim.g.colorscheme == "tokyonight",
+  enabled = vim.g.colorscheme == "tokyonight",
   event = "UIEnter",
   config = tied.colorscheme_config,
   opts = {

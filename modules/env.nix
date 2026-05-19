@@ -64,7 +64,6 @@ in {
       # GUI apps
       anki-bin # SRS (flashcards)
       custom.spotify-no-ads # music player
-      custom.vesktop # discord + additions
       easyeffects # sound effects
       gedit # basic text editor GUI
       kdePackages.ark # 7-zip alternative
@@ -74,11 +73,12 @@ in {
       loupe # image viewer
       mpv # video player
       nemo-with-extensions # file manager
+      obsidian # note-taking app
       onlyoffice-desktopeditors # MS Office alternative
       qbittorrent # torrent downloading
       unstable.firefox-bin # browser
       unstable.google-chrome # browser
-      obsidian # note-taking app
+      vesktop # discord + additions
       viber # messaging app
       vlc # video player
 

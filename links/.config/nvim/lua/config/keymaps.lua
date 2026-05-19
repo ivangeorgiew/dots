@@ -126,12 +126,14 @@ M.to_create = {
   { "n", "<C-e>", "<cmd>fclose<cr>", { desc = "Close floating window" } },
 
    -- Toggle things
+   { "n", "<leader>tb", M.rhs.toggle_bool, { desc = "Toggle boolean under cursor" } },
    { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
    { "n", "<leader>tD", function() vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end , { desc = "Toggle diagnostics on/off" } },
    { "n", "<leader>te", vim.diagnostic.setloclist, { desc = "Toggle errors list" } },
-   { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.loclist')) ? ':lopen<cr>' : ':windo lclose<cr>'", { desc = "Toggle location list", expr = true } },
-   { "n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle wrapping of lines" } },
    { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
+   { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.loclist')) ? ':lopen<cr>' : ':windo lclose<cr>'", { desc = "Toggle location list", expr = true } },
+   { "n", "<leader>tu", "<cmd>Undotree<cr>", { desc = "Toggle undotree" } },
+   { "n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle wrapping of lines" } },
 
    -- LSP
    { "n", "-e", function() vim.diagnostic.open_float() end, { desc = "Show line errors" } },
@@ -206,20 +208,18 @@ M.to_create = {
 
   -- Join/split line
   { "n", "J", "mzJg`z", { desc = "Join lines" } },
-  { "n", "K", "mzhf<space>cl<cr><esc>g`z",{ desc = "Split line" } },
+  { "n", "K", [[mzhf<space>"_cl<cr><esc>g`z]],{ desc = "Split line" } },
 
   -- Unrelated mappings
   { "n", "i", [[len(getline('.')) == 0 && empty(&buftype) ? '"_cc' : 'i']], { desc = "Enter insert mode", expr = true } },
   { "n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" } },
   { "n", "<F5>", function() tied.manage_session(true) end, { desc = "Load session" } },
   { "n", "<BS>", "dh", { desc = "Delete prev letter" } },
-  { "n", "<C-x>", M.rhs.toggle_bool, { desc = "Toggle boolean under cursor" } },
-  { "n", "<leader>cd", function() vim.fn.chdir(vim.fn.expand('%:p:h')) end, { desc = "Change vim dir to current file location"} },
+  { "n", "<leader>cd", function() vim.fn.chdir(vim.fn.expand("%:p:h"), "global") end, { desc = "Change vim dir to current file location"} },
 
   -- Command mode abbreviations
   { "ca", "te", "tabe", {} },
   { "ca", "vs", "vsplit", {} },
-  { "ca", "sort", "sort i", {} },
 
   -- Insert mode abbreviations
   { "ia", "teh", "the", {} },

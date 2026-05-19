@@ -1,6 +1,8 @@
 -- TODO: Maybe change to vim.pack.add from lazy.nvim
 -- TODO: Go through the mini and MiniMax repos
+-- TODO: Create custom statusline without plugin which uses: vim.lsp.status() and vim.diagnostic.status()
 -- TODO: Add the diffview.nvim plugin
+-- TODO: Consider using the fff file picker for speed
 -- TODO: Change all the Go to commands to open in new tab/vsplit (gf, -i, -d, etc.)
 -- TODO: Maybe use vim.ui2 - https://www.reddit.com/r/neovim/comments/1shj1jn/routing_and_filtering_messages_via_type_and_kind/
 -- TODO: Go through the NvChad plugin files

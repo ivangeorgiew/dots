@@ -40,9 +40,6 @@
   custom =
     outputs.packages.${system}
     // {
-      # Discord client
-      vesktop = prev.vesktop.override {withSystemVencord = false;};
-
       # Latest nvim stable version
       neovim-unwrapped = unstable.neovim-unwrapped.overrideAttrs (oldAttrs: rec {
         version = "0.12.2";

@@ -4,7 +4,6 @@
 local M = {
   -- Show virtual line for current code scope
   "nvim-mini/mini.indentscope",
-  version = false,
   event = "VeryLazy",
   opts = {
     symbol = "▏",

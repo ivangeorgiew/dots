@@ -56,6 +56,9 @@ local M = {
       open_file = {
         quit_on_open = true,
       },
+      change_dir = {
+        global = true,
+      },
     },
     tab = {
       sync = {

@@ -43,6 +43,7 @@ M.setup = tie("Setup options", function()
   local o = vim.opt
 
   -- stylua: ignore start
+  o.autocomplete = false -- toggle built-in text autocompletion
   o.autoindent = true -- copy indent level from previous line
   o.autowrite = true -- smart auto-save on some commands
   o.autowriteall = true -- smart auto-save on some commands
@@ -51,12 +52,12 @@ M.setup = tie("Setup options", function()
   o.breakindent = true -- wrapped line continues on the same indent level
   o.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- combine OS and Neovim clipboard
   o.cmdheight = 1 -- if set to 0, hides the command line, when not typing a command NOTE: Experimental
-  o.complete = ".,t" -- where to get completions from
+  o.complete = "o" -- where to get completions from
   o.completeopt = "fuzzy,menuone,noselect,popup" -- completion options (fuzzy only works on populated results)
   o.confirm = true -- popup to save file after some commands
   o.cursorline = true -- highlight the current cursor line
   o.cursorlineopt = "number" -- what to highlight in cursorline
-  o.diffopt:append({ "vertical", "iwhite", "algorithm:patience", "context:10", "indent-heuristic", "followwrap", }) -- https://vimways.org/2018/the-power-of-diff/
+  o.diffopt:append({ "vertical", "iwhite", "algorithm:patience", "context:10", "followwrap", }) -- https://vimways.org/2018/the-power-of-diff/
   o.expandtab = true -- change tab to use spaces
   o.fillchars:append({ foldopen = "", foldclose = "", fold = " ", foldsep = " ", eob = " ", }) -- special characters
   o.foldlevelstart = 99 -- default fold level
@@ -79,6 +80,7 @@ M.setup = tie("Setup options", function()
   o.mouse = "" -- disable mouse
   o.number = true -- line numbers
   o.path:append("**") -- include subdirectories in search
+  o.pumborder = "rounded" -- border for popup menues
   o.pumheight = 10 -- max entries in a popup
   o.relativenumber = true -- relative line numbers
   o.ruler = false -- toggle statusline info at the end

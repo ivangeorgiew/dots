@@ -237,11 +237,15 @@ _G.vim.api.nvim_create_user_command = tie(
     vim.validate("opts", opts, "table")
 
     if type(command) == "function" then
-      command = overwrite_tied_catch(
-        "Usercmd",
-        opts.desc or name,
-        command,
-        function() vim.api.nvim_del_user_command(name) end
+      local desc = "Usercmd -> " .. (opts.desc or name)
+      command = tie(desc, command, tied.do_nothing)
+    end
+
+    if type(opts.complete) == "function" then
+      opts.complete = tie(
+        "Get completions for usercmd: " .. name,
+        opts.complete,
+        function() return {} end
       )
     end
 

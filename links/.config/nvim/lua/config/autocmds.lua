@@ -9,7 +9,7 @@ M.setup = tie("Setup autocmds", function()
   end)
 end, tied.do_nothing)
 
----@type MyAutocmdOpts[]
+---@type TiedAutocmdOpts[]
 M.config = {
   {
     desc = "Auto-save vim session",

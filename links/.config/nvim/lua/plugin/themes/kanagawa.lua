@@ -1,7 +1,7 @@
 --- @type LazyPluginSpec
 local M = {
   "rebelot/kanagawa.nvim",
-  cond = vim.g.colorscheme == "kanagawa",
+  enabled = vim.g.colorscheme == "kanagawa",
   event = "UIEnter",
   config = tied.colorscheme_config,
   opts = {

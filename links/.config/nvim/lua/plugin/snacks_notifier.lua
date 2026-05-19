@@ -67,34 +67,36 @@ M.opts.notifier.custom.maps = {
   },
 }
 
+M.opts.notifier.custom.which_key = {
+  { "<leader>n", mode = "n", group = "Notifications" },
+}
+
 M.opts.notifier.custom.config = tie(
   "Plugin snacks.notifier -> config",
   ---@param opts snacks.Config
   function(_, opts)
     vim.validate("opts", opts, "table")
 
-    if not opts.notifier.custom.show_lsp_progress then
-      return
-    end
-
-    tied.create_autocmd({
-      desc = "Show LSP progress",
-      event = "LspProgress",
-      group = tied.create_augroup("my.snacks.notifier.lsp_spinner", true),
-      callback = function(ev)
-        vim.notify(vim.lsp.status(), vim.log.levels.INFO, {
-          id = "lsp_progress",
-          title = "LSP Progress",
-          opts = tie("Change LSP progress notification icon", function(notif)
+    if opts.notifier.custom.show_lsp_progress then
+      tied.create_autocmd({
+        desc = "Show LSP progress",
+        event = "LspProgress",
+        group = tied.create_augroup("my.snacks.notifier.lsp_spinner", true),
+        callback = function(ev)
+          vim.notify(vim.lsp.status(), vim.log.levels.INFO, {
+            id = "lsp_progress",
+            title = "LSP Progress",
+            opts = tie("Change LSP progress notification icon", function(notif)
             -- stylua: ignore
             local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
 
-            notif.icon = ev.data.params.value.kind == "end" and ""
-              or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
-          end, tied.do_nothing),
-        })
-      end,
-    })
+              notif.icon = ev.data.params.value.kind == "end" and ""
+                or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+            end, tied.do_nothing),
+          })
+        end,
+      })
+    end
   end,
   tied.do_nothing
 )
