@@ -8,6 +8,45 @@ M.setup = vim.schedule_wrap(tie("Setup usercmds", function()
   )
 end, tied.do_nothing))
 
+M.get_all_plugin_names = tie(
+  "Get the names of all installed plugins",
+  function()
+    return vim
+      .iter(vim.pack.get(nil, { info = false }))
+      :map(function(plugin) return plugin.spec.name end)
+      :totable()
+  end,
+  tied.do_rethrow
+)
+
+M.get_plugin_name_completions = tie(
+  "Get completions for a vim.pack command",
+  ---@param typed string
+  function(typed)
+    vim.validate("typed", typed, "string")
+
+    local completions = {}
+    local plugin_names = M.get_all_plugin_names()
+
+    if #plugin_names < 1 then
+      return {}
+    end
+
+    if vim.startswith("all", typed) then
+      table.insert(completions, "all")
+    end
+
+    tied.for_list("Append plugin completion", plugin_names, function(_, name)
+      if vim.startswith(name, typed) then
+        table.insert(completions, name)
+      end
+    end)
+
+    return completions
+  end,
+  function() return {} end
+)
+
 ---@type UserCmdArgs[]
 M.config = {
   {
@@ -34,6 +73,34 @@ M.config = {
     "Find",
     "execute('silent lgrep! ' .. <q-args>) | lopen",
     { desc = "Find in all files", nargs = "+" },
+  },
+  {
+    "NvimClearCache",
+    function()
+      tied.ui_select(
+        { "Yes", "No" },
+        { prompt = "Are you sure you want to reset nvim config?" },
+        function(choice)
+          if type(choice) ~= "string" or not choice:match("Yes") then
+            return
+          end
+
+          tied.for_list(
+            "Remove an nvim related dir",
+            { "data", "cache", "state" },
+            function(_, name)
+              local dir = vim.fn.stdpath(name)
+
+              if vim.uv.fs_stat(dir) then
+                vim.fs.rm(dir, { recursive = true, force = true })
+              end
+            end
+          )
+          vim.cmd("qall")
+        end
+      )
+    end,
+    { desc = "Remove all files related to neovim besides config", nargs = 0 },
   },
   {
     "Replace",
@@ -88,6 +155,88 @@ M.config = {
       end)
     end,
     { desc = "Replace text in files", nargs = 0 },
+  },
+  {
+    "PluginList",
+    function() vim.pack.update(nil, { offline = true }) end,
+    { desc = "List plugins installed with vim.pack", nargs = 0 },
+  },
+  {
+    "PluginDelete",
+    function(opts)
+      local plugin_names = opts.fargs
+      local targets = plugin_names
+      local should_delete_all = vim.list_contains(plugin_names, "all")
+
+      if should_delete_all then
+        targets = M.get_all_plugin_names()
+      end
+
+      vim.pack.del(targets, { force = true })
+
+      for _, plugin_name in ipairs(targets) do
+        tied.plugins[plugin_name] = nil
+      end
+    end,
+    {
+      desc = "Delete plugins with vim.pack",
+      nargs = "+",
+      complete = M.get_plugin_name_completions,
+    },
+  },
+  {
+    "PluginClearInactive",
+    function()
+      local targets = {}
+
+      for _, plugin in ipairs(vim.pack.get()) do
+        if not plugin.active then
+          table.insert(targets, plugin.spec.name)
+        end
+      end
+
+      vim.pack.del(targets, { force = true })
+    end,
+    { desc = "Clear inactive plugins with vim.pack", nargs = 0 },
+  },
+  {
+    "PluginUpdate",
+    function(opts)
+      local plugin_names = opts.fargs
+      local targets = nil
+
+      if not vim.list_contains(plugin_names, "all") then
+        targets = plugin_names
+      end
+
+      vim.pack.update(targets, { force = true })
+    end,
+    {
+      desc = "Update plugins with vim.pack",
+      nargs = "+",
+      complete = M.get_plugin_name_completions,
+    },
+  },
+  {
+    "PluginRevert",
+    function(opts)
+      local plugin_names = opts.fargs
+      local targets = nil
+
+      if not vim.list_contains(plugin_names, "all") then
+        targets = plugin_names
+      end
+
+      vim.pack.update(
+        targets,
+        { force = true, offline = true, target = "lockfile" }
+      )
+    end,
+    {
+      desc = "Revert plugins with vim.pack",
+      nargs = "+",
+      complete = M.get_plugin_name_completions,
+    },
   },
 }
 

@@ -182,7 +182,7 @@ tied.dir = tie(
 tied.colorscheme_config = tie(
   "Configure colorscheme plugin",
   --- @param opts table
-  function(_, opts)
+  function(opts)
     vim.validate("opts", opts, "table")
 
     require(vim.g.colorscheme).setup(opts)
@@ -217,7 +217,7 @@ tied.create_augroup = tie(
 
 tied.create_autocmd = tie(
   "Create autocmd",
-  --- @param opts TiedAutocmdOpts
+  --- @param opts AutoCmdArgs
   --- @return integer
   function(opts)
     vim.validate("opts", opts, "table")
@@ -333,75 +333,4 @@ tied.do_keys_in_win = tie(
     end
   end,
   function() return false end
-)
-
--- TODO: change everything below this line when lazy.nvim is removed
-
-tied.has_plugin = tie(
-  "Check if a plugin exists",
-  ---@param required string
-  ---@return boolean
-  ---@return LazyPlugin?
-  function(required)
-    vim.validate("required", required, "string")
-
-    local plugin = require("lazy.core.config").plugins[required]
-
-    if plugin then
-      return true, plugin
-    else
-      return false
-    end
-  end,
-  tied.do_rethrow
-)
-
--- From LazyVim
-tied.on_plugin_load = tie(
-  "Run code if a plugin is loaded",
-  --- @param required string|string[]
-  --- @param desc string
-  --- @param on_load fun(plugins: table)
-  function(required, desc, on_load)
-    vim.validate("required", required, { "string", "table" })
-    vim.validate("desc", desc, "string")
-    vim.validate("on_load", on_load, "function")
-
-    on_load = vim.schedule_wrap(tie(desc, on_load, tied.do_nothing))
-
-    local lazy_plugins = require("lazy.core.config").plugins
-    local plugins_loaded = {}
-    local plugin_names = type(required) == "string" and { required } or required --[[@as string[] ]]
-
-    for _, name in ipairs(plugin_names) do
-      if lazy_plugins[name] and lazy_plugins[name]._.loaded then
-        plugins_loaded[name] = true
-      else
-        plugins_loaded[name] = false
-      end
-    end
-
-    if not vim.list_contains(vim.tbl_values(plugins_loaded), false) then
-      on_load(lazy_plugins)
-    else
-      tied.create_autocmd({
-        desc = "On plugin load -> " .. desc,
-        event = "User",
-        -- Don't clear autocmds for the group
-        group = tied.create_augroup("my.on_plugin_load", false),
-        pattern = "LazyLoad",
-        callback = function(e)
-          if vim.list_contains(vim.tbl_keys(plugins_loaded), e.data) then
-            plugins_loaded[e.data] = true
-          end
-
-          if not vim.list_contains(vim.tbl_values(plugins_loaded), false) then
-            on_load(lazy_plugins)
-            vim.api.nvim_del_autocmd(e.id)
-          end
-        end,
-      })
-    end
-  end,
-  tied.do_nothing
 )

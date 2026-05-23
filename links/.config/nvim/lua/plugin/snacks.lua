@@ -9,7 +9,7 @@ local M = {
   opts = {},
 }
 
-M.config = tie("Plugin snacks -> config", function(_, opts)
+M.config = tie("Plugin snacks -> config", function(opts)
   require("snacks").setup(opts)
 
   tied.for_table(
@@ -28,7 +28,7 @@ M.config = tie("Plugin snacks -> config", function(_, opts)
 
       tied.do_block(desc_start .. "Custom config", function()
         if vim.tbl_get(module, "custom", "config") then
-          module.custom.config(_, opts)
+          module.custom.config(opts)
         end
       end)
 

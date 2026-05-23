@@ -46,8 +46,7 @@ _G.xpcall = wrap_prot_call(xpcall)
 local print_err = function(err_msg)
   vim.validate("err_msg", err_msg, "string")
 
-  -- Options for snacks.notify plugin
-  local opts = { title = "Runtime Error", timeout = 0 }
+  local opts = { title = "Runtime Error" }
 
   vim.notify_once(err_msg, vim.log.levels.ERROR, opts)
 end

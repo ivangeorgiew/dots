@@ -4,7 +4,7 @@
 local M = {
   -- Adds replace and exchange commands
   "gbprod/substitute.nvim",
-  event = "VeryLazy",
+  event = "AfterUI",
   -- https://github.com/gbprod/substitute.nvim?tab=readme-ov-file
   opts = {
     highlight_substituted_text = { enabled = false },
@@ -12,7 +12,7 @@ local M = {
   },
 }
 
-M.config = tie("Plugin substitute -> config", function(_, opts)
+M.config = tie("Plugin substitute -> config", function(opts)
   local subs = require("substitute")
 
   subs.setup(opts)

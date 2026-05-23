@@ -4,7 +4,7 @@
 local M = {
   -- Show virtual line for current code scope
   "nvim-mini/mini.indentscope",
-  event = "VeryLazy",
+  event = "AfterUI",
   opts = {
     symbol = "▏",
     options = {
@@ -74,7 +74,7 @@ M.opts.draw.animation = tie(
   function() return 0 end
 )
 
-M.config = tie("Plugin mini.indentscope -> config", function(_, opts)
+M.config = tie("Plugin mini.indentscope -> config", function(opts)
   require("mini.indentscope").setup(opts)
 
   tied.set_hl(0, "MiniIndentscopeSymbol", { link = M.opts.custom.hl_group })

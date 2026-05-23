@@ -1,4 +1,27 @@
-local mason_init = tie("Plugin mason -> init", function()
+--- @type table<string,LazyPluginSpec>
+local M = {
+  mason = {
+    --- External tools installer
+    "mason-org/mason.nvim",
+    opts = {
+      PATH = "skip", -- manually added
+      ui = {
+        border = "single", -- same as nvim_open_win()
+        width = 0.6, -- 0-1 for a percentage of screen width.
+        height = 0.8, -- 0-1 for a percentage of screen height.
+      },
+    },
+  },
+  mason_lock = {
+    -- Lockfile for mason
+    "zapling/mason-lock.nvim",
+    dependencies = { "mason-org/mason.nvim" },
+    event = "AfterUI",
+    opts = {},
+  },
+}
+
+M.mason.init = tie("Plugin mason -> init", function()
   tied.do_block(
     "Plugin mason -> Add tools to PATH",
     function()
@@ -24,11 +47,12 @@ local mason_init = tie("Plugin mason -> init", function()
         return
       end
 
+      tied.load_plugin("mason.nvim")
+      tied.load_plugin("mason-lock.nvim")
+
       local mr = require("mason-registry")
-      local installed = mr.get_installed_package_names()
 
-      require("mason-lock") -- Load the lockfile plugin after mason is loaded
-
+      mr.refresh()
       mr:on(
         "package:install:success",
         vim.defer_wrap(
@@ -53,6 +77,8 @@ local mason_init = tie("Plugin mason -> init", function()
         )
       )
 
+      local installed = mr.get_installed_package_names()
+
       tied.for_list("Auto-install a mason tool", to_install, function(_, tool)
         local name = tool:match("^([^@]+)@?(.*)$")
 
@@ -65,30 +91,4 @@ local mason_init = tie("Plugin mason -> init", function()
   )
 end, tied.do_nothing)
 
---- @type LazyPluginSpec[]
-local M = {
-  {
-    --- External tools installer
-    "mason-org/mason.nvim",
-    cmd = { "Mason" },
-    build = ":MasonUpdate",
-    opts = {
-      PATH = "skip", -- I add it manually
-      ui = {
-        border = "single", -- same as nvim_open_win()
-        width = 0.6, -- 0-1 for a percentage of screen width.
-        height = 0.8, -- 0-1 for a percentage of screen height.
-      },
-    },
-    init = mason_init, -- Executed even when the plugin isn't loaded yet
-  },
-  {
-    -- Lockfile for mason
-    "zapling/mason-lock.nvim",
-    dependencies = { "mason-org/mason.nvim" },
-    cmd = { "Mason", "MasonLock", "MasonLockRestore" },
-    opts = {},
-  },
-}
-
-return M
+return vim.tbl_values(M)

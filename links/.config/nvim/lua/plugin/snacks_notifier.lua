@@ -74,7 +74,7 @@ M.opts.notifier.custom.which_key = {
 M.opts.notifier.custom.config = tie(
   "Plugin snacks.notifier -> config",
   ---@param opts snacks.Config
-  function(_, opts)
+  function(opts)
     vim.validate("opts", opts, "table")
 
     if opts.notifier.custom.show_lsp_progress then

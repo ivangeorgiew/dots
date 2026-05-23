@@ -9,7 +9,7 @@ M.setup = tie("Setup autocmds", function()
   end)
 end, tied.do_nothing)
 
----@type TiedAutocmdOpts[]
+---@type AutoCmdArgs[]
 M.config = {
   {
     desc = "Auto-save vim session",
@@ -84,6 +84,21 @@ M.config = {
       vim.cmd("normal! ms")
       vim.cmd([[silent! %s/\s\+$//]])
       vim.cmd("normal! g`s")
+    end,
+  },
+  {
+    desc = "Help window settings",
+    event = "Filetype",
+    pattern = "help",
+    callback = function() vim.cmd("wincmd L | vertical resize 80") end,
+  },
+  {
+    desc = "Undotree settings",
+    event = "Filetype",
+    pattern = "nvim-undotree",
+    callback = function()
+      vim.wo.foldenable = false
+      vim.cmd("vertical resize 40")
     end,
   },
   {

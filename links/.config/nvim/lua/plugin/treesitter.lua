@@ -1,7 +1,6 @@
 -- TODO: `nvim-treesitter/nvim-treesitter` is currently archived
 -- So for now it's replaced by `neovim-treesitter/nvim-treesitter`
 -- Check https://github.com/arborist-ts/arborist.nvim
--- Check https://github.com/romus204/tree-sitter-manager.nvim
 
 --- @type LazyPluginSpec
 local M = {
@@ -11,8 +10,11 @@ local M = {
   dependencies = { "neovim-treesitter/treesitter-parser-registry" },
   branch = "main",
   build = ":TSUpdate",
-  event = "VeryLazy",
+  event = "AfterUI",
   opts = {
+    -- NOTE: need to manually set install_dir due to a bug
+    -- where rtp is not being set on fresh install of all plugins
+    install_dir = vim.fs.joinpath(vim.fn.stdpath("data"), "site"),
     custom = {
       installed = {},
       --- @type table<string, { enable: boolean?, ignore: table? }>
@@ -110,7 +112,7 @@ M.opts.custom.should_enable = tie(
   function() return false end
 )
 
-M.config = tie("Plugin nvim-treesitter -> config", function(_, opts)
+M.config = tie("Plugin nvim-treesitter -> config", function(opts)
   local ts = require("nvim-treesitter")
   local custom = M.opts.custom
 

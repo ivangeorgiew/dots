@@ -1,4 +1,5 @@
 -- TODO: Maybe change to vim.pack.add from lazy.nvim
+-- TODO: Change colorscheme to something nicer
 -- TODO: Go through the mini and MiniMax repos
 -- TODO: Create custom statusline without plugin which uses: vim.lsp.status() and vim.diagnostic.status()
 -- TODO: Add the diffview.nvim plugin
@@ -38,7 +39,7 @@ tied.for_list(
   {
     "notify",
     "options",
-    "lazy",
+    "pack",
     "autocmds",
     "usercmds",
     "keymaps",

@@ -160,10 +160,10 @@ M.to_create = {
   { "n", "m", "*", { desc = "Go to next occurance of the word" } },
   { "n", "M", "#", { desc = "Go to prev occurance of the word" } },
 
-  -- Macros
+  -- Macros (capital register letter to append)
   { "n", "#", "reg_recording() == 'e' ? 'q' : 'qe'", { desc = "Start/end default macro", expr = true } },
-  { { "n", "x" },  "Q", "q", { desc = "Start/end macro" } },
   { { "n", "x" }, "<cr>", "empty(&buftype) ? ':normal! @e<cr>' : '<cr>'", { desc = "Apply default macro", expr = true } },
+  { { "n", "x" },  "Q", "q", { desc = "Start/end macro" } },
 
   -- Make new line
   { "n", "zj", "o<esc>k", { desc = "Make a new line below" } },
@@ -216,6 +216,7 @@ M.to_create = {
   { "n", "<F5>", function() tied.manage_session(true) end, { desc = "Load session" } },
   { "n", "<BS>", "dh", { desc = "Delete prev letter" } },
   { "n", "<leader>cd", function() vim.fn.chdir(vim.fn.expand("%:p:h"), "global") end, { desc = "Change vim dir to current file location"} },
+  { "n", "~", "~h", { desc = "Change case of symbol under cursor" } },
 
   -- Command mode abbreviations
   { "ca", "te", "tabe", {} },

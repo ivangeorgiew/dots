@@ -2,8 +2,7 @@
 local M = {
   -- File formatter by filetype
   "stevearc/conform.nvim",
-  event = "VeryLazy",
-  cmd = "ConformInfo",
+  event = "AfterUI",
   opts = {
     formatters_by_ft = {
       lua = { "stylua" },
@@ -20,7 +19,7 @@ local M = {
   },
 }
 
-M.config = tie("Plugin conform -> config", function(_, opts)
+M.config = tie("Plugin conform -> config", function(opts)
   require("conform").setup(opts)
 
   vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"

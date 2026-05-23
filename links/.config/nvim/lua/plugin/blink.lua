@@ -142,21 +142,19 @@ M.opts.custom.lazydev_opts = {
   },
 }
 
-M.config = tie("Plugin blink.cmp -> Config", function(_, opts)
+M.config = tie("Plugin blink.cmp -> Config", function(opts)
   local custom = vim.deepcopy(opts.custom)
-
-  -- Remove so blink.cmp doesn't complain
-  opts.custom = nil
 
   tied.do_block(
     "Plugin blink.cmp -> Add lazydev completions to lua files",
     function()
-      if tied.has_plugin("lazydev.nvim") then
+      if tied.plugins["lazydev.nvim"] then
         opts = vim.tbl_deep_extend("force", opts, custom.lazydev_opts)
       end
     end
   )
 
+  opts.custom = nil -- Remove so blink.cmp doesn't complain
   require("blink.cmp").setup(opts)
 end, tied.do_nothing)
 

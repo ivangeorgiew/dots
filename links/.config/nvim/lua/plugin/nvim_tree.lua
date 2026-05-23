@@ -5,7 +5,7 @@ local M = {
   -- File tree viewer
   "nvim-tree/nvim-tree.lua",
   dependencies = { "nvim-tree/nvim-web-devicons" },
-  event = "VeryLazy",
+  event = "AfterUI",
   opts = {
     hijack_cursor = true, -- keep cursor on first letter of filenames
     disable_netrw = true,
@@ -162,7 +162,7 @@ M.opts.on_attach = tie("Plugin nvim-tree -> On attach", function(bufnr)
   end)
 end, tied.do_nothing)
 
-M.config = tie("Plugin nvim-tree -> config", function(_, opts)
+M.config = tie("Plugin nvim-tree -> config", function(opts)
   require("nvim-tree").setup(opts)
 
   tied.set_hl(0, "NvimTreeWinSeparator", { link = "WinSeparator" })

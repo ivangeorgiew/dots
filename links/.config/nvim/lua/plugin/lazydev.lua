@@ -1,7 +1,7 @@
 --- @type LazyPluginSpec
 local M = {
   "ivangeorgiew/lazydev.nvim",
-  event = "VeryLazy",
+  event = "AfterUI",
   ---@module "lazydev"
   ---@type lazydev.Config
   opts = {
