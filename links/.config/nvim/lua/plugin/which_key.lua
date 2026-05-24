@@ -1,10 +1,10 @@
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   -- Show keybind hints on key press
   "ivangeorgiew/which-key.nvim",
   -- enabled = false,
   -- dev = true,
-  event = "AfterUI",
+  event = "VeryLazy",
   dependencies = { "nvim-mini/mini.icons", "nvim-tree/nvim-web-devicons" },
   opts = {
     preset = "helix",

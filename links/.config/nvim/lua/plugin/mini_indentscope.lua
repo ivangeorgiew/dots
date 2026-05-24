@@ -1,10 +1,10 @@
 -- TODO: Alternatives are "saghen/blink.indent", "folke/snacks.nvim".indent
 
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   -- Show virtual line for current code scope
   "nvim-mini/mini.indentscope",
-  event = "AfterUI",
+  event = "VeryLazy",
   opts = {
     symbol = "▏",
     options = {
@@ -74,7 +74,7 @@ M.opts.draw.animation = tie(
   function() return 0 end
 )
 
-M.config = tie("Plugin mini.indentscope -> config", function(opts)
+M.config = tie("Plugin mini.indentscope -> config", function(_, opts)
   require("mini.indentscope").setup(opts)
 
   tied.set_hl(0, "MiniIndentscopeSymbol", { link = M.opts.custom.hl_group })

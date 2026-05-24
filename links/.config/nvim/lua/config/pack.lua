@@ -1,4 +1,8 @@
--- Inspired from https://github.com/kite12580/pack.lua/blob/main/README.md
+-- NOTE:
+-- vim.pack guide from creator: https://echasnovski.com/blog/2026-03-13-a-guide-to-vim-pack
+-- Inspired from: https://github.com/kite12580/pack.lua/blob/main/README.md
+-- Another plugin manager with vim.pack: https://github.com/zuqini/zpack.nvim
+
 local M = {
   ---@type table<string,PluginSpecParsed>
   plugins = {},
@@ -19,6 +23,7 @@ local M = {
     config = "function",
     build = { "string", "function" },
     event = { "string", "table" },
+    cmd = { "string", "table" },
   },
 }
 
@@ -93,7 +98,10 @@ M.add_plugin_specs = tie(
             val = function() vim.cmd(string.sub(raw_val, 2)) end
           end
 
-          if prop_name == "event" and type(raw_val) == "string" then
+          if
+            vim.list_contains({ "event", "cmd" }, prop_name)
+            and type(raw_val) == "string"
+          then
             val = { raw_val }
           end
 
@@ -108,7 +116,7 @@ M.add_plugin_specs = tie(
       if spec.opts and not spec.config then
         spec.config = tie(
           ("Plugin %s -> config"):format(spec.name),
-          function(opts) require(spec.main).setup(opts) end,
+          function(_, opts) require(spec.main).setup(opts) end,
           tied.do_nothing
         )
       end
@@ -171,11 +179,23 @@ M.load_plugin = tie(
     }
 
     -- Only way to actually know when a plugin has loaded
-    local load = tie("vim.pack.add -> load", function()
+    local load = tie("vim.pack.add -> load", function(opts)
       vim.cmd("packadd " .. plugin_name)
 
+      -- From the original load function in vim.pack.add
+      -- Fail on error deliberately
+      if vim.v.vim_did_enter == 1 then
+        local after_paths =
+          vim.fn.glob(opts.path .. "/after/plugin/**/*.{vim,lua}", false, true)
+
+        vim.tbl_map(
+          function(path) vim.cmd.source({ path, magic = { file = false } }) end,
+          after_paths
+        )
+      end
+
       if spec.config then
-        spec.config(spec.opts or {})
+        spec.config(spec, spec.opts or {})
       end
 
       -- Show that plugin has finished loading
@@ -193,8 +213,8 @@ M.load_plugin = tie(
   tied.do_rethrow
 )
 
-M.create_load_events = tie(
-  "Create all events for loading plugin",
+M.create_stubs = tie(
+  "Create events/cmds for loading plugin",
   ---@param plugin_name string
   function(plugin_name)
     vim.validate("plugin_name", plugin_name, "string")
@@ -203,34 +223,103 @@ M.create_load_events = tie(
 
     assert(spec, ("Plugin %s not defined"):format(plugin_name))
 
-    local group = tied.create_augroup("my.plugin.load." .. plugin_name, true)
+    if spec.event then
+      local group = tied.create_augroup("my.plugin.load." .. plugin_name, true)
 
-    tied.for_list(
-      "Create event for loading plugin " .. plugin_name,
-      spec.event --[[@as table]],
-      function(_, full_event)
-        local event = full_event:match("^(%w+)")
-        local pattern = full_event:match("%s+(%w+)$")
+      tied.for_list(
+        "Create event for loading plugin " .. plugin_name,
+        spec.event,
+        function(_, full_event)
+          local event_name, pattern = full_event:match("^(%S+)%s*(.*)$")
 
-        if event == "AfterUI" then
-          event, pattern = "User", "AfterUI"
+          vim.validate("event_name", event_name, "string")
+          vim.validate("pattern", pattern, "string", true)
+
+          if event_name == "VeryLazy" then
+            event_name, pattern = "User", "VeryLazy"
+          end
+
+          tied.create_autocmd({
+            desc = "Load plugin " .. plugin_name,
+            event = event_name,
+            pattern = pattern,
+            once = true,
+            group = group,
+            callback = function()
+              pcall(vim.api.nvim_del_augroup_by_id, group)
+
+              if event_name == "UIEnter" or vim.g.did_ui_enter then
+                M.load_plugin(plugin_name)
+              else
+                -- Execute after UIEnter has finished
+                vim.schedule(function() M.load_plugin(plugin_name) end)
+              end
+            end,
+          })
         end
+      )
+    end
 
-        tied.create_autocmd({
-          desc = "Load plugin " .. plugin_name,
-          group = group,
-          event = event,
-          pattern = pattern,
-          once = true,
-          callback = function()
-            vim.api.nvim_del_augroup_by_id(group)
+    if spec.cmd then
+      tied.for_list(
+        "Create usercmd for loading plugin " .. plugin_name,
+        spec.cmd,
+        function(_, cmd)
+          local create_opts = {
+            desc = "Load plugin " .. plugin_name,
+            nargs = "*",
+            bang = true,
+            count = -1,
+          }
+
+          tied.create_usercmd(cmd, function(cmd_opts)
+            pcall(vim.api.nvim_del_user_command, cmd)
             M.load_plugin(plugin_name)
-          end,
-        })
-      end
-    )
+
+            local range
+
+            if (cmd_opts.range or 0) > 0 then
+              if cmd_opts.range == 1 then
+                range = { cmd_opts.line1 }
+              else
+                range = { cmd_opts.line1, cmd_opts.line2 }
+              end
+            end
+
+            M.on_plugin_load(
+              plugin_name,
+              "Execute the original usercmd after plugin loaded",
+              function()
+                vim.api.nvim_cmd({
+                  cmd = cmd,
+                  range = range,
+                  args = cmd_opts.fargs,
+                  bang = cmd_opts.bang,
+                  mods = cmd_opts.smods,
+                }, {})
+              end
+            )
+          end, create_opts)
+        end
+      )
+    end
   end,
   tied.do_nothing
+)
+
+M.check_if_plugin_loaded = tie(
+  "Check if a plugin is loaded",
+  ---@param plugin_name string
+  ---@return boolean?
+  function(plugin_name)
+    vim.validate("plugin_name", plugin_name, "string")
+
+    -- nil: hasn't started loading
+    -- false: has started loading
+    -- true: has finished loading
+    return vim.tbl_get(M.plugins, plugin_name, "loaded")
+  end,
+  function() return false end
 )
 
 M.on_plugin_load = tie(
@@ -289,22 +378,22 @@ M.setup = tie("Setup plugin manager", function()
   }))
 
   tied.plugins = M.plugins
+  tied.check_if_plugin_loaded = M.check_if_plugin_loaded
   tied.load_plugin = M.load_plugin
   tied.on_plugin_load = M.on_plugin_load
 
   tied.create_autocmd({
-    desc = "Execute AfterUI event",
+    desc = "Load lazy plugins",
     event = "UIEnter",
     once = true,
     group = tied.create_augroup("my.pack.load_after", true),
-    callback = vim.schedule_wrap(
-      function()
-        vim.api.nvim_exec_autocmds("User", {
-          pattern = "AfterUI",
-          modeline = false,
-        })
-      end
-    ),
+    callback = vim.schedule_wrap(function()
+      vim.g.did_ui_enter = true
+      vim.api.nvim_exec_autocmds("User", {
+        pattern = "VeryLazy",
+        modeline = false,
+      })
+    end),
   })
   tied.create_autocmd({
     desc = "Build on plugin install/update",
@@ -329,11 +418,11 @@ M.setup = tie("Setup plugin manager", function()
     end
   end)
 
-  tied.for_table("Load plugin", M.plugins, function(_, spec)
+  tied.for_table("Setup plugin loading", M.plugins, function(_, spec)
     if spec.lazy == false then
       M.load_plugin(spec.name)
-    elseif spec.event then
-      M.create_load_events(spec.name)
+    elseif spec.event or spec.cmd then
+      M.create_stubs(spec.name)
     end
   end)
 

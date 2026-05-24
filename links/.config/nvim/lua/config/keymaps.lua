@@ -185,7 +185,7 @@ M.to_create = {
   -- Find text in all files
   { "n", ")", ":Find ", { desc = "Find in all files", silent = false } },
   { "n", "<leader>)", ":Find -s -w <C-r><C-w><cr>", { desc = "Find word under cursor in all files" } },
-  { "x", ")", "\"ay:let @a = escape(@a,'\"')<cr>:Find -s \"<C-r>a\"<cr>", { desc = "Find the selection in all files" } },
+  { "x", ")", "\"+y:let @+ = escape(@+,'\"')<cr>:Find -s \"<C-r>+\"<cr>", { desc = "Find the selection in all files" } },
 
   -- Search and replace
   { "n", "<leader>s", [[:%s/\(\<<C-r><C-w>\>\)//gc<Left><Left><Left>]], { desc = "Search and replace word under cursor",   silent = false } },

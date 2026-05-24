@@ -6,7 +6,7 @@
 -- https://github.com/neovim-treesitter/nvim-treesitter/blob/main/lua/nvim-treesitter/parsers.lua
 -- https://github.com/neovim-treesitter/nvim-treesitter/blob/main/runtime/queries/lua/injections.scm
 
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   -- Language parsing which provides better highlight, indentation, etc.
   -- :h nvim-treesitter.txt
@@ -14,7 +14,7 @@ local M = {
   dependencies = { "neovim-treesitter/treesitter-parser-registry" },
   branch = "main",
   build = ":TSUpdate",
-  event = "AfterUI",
+  event = "VeryLazy",
   opts = {
     -- NOTE: need to manually set install_dir due to a bug
     -- where rtp is not being set on fresh install of all plugins
@@ -171,7 +171,7 @@ M.opts.custom.install_langs = tie(
         -- Every other task is finished because of :await()
         -- and last call didn't install any new langs
         if not has_installs then
-          vim.notify("Finished treesitter installs")
+          vim.notify("[treesitter]: Finished installs")
 
           tied.for_list(
             "Start ts in all possible bufs",
@@ -255,7 +255,7 @@ M.opts.custom.start_ts_in_buf = tie(
   tied.do_nothing
 )
 
-M.config = tie("Plugin nvim-treesitter -> config", function(opts)
+M.config = tie("Plugin nvim-treesitter -> config", function(_, opts)
   local ts = require("nvim-treesitter")
   local custom = opts.custom
 
@@ -288,7 +288,7 @@ M.init = tie("Plugin nvim-treesitter -> init", function()
         -- and to install langs from before plugin load
         custom.seen_langs[lang] = true
 
-        if tied.plugins["nvim-treesitter"].loaded then
+        if tied.check_if_plugin_loaded("nvim-treesitter") then
           custom.install_langs({ lang })
         end
       end

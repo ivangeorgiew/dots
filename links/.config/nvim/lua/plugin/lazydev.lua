@@ -1,12 +1,11 @@
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   "ivangeorgiew/lazydev.nvim",
-  event = "AfterUI",
+  event = "FileType lua",
   ---@module "lazydev"
   ---@type lazydev.Config
   opts = {
     library = {
-      vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy/types.lua",
       { path = "${3rd}/luv/library", words = { "vim%.uv" } },
       { path = "snacks.nvim", words = { "Snacks" } },
     },

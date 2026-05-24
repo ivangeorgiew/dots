@@ -72,7 +72,7 @@ M.config = {
   {
     "Find",
     "execute('silent lgrep! ' .. <q-args>) | lopen",
-    { desc = "Find in all files", nargs = "+" },
+    { desc = "Find in all files", nargs = "+", complete = "dir" },
   },
   {
     "NvimClearCache",
@@ -173,10 +173,7 @@ M.config = {
       end
 
       vim.pack.del(targets, { force = true })
-
-      for _, plugin_name in ipairs(targets) do
-        tied.plugins[plugin_name] = nil
-      end
+      vim.notify("Uninstalled plugins, please restart")
     end,
     {
       desc = "Delete plugins with vim.pack",
@@ -196,6 +193,7 @@ M.config = {
       end
 
       vim.pack.del(targets, { force = true })
+      vim.notify("Uninstalled plugins, please restart")
     end,
     { desc = "Clear inactive plugins with vim.pack", nargs = 0 },
   },

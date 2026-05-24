@@ -1,4 +1,4 @@
---- @type table<string,LazyPluginSpec>
+--- @type table<string,PluginSpec>
 local M = {
   mason = {
     --- External tools installer
@@ -16,7 +16,7 @@ local M = {
     -- Lockfile for mason
     "zapling/mason-lock.nvim",
     dependencies = { "mason-org/mason.nvim" },
-    event = "AfterUI",
+    cmd = { "Mason", "MasonLock", "MasonLockRestore" },
     opts = {},
   },
 }

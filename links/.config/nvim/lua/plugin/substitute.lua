@@ -1,10 +1,10 @@
 -- TODO: fix indentation after replace and paste
 
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   -- Adds replace and exchange commands
   "gbprod/substitute.nvim",
-  event = "AfterUI",
+  event = "VeryLazy",
   -- https://github.com/gbprod/substitute.nvim?tab=readme-ov-file
   opts = {
     highlight_substituted_text = { enabled = false },
@@ -12,7 +12,7 @@ local M = {
   },
 }
 
-M.config = tie("Plugin substitute -> config", function(opts)
+M.config = tie("Plugin substitute -> config", function(_, opts)
   local subs = require("substitute")
 
   subs.setup(opts)

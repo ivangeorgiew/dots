@@ -1,4 +1,4 @@
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   "rebelot/kanagawa.nvim",
   enabled = vim.g.colorscheme == "kanagawa",
@@ -30,6 +30,7 @@ local M = {
         WinSeparator = { fg = hypr_border },
         TabLine = { bg = "none" },
         Boolean = { bold = false },
+        ["@namespace.builtin.lua"] = { link = "Constant" },
         -- TabLineFill = { bg = "none" },
         -- StatusLine = { bg = "none" },
       }

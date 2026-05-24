@@ -1,5 +1,5 @@
 --- @module "blink-cmp"
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   -- Autocompletion
   "saghen/blink.cmp",
@@ -142,13 +142,13 @@ M.opts.custom.lazydev_opts = {
   },
 }
 
-M.config = tie("Plugin blink.cmp -> Config", function(opts)
+M.config = tie("Plugin blink.cmp -> Config", function(_, opts)
   local custom = vim.deepcopy(opts.custom)
 
   tied.do_block(
     "Plugin blink.cmp -> Add lazydev completions to lua files",
     function()
-      if tied.plugins["lazydev.nvim"] then
+      if tied.check_if_plugin_loaded("lazydev.nvim") then
         opts = vim.tbl_deep_extend("force", opts, custom.lazydev_opts)
       end
     end

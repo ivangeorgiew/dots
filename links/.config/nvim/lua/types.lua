@@ -1,6 +1,6 @@
 --- @meta
 
---- @class LazyPluginSpec Plugin definition
+--- @class PluginSpec Plugin definition
 --- @field [1] string
 --- @field name string?
 --- @field main string?
@@ -17,6 +17,7 @@
 --- @field config function?
 --- @field build string|function?
 --- @field event string|string[]?
+--- @field cmd string|string[]?
 
 --- @class PluginSpecParsed Parsed plugin definition
 --- @field src string
@@ -33,6 +34,7 @@
 --- @field config function?
 --- @field build function?
 --- @field event string[]?
+--- @field cmd string[]?
 
 --- @class LspConfig Used in lsp config files
 --- @field enable? boolean

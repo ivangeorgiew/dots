@@ -1,11 +1,11 @@
 local S = vim.diagnostic.severity
 
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   -- Provides good default LSP configs
   -- :h lspconfig
   "neovim/nvim-lspconfig",
-  event = "AfterUI",
+  event = "VeryLazy",
   opts = {
     --- @type vim.diagnostic.Opts
     diagnostics = {
@@ -34,7 +34,7 @@ local M = {
   },
 }
 
-M.config = tie("Plugin nvim-lspconfig -> config", function(opts)
+M.config = tie("Plugin nvim-lspconfig -> config", function(_, opts)
   tied.do_block("Config, enable and install LSPs", function()
     local to_install = {}
 

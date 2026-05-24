@@ -1,8 +1,8 @@
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   -- Enchances native comments functionality
   "folke/ts-comments.nvim",
-  event = "AfterUI",
+  event = "VeryLazy",
   opts = {
     lang = {
       kitty = "# %s",

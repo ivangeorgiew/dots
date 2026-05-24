@@ -1,10 +1,10 @@
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   -- Add todo, fix, note, etc type of comments
   -- Fork that removes the archived dependancy
   "dtor/todo-comments.nvim",
   branch = "remove-plenary",
-  event = "AfterUI",
+  event = "VeryLazy",
   opts = {
     signs = false, -- show icons in the signs column
     sign_priority = 8, -- sign priority
@@ -72,7 +72,7 @@ local M = {
   },
 }
 
-M.config = tie("Plugin todo-comments -> config", function(opts)
+M.config = tie("Plugin todo-comments -> config", function(_, opts)
   local todo = require("todo-comments")
 
   todo.setup(opts)

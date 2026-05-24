@@ -1,4 +1,4 @@
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   "loctvl842/monokai-pro.nvim",
   enabled = vim.g.colorscheme == "monokai-pro",

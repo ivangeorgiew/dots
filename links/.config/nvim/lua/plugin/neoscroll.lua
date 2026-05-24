@@ -1,10 +1,10 @@
 -- TODO: I can use Snacks.scroll as alternative
 
---- @type LazyPluginSpec
+--- @type PluginSpec
 local M = {
   -- Smooth scrolling in files
   "karb94/neoscroll.nvim",
-  event = "AfterUI",
+  event = "VeryLazy",
   opts = {
     mappings = { "<C-u>", "<C-d>" },
     hide_cursor = true,

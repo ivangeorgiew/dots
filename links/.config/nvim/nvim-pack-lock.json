@@ -6,16 +6,12 @@
       "version": "1.0.0 - 2.0.0"
     },
     "conform.nvim": {
-      "rev": "18aeab3d63d350dcf44d64c462cc489a3412af40",
+      "rev": "24c70347f6b2128679f47d2eb765156ef34bf9e0",
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "garbage-day.nvim": {
       "rev": "2fcc56556281de8ee871a5f3beb9db7ab747ef32",
       "src": "https://github.com/zeioth/garbage-day.nvim"
-    },
-    "kanagawa.nvim": {
-      "rev": "bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3",
-      "src": "https://github.com/rebelot/kanagawa.nvim"
     },
     "lazydev.nvim": {
       "rev": "a48aff30cfed17c69ba37ca8af2bde2b49d05420",
