@@ -194,24 +194,30 @@ M.load_plugin = tie(
         )
       end
 
+      -- build() before config()
+      vim.api.nvim_exec_autocmds("User", {
+        pattern = "PluginBuild",
+        modeline = false,
+        data = { name = spec.name },
+      })
+
       if spec.config then
         spec.config(spec, spec.opts or {})
       end
 
-      -- Show that plugin has finished loading
       spec.loaded = true
 
       vim.api.nvim_exec_autocmds("User", {
-        pattern = "PluginLoad",
+        pattern = "OnPluginLoad",
         modeline = false,
         data = { name = spec.name },
       })
     end, tied.do_nothing)
 
-    -- Many calls is better than single call
-    -- No performance loss
-    -- Easier adding dependencies on-the-fly
-    -- Doesn't install plugins if they aren't in lockfile and haven't been loaded
+    -- Many calls is better than a single call:
+    -- 1. No performance loss
+    -- 2. Easier adding dependencies on-the-fly
+    -- 3. Doesn't install plugins if they aren't in lockfile and haven't been loaded
     vim.pack.add({ vimpack_spec }, { load = load, confirm = false })
   end,
   tied.do_rethrow
@@ -228,7 +234,7 @@ M.create_stubs = tie(
     assert(spec, ("Plugin %s not defined"):format(plugin_name))
 
     if spec.event then
-      local group = tied.create_augroup("my.plugin.load." .. plugin_name, true)
+      local group = tied.create_augroup("my.pack.load." .. plugin_name, true)
 
       tied.for_list(
         "Create event for loading plugin " .. plugin_name,
@@ -351,7 +357,7 @@ M.on_plugin_load = tie(
       tied.create_autocmd({
         desc = "On plugin load -> " .. desc,
         event = "User",
-        pattern = "PluginLoad",
+        pattern = "OnPluginLoad",
         group = tied.create_augroup("my.on_plugin_load", false), -- don't clear
         callback = function(e)
           local plugin_name = e.data.name
@@ -361,8 +367,8 @@ M.on_plugin_load = tie(
           end
 
           if not vim.list_contains(vim.tbl_values(plugins_loaded), false) then
+            pcall(vim.api.nvim_del_autocmd, e.id)
             on_load()
-            vim.api.nvim_del_autocmd(e.id)
           end
         end,
       })
@@ -390,7 +396,7 @@ M.setup = tie("Setup plugin manager", function()
     desc = "Load lazy plugins",
     event = "UIEnter",
     once = true,
-    group = tied.create_augroup("my.pack.load_after", true),
+    group = tied.create_augroup("my.pack.after_ui_enter", true),
     callback = vim.schedule_wrap(function()
       vim.g.did_ui_enter = true
       vim.api.nvim_exec_autocmds("User", {
@@ -401,18 +407,29 @@ M.setup = tie("Setup plugin manager", function()
   })
   tied.create_autocmd({
     desc = "Build on plugin install/update",
-    event = "PackChanged",
+    event = "PackChangedPre",
     group = tied.create_augroup("my.pack.build", true),
-    callback = vim.schedule_wrap(function(ev)
+    callback = function(ev)
       if vim.list_contains({ "install", "update" }, ev.data.kind) then
         local plugin_name = ev.data.spec.name
         local build = vim.tbl_get(M.plugins, plugin_name, "build")
 
         if build then
-          M.on_plugin_load(plugin_name, "Run build command", build)
+          tied.create_autocmd({
+            desc = "Run build command for plugin " .. plugin_name,
+            event = "User",
+            pattern = "PluginBuild",
+            group = tied.create_augroup("my.pack.build." .. plugin_name, true),
+            callback = function(e)
+              if e.data.name == plugin_name then
+                pcall(vim.api.nvim_del_autocmd, e.id)
+                build()
+              end
+            end,
+          })
         end
       end
-    end),
+    end,
   })
 
   -- Run all init functions first, before loading any plugin
