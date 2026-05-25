@@ -208,6 +208,10 @@ M.load_plugin = tie(
       })
     end, tied.do_nothing)
 
+    -- Many calls is better than single call
+    -- No performance loss
+    -- Easier adding dependencies on-the-fly
+    -- Doesn't install plugins if they aren't in lockfile and haven't been loaded
     vim.pack.add({ vimpack_spec }, { load = load, confirm = false })
   end,
   tied.do_rethrow

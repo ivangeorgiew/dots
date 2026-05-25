@@ -146,6 +146,7 @@ M.to_create = {
    { "n", "-i", function() vim.lsp.buf.implementation({ loclist = true }) end, { desc = "Go to implementation" } },
    { "n", "-t", function() vim.lsp.buf.type_definition({ loclist = true }) end, { desc = "Go to type definition" } },
    { "n", "-r", function() vim.lsp.buf.references(nil, { loclist = true }) end, { desc = "Show references" } },
+   { "n", "-s", function() vim.lsp.buf.document_symbol({ loclist = true }) end, { desc = "Show document symbols" } },
    { "n", "-c", function() vim.lsp.document_color.color_presentation() end, { desc = "Change color representation" } },
    { { "n", "x" }, "-a", function() vim.lsp.buf.code_action() end, { desc = "Select code action" } },
 
