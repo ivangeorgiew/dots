@@ -10,11 +10,11 @@
 local M = {
   -- Language parsing which provides better highlight, indentation, etc.
   -- :h nvim-treesitter.txt
-  "neovim-treesitter/nvim-treesitter",
+  src = "neovim-treesitter/nvim-treesitter",
   dependencies = { "neovim-treesitter/treesitter-parser-registry" },
-  branch = "main",
+  version = "main",
   build = ":TSUpdate",
-  event = "VeryLazy",
+  lazy = true,
   opts = {
     -- NOTE: need to manually set install_dir due to a bug
     -- where rtp is not being set on fresh install of all plugins
@@ -255,7 +255,7 @@ M.opts.custom.start_ts_in_buf = tie(
   tied.do_nothing
 )
 
-M.config = tie("Plugin nvim-treesitter -> config", function(_, opts)
+M.config = tie("Plugin nvim-treesitter -> config", function(opts)
   local ts = require("nvim-treesitter")
   local custom = opts.custom
 
@@ -288,7 +288,7 @@ M.init = tie("Plugin nvim-treesitter -> init", function()
         -- and to install langs from before plugin load
         custom.seen_langs[lang] = true
 
-        if tied.check_if_plugin_loaded("nvim-treesitter") then
+        if tied.plugin_loaded("nvim-treesitter") then
           custom.install_langs({ lang })
         end
       end

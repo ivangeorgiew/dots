@@ -3,9 +3,10 @@
 ---@type PluginSpec
 local M = {
   -- File tree viewer
-  "nvim-tree/nvim-tree.lua",
-  dependencies = { "nvim-tree/nvim-web-devicons" },
-  event = "VeryLazy",
+  src = "nvim-tree/nvim-tree.lua",
+  name = "nvim-tree",
+  dependencies = { "nvim-mini/mini.icons" },
+  lazy = true,
   opts = {
     hijack_cursor = true, -- keep cursor on first letter of filenames
     disable_netrw = true,
@@ -82,9 +83,9 @@ M.opts.on_attach = tie("Plugin nvim-tree -> On attach", function(bufnr)
 
   -- Usen in a mapping, so no need to tie
   local toggle_folder = function()
-    local node = api.tree.get_node_under_cursor()
+    local node = api.tree.get_node_under_cursor() or {}
 
-    if node.nodes ~= nil then
+    if node.type == "directory" then
       api.node.open.edit()
     else
       api.node.navigate.parent_close()
@@ -108,8 +109,8 @@ M.opts.on_attach = tie("Plugin nvim-tree -> On attach", function(bufnr)
     -- { api.fs.rename_full, "u", "Rename: Full Path" },
     -- { api.fs.rename_sub, "<C-r>", "Rename: Omit Filename" },
     -- { api.fs.trash, "D", "Trash" },
-    { api.live_filter.clear, "F", "Live Filter: Clear" },
-    { api.live_filter.start, "f", "Live Filter: Start" },
+    { api.filter.live.clear, "F", "Live Filter: Clear" },
+    { api.filter.live.start, "f", "Live Filter: Start" },
     -- { api.marks.bulk.delete, "bd", "Delete Bookmarked" },
     -- { api.marks.bulk.move, "bmv", "Move Bookmarked" },
     -- { api.marks.bulk.trash, "bt", "Trash Bookmarked" },
@@ -162,7 +163,7 @@ M.opts.on_attach = tie("Plugin nvim-tree -> On attach", function(bufnr)
   end)
 end, tied.do_nothing)
 
-M.config = tie("Plugin nvim-tree -> config", function(_, opts)
+M.config = tie("Plugin nvim-tree -> config", function(opts)
   require("nvim-tree").setup(opts)
 
   tied.set_hl(0, "NvimTreeWinSeparator", { link = "WinSeparator" })

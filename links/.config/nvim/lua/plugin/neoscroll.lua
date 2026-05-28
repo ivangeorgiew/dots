@@ -3,8 +3,8 @@
 --- @type PluginSpec
 local M = {
   -- Smooth scrolling in files
-  "karb94/neoscroll.nvim",
-  event = "VeryLazy",
+  src = "karb94/neoscroll.nvim",
+  lazy = true,
   opts = {
     mappings = { "<C-u>", "<C-d>" },
     hide_cursor = true,

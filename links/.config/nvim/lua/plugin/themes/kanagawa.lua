@@ -1,8 +1,8 @@
 --- @type PluginSpec
 local M = {
-  "rebelot/kanagawa.nvim",
+  src = "rebelot/kanagawa.nvim",
   enabled = vim.g.colorscheme == "kanagawa",
-  event = "UIEnter",
+  lazy = false,
   config = tied.colorscheme_config,
   opts = {
     transparent = true,

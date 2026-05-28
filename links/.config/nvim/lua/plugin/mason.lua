@@ -2,7 +2,7 @@
 local M = {
   mason = {
     --- External tools installer
-    "mason-org/mason.nvim",
+    src = "mason-org/mason.nvim",
     opts = {
       PATH = "skip", -- manually added
       ui = {
@@ -14,7 +14,7 @@ local M = {
   },
   mason_lock = {
     -- Lockfile for mason
-    "zapling/mason-lock.nvim",
+    src = "zapling/mason-lock.nvim",
     dependencies = { "mason-org/mason.nvim" },
     cmd = { "Mason", "MasonLock", "MasonLockRestore" },
     opts = {},
@@ -47,45 +47,55 @@ M.mason.init = tie("Plugin mason -> init", function()
         return
       end
 
-      tied.load_plugin("mason.nvim")
-      tied.load_plugin("mason-lock.nvim")
+      tied.load_plugins({ "mason.nvim", "mason-lock.nvim" })
+      tied.on_plugins_load(
+        "Install tools after mason loaded",
+        { "mason.nvim", "mason-lock.nvim" },
+        function()
+          local mr = require("mason-registry")
 
-      local mr = require("mason-registry")
+          mr.refresh()
+          mr:on(
+            "package:install:success",
+            vim.defer_wrap(
+              tie("Plugin mason -> Start newly installed LSPs", function()
+                tied.for_list(
+                  "Start LSP in opened file",
+                  vim.api.nvim_list_wins(),
+                  function(_, winnr)
+                    local bufnr = vim.api.nvim_win_get_buf(winnr)
 
-      mr.refresh()
-      mr:on(
-        "package:install:success",
-        vim.defer_wrap(
-          tie("Plugin mason -> Start newly installed LSPs", function()
-            tied.for_list(
-              "Start LSP in opened file",
-              vim.api.nvim_list_wins(),
-              function(_, winnr)
-                local bufnr = vim.api.nvim_win_get_buf(winnr)
-
-                if tied.check_if_buf_is_file(bufnr) then
-                  vim.api.nvim_exec_autocmds("FileType", {
-                    buffer = bufnr,
-                    group = "nvim.lsp.enable",
-                    modeline = false,
-                  })
-                end
-              end
+                    if tied.check_if_buf_is_file(bufnr) then
+                      vim.api.nvim_exec_autocmds("FileType", {
+                        buffer = bufnr,
+                        group = "nvim.lsp.enable",
+                        modeline = false,
+                      })
+                    end
+                  end
+                )
+              end, tied.do_nothing),
+              100
             )
-          end, tied.do_nothing),
-          100
-        )
-      )
+          )
 
-      local installed = mr.get_installed_package_names()
+          local installed = mr.get_installed_package_names()
 
-      tied.for_list("Auto-install a mason tool", to_install, function(_, tool)
-        local name = tool:match("^([^@]+)@?(.*)$")
+          tied.for_list(
+            "Auto-install a mason tool",
+            to_install,
+            function(_, tool)
+              local name = tool:match("^([^@]+)@?(.*)$")
 
-        if mr.has_package(name) and not vim.list_contains(installed, name) then
-          vim.cmd("MasonInstall " .. tool)
+              if
+                mr.has_package(name) and not vim.list_contains(installed, name)
+              then
+                vim.cmd("MasonInstall " .. tool)
+              end
+            end
+          )
         end
-      end)
+      )
     end,
     tied.do_nothing
   )

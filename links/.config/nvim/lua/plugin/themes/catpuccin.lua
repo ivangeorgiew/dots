@@ -1,10 +1,10 @@
 --- @module "catppuccin"
 --- @type PluginSpec
 local M = {
-  "catppuccin/nvim",
+  src = "catppuccin/nvim",
   name = "catppuccin",
   enabled = vim.g.colorscheme == "catppuccin",
-  event = "UIEnter",
+  lazy = false,
   config = tied.colorscheme_config,
   --- @type CatppuccinOptions
   opts = {
@@ -40,11 +40,11 @@ local M = {
         ok = { "italic" },
       },
       underlines = {
-        errors = { "underline" },
-        hints = { "underline" },
-        warnings = { "underline" },
-        information = { "underline" },
-        ok = { "underline" },
+        errors = { "undercurl" },
+        hints = { "undercurl" },
+        warnings = { "undercurl" },
+        information = { "undercurl" },
+        ok = { "undercurl" },
       },
       inlay_hints = { background = false },
     },
@@ -62,7 +62,7 @@ local M = {
     custom_highlights = tie("Theme catppuccin -> custom_highlights", function()
       local colors = require("catppuccin.palettes").get_palette("mocha")
       local hypr_border = { fg = "#492A78" }
-      local global = { link = "@variable.builtin" }
+      -- local global = { link = "@variable.builtin" }
 
       -- Use :Inspect to find out the hl group under cursor
       -- Highlight groups: https://github.com/catppuccin/nvim/blob/main/lua/catppuccin/groups

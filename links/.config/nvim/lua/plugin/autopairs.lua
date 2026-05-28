@@ -3,8 +3,8 @@
 --- @type PluginSpec
 local M = {
   -- Adds closing pairs (), "", etc
-  "windwp/nvim-autopairs",
-  event = "InsertEnter",
+  src = "windwp/nvim-autopairs",
+  lazy = true,
   -- :h nvim-autopairs-default-values
   opts = {},
 }

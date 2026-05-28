@@ -3,8 +3,8 @@
 --- @type PluginSpec
 local M = {
   -- Adds replace and exchange commands
-  "gbprod/substitute.nvim",
-  event = "VeryLazy",
+  src = "gbprod/substitute.nvim",
+  lazy = true,
   -- https://github.com/gbprod/substitute.nvim?tab=readme-ov-file
   opts = {
     highlight_substituted_text = { enabled = false },
@@ -12,7 +12,7 @@ local M = {
   },
 }
 
-M.config = tie("Plugin substitute -> config", function(_, opts)
+M.config = tie("Plugin substitute -> config", function(opts)
   local subs = require("substitute")
 
   subs.setup(opts)
@@ -40,9 +40,9 @@ M.config = tie("Plugin substitute -> config", function(_, opts)
       function(_, map_args) tied.create_map(unpack(map_args)) end
     )
 
-    tied.on_plugin_load(
-      "which-key.nvim",
+    tied.on_plugins_load(
       "Plugin substitute -> Modify which-key mappings",
+      { "which-key.nvim" },
       function()
         require("which-key").add({
           mode = { "n" },

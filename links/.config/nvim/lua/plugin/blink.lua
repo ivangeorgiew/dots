@@ -2,12 +2,12 @@
 --- @type PluginSpec
 local M = {
   -- Autocompletion
-  "saghen/blink.cmp",
-  version = "1.*", -- to download prebuilt binaries
+  src = "saghen/blink.cmp",
+  version = vim.version.range("1.*"), -- to download prebuilt binaries
   -- TODO: add snippets deps
   -- and setup: https://cmp.saghen.dev/configuration/snippets.html
   -- dependencies = { "rafamadriz/friendly-snippets" },
-  event = "ModeChanged",
+  lazy = true,
 }
 
 --- @type blink.cmp.Config
@@ -142,20 +142,25 @@ M.opts.custom.lazydev_opts = {
   },
 }
 
-M.config = tie("Plugin blink.cmp -> Config", function(_, opts)
+M.config = tie("Plugin blink.cmp -> Config", function(opts)
   local custom = vim.deepcopy(opts.custom)
-
-  tied.do_block(
-    "Plugin blink.cmp -> Add lazydev completions to lua files",
-    function()
-      if tied.check_if_plugin_loaded("lazydev.nvim") then
-        opts = vim.tbl_deep_extend("force", opts, custom.lazydev_opts)
-      end
-    end
-  )
+  local to_load = {}
 
   opts.custom = nil -- Remove so blink.cmp doesn't complain
-  require("blink.cmp").setup(opts)
+
+  -- Always load lazydev if installed
+  -- It has internal logic to disable on non-lua projects
+  if tied.plugins["lazydev.nvim"] then
+    table.insert(to_load, "lazydev.nvim")
+    opts = vim.tbl_deep_extend("force", opts, custom.lazydev_opts)
+  end
+
+  tied.load_plugins(to_load)
+  tied.on_plugins_load(
+    "Run blink.cmp setup()",
+    to_load,
+    function() require("blink.cmp").setup(opts) end
+  )
 end, tied.do_nothing)
 
 return M

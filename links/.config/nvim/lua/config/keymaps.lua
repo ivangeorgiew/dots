@@ -191,7 +191,7 @@ M.to_create = {
   -- Search and replace
   { "n", "<leader>s", [[:%s/\(\<<C-r><C-w>\>\)//gc<Left><Left><Left>]], { desc = "Search and replace word under cursor",   silent = false } },
   { "x", "<leader>s", [["ay:%s/\(<C-r>a\)//gc<Left><Left><Left>]],      { desc = "Search and replace visual selection",    silent = false } },
-  { "x", "<leader>S", [[:s/\%V/g<Left><Left>]],                         { desc = "Search and replace in visual selection", silent = false } },
+  { "x", "<leader>S", [[:s/\%V/gc<Left><Left><Left>]],                  { desc = "Search and replace in visual selection", silent = false } },
 
   -- Motion expecting operations
   { { "x", "o" }, [[a"]], [[2i"]], { desc = [[Select all in ""]] } },

@@ -1,7 +1,7 @@
 --- @type PluginSpec
 local M = {
-  "ivangeorgiew/lazydev.nvim",
-  event = "FileType lua",
+  src = "ivangeorgiew/lazydev.nvim",
+  lazy = true,
   ---@module "lazydev"
   ---@type lazydev.Config
   opts = {

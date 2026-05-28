@@ -1,8 +1,8 @@
 --- @type PluginSpec
 local M = {
-  "folke/tokyonight.nvim",
+  src = "folke/tokyonight.nvim",
   enabled = vim.g.colorscheme == "tokyonight",
-  event = "UIEnter",
+  lazy = false,
   config = tied.colorscheme_config,
   opts = {
     style = "night", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`

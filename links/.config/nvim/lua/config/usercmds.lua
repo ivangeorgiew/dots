@@ -157,22 +157,37 @@ M.config = {
     { desc = "Replace text in files", nargs = 0 },
   },
   {
-    "PluginList",
+    "PluginListAll",
     function() vim.pack.update(nil, { offline = true }) end,
-    { desc = "List plugins installed with vim.pack", nargs = 0 },
+    { desc = "List all installed plugins", nargs = 0 },
+  },
+  {
+    "PluginListInactive",
+    function()
+      local plugin_names = {}
+
+      for _, plugin in ipairs(vim.pack.get()) do
+        if not tied.plugin_loaded(plugin.spec.name) then
+          table.insert(plugin_names, plugin.spec.name)
+        end
+      end
+
+      -- stylua: ignore
+      vim.notify(vim.inspect(plugin_names), vim.log.levels.INFO, { title = "Inactive Plugins" })
+    end,
+    { desc = "List inactive plugins", nargs = 0 },
   },
   {
     "PluginDelete",
     function(opts)
       local plugin_names = opts.fargs
-      local targets = plugin_names
       local should_delete_all = vim.list_contains(plugin_names, "all")
 
       if should_delete_all then
-        targets = M.get_all_plugin_names()
+        plugin_names = M.get_all_plugin_names()
       end
 
-      vim.pack.del(targets, { force = true })
+      vim.pack.del(plugin_names, { force = true })
       vim.notify("Uninstalled plugins, please restart")
     end,
     {
@@ -182,17 +197,17 @@ M.config = {
     },
   },
   {
-    "PluginClearInactive",
+    "PluginDeleteInactive",
     function()
-      local targets = {}
+      local plugin_names = {}
 
       for _, plugin in ipairs(vim.pack.get()) do
-        if not plugin.active then
-          table.insert(targets, plugin.spec.name)
+        if not tied.plugin_loaded(plugin.spec.name) then
+          table.insert(plugin_names, plugin.spec.name)
         end
       end
 
-      vim.pack.del(targets, { force = true })
+      vim.pack.del(plugin_names, { force = true })
       vim.notify("Uninstalled plugins, please restart")
     end,
     { desc = "Clear inactive plugins with vim.pack", nargs = 0 },
@@ -200,14 +215,13 @@ M.config = {
   {
     "PluginUpdate",
     function(opts)
-      local plugin_names = opts.fargs
-      local targets = nil
+      local plugin_names = nil
 
-      if not vim.list_contains(plugin_names, "all") then
-        targets = plugin_names
+      if not vim.list_contains(opts.fargs, "all") then
+        plugin_names = opts.fargs
       end
 
-      vim.pack.update(targets, { force = true })
+      vim.pack.update(plugin_names, { force = true })
     end,
     {
       desc = "Update plugins with vim.pack",

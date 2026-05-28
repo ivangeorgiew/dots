@@ -5,7 +5,7 @@ M.setup = tie("Setup options", function()
   local g = vim.g
 
   -- Defined in the plugins/colorschemes folder
-  local colorschemes = { "catppuccin", "tokyonight", "kanagawa", "monokai-pro" }
+  local colorschemes = { "catppuccin", "tokyonight", "kanagawa" }
 
   g.colorscheme = colorschemes[1]
   g.mapleader = " "

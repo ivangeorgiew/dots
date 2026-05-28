@@ -4,16 +4,17 @@
 -- Another plugin manager with vim.pack: https://github.com/zuqini/zpack.nvim
 
 local M = {
-  ---@type table<string,PluginSpecParsed>
+  ---@type table<string,PluginSpec>
   plugins = {},
   local_plugins_dir = "~/projects",
+  to_install = {},
+  early_load_queue = {},
+  lazy_load_queue = {},
   input_props = {
+    src = "string",
     name = "string",
     main = "string",
-    version = "string",
-    branch = "string", -- not in output
-    tag = "string", -- not in output
-    commit = "string", -- not in output
+    version = { "string", "table" },
     dependencies = "table",
     enabled = "boolean",
     lazy = "boolean",
@@ -22,26 +23,20 @@ local M = {
     init = "function",
     config = "function",
     build = { "string", "function" },
-    event = { "string", "table" },
     cmd = { "string", "table" },
+    ft = { "string", "table" },
   },
 }
 
-M.create_base_spec = tie(
-  "Create base plugin spec",
+M.parse_src = tie(
+  "Convert plugin spec src to url",
   ---@param src string
-  ---@return PluginSpecParsed
+  ---@return string
   function(src)
     vim.validate("src", src, "string")
 
-    local spec = {}
-
     -- stylua: ignore
-    spec.src = vim.startswith("https://", src) and src or ("https://github.com/" .. src)
-    spec.name = spec.src:match("([^/]+)$")
-    spec.main = spec.name:gsub("%.nvim$", "")
-
-    return spec
+    return vim.startswith("https://", src) and src or ("https://github.com/" .. src)
   end,
   tied.do_rethrow
 )
@@ -71,52 +66,39 @@ M.add_plugin_specs = tie(
       end
     end
 
-    tied.for_list("Parse plugin spec", raw_plugins, function(_, raw_info)
-      vim.validate("[1]", raw_info[1], "string")
-
-      local spec = M.create_base_spec(raw_info[1])
-
-      -- Fail deliberately on error
+    tied.for_list("Parse plugin spec", raw_plugins, function(_, spec)
       for prop_name, prop_type in pairs(M.input_props) do
-        local raw_val = raw_info[prop_name]
-
-        vim.validate(prop_name, raw_val, prop_type, true)
-
-        if raw_val ~= nil then
-          local key = prop_name
-          local val = raw_val
-
-          if vim.list_contains({ "branch", "tag", "commit" }, prop_name) then
-            key = "version"
-          end
-
-          if prop_name == "version" then
-            val = vim.version.range(raw_val)
-          end
-
-          if prop_name == "build" and type(raw_val) == "string" then
-            val = function() vim.cmd(string.sub(raw_val, 2)) end
-          end
-
-          if
-            vim.list_contains({ "event", "cmd" }, prop_name)
-            and type(raw_val) == "string"
-          then
-            val = { raw_val }
-          end
-
-          spec[key] = val
-        end
+        vim.validate(prop_name, spec[prop_name], prop_type, true)
       end
 
       if spec.enabled == false then
         return
       end
 
+      spec.src = M.parse_src(spec.src)
+
+      if not spec.name then
+        spec.name = spec.src:match("([^/]+)$")
+      end
+
+      if not spec.main then
+        spec.main = spec.name:gsub("%.nvim$", "")
+      end
+
+      if type(spec.build) == "string" then
+        local build_cmd = string.sub(spec.build --[[@as string]], 2)
+
+        spec.build = tie(
+          ("Plugin %s -> build"):format(spec.name),
+          function() vim.cmd(build_cmd) end,
+          tied.do_nothing
+        )
+      end
+
       if spec.opts and not spec.config then
         spec.config = tie(
           ("Plugin %s -> config"):format(spec.name),
-          function(_, opts) require(spec.main).setup(opts) end,
+          function(opts) require(spec.main).setup(opts) end,
           tied.do_nothing
         )
       end
@@ -128,63 +110,112 @@ M.add_plugin_specs = tie(
         )
       end
 
-      if vim.tbl_get(M.plugins, spec.name, "opts") and spec.opts then
+      if M.plugins[spec.name] then
+        local prev_opts = vim.tbl_get(M.plugins, spec.name, "opts")
+
         M.plugins[spec.name].opts =
-          vim.tbl_deep_extend("force", M.plugins[spec.name].opts, spec.opts)
+          vim.tbl_deep_extend("error", prev_opts or {}, spec.opts or {})
       else
         M.plugins[spec.name] = spec
       end
     end)
+
+    tied.for_list(
+      "Add missing dependencies to plugin list",
+      vim.tbl_values(M.plugins),
+      function(_, spec)
+        if not spec.dependencies then
+          return
+        end
+
+        local parsed_deps = {}
+
+        for idx, dependency in ipairs(spec.dependencies) do
+          local name_regex = "([^/]+)$"
+          local dep_spec = {}
+
+          if type(dependency) == "table" then
+            dep_spec.src = dependency.src
+            dep_spec.name = dependency.name or dep_spec.src:match(name_regex)
+          elseif type(dependency) == "string" then
+            dep_spec.src = dependency
+            dep_spec.name = dependency:match(name_regex)
+          end
+
+          vim.validate(("deps[[%d]].src"):format(idx), dep_spec.src, "string")
+          vim.validate(("deps[[%d]].name"):format(idx), dep_spec.name, "string")
+
+          dep_spec.src = M.parse_src(dep_spec.src)
+
+          table.insert(parsed_deps, dep_spec)
+
+          if not M.plugins[dep_spec.name] then
+            local has_repo = dep_spec.src:match(".*/.*") ~= nil
+
+            -- stylua: ignore
+            assert(has_repo, ("dependencies[%d] repo not defined"):format(idx))
+
+            M.plugins[dep_spec.name] = dep_spec
+          end
+        end
+
+        spec.dependencies = parsed_deps
+      end
+    )
   end,
   tied.do_nothing
 )
 
-M.load_plugin = tie(
-  "Load a plugin",
-  ---@param plugin_name string
-  function(plugin_name)
-    vim.validate("plugin_name", plugin_name, "string")
+M.load_plugins = tie(
+  "Load plugins",
+  ---@param plugin_names string[]
+  function(plugin_names)
+    vim.validate("plugin_names", plugin_names, "table")
 
-    local spec = M.plugins[plugin_name]
+    tied.for_list("Load a plugin", plugin_names, function(_, plugin_name)
+      local spec = M.plugins[plugin_name]
 
-    assert(spec, ("Plugin %s not defined"):format(plugin_name))
+      assert(spec, ("Plugin %s not defined"):format(plugin_name))
 
-    if spec.loaded ~= nil then
-      return
-    end
+      if spec.loaded ~= nil then
+        return
+      end
 
-    -- Show that plugin has started to load
-    spec.loaded = false
+      -- Show that plugin has started to load
+      spec.loaded = false
 
-    if spec.dependencies then
-      for _, dependency in ipairs(spec.dependencies) do
-        local dep_name = dependency:match("([^/]+)$")
-        local has_repo = dependency:match(".*/.*") ~= nil
+      if spec.dependencies then
+        local deps_to_load = {}
 
-        if not M.plugins[dep_name] then
-          assert(has_repo, ("Plugin %s doesn't have repo"):format(dependency))
+        for _, dep_spec in ipairs(spec.dependencies) do
+          -- Fail on dependency not being listed as plugin
+          if not M.plugins[dep_spec.name].loaded then
+            table.insert(deps_to_load, dep_spec.name)
+          end
+        end
 
-          M.plugins[dep_name] = M.create_base_spec(dependency)
-          M.load_plugin(dep_name)
-        elseif M.plugins[dep_name].loaded == nil then
-          M.load_plugin(dep_name)
+        if #deps_to_load > 0 then
+          M.load_plugins(deps_to_load)
+          M.on_plugins_load(
+            "Load plugin " .. spec.name,
+            deps_to_load,
+            function()
+              spec.loaded = nil
+              M.load_plugins({ spec.name })
+            end
+          )
+
+          return
         end
       end
-    end
 
-    local vimpack_spec = {
-      src = spec.src,
-      version = spec.version,
-      name = spec.name,
-    }
-
-    -- Only way to actually know when a plugin has loaded
-    local load = tie("vim.pack.add -> load", function(opts)
-      vim.cmd("packadd " .. plugin_name)
+      -- Loads the plugin
+      vim.cmd("packadd " .. spec.name)
 
       -- From the original load function in vim.pack.add
       -- Fail on error deliberately
       if vim.v.vim_did_enter == 1 then
+        local opts = vim.pack.get({ spec.name }, { info = false })[1]
         local after_paths =
           vim.fn.glob(opts.path .. "/after/plugin/**/*.{vim,lua}", false, true)
 
@@ -202,7 +233,7 @@ M.load_plugin = tie(
       })
 
       if spec.config then
-        spec.config(spec, spec.opts or {})
+        spec.config(spec.opts or {})
       end
 
       spec.loaded = true
@@ -212,112 +243,91 @@ M.load_plugin = tie(
         modeline = false,
         data = { name = spec.name },
       })
-    end, tied.do_nothing)
-
-    -- Many calls is better than a single call:
-    -- 1. No performance loss
-    -- 2. Easier adding dependencies on-the-fly
-    -- 3. Doesn't install plugins if they aren't in lockfile and haven't been loaded
-    vim.pack.add({ vimpack_spec }, { load = load, confirm = false })
-  end,
-  tied.do_rethrow
-)
-
-M.create_stubs = tie(
-  "Create events/cmds for loading plugin",
-  ---@param plugin_name string
-  function(plugin_name)
-    vim.validate("plugin_name", plugin_name, "string")
-
-    local spec = M.plugins[plugin_name]
-
-    assert(spec, ("Plugin %s not defined"):format(plugin_name))
-
-    if spec.event then
-      local group = tied.create_augroup("my.pack.load." .. plugin_name, true)
-
-      tied.for_list(
-        "Create event for loading plugin " .. plugin_name,
-        spec.event,
-        function(_, full_event)
-          local event_name, pattern = full_event:match("^(%S+)%s*(.*)$")
-
-          vim.validate("event_name", event_name, "string")
-          vim.validate("pattern", pattern, "string", true)
-
-          if event_name == "VeryLazy" then
-            event_name, pattern = "User", "VeryLazy"
-          end
-
-          tied.create_autocmd({
-            desc = "Load plugin " .. plugin_name,
-            event = event_name,
-            pattern = pattern,
-            once = true,
-            group = group,
-            callback = function()
-              pcall(vim.api.nvim_del_augroup_by_id, group)
-
-              if event_name == "UIEnter" or vim.g.did_ui_enter then
-                M.load_plugin(plugin_name)
-              else
-                -- Execute after UIEnter has finished
-                vim.schedule(function() M.load_plugin(plugin_name) end)
-              end
-            end,
-          })
-        end
-      )
-    end
-
-    if spec.cmd then
-      tied.for_list(
-        "Create usercmd for loading plugin " .. plugin_name,
-        spec.cmd,
-        function(_, cmd)
-          local create_opts = {
-            desc = "Load plugin " .. plugin_name,
-            nargs = "*",
-            bang = true,
-            count = -1,
-          }
-
-          tied.create_usercmd(cmd, function(cmd_opts)
-            pcall(vim.api.nvim_del_user_command, cmd)
-            M.load_plugin(plugin_name)
-
-            local range
-
-            if (cmd_opts.range or 0) > 0 then
-              if cmd_opts.range == 1 then
-                range = { cmd_opts.line1 }
-              else
-                range = { cmd_opts.line1, cmd_opts.line2 }
-              end
-            end
-
-            M.on_plugin_load(
-              plugin_name,
-              "Execute the original usercmd after plugin loaded",
-              function()
-                vim.api.nvim_cmd({
-                  cmd = cmd,
-                  range = range,
-                  args = cmd_opts.fargs,
-                  bang = cmd_opts.bang,
-                  mods = cmd_opts.smods,
-                }, {})
-              end
-            )
-          end, create_opts)
-        end
-      )
-    end
+    end)
   end,
   tied.do_nothing
 )
 
-M.check_if_plugin_loaded = tie(
+M.create_ft_event = tie(
+  "Create event for loading a plugin",
+  ---@param spec PluginSpec
+  function(spec)
+    vim.validate("spec", spec, "table")
+
+    tied.create_autocmd({
+      desc = "Load plugin " .. spec.name,
+      event = "FileType",
+      pattern = type(spec.ft) == "string" and { spec.ft } or spec.ft,
+      once = true,
+      group = tied.create_augroup("my.pack.load." .. spec.name, true),
+      callback = function(e)
+        pcall(vim.api.nvim_del_autocmd, e.id)
+
+        if vim.g.did_ui_enter then
+          M.load_plugins({ spec.name })
+        else
+          -- Execute after UIEnter has finished
+          vim.schedule(function() M.load_plugins({ spec.name }) end)
+        end
+      end,
+    })
+  end,
+  tied.do_nothing
+)
+
+M.create_cmd_stubs = tie(
+  "Create usercmd stubs for loading a plugin",
+  ---@param spec PluginSpec
+  function(spec)
+    vim.validate("spec", spec, "table")
+
+    local cmds = type(spec.cmd) == "string" and { spec.cmd } or spec.cmd
+
+    tied.for_list(
+      "Create usercmd for loading plugin " .. spec.name,
+      cmds --[[@as string[] ]],
+      function(_, cmd)
+        local create_opts = {
+          desc = "Load plugin " .. spec.name,
+          nargs = "*",
+          bang = true,
+          count = -1,
+        }
+
+        tied.create_usercmd(cmd, function(cmd_opts)
+          pcall(vim.api.nvim_del_user_command, cmd)
+          local range
+
+          if (cmd_opts.range or 0) > 0 then
+            if cmd_opts.range == 1 then
+              range = { cmd_opts.line1 }
+            else
+              range = { cmd_opts.line1, cmd_opts.line2 }
+            end
+          end
+
+          M.load_plugins({ spec.name })
+          M.on_plugins_load(
+            "Execute the original usercmd after plugin loaded",
+            { spec.name },
+            function()
+              vim.api.nvim_cmd({
+                cmd = cmd,
+                range = range,
+                args = cmd_opts.fargs,
+                bang = cmd_opts.bang,
+                mods = cmd_opts.smods,
+              }, {})
+            end
+          )
+        end, create_opts)
+      end
+    )
+  end,
+  tied.do_nothing
+)
+
+M.plugin_loaded = tie(
   "Check if a plugin is loaded",
   ---@param plugin_name string
   ---@return boolean?
@@ -329,26 +339,27 @@ M.check_if_plugin_loaded = tie(
     -- true: has finished loading
     return vim.tbl_get(M.plugins, plugin_name, "loaded")
   end,
-  function() return false end
+  tied.do_rethrow
 )
 
-M.on_plugin_load = tie(
+M.on_plugins_load = tie(
   "Run code if/when a plugin is loaded",
-  --- @param plugin string|string[]
   --- @param desc string
+  --- @param plugin_names string[]
   --- @param on_load function
-  function(plugin, desc, on_load)
-    vim.validate("plugin", plugin, { "string", "table" })
+  function(desc, plugin_names, on_load)
     vim.validate("desc", desc, "string")
+    vim.validate("plugin_names", plugin_names, "table")
     vim.validate("on_load", on_load, "function")
 
-    on_load = vim.schedule_wrap(tie(desc, on_load, tied.do_nothing))
+    on_load = tie(desc, on_load, tied.do_nothing)
 
-    local plugin_names = type(plugin) == "string" and { plugin } or plugin --[[@as string[] ]]
     local plugins_loaded = {}
 
     for _, name in ipairs(plugin_names) do
-      plugins_loaded[name] = vim.tbl_get(M.plugins, name, "loaded") == true
+      assert(M.plugins[name], ("Plugin %s not defined"):format(name))
+
+      plugins_loaded[name] = M.plugins[name].loaded == true
     end
 
     if not vim.list_contains(vim.tbl_values(plugins_loaded), false) then
@@ -358,7 +369,7 @@ M.on_plugin_load = tie(
         desc = "On plugin load -> " .. desc,
         event = "User",
         pattern = "OnPluginLoad",
-        group = tied.create_augroup("my.on_plugin_load", false), -- don't clear
+        group = tied.create_augroup("my.on_plugins_load", false), -- don't clear
         callback = function(e)
           local plugin_name = e.data.name
 
@@ -377,6 +388,71 @@ M.on_plugin_load = tie(
   tied.do_nothing
 )
 
+M.autocmd_configs = {
+  {
+    desc = "Build on plugin install/update",
+    event = "PackChangedPre",
+    group = tied.create_augroup("my.pack.build", true),
+    callback = function(ev)
+      if not vim.list_contains({ "install", "update" }, ev.data.kind) then
+        return
+      end
+
+      local plugin_name = ev.data.spec.name
+      local spec = M.plugins[plugin_name] or {}
+
+      if not spec.build then
+        return
+      end
+
+      if spec.loaded then
+        spec.build()
+      else
+        tied.create_autocmd({
+          desc = "Run build command for plugin " .. plugin_name,
+          event = "User",
+          pattern = "PluginBuild",
+          group = tied.create_augroup("my.pack.build." .. plugin_name, true),
+          callback = function(e)
+            if e.data.name == plugin_name then
+              pcall(vim.api.nvim_del_autocmd, e.id)
+              spec.build()
+            end
+          end,
+        })
+      end
+    end,
+  },
+  {
+    desc = "Call AfterUI event",
+    event = "UIEnter",
+    once = true,
+    group = tied.create_augroup("my.pack.run_after_uienter", true),
+    callback = vim.schedule_wrap(function()
+      vim.g.did_ui_enter = true
+      vim.api.nvim_exec_autocmds("User", {
+        pattern = "AfterUI",
+        modeline = false,
+      })
+    end),
+  },
+  {
+    desc = "Load early plugins",
+    event = "UIEnter",
+    group = tied.create_augroup("my.pack.load_early_plugins", true),
+    once = true,
+    callback = function() M.load_plugins(M.early_load_queue) end,
+  },
+  {
+    desc = "Load lazy plugins",
+    event = "User",
+    pattern = "AfterUI",
+    group = tied.create_augroup("my.pack.load_lazy_plugins", true),
+    once = true,
+    callback = function() M.load_plugins(M.lazy_load_queue) end,
+  },
+}
+
 M.setup = tie("Setup plugin manager", function()
   M.add_plugin_specs(tied.dir({
     path = vim.fn.stdpath("config") .. "/lua/plugin",
@@ -388,64 +464,49 @@ M.setup = tie("Setup plugin manager", function()
   }))
 
   tied.plugins = M.plugins
-  tied.check_if_plugin_loaded = M.check_if_plugin_loaded
-  tied.load_plugin = M.load_plugin
-  tied.on_plugin_load = M.on_plugin_load
+  tied.plugin_loaded = M.plugin_loaded
+  tied.load_plugins = M.load_plugins
+  tied.on_plugins_load = M.on_plugins_load
 
-  tied.create_autocmd({
-    desc = "Load lazy plugins",
-    event = "UIEnter",
-    once = true,
-    group = tied.create_augroup("my.pack.after_ui_enter", true),
-    callback = vim.schedule_wrap(function()
-      vim.g.did_ui_enter = true
-      vim.api.nvim_exec_autocmds("User", {
-        pattern = "VeryLazy",
-        modeline = false,
-      })
-    end),
-  })
-  tied.create_autocmd({
-    desc = "Build on plugin install/update",
-    event = "PackChangedPre",
-    group = tied.create_augroup("my.pack.build", true),
-    callback = function(ev)
-      if vim.list_contains({ "install", "update" }, ev.data.kind) then
-        local plugin_name = ev.data.spec.name
-        local build = vim.tbl_get(M.plugins, plugin_name, "build")
+  tied.for_list(
+    "Queue plugin related autocmd to create",
+    M.autocmd_configs,
+    function(_, cmd_opts) tied.create_autocmd(cmd_opts) end
+  )
 
-        if build then
-          tied.create_autocmd({
-            desc = "Run build command for plugin " .. plugin_name,
-            event = "User",
-            pattern = "PluginBuild",
-            group = tied.create_augroup("my.pack.build." .. plugin_name, true),
-            callback = function(e)
-              if e.data.name == plugin_name then
-                pcall(vim.api.nvim_del_autocmd, e.id)
-                build()
-              end
-            end,
-          })
-        end
-      end
-    end,
-  })
-
-  -- Run all init functions first, before loading any plugin
-  tied.for_table("Init plugin", M.plugins, function(_, spec)
+  tied.for_table("Setup a plugin", M.plugins, function(_, spec)
+    -- Init functions are ran before any plugin is loaded
     if spec.init then
       spec.init()
     end
+
+    -- Don't load at all on lazy = nil
+
+    if spec.lazy == false then
+      table.insert(M.early_load_queue, spec.name)
+    end
+
+    if spec.lazy == true then
+      table.insert(M.lazy_load_queue, spec.name)
+    end
+
+    if spec.ft then
+      M.create_ft_event(spec)
+    end
+
+    if spec.cmd then
+      M.create_cmd_stubs(spec)
+    end
+
+    table.insert(M.to_install, {
+      src = spec.src,
+      version = spec.version,
+      name = spec.name,
+    })
   end)
 
-  tied.for_table("Setup plugin loading", M.plugins, function(_, spec)
-    if spec.lazy == false then
-      M.load_plugin(spec.name)
-    elseif spec.event or spec.cmd then
-      M.create_stubs(spec.name)
-    end
-  end)
+  -- Install, but don't load
+  vim.pack.add(M.to_install, { load = function() end, confirm = false })
 
   -- Enable built-in plugins later
   vim.schedule(function()

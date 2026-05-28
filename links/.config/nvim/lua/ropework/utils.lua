@@ -182,7 +182,7 @@ tied.dir = tie(
 tied.colorscheme_config = tie(
   "Configure colorscheme plugin",
   --- @param opts table
-  function(_, opts)
+  function(opts)
     vim.validate("opts", opts, "table")
 
     require(vim.g.colorscheme).setup(opts)

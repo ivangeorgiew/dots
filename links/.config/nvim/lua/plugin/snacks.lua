@@ -3,18 +3,21 @@
 ---@module "snacks"
 ---@type PluginSpec
 local M = {
-  "ivangeorgiew/snacks.nvim",
+  src = "ivangeorgiew/snacks.nvim",
   lazy = false,
   opts = {},
 }
 
 M.opts.styles = {
   ---@type snacks.win.Config
+  notification = {
+    wo = { conceallevel = 0 },
+  },
   notification_history = {
     height = 0.8,
     width = 0.8,
     minimal = true,
-    wo = { conceallevel = 2 },
+    wo = { conceallevel = 0 },
   },
 }
 
@@ -89,7 +92,7 @@ M.opts.notifier.custom.maps = {
 M.opts.notifier.custom.config = tie(
   "Plugin snacks.notifier -> config",
   ---@param opts snacks.Config
-  function(_, opts)
+  function(opts)
     vim.validate("opts", opts, "table")
 
     if opts.notifier.custom.show_lsp_progress then
@@ -116,7 +119,7 @@ M.opts.notifier.custom.config = tie(
   tied.do_nothing
 )
 
-M.config = tie("Plugin snacks -> config", function(_, opts)
+M.config = tie("Plugin snacks -> config", function(opts)
   require("snacks").setup(opts)
 
   tied.for_table(
@@ -131,7 +134,7 @@ M.config = tie("Plugin snacks -> config", function(_, opts)
 
       tied.do_block(desc_start .. "Custom config", function()
         if vim.tbl_get(module, "custom", "config") then
-          module.custom.config(_, opts)
+          module.custom.config(opts)
         end
       end)
 
@@ -146,9 +149,9 @@ M.config = tie("Plugin snacks -> config", function(_, opts)
       end)
 
       if vim.tbl_get(module, "custom", "which_key") then
-        tied.on_plugin_load(
-          "which-key.nvim",
+        tied.on_plugins_load(
           desc_start .. "Modify which-key mappings",
+          { "which-key.nvim" },
           function() require("which-key").add(module.custom.which_key) end
         )
       end

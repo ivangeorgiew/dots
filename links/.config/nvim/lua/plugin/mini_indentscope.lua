@@ -3,8 +3,8 @@
 --- @type PluginSpec
 local M = {
   -- Show virtual line for current code scope
-  "nvim-mini/mini.indentscope",
-  event = "VeryLazy",
+  src = "nvim-mini/mini.indentscope",
+  lazy = true,
   opts = {
     symbol = "▏",
     options = {
@@ -74,7 +74,7 @@ M.opts.draw.animation = tie(
   function() return 0 end
 )
 
-M.config = tie("Plugin mini.indentscope -> config", function(_, opts)
+M.config = tie("Plugin mini.indentscope -> config", function(opts)
   require("mini.indentscope").setup(opts)
 
   tied.set_hl(0, "MiniIndentscopeSymbol", { link = M.opts.custom.hl_group })
@@ -90,9 +90,9 @@ M.config = tie("Plugin mini.indentscope -> config", function(_, opts)
     end,
   })
 
-  tied.on_plugin_load(
-    "which-key.nvim",
+  tied.on_plugins_load(
     "Modify mini.indentscope mappings for which-key",
+    { "which-key.nvim" },
     function()
       local maps = {}
       local hint_opts = {

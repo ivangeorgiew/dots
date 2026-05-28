@@ -134,7 +134,7 @@ local log_error = function(desc, err, args)
         local line = ("%s- %s:%d"):format(ind, source, info.currentline)
 
         if info.name and info.namewhat then
-          line = ("%s _in_ **%s** %s"):format(line, info.namewhat, info.name)
+          line = ("%s in %s %s"):format(line, info.namewhat, info.name)
         end
 
         lines[#lines + 1] = line
@@ -179,7 +179,7 @@ local log_error = function(desc, err, args)
   end
 end
 
---- @alias tie.on_catch fun(props: { desc: string, err: string, args: table }): any
+--- @alias tie.on_catch fun(props: { desc: string, err: string, args: table }): any, any, any, any, any, any, any, any, any, any
 
 --- Error-handle a function
 --- @generic F : function

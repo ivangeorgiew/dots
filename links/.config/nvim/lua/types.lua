@@ -1,14 +1,15 @@
 --- @meta
 
+--- @class PluginDependency
+--- @field src string
+--- @field name string?
+
 --- @class PluginSpec Plugin definition
---- @field [1] string
+--- @field src string
 --- @field name string?
 --- @field main string?
---- @field version string?
---- @field branch string?
---- @field tag string?
---- @field commit string?
---- @field dependencies table?
+--- @field version string|vim.VersionRange?
+--- @field dependencies string[]|PluginDependency[]?
 --- @field enabled boolean?
 --- @field lazy boolean?
 --- @field dev boolean?
@@ -16,25 +17,9 @@
 --- @field init function?
 --- @field config function?
 --- @field build string|function?
---- @field event string|string[]?
 --- @field cmd string|string[]?
-
---- @class PluginSpecParsed Parsed plugin definition
---- @field src string
---- @field name string
---- @field main string
+--- @field ft string|string[]?
 --- @field loaded boolean?
---- @field version string|table?
---- @field dependencies table?
---- @field enabled boolean?
---- @field lazy boolean?
---- @field dev boolean?
---- @field opts table?
---- @field init function?
---- @field config function?
---- @field build function?
---- @field event string[]?
---- @field cmd string[]?
 
 --- @class LspConfig Used in lsp config files
 --- @field enable? boolean
