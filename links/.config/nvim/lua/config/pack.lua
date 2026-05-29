@@ -400,7 +400,7 @@ M.on_plugins_load = tie(
   tied.do_nothing
 )
 
-M.autocmd_configs = {
+M.autocmds = {
   {
     desc = "Build on plugin install/update",
     event = "PackChangedPre",
@@ -481,8 +481,8 @@ M.setup = tie("Setup plugin manager", function()
   tied.on_plugins_load = M.on_plugins_load
 
   tied.for_list(
-    "Queue plugin related autocmd to create",
-    M.autocmd_configs,
+    "Create plugin related autocmd",
+    M.autocmds,
     function(_, cmd_opts) tied.create_autocmd(cmd_opts) end
   )
 

@@ -65,6 +65,7 @@ M.setup = tie("Setup options", function()
   o.foldmethod = "marker" -- default fold method
   o.foldtext = "v:lua.tied.foldtext()" -- text for closed folds
   o.foldnestmax = 4 -- max nested fold levels
+  o.formatoptions = "tcrqnlj" -- auto formatting options
   o.grepformat = "%f:%l:%m" -- format for grep command
   o.grepprg = "rg -n --no-heading -. -S" -- faster alternative to grep
   o.hidden = false -- ask to save before closing buffers

@@ -135,9 +135,9 @@ M.to_create = {
    { "n", "<leader>tb", M.rhs.toggle_bool, { desc = "Toggle boolean under cursor" } },
    { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
    { "n", "<leader>tD", function() vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end , { desc = "Toggle diagnostics on/off" } },
-   { "n", "<leader>te", vim.diagnostic.setloclist, { desc = "Toggle errors list" } },
+   { "n", "<leader>te", vim.diagnostic.setqflist, { desc = "Toggle errors list" } },
    { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
-   { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.loclist')) ? ':lopen<cr>' : ':windo lclose<cr>'", { desc = "Toggle location list", expr = true } },
+   { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.quickfix')) ? ':copen<cr>' : ':cclose<cr>'", { desc = "Toggle quickfix list", expr = true } },
    { "n", "<leader>tu", "<cmd>Undotree<cr>", { desc = "Toggle undotree" } },
    { "n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle wrapping of lines" } },
 
@@ -147,12 +147,12 @@ M.to_create = {
    { "n", "-j", function() vim.lsp.buf.signature_help() end, { desc = "Show function signature" } },
    { "n", "-u", function() vim.lsp.buf.rename() end, { desc = "Rename variable" } },
    { "n", "-x", function() vim.lsp.codelens.run() end, { desc = "Run codelens" } },
-   { "n", "-D", function() vim.lsp.buf.declaration({ loclist = true }) end, { desc = "Go to declaration" } }, -- prefer `implementation`
-   { "n", "-d", function() vim.lsp.buf.definition({ loclist = true }) end, { desc = "Go to definition" } }, -- prefer `implementation`
-   { "n", "-i", function() vim.lsp.buf.implementation({ loclist = true }) end, { desc = "Go to implementation" } },
-   { "n", "-t", function() vim.lsp.buf.type_definition({ loclist = true }) end, { desc = "Go to type definition" } },
-   { "n", "-r", function() vim.lsp.buf.references(nil, { loclist = true }) end, { desc = "Show references" } },
-   { "n", "-s", function() vim.lsp.buf.document_symbol({ loclist = true }) end, { desc = "Show document symbols" } },
+   { "n", "-D", function() vim.lsp.buf.declaration() end, { desc = "Go to declaration" } }, -- prefer `implementation`
+   { "n", "-d", function() vim.lsp.buf.definition({ loclist = false }) end, { desc = "Go to definition" } }, -- prefer `implementation`
+   { "n", "-i", function() vim.lsp.buf.implementation({ loclist = false }) end, { desc = "Go to implementation" } },
+   { "n", "-t", function() vim.lsp.buf.type_definition({ loclist = false }) end, { desc = "Go to type definition" } },
+   { "n", "-r", function() vim.lsp.buf.references(nil, { loclist = false }) end, { desc = "Show references" } },
+   { "n", "-s", function() vim.lsp.buf.document_symbol({ loclist = false }) end, { desc = "Show document symbols" } },
    { "n", "-c", function() vim.lsp.document_color.color_presentation() end, { desc = "Change color representation" } },
    { { "n", "x" }, "-a", function() vim.lsp.buf.code_action() end, { desc = "Select code action" } },
 
@@ -217,12 +217,15 @@ M.to_create = {
   { "n", "J", "mzJg`z", { desc = "Join lines" } },
   { "n", "K", [[mzhf<space>"_cl<cr><esc>g`z]],{ desc = "Split line" } },
 
+  -- Change stuff
+  { "n", "<leader>cd", function() vim.fn.chdir(vim.fn.expand("%:p:h"), "global") end, { desc = "Change vim dir to current file location"} },
+  { "n", "<leader>ct", [[<cmd>tabe % | tabp | exec "normal! \<c-o>"<cr>]], { desc = "Move buffer to new tab and change to prev tab"} },
+
   -- Unrelated mappings
   { "n", "i", [[len(getline('.')) == 0 && empty(&buftype) ? '"_cc' : 'i']], { desc = "Enter insert mode", expr = true } },
   { "n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" } },
   { "n", "<F5>", function() tied.manage_session(true) end, { desc = "Load session" } },
   { "n", "<BS>", "dh", { desc = "Delete prev letter" } },
-  { "n", "<leader>cd", function() vim.fn.chdir(vim.fn.expand("%:p:h"), "global") end, { desc = "Change vim dir to current file location"} },
   { "n", "~", "~h", { desc = "Change case of symbol under cursor" } },
 
   -- Command mode abbreviations

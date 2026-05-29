@@ -52,21 +52,6 @@ M.config = {
     end,
   },
   {
-    desc = "Set local vim options",
-    event = "FileType",
-    callback = function(e)
-      local l = vim.opt_local
-      local should_wrap =
-        vim.list_contains({ "gitcommit", "markdown" }, e.match)
-
-      l.formatoptions = "tcrqnlj"
-
-      if should_wrap then
-        l.wrap = true
-      end
-    end,
-  },
-  {
     desc = "Create directories when saving files",
     event = "BufWritePre",
     callback = function()
@@ -84,49 +69,6 @@ M.config = {
       vim.cmd("normal! ms")
       vim.cmd([[silent! %s/\s\+$//]])
       vim.cmd("normal! g`s")
-    end,
-  },
-  {
-    desc = "Help window settings",
-    event = "Filetype",
-    pattern = "help",
-    callback = function() vim.cmd("wincmd L | vertical resize 80") end,
-  },
-  {
-    desc = "Undotree settings",
-    event = "Filetype",
-    pattern = "nvim-undotree",
-    callback = function()
-      vim.wo.foldenable = false
-      vim.cmd("vertical resize 40")
-    end,
-  },
-  {
-    desc = "On quickfix/location lists",
-    event = "Filetype",
-    pattern = "qf", -- matches both quickfix and location lists
-    callback = function(e)
-      -- move to the bottom of all other windows
-      vim.cmd("wincmd J")
-
-      ---@type KeymapSetArgs[]
-      local maps = {
-        -- stylua: ignore start
-        { "n", "<C-r>", "<cmd>Replace<cr>", { desc = "Replace text in files" } },
-        { "n", "<C-t>", "<C-w><CR><C-w>T", { desc = "Open list item in new tab" } },
-        { "n", "<C-s>", "<C-w><CR>", { desc = "Open list item in hor. split" } },
-        { "n", "<C-v>", "<C-w><CR>:windo lclose<cr><C-w>L:lopen<cr><cr>", { desc = "Open list item in vert. split" } },
-        -- stylua: ignore end
-      }
-
-      tied.for_list(
-        "Create quickfix/loc list keymap",
-        maps,
-        function(_, map_args)
-          map_args[4].buf = e.buf
-          tied.create_map(unpack(map_args))
-        end
-      )
     end,
   },
   {

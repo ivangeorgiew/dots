@@ -83,9 +83,9 @@ M.config = tie("Plugin todo-comments -> config", function(opts)
       -- stylua: ignore start
       { "n", "[t", todo.jump_prev, { desc = "Prev special comment" } },
       { "n", "]t", todo.jump_next, { desc = "Next special comment" } },
-      { "n", "<leader>tc", "<cmd>TodoLocList keywords=TODO,FIX<cr>", { desc = "Toggle Comments (TODO,FIX,etc)" } },
+      { "n", "<leader>tc", "<cmd>TodoQuickFix keywords=TODO,FIX<cr>", { desc = "Toggle Comments (TODO,FIX,etc)" } },
       { "ca", "TodoLocList", "TodoLocList keywords=TODO,FIX", {} },
-      { "ca", "TodoQuickFix", "TodoLocList keywords=TODO,FIX", {} },
+      { "ca", "TodoQuickFix", "TodoQuickFix keywords=TODO,FIX", {} },
       -- TODO: integrate with Telescope.nvim (:TodoTelescope)
       -- TODO: integrate with Trouble.nvim (:TodoTrouble)
       -- stylua: ignore end

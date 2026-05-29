@@ -75,6 +75,10 @@
       "rev": "6eb15358bb9fc88f0d3401d8538d56652e9bdf3c",
       "src": "https://github.com/neovim-treesitter/treesitter-parser-registry"
     },
+    "ts-comments.nvim": {
+      "rev": "123a9fb12e7229342f807ec9e6de478b1102b041",
+      "src": "https://github.com/folke/ts-comments.nvim"
+    },
     "which-key.nvim": {
       "rev": "3e97fffca6e06a21338aa7c0e5ec5e3ee0f80b79",
       "src": "https://github.com/ivangeorgiew/which-key.nvim"

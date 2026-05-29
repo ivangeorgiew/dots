@@ -26,8 +26,8 @@ local M = {
     },
     defer = tie(
       "Plugin which-key -> defer",
-      ---@param ctx { mode: string, operator: string }
-      function(ctx)
+      ---@param _ { mode: string, operator: string }
+      function(_)
         -- If it returns true, don't show which-key for
         -- the mode or operator until an additional key is pressed
         return false
@@ -39,12 +39,14 @@ local M = {
         mode = "n",
         { "<leader>t", group = "Toggle" },
         { "<leader>%", group = "Whole file" },
+        { "<leader>c", group = "Change" },
         { "q", group = "Quit" },
         { "-", group = "LSP" },
         { "D", group = "Cut", op = true },
         { "y", group = "Yank", op = true },
         { "gc", group = "Toggle comment", op = true },
         { "g@", desc = "Operator-pending mode" },
+        { "gd", desc = "Go to local definition" },
       },
       {
         mode = { "n", "x" },

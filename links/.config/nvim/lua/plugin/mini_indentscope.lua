@@ -1,5 +1,3 @@
--- TODO: Alternatives are "saghen/blink.indent", "folke/snacks.nvim".indent
-
 --- @type PluginSpec
 local M = {
   -- Show virtual line for current code scope
@@ -8,12 +6,12 @@ local M = {
   opts = {
     symbol = "▏",
     options = {
+      border = "both",
       indent_at_cursor = false, -- if true use cursor column instead of cursor line
       try_as_border = true, -- if true mark start and end lines as part of the inner scope
       n_lines = 10000, -- max lines above or below within which scope is computed
     },
     draw = {
-      -- animation() and predicate() are setup in M.config()
       delay = 100, -- Delay (in ms) between event and start of draw
       priority = 2, -- Increase to display on top of more symbols.
     },
@@ -28,7 +26,7 @@ local M = {
       min_lines = 2, -- Min lines to show scope for
       hl_group = "LineNr", -- Highlight group to use (ex: "LineNr" or "Whitespace")
       anim_opts = {
-        equation_idx = 2, -- 1 for no animation
+        equation_idx = 2, -- 1 for no animation (up to 6)
         easing = "in", --- @type "in"|"out"|"in-out" (default "in-out")
         duration = 10, --- @type number (default 20)
         unit = "step", --- @type "step"|"total" (default "step")
@@ -42,10 +40,10 @@ M.opts.draw.predicate = tie(
   ---@param scope table
   ---@return boolean
   function(scope)
-    local scope_lines = scope.border.bottom - scope.border.top
+    local scope_lines = scope.body.bottom - scope.body.top + 1
 
     return (
-      not scope.body.is_incomplete and scope_lines > M.opts.custom.min_lines
+      not scope.body.is_incomplete and scope_lines >= M.opts.custom.min_lines
     )
   end,
   function() return false end
@@ -81,7 +79,7 @@ M.config = tie("Plugin mini.indentscope -> config", function(opts)
 
   tied.create_autocmd({
     desc = "Disable plugin mini.indentscope on certain buffers/filetypes",
-    event = "BufEnter",
+    event = "FileType",
     group = tied.create_augroup("my.mini.indentscope.ignore", true),
     callback = function(e)
       vim.b[e.buf].miniindentscope_disable = (
@@ -105,12 +103,12 @@ M.config = tie("Plugin mini.indentscope -> config", function(opts)
       tied.for_table(
         "Plugin mini.indentscope -> Change keymap desc for which-key",
         hint_opts,
-        function(k, v)
-          local lhs = opts.mappings[k]
+        function(map_name, map_args)
+          local lhs = opts.mappings[map_name]
 
-          if lhs ~= "" then
-            v[1] = lhs
-            maps[#maps + 1] = v
+          if lhs and lhs ~= "" then
+            map_args[1] = lhs
+            maps[#maps + 1] = map_args
           end
         end
       )
