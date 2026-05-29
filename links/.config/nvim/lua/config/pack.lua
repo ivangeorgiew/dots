@@ -14,6 +14,7 @@ local M = {
     src = "string",
     name = "string",
     main = "string",
+    submodule = "boolean",
     version = { "string", "table" },
     dependencies = "table",
     enabled = "boolean",
@@ -34,6 +35,7 @@ M.parse_src = tie(
   ---@return string
   function(src)
     vim.validate("src", src, "string")
+    assert(src:match(".*/.*") ~= nil, "Repo not defined")
 
     -- stylua: ignore
     return vim.startswith("https://", src) and src or ("https://github.com/" .. src)
@@ -65,6 +67,8 @@ M.add_plugin_specs = tie(
         end
       end
     end
+
+    local sub_opts = {}
 
     tied.for_list("Parse plugin spec", raw_plugins, function(_, spec)
       for prop_name, prop_type in pairs(M.input_props) do
@@ -110,15 +114,28 @@ M.add_plugin_specs = tie(
         )
       end
 
-      if M.plugins[spec.name] then
-        local prev_opts = vim.tbl_get(M.plugins, spec.name, "opts")
-
-        M.plugins[spec.name].opts =
-          vim.tbl_deep_extend("error", prev_opts or {}, spec.opts or {})
-      else
+      if spec.submodule then
+        sub_opts[spec.name] =
+          vim.tbl_deep_extend("error", sub_opts[spec.name] or {}, spec.opts)
+      elseif not M.plugins[spec.name] then
         M.plugins[spec.name] = spec
+      else
+        error(("Plugin %s is defined more than once"):format(spec.name))
       end
     end)
+
+    tied.for_table(
+      "Merge submodule opts into main spec",
+      sub_opts,
+      function(spec_name, opts)
+        local main_spec = M.plugins[spec_name]
+
+        if main_spec then
+          main_spec.opts =
+            vim.tbl_deep_extend("error", main_spec.opts or {}, opts)
+        end
+      end
+    )
 
     tied.for_list(
       "Add missing dependencies to plugin list",
@@ -142,19 +159,14 @@ M.add_plugin_specs = tie(
             dep_spec.name = dependency:match(name_regex)
           end
 
-          vim.validate(("deps[[%d]].src"):format(idx), dep_spec.src, "string")
-          vim.validate(("deps[[%d]].name"):format(idx), dep_spec.name, "string")
+          vim.validate(("deps[%d].src"):format(idx), dep_spec.src, "string")
+          vim.validate(("deps[%d].name"):format(idx), dep_spec.name, "string")
 
           dep_spec.src = M.parse_src(dep_spec.src)
 
           table.insert(parsed_deps, dep_spec)
 
           if not M.plugins[dep_spec.name] then
-            local has_repo = dep_spec.src:match(".*/.*") ~= nil
-
-            -- stylua: ignore
-            assert(has_repo, ("dependencies[%d] repo not defined"):format(idx))
-
             M.plugins[dep_spec.name] = dep_spec
           end
         end

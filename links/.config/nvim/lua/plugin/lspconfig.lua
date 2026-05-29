@@ -11,7 +11,7 @@ local M = {
     diagnostics = {
       update_in_insert = false,
       severity_sort = true,
-      underline = true,
+      underline = false,
       -- virtual_lines = { current_line = true },
       virtual_text = { source = false, prefix = "", spacing = 1 },
       signs = {

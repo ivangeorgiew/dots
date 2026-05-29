@@ -8,6 +8,7 @@
 --- @field src string
 --- @field name string?
 --- @field main string?
+--- @field submodule boolean?
 --- @field version string|vim.VersionRange?
 --- @field dependencies string[]|PluginDependency[]?
 --- @field enabled boolean?

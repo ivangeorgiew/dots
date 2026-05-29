@@ -39,13 +39,22 @@ end
 -- Delete some builtin keymaps
 ---@type [string, string[]|string] []
 M.to_delete = {
-  { "<C-e>", "n" },
-  { "<C-s>", "i" },
-  { "<C-z>", "n" },
+  { "<C-e>", "n" }, -- scroll down
+  { "<C-n>", "i" }, -- ins-completion
+  { "<C-p>", "i" }, -- ins-completion
+  { "<C-z>", "n" }, -- sleep process
+  { "q", { "n", "x" } }, -- macro
+  { "Z", { "n", "x" } }, -- sleep process
+  { "ZZ", "n" }, -- write and close file
+
+  -- Navigation
   { "<Down>", { "n", "x" } },
   { "<Left>", { "n", "x" } },
   { "<Right>", { "n", "x" } },
   { "<Up>", { "n", "x" } },
+
+  -- vim.lsp default keybinds
+  { "<C-s>", "i" },
   { "gO", "n" },
   { "gra", { "n", "x" } },
   { "gri", "n" },
@@ -53,9 +62,6 @@ M.to_delete = {
   { "grr", "n" },
   { "grt", "n" },
   { "grx", "n" },
-  { "q", { "n", "x" } },
-  { "Z", { "n", "x" } },
-  { "ZZ", "n" },
 }
 
 ---@type KeymapSetArgs[]
