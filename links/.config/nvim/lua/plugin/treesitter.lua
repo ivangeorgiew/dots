@@ -32,6 +32,7 @@ local M = {
         folds = {},
       },
       -- Inner config
+      had_installs = false,
       installed = {}, ---@type string[]
       available = {}, ---@type table<string, boolean>
       seen_langs = {}, ---@type table<string, boolean>
@@ -48,10 +49,7 @@ M.opts.custom.get_injections = tie(
 
     local injected = {}
 
-    if
-      not vim.list_contains(M.opts.custom.installed, lang)
-      or not vim.treesitter.language.add(lang)
-    then
+    if not vim.treesitter.language.add(lang) then
       return injected
     end
 
@@ -108,6 +106,36 @@ M.opts.custom.delete_ignored_langs = tie(
   tied.do_nothing
 )
 
+M.opts.custom.install_injected = tie(
+  "Install injected languages",
+  ---@param installed string[]
+  function(installed)
+    local custom = M.opts.custom
+    local injected = {}
+
+    tied.for_list(
+      "Check installed lang for injections",
+      installed,
+      function(_, lang)
+        tied.for_list(
+          "Add injected lang to queue",
+          custom.get_injections(lang),
+          function(_, inj) injected[inj] = true end
+        )
+      end
+    )
+
+    local is_installing = custom.install_langs(vim.tbl_keys(injected))
+
+    -- Every other task is finished because of :await()
+    -- and last call didn't install any new langs
+    if not is_installing and custom.had_installs then
+      vim.notify("[treesitter]: Finished installs. Restart neovim!")
+    end
+  end,
+  tied.do_nothing
+)
+
 M.opts.custom.install_langs = tie(
   "Plugin nvim-treesitter -> Install languages",
   ---@param ensure_installed string[]
@@ -124,18 +152,19 @@ M.opts.custom.install_langs = tie(
     while #queue > 0 do
       local lang = table.remove(queue, 1)
 
-      if
-        custom.available[lang]
-        and not vim.list_contains(custom.installed, lang)
-        and not vim.list_contains(custom.ignore, lang)
-      then
-        to_install[lang] = true
-
+      if custom.available[lang] then
         tied.for_list(
           "Add all dependencies to queue",
           vim.tbl_get(ts_parsers, lang, "requires") or {},
           function(_, dep) table.insert(queue, dep) end
         )
+
+        if
+          not vim.list_contains(custom.installed, lang)
+          and not vim.list_contains(custom.ignore, lang)
+        then
+          to_install[lang] = true
+        end
       end
     end
 
@@ -147,46 +176,14 @@ M.opts.custom.install_langs = tie(
 
     ts.install(to_install, { max_jobs = 8, summary = true })
       :await(tie("Update things after installing treesitter langs", function()
+        custom.had_installs = true
         custom.installed = ts.get_installed()
 
         -- Reload to get access to new injections so you can install them
         package.loaded["vim.treesitter.query"] = nil
         vim.treesitter.query = require("vim.treesitter.query")
 
-        local injected = {}
-
-        tied.for_list(
-          "Check installed lang for injections",
-          to_install,
-          function(_, lang)
-            tied.for_list(
-              "Add injected lang to queue",
-              custom.get_injections(lang),
-              function(_, inj) injected[inj] = true end
-            )
-          end
-        )
-
-        local has_installs = custom.install_langs(vim.tbl_keys(injected))
-
-        -- Every other task is finished because of :await()
-        -- and last call didn't install any new langs
-        if not has_installs then
-          vim.notify("[treesitter]: Finished installs")
-
-          tied.for_list(
-            "Start ts in all possible bufs",
-            vim.api.nvim_list_bufs(),
-            function(_, bufnr)
-              local lang =
-                vim.treesitter.language.get_lang(vim.bo[bufnr].filetype)
-
-              if lang then
-                custom.start_ts_in_buf(lang, bufnr)
-              end
-            end
-          )
-        end
+        custom.install_injected(to_install)
       end, tied.do_nothing))
 
     return true
@@ -212,50 +209,6 @@ M.opts.custom.should_enable = tie(
   function() return false end
 )
 
-M.opts.custom.start_ts_in_buf = tie(
-  "Plugin nvim-treesitter -> Start in a buffer",
-  ---@param lang string
-  ---@param bufnr number
-  function(lang, bufnr)
-    vim.validate("lang", lang, "string")
-    vim.validate("bufnr", bufnr, "number")
-
-    if
-      not vim.api.nvim_buf_is_loaded(bufnr)
-      or not vim.treesitter.language.add(lang)
-    then
-      return
-    end
-
-    local should_enable = M.opts.custom.should_enable
-
-    if should_enable(lang, "highlights") then
-      pcall(vim.treesitter.start, bufnr)
-    end
-
-    if should_enable(lang, "indents") then
-      vim.bo[bufnr].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-    end
-
-    if should_enable(lang, "folds") then
-      if bufnr == 0 then
-        vim.wo.foldmethod = "expr"
-        vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-      else
-        tied.for_list(
-          "Set treesitter fold opts",
-          vim.fn.win_findbuf(bufnr),
-          function(_, winid)
-            vim.wo[winid].foldmethod = "expr"
-            vim.wo[winid].foldexpr = "v:lua.vim.treesitter.foldexpr()"
-          end
-        )
-      end
-    end
-  end,
-  tied.do_nothing
-)
-
 M.config = tie("Plugin nvim-treesitter -> config", function(opts)
   local ts = require("nvim-treesitter")
   local custom = opts.custom
@@ -268,6 +221,7 @@ M.config = tie("Plugin nvim-treesitter -> config", function(opts)
 
   custom.installed = ts.get_installed()
   custom.delete_ignored_langs()
+  custom.install_injected(custom.installed) -- in case of premature nvim restart
   custom.install_langs(vim.tbl_keys(custom.seen_langs))
 end, tied.do_nothing)
 
@@ -279,6 +233,7 @@ M.init = tie("Plugin nvim-treesitter -> init", function()
     callback = function(ev)
       local lang = vim.treesitter.language.get_lang(ev.match)
       local custom = M.opts.custom
+      local should_enable = custom.should_enable
 
       if not lang then
         return
@@ -294,8 +249,22 @@ M.init = tie("Plugin nvim-treesitter -> init", function()
         end
       end
 
-      -- Set bufnr 0 so that only current window fold settings are changed
-      custom.start_ts_in_buf(lang, 0)
+      if not vim.treesitter.language.add(lang) then
+        return
+      end
+
+      if should_enable(lang, "highlights") then
+        pcall(vim.treesitter.start)
+      end
+
+      if should_enable(lang, "indents") then
+        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      end
+
+      if should_enable(lang, "folds") then
+        vim.wo.foldmethod = "expr"
+        vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+      end
     end,
   })
 end, tied.do_nothing)
