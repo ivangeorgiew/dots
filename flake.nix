@@ -8,12 +8,6 @@
     nixpkgs.url = "github:nixos/nixpkgs/36a601196c4ebf49e035270e10b2d103fe39076b"; # branch nixos-25.11
     nixpkgs-unstable.url = "github:nixos/nixpkgs/0726a0ecb6d4e08f6adced58726b95db924cef57"; # branch nixos-unstable
 
-    # Fixes the failed mount of /usr/bin during boot with just `services.envfs.enable = true;`
-    envfs = {
-      url = "github:Mic92/envfs/a92d24718e5b9122f16655b953ae98f0cb2a19a9";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     hyprland.url = "github:hyprwm/Hyprland/v0.54.3";
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins/b85a56b9531013c79f2f3846fd6ee2ff014b8960"; # TODO: change to tag when added
@@ -46,19 +40,19 @@
     formatter.${system} = pkgs.alejandra;
 
     # Custom packages, to use through `nix build`, `nix shell`, etc.
-    packages.${system} = import ./pkgs {inherit pkgs;};
+    packages.${system} = import ./nix/pkgs {inherit pkgs;};
 
     # Flake templates
-    # templates.default = {
-    #   description = "Default shell template";
-    #   path = ./shell_template;
-    # };
+    templates.default = {
+      description = "Default shell template";
+      path = ./nix/shell_template;
+    };
 
     # Package overlays
-    overlays.default = import ./overlays.nix {inherit inputs outputs lib system nixpkgs-opts;};
+    overlays.default = import ./nix/overlays.nix {inherit inputs outputs lib system nixpkgs-opts;};
 
     # NixOS Modules
-    nixosModules = import ./modules {inherit lib;};
+    nixosModules = import ./nix/modules {inherit lib;};
 
     # Configurations
     nixosConfigurations = {
@@ -71,10 +65,7 @@
         };
         modules =
           (builtins.attrValues outputs.nixosModules)
-          ++ [
-            ./modules/hardware_mahcomp.nix
-            inputs.envfs.nixosModules.envfs
-          ];
+          ++ [./nix/modules/hardware_mahcomp.nix];
       };
     };
   };

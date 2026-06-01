@@ -271,6 +271,18 @@ in {
       withNodeJs = true;
     };
 
+    # IDE/Text editor
+    vscode = {
+      enable = false;
+
+      package = pkgs.unstable.vscode;
+      # Should be unneeded cuz of nix-ld (extension install should work ootb)
+      # package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib openssl.dev pkg-config ]);
+      # extensions = with pkgs.vscode-extensions; [];
+
+      defaultEditor = false;
+    };
+
     java = {
       enable = true;
       # binfmt = true;

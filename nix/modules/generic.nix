@@ -170,12 +170,12 @@
         bgd = {
           description = "Bulgarian";
           languages = ["bul"];
-          symbolsFile = ../xkb/bgd;
+          symbolsFile = ../../xkb/bgd;
         };
         rud = {
           description = "Russian";
           languages = ["rus"];
-          symbolsFile = ../xkb/rud;
+          symbolsFile = ../../xkb/rud;
         };
       };
     };
@@ -206,6 +206,12 @@
 
     # Toggles flatpak
     flatpak.enable = false;
+
+    # Populates /bin and /usr/bin as on other Linux distros
+    envfs = {
+      enable = true;
+      package = pkgs.custom.envfs;
+    };
 
     # for auto mounting of disks
     gvfs.enable = true;

@@ -51,6 +51,22 @@
         };
       });
 
+      envfs = unstable.envfs;
+      # TODO: remove when 1.2.0 is in nixpkgs
+      # envfs = unstable.envfs.overrideAttrs (oldAttrs: rec {
+      #   version = "1.2.0";
+      #   src = prev.fetchFromGitHub {
+      #     owner = "Mic92";
+      #     repo = "envfs";
+      #     rev = version;
+      #     hash = "sha256-hj/6zS9ebF0IDqgc1Dne59nWx80nk6jn2gj8BzQUFIQ=";
+      #   };
+      #   cargoDeps = prev.rustPlatform.fetchCargoVendor {
+      #     src = src;
+      #     hash = "sha256-dz3gpE464jnmSDsAsmJHcxUsEKeUURNoUjgGU2214Xg=";
+      #   };
+      # });
+
       # Spotify without ads
       # https://github.com/NL-TCH/nur-packages/blob/master/pkgs/spotify-adblock/default.nix
       spotify-no-ads = let

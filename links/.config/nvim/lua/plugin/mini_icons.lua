@@ -3,7 +3,7 @@ local M = {
   -- Pretty icons
   src = "nvim-mini/mini.icons",
   opts = {
-    extension = {
+    filetype = {
       json = { glyph = "" },
     },
   },
