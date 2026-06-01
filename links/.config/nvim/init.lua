@@ -2,7 +2,7 @@
 -- TODO: Create custom statusline without plugin which uses: vim.lsp.status() and vim.diagnostic.status()
 -- TODO: Add the diffview.nvim plugin
 -- TODO: Consider using the fff file picker for speed
--- TODO: Change all the Go to commands to open in new tab/vsplit (gf, -i, -d, etc.)
+-- TODO: Change all the `go to` commands to open in new tab/vsplit (gf, -i, -d, etc.)
 -- TODO: Maybe use vim.ui2 - https://www.reddit.com/r/neovim/comments/1shj1jn/routing_and_filtering_messages_via_type_and_kind/
 -- TODO: Go through the NvChad plugin files
 -- TODO: Go through the pwnvim plugin files
@@ -15,8 +15,7 @@
 -- TODO: Check other TODOs throughout my neovim config
 -- TODO: Check all the plugins in `awesome-neovim`
 
--- Measure nvim startup time as the first code
--- that is executed for accuracy
+-- Measure nvim startup time as the first code that is executed for accuracy
 vim.g.startup_time = vim.uv.hrtime()
 vim.api.nvim_create_autocmd("UIEnter", {
   desc = "Record the nvim startup time",
@@ -29,7 +28,7 @@ vim.api.nvim_create_autocmd("UIEnter", {
 })
 
 vim.loader.enable() -- Cached loader (should improve startup time)
-require("ropework") -- Error handling logic
+require("ropework") -- Error-handling logic
 
 tied.for_list(
   "Initialize a config file",

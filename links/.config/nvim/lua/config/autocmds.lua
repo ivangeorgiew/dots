@@ -63,15 +63,6 @@ M.config = {
     end,
   },
   {
-    desc = "Remove ending whitespace",
-    event = "BufWritePre",
-    callback = function()
-      vim.cmd("normal! ms")
-      vim.cmd([[silent! %s/\s\+$//]])
-      vim.cmd("normal! g`s")
-    end,
-  },
-  {
     desc = "Set float window settings",
     event = "WinNew",
     callback = function()

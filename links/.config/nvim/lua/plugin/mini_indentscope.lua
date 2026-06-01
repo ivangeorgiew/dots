@@ -22,16 +22,6 @@ local M = {
       goto_top = "[s", -- go to start of scope
       goto_bottom = "]s", -- go to end of scope
     },
-    custom = {
-      min_lines = 2, -- Min lines to show scope for
-      hl_group = "LineNr", -- Highlight group to use (ex: "LineNr" or "Whitespace")
-      anim_opts = {
-        equation_idx = 2, -- 1 for no animation (up to 6)
-        easing = "in", --- @type "in"|"out"|"in-out" (default "in-out")
-        duration = 10, --- @type number (default 20)
-        unit = "step", --- @type "step"|"total" (default "step")
-      },
-    },
   },
 }
 
@@ -42,9 +32,7 @@ M.opts.draw.predicate = tie(
   function(scope)
     local scope_lines = scope.body.bottom - scope.body.top + 1
 
-    return (
-      not scope.body.is_incomplete and scope_lines >= M.opts.custom.min_lines
-    )
+    return (not scope.body.is_incomplete and scope_lines >= 2)
   end,
   function() return false end
 )
@@ -56,18 +44,15 @@ M.opts.draw.animation = tie(
   ---@return number
   function(step, n_steps)
     local anim_tbl = require("mini.indentscope").gen_animation
-    local anim_types = {
-      "none",
-      "linear",
-      "quadratic",
-      "cubic",
-      "quartic",
-      "exponential",
+    local anim_opts = {
+      easing = "in", --- @type "in"|"out"|"in-out" (default "in-out")
+      duration = 10, --- @type number (default 20)
+      unit = "step", --- @type "step"|"total" (default "step")
     }
-    local anim_opts = M.opts.custom.anim_opts
-    local anim_type = anim_types[anim_opts.equation_idx]
+    -- stylua: ignore
+    local anim_types = { "none", "linear", "quadratic", "cubic", "quartic", "exponential", }
 
-    return anim_tbl[anim_type](anim_opts)(step, n_steps)
+    return anim_tbl[anim_types[1]](anim_opts)(step, n_steps)
   end,
   function() return 0 end
 )
@@ -75,49 +60,27 @@ M.opts.draw.animation = tie(
 M.config = tie("Plugin mini.indentscope -> config", function(opts)
   require("mini.indentscope").setup(opts)
 
-  tied.set_hl(0, "MiniIndentscopeSymbol", { link = M.opts.custom.hl_group })
+  tied.set_hl(0, "MiniIndentscopeSymbol", { link = "LineNr" })
 
   tied.create_autocmd({
-    desc = "Disable plugin mini.indentscope on certain buffers/filetypes",
+    desc = "Set mini.indentscope buffer local options",
     event = "FileType",
-    group = tied.create_augroup("my.mini.indentscope.ignore", true),
+    group = tied.create_augroup("my.mini.indentscope", true),
     callback = function(e)
+      local ft = e.match
+      local indent_langs = { "python", "haskell", "elm", "nim" }
+
+      -- Disable on non-files
       vim.b[e.buf].miniindentscope_disable = (
         not tied.check_if_buf_is_file(e.buf)
       )
+
+      -- Fix scope on off-side rule languages (indent scoped)
+      if vim.list_contains(indent_langs, ft) then
+        vim.b[e.buf].miniindentscope_config = { options = { border = "top" } }
+      end
     end,
   })
-
-  tied.on_plugins_load(
-    "Modify mini.indentscope mappings for which-key",
-    { "which-key.nvim" },
-    function()
-      local maps = {}
-      local hint_opts = {
-        object_scope = { desc = "inner scope", mode = { "o", "x" } },
-        object_scope_with_border = { desc = "scope", mode = { "o", "x" } },
-        goto_top = { desc = "Prev scope start", mode = { "n", "x" } },
-        goto_bottom = { desc = "Next scope end", mode = { "n", "x" } },
-      }
-
-      tied.for_table(
-        "Plugin mini.indentscope -> Change keymap desc for which-key",
-        hint_opts,
-        function(map_name, map_args)
-          local lhs = opts.mappings[map_name]
-
-          if lhs and lhs ~= "" then
-            map_args[1] = lhs
-            maps[#maps + 1] = map_args
-          end
-        end
-      )
-
-      if #maps > 0 then
-        require("which-key").add(maps)
-      end
-    end
-  )
 end, tied.do_nothing)
 
 return M

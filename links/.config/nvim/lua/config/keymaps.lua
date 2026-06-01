@@ -93,6 +93,7 @@ M.to_create = {
   { "i", "<C-l>", "<Right>", { desc = "Move right" } },
 
   -- Split navigation
+  -- TODO: Change this and corresponding code in kitty config when you start using built-in neovim terminals
   { "n", "<C-h>", "<cmd>Navigate h<cr>", { desc = "Go to left split"  } },
   { "n", "<C-l>", "<cmd>Navigate l<cr>", { desc = "Go to right split" } },
   { "n", "<C-k>", "<cmd>Navigate k<cr>", { desc = "Go to upper split" } },
@@ -133,6 +134,7 @@ M.to_create = {
 
    -- Toggle things
    { "n", "<leader>tb", M.rhs.toggle_bool, { desc = "Toggle boolean under cursor" } },
+   { "n", "<leader>tC", function() vim.lsp.document_color.enable(not vim.lsp.document_color.is_enabled()) end, { desc = "Toggle color references" } },
    { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
    { "n", "<leader>tD", function() vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end , { desc = "Toggle diagnostics on/off" } },
    { "n", "<leader>te", vim.diagnostic.setqflist, { desc = "Toggle errors list" } },
@@ -184,10 +186,10 @@ M.to_create = {
   { "n", "zN", "zR", { desc = "Open all folds" } }, -- opposite of zM
 
   -- Search in file
-  { "n", "/", "/\\c", { desc = "Search buffer for text", silent = false } },
-  { "n", "<leader>/", ":let @/=substitute(@/,'^\\\\c','','')<cr>", { desc = "Switch to case-sensitive" } },
-  { "x", "/", "\"ay/\\V<C-r>a<cr>", { desc = "Search for the selection", } },
-  { "x", "<leader>/", "<esc>/\\c\\%V", { desc = "Search in visual selection", silent = false } },
+  { "n", "/", "/\\c", { desc = "Forward search buffer for text", silent = false } },
+  { "n", "?", "?\\c", { desc = "Backward search buffer for text", silent = false } },
+  { "n", "<leader>/", ":let @/=substitute(@/,'^\\\\c','','')<cr>", { desc = "Switch to case-sensitive text search" } },
+  { "x", "/", "<esc>/\\c\\%V", { desc = "Search in visual selection", silent = false } },
 
   -- Find text in all files
   { "n", ")", ":Find ", { desc = "Find in all files", silent = false } },
@@ -211,7 +213,7 @@ M.to_create = {
 
   -- Change number under cursor
   { "n", "+", "<C-a>", { desc = "Increment number" } },
-  { "n", "?", "<C-x>", { desc = "Decrement number" } },
+  { "n", "_", "<C-x>", { desc = "Decrement number" } },
 
   -- Join/split line
   { "n", "J", "mzJg`z", { desc = "Join lines" } },
@@ -219,7 +221,7 @@ M.to_create = {
 
   -- Change stuff
   { "n", "<leader>cd", function() vim.fn.chdir(vim.fn.expand("%:p:h"), "global") end, { desc = "Change vim dir to current file location"} },
-  { "n", "<leader>ct", [[<cmd>tabe % | tabp | exec "normal! \<c-o>"<cr>]], { desc = "Move buffer to new tab and change to prev tab"} },
+  { "n", "<leader>ct", [[<cmd>tabe % | tabp | exec "normal! \<c-o>" | tabn<cr>]], { desc = "Move buffer to new tab and change to prev tab"} },
 
   -- Unrelated mappings
   { "n", "i", [[len(getline('.')) == 0 && empty(&buftype) ? '"_cc' : 'i']], { desc = "Enter insert mode", expr = true } },

@@ -1,21 +1,31 @@
+-- NOTE: In addition to the vim doc, there are recipes and explanations on:
+-- https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md
+
+--- @module "conform"
 --- @type PluginSpec
 local M = {
   -- File formatter by filetype
   src = "stevearc/conform.nvim",
   lazy = true,
+  ---@type conform.setupOpts
   opts = {
     formatters_by_ft = {
       lua = { "stylua" },
       nix = { "alejandra" },
-      -- javascript = { "prettierd" },
+      -- javascript = { "prettierd", "prettier", stop_after_first = true },
     },
-    notify_no_formatters = false,
+    ---@type table<string, conform.FormatterConfigOverride|fun(bufnr: integer): nil|conform.FormatterConfigOverride>
+    formatters = {
+      -- Experimental formatter for code chunks of different language than the filetype
+      -- injected = { options = { ignore_errors = true } },
+    },
+    notify_no_formatters = true,
     notify_on_error = false,
     default_format_opts = {
       timeout_ms = 3000,
       lsp_format = "fallback",
     },
-    format_on_save = true,
+    format_on_save = {},
   },
 }
 

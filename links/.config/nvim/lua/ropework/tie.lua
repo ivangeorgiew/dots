@@ -1,6 +1,9 @@
 -- Global table holding all things related to error-handling
 _G.tied = {}
 
+-- Disable tie() logic for debugging purposes
+tied._DISABLE = false
+
 -- All functions which are wrapped with `tie()`
 -- Keep weak references in order to be able to garbage collect
 tied.functions = setmetatable({}, { __mode = "k" })
@@ -192,7 +195,7 @@ local tie = function(desc, on_try, on_catch)
   vim.validate("on_try", on_try, "function")
   vim.validate("on_catch", on_catch, "function")
 
-  if tied.functions[on_try] then
+  if tied._DISABLE or tied.functions[on_try] then
     return on_try
   end
 

@@ -67,7 +67,7 @@ M.config = {
         })
       end
     end,
-    { desc = "Navigate between splits", nargs = 1 },
+    { desc = "Navigate between vim/kitty splits", nargs = 1 },
   },
   {
     "Find",

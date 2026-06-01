@@ -23,6 +23,7 @@ local M = {
       ---@type string[]
       ignore = {
         "comment", -- interferes when todo-comments.nvim
+        "kitty", -- broken highlighting and unneeded
       },
       ---@type table<string, { enable: boolean?, ignore: string[]? }>
       queries = {

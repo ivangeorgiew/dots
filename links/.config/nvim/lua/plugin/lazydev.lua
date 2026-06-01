@@ -1,3 +1,5 @@
+-- TODO: fix errors lsp errors in log: "semantic_tokens" { code = -32801, message = "Content modified." }
+
 --- @type PluginSpec
 local M = {
   src = "ivangeorgiew/lazydev.nvim",
@@ -7,7 +9,6 @@ local M = {
   opts = {
     library = {
       { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-      { path = "snacks.nvim", words = { "Snacks" } },
     },
     enabled = tie(
       "Plugin lazydev -> opts.enabled",

@@ -55,17 +55,16 @@ M.config = tie("Plugin nvim-lspconfig -> config", function(opts)
     tied.mason_install(to_install)
   end)
 
-  tied.do_block(
-    "Set color highlighting",
-    function() vim.lsp.document_color.enable(true, {}, { style = "virtual" }) end
-  )
+  tied.do_block("Set color highlighting style", function()
+    -- Disable by default for performance (has toggle keybind)
+    vim.lsp.document_color.enable(false, {}, { style = "virtual" })
+  end)
 
   tied.do_block(
-    "Set vim.diagnostic options",
+    "Set diagnostics options",
     function() vim.diagnostic.config(opts.diagnostics) end
   )
 
-  -- NOTE: Example inlay hints configs: https://github.com/MysticalDevil/inlay-hints.nvim/tree/master
   tied.set_hl(0, "LspInlayHint", { link = "Comment" })
 end, tied.do_nothing)
 
