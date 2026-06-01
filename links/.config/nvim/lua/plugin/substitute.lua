@@ -42,7 +42,7 @@ M.config = tie("Plugin substitute -> config", function(opts)
 
     tied.on_plugins_load(
       "Plugin substitute -> Modify which-key mappings",
-      { "which-key.nvim" },
+      { "which-key" },
       function()
         require("which-key").add({
           mode = { "n" },

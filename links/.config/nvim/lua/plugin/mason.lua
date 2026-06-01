@@ -47,10 +47,10 @@ M.mason.init = tie("Plugin mason -> init", function()
         return
       end
 
-      tied.load_plugins({ "mason.nvim", "mason-lock.nvim" })
+      tied.load_plugins({ "mason", "mason-lock" })
       tied.on_plugins_load(
         "Install tools after mason loaded",
-        { "mason.nvim", "mason-lock.nvim" },
+        { "mason", "mason-lock" },
         function()
           local mr = require("mason-registry")
 

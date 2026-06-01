@@ -7,7 +7,6 @@
 --- @class PluginSpec Plugin definition
 --- @field src string
 --- @field name string?
---- @field main string?
 --- @field submodule boolean?
 --- @field version string|vim.VersionRange?
 --- @field dependencies string[]|PluginDependency[]?
@@ -27,7 +26,7 @@
 --- @field lsp_name string
 --- @field pkg_name? string
 --- @field config? vim.lsp.Config
---- @field extra? table
+--- @field custom? table
 
 --- @class TiedDirOpts For tied.dir
 --- @field path string

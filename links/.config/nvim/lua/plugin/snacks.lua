@@ -1,4 +1,3 @@
----@module "snacks"
 ---@type PluginSpec
 local M = {
   src = "ivangeorgiew/snacks.nvim",
@@ -37,7 +36,7 @@ M.config = tie("Plugin snacks -> config", function(opts)
         if vim.tbl_get(module, "custom", "which_key") then
           tied.on_plugins_load(
             desc_start .. "Modify which-key mappings",
-            { "which-key.nvim" },
+            { "which-key" },
             function() require("which-key").add(module.custom.which_key) end
           )
         end

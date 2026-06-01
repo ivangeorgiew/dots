@@ -13,7 +13,6 @@ local M = {
   input_props = {
     src = "string",
     name = "string",
-    main = "string",
     submodule = "boolean",
     version = { "string", "table" },
     dependencies = "table",
@@ -35,11 +34,19 @@ M.parse_src = tie(
   ---@return string
   function(src)
     vim.validate("src", src, "string")
-    assert(src:match(".*/.*") ~= nil, "Repo not defined")
+    assert(src:match(".*/.*") ~= nil, "Invalid src")
 
     -- stylua: ignore
     return vim.startswith("https://", src) and src or ("https://github.com/" .. src)
   end,
+  tied.do_rethrow
+)
+
+M.parse_name = tie(
+  "Convert plugin spec src to name",
+  ---@param src string
+  ---@return string
+  function(src) return src:match("([^/]+)$"):gsub("%.nvim$", "") end,
   tied.do_rethrow
 )
 
@@ -82,11 +89,7 @@ M.add_plugin_specs = tie(
       spec.src = M.parse_src(spec.src)
 
       if not spec.name then
-        spec.name = spec.src:match("([^/]+)$")
-      end
-
-      if not spec.main then
-        spec.main = spec.name:gsub("%.nvim$", "")
+        spec.name = M.parse_name(spec.src)
       end
 
       if type(spec.build) == "string" then
@@ -102,7 +105,7 @@ M.add_plugin_specs = tie(
       if spec.opts and not spec.config then
         spec.config = tie(
           ("Plugin %s -> config"):format(spec.name),
-          function(opts) require(spec.main).setup(opts) end,
+          function(opts) require(spec.name).setup(opts) end,
           tied.do_nothing
         )
       end
@@ -110,7 +113,7 @@ M.add_plugin_specs = tie(
       if spec.dev == true then
         spec.src = ("file:///%s/%s"):format(
           vim.fn.expand(M.local_plugins_dir),
-          spec.name
+          spec.src:match("([^/]+)$") -- repo name, not plugin name
         )
       end
 
@@ -148,21 +151,21 @@ M.add_plugin_specs = tie(
         local parsed_deps = {}
 
         for idx, dependency in ipairs(spec.dependencies) do
-          local name_regex = "([^/]+)$"
           local dep_spec = {}
 
           if type(dependency) == "table" then
             dep_spec.src = dependency.src
-            dep_spec.name = dependency.name or dep_spec.src:match(name_regex)
+            dep_spec.name = dependency.name or dep_spec.src
           elseif type(dependency) == "string" then
             dep_spec.src = dependency
-            dep_spec.name = dependency:match(name_regex)
+            dep_spec.name = dependency
           end
 
           vim.validate(("deps[%d].src"):format(idx), dep_spec.src, "string")
           vim.validate(("deps[%d].name"):format(idx), dep_spec.name, "string")
 
           dep_spec.src = M.parse_src(dep_spec.src)
+          dep_spec.name = M.parse_name(dep_spec.name)
 
           table.insert(parsed_deps, dep_spec)
 
@@ -518,7 +521,7 @@ M.setup = tie("Setup plugin manager", function()
   end)
 
   -- Install, but don't load
-  vim.pack.add(M.to_install, { load = function() end, confirm = false })
+  pcall(vim.pack.add, M.to_install, { load = function() end, confirm = false })
 
   -- Enable built-in plugins later
   vim.schedule(function()

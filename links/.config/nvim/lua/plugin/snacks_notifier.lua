@@ -93,12 +93,18 @@ M.opts.notifier.custom.config = tie(
         event = "LspProgress",
         group = tied.create_augroup("my.snacks.notifier.lsp_spinner", true),
         callback = function(ev)
-          vim.notify(vim.lsp.status(), vim.log.levels.INFO, {
+          local status = vim.lsp.status()
+
+          if not status:match("Loading workspace") then
+            return
+          end
+
+          vim.notify(status, vim.log.levels.INFO, {
             id = "lsp_progress",
             title = "LSP Progress",
             opts = tie("Change LSP progress notification icon", function(notif)
-            -- stylua: ignore
-            local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+              -- stylua: ignore
+              local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏", }
 
               notif.icon = ev.data.params.value.kind == "end" and ""
                 or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]

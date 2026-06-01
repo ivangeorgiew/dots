@@ -1,10 +1,8 @@
--- TODO: fix errors lsp errors in log: "semantic_tokens" { code = -32801, message = "Content modified." }
-
+--- @module "lazydev"
 --- @type PluginSpec
 local M = {
   src = "ivangeorgiew/lazydev.nvim",
   lazy = true,
-  ---@module "lazydev"
   ---@type lazydev.Config
   opts = {
     library = {

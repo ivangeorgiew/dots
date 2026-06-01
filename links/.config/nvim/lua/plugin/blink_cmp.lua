@@ -1,4 +1,4 @@
---- @module "blink-cmp"
+--- @module "blink.cmp"
 --- @type PluginSpec
 local M = {
   -- Autocompletion
@@ -77,7 +77,7 @@ M.opts = {
           -- Affects whether path completions are relative to the buffer or the project root
           get_cwd = vim.fn.getcwd,
           trailing_slash = false,
-          label_trailing_slash = true,
+          -- label_trailing_slash = true,
         },
       },
     },
@@ -148,10 +148,11 @@ M.config = tie("Plugin blink.cmp -> Config", function(opts)
 
   opts.custom = nil -- Remove so blink.cmp doesn't complain
 
-  -- Always load lazydev if installed
-  -- It has internal logic to disable on non-lua projects
-  if tied.plugins["lazydev.nvim"] then
-    table.insert(to_load, "lazydev.nvim")
+  if tied.plugins["lazydev"] then
+    -- Always load lazydev if installed
+    -- It has internal logic to enable only on lua projects
+    table.insert(to_load, "lazydev")
+
     opts = vim.tbl_deep_extend("force", opts, custom.lazydev_opts)
   end
 

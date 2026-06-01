@@ -6,28 +6,28 @@
       "version": "1.0.0 - 2.0.0"
     },
     "catppuccin": {
-      "rev": "8edd468af4d63212b84d69b2ddb5ffc9023ef5eb",
+      "rev": "0303a7208dba448c459767486a38a6ec05c4216b",
       "src": "https://github.com/catppuccin/nvim"
     },
-    "conform.nvim": {
+    "conform": {
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "https://github.com/stevearc/conform.nvim"
     },
-    "garbage-day.nvim": {
+    "garbage-day": {
       "rev": "2fcc56556281de8ee871a5f3beb9db7ab747ef32",
       "src": "https://github.com/zeioth/garbage-day.nvim"
     },
-    "lazydev.nvim": {
+    "lazydev": {
       "rev": "a48aff30cfed17c69ba37ca8af2bde2b49d05420",
       "src": "https://github.com/ivangeorgiew/lazydev.nvim"
     },
-    "mason-lock.nvim": {
+    "mason": {
+      "rev": "16ba83bfc8a25f52bb545134f5bee082b195c460",
+      "src": "https://github.com/mason-org/mason.nvim"
+    },
+    "mason-lock": {
       "rev": "b75e2de585637a61b2fb818dc33dad7863b7b0c4",
       "src": "https://github.com/zapling/mason-lock.nvim"
-    },
-    "mason.nvim": {
-      "rev": "bb639d4bf385a4d89f478b83af4d770be05ab7eb",
-      "src": "https://github.com/mason-org/mason.nvim"
     },
     "mini.icons": {
       "rev": "520995f1d75da0e4cc901ee95080b1ff2bc46b94",
@@ -37,7 +37,7 @@
       "rev": "ad19b1f02223391f3d40440f7ff10607f0043585",
       "src": "https://github.com/nvim-mini/mini.indentscope"
     },
-    "neoscroll.nvim": {
+    "neoscroll": {
       "rev": "c8d29979cb0cb3a2437a8e0ae683fd82f340d3b8",
       "src": "https://github.com/karb94/neoscroll.nvim"
     },
@@ -58,32 +58,28 @@
       "src": "https://github.com/neovim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
-    "snacks.nvim": {
+    "snacks": {
       "rev": "93084d71417b746ee8cc12b7107052683a846134",
       "src": "https://github.com/ivangeorgiew/snacks.nvim"
     },
-    "substitute.nvim": {
+    "substitute": {
       "rev": "0d2077398552f069abccbd964a26dd7cd26882cd",
       "src": "https://github.com/gbprod/substitute.nvim"
     },
-    "todo-comments.nvim": {
+    "todo-comments": {
       "rev": "4aff2d8666bcff54836123bafdd8cb0cbc068af4",
       "src": "https://github.com/dtor/todo-comments.nvim",
       "version": "'remove-plenary'"
-    },
-    "tokyonight.nvim": {
-      "rev": "cdc07ac78467a233fd62c493de29a17e0cf2b2b6",
-      "src": "https://github.com/folke/tokyonight.nvim"
     },
     "treesitter-parser-registry": {
       "rev": "6eb15358bb9fc88f0d3401d8538d56652e9bdf3c",
       "src": "https://github.com/neovim-treesitter/treesitter-parser-registry"
     },
-    "ts-comments.nvim": {
+    "ts-comments": {
       "rev": "123a9fb12e7229342f807ec9e6de478b1102b041",
       "src": "https://github.com/folke/ts-comments.nvim"
     },
-    "which-key.nvim": {
+    "which-key": {
       "rev": "3e97fffca6e06a21338aa7c0e5ec5e3ee0f80b79",
       "src": "https://github.com/ivangeorgiew/which-key.nvim"
     }
