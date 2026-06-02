@@ -78,7 +78,7 @@
       vlc # video player
 
       # Programming apps
-      (python312.withPackages (ps: with ps; [pip]))
+      (python314.withPackages (ps: with ps; [pip]))
       go
       lua51Packages.lua
       luarocks
@@ -220,7 +220,7 @@
     neovim = {
       enable = true;
 
-      package = pkgs.custom.neovim-unwrapped;
+      package = pkgs.unstable.neovim-unwrapped;
 
       defaultEditor = true;
       viAlias = true;

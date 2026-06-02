@@ -40,32 +40,20 @@
   custom =
     outputs.packages.${system}
     // {
-      # Latest nvim stable version
-      neovim-unwrapped = unstable.neovim-unwrapped.overrideAttrs (oldAttrs: rec {
-        version = "0.12.2";
+      # TODO: remove when 1.2.0 is in nixpkgs
+      envfs = unstable.envfs.overrideAttrs (oldAttrs: rec {
+        version = "1.2.0";
         src = prev.fetchFromGitHub {
-          owner = "neovim";
-          repo = "neovim";
-          tag = "v${version}";
-          hash = "sha256-V+jZiNv0SvG/GOOUPzmBkOQGrnrN3UW2BY2n9NxP2Eg=";
+          owner = "Mic92";
+          repo = "envfs";
+          rev = version;
+          hash = "sha256-hj/6zS9ebF0IDqgc1Dne59nWx80nk6jn2gj8BzQUFIQ=";
+        };
+        cargoDeps = prev.rustPlatform.fetchCargoVendor {
+          src = src;
+          hash = "sha256-dz3gpE464jnmSDsAsmJHcxUsEKeUURNoUjgGU2214Xg=";
         };
       });
-
-      envfs = unstable.envfs;
-      # TODO: remove when 1.2.0 is in nixpkgs
-      # envfs = unstable.envfs.overrideAttrs (oldAttrs: rec {
-      #   version = "1.2.0";
-      #   src = prev.fetchFromGitHub {
-      #     owner = "Mic92";
-      #     repo = "envfs";
-      #     rev = version;
-      #     hash = "sha256-hj/6zS9ebF0IDqgc1Dne59nWx80nk6jn2gj8BzQUFIQ=";
-      #   };
-      #   cargoDeps = prev.rustPlatform.fetchCargoVendor {
-      #     src = src;
-      #     hash = "sha256-dz3gpE464jnmSDsAsmJHcxUsEKeUURNoUjgGU2214Xg=";
-      #   };
-      # });
 
       # Spotify without ads
       # https://github.com/NL-TCH/nur-packages/blob/master/pkgs/spotify-adblock/default.nix

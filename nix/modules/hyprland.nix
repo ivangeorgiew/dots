@@ -36,17 +36,17 @@ in {
 
       # Add .desktop entries from packages
       # Can later be accessed manually with `{service.displayManager.sessionData.desktops}/share`
-      # sessionPackages = with pkgs; [ ];
+      sessionPackages = lib.mkIf use_uwsm (lib.mkForce []); # Remove duplicate .desktop files
     };
 
     # greetd display manager
     greetd = {
       enable = true;
-      # vt = 1;
+
+      useTextGreeter = true; # If using TUI greeter like tuigreet
 
       settings = rec {
         # First login
-        # Comment out if you want to require password on first login
         initial_session = {
           command =
             if use_uwsm
@@ -56,6 +56,8 @@ in {
         };
 
         # Subsequent logins
+        # Currently there is a problem with blackscreen if used as initial session
+        # Works fine as default session though
         default_session = let
           tuigreet_flags = lib.concatStringsSep " " [
             "--debug /tmp/tuigreet.log"
@@ -210,12 +212,6 @@ in {
 
     uwsm = {
       package = pkgs.unstable.uwsm;
-      waylandCompositors = {
-        hyprland = {
-          # Must use `start-hyprland` instead of `Hyprland` here
-          binPath = lib.mkForce "/run/current-system/sw/bin/start-hyprland";
-        };
-      };
     };
 
     # app for gnome-keyring passwords management

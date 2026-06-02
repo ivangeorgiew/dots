@@ -65,8 +65,7 @@
       powerManagement.finegrained = false;
 
       # Choose driver package
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-      # package = config.boot.kernelPackages.nvidiaPackages.latest;
+      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
 
       # open-source version requires RTX 20 series and newer
       open = false;
