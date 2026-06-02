@@ -7,7 +7,11 @@
   graphicsCard,
   ...
 }: let
-  use_uwsm = true; # make sure to enable/disable UWSM stuff in hyprland config
+  use_uwsm = true; # NOTE: Make sure to enable/disable UWSM stuff in hyprland config
+  theme = "Arc-Dark";
+  iconTheme = "Papirus-Dark";
+  cursorTheme = "Bibata-Modern-Classic";
+  cursorSize = "24";
 in {
   nix.settings = {
     # Add hyprland binary cache
@@ -77,17 +81,17 @@ in {
     # https://discourse.nixos.org/t/swaylock-wont-unlock/27275
     swaylock = {};
     swaylock.fprintAuth = false;
-
-    # Unlock gnome-keyring on login with greetd
-    # Works only if you use password to login
-    # and have Default keyring created
-    greetd.enableGnomeKeyring = true;
   };
 
   environment = {
+    # Adds some needed folders in /run/current-system/sw
+    # pathsToLink = ["/share/wayland-session"];
+
     sessionVariables =
       # Generic
       {
+        XCURSOR_THEME = cursorTheme;
+        XCURSOR_SIZE = cursorSize;
         ELECTRON_OZONE_PLATFORM_HINT = "auto";
         NIXOS_OZONE_WL = "1";
         NVD_BACKEND = "direct";
@@ -146,14 +150,45 @@ in {
       # GUI apps
       unstable.hyprviz # GUI for configuring Hyprland
       networkmanagerapplet # manage wifi
-      nwg-look # GTK theme changing
-      nwg-icon-picker # GTK icons search
       playerctl # controls media players
       rofi # app launcher for wayland
+
+      # Theme apps
+      gnome-themes-extra # used for GTK theming
+      arc-theme # GTK theme
+      bibata-cursors # cursors
+      dconf-editor # check dconf settings (GTK)
+      papirus-icon-theme # icons for GTK
+      nwg-look # GTK theme changing
+      nwg-icon-picker # GTK icons search
     ];
 
-    # Adds some needed folders in /run/current-system/sw
-    # pathsToLink = ["/share/wayland-session"];
+    etc = {
+      # GTK theming - just in case of old/broken apps
+      "gtk-2.0/gtkrc".text = ''
+        gtk-theme-name="${theme}"
+        gtk-icon-theme-name="${iconTheme}"
+        gtk-cursor-theme-name="${cursorTheme}"
+        gtk-cursor-theme-size=${cursorSize}
+      '';
+      "gtk-3.0/settings.ini".text = ''
+        [Settings]
+        gtk-application-prefer-dark-theme=1
+        gtk-theme-name=${theme}
+        gtk-icon-theme-name=${iconTheme}
+        gtk-cursor-theme-name=${cursorTheme}
+        gtk-cursor-theme-size=${cursorSize}
+      '';
+      "gtk-4.0/settings.ini".text = ''
+        [Settings]
+        gtk-application-prefer-dark-theme=1
+        gtk-interface-color-scheme=2
+        gtk-theme-name=${theme}
+        gtk-icon-theme-name=${iconTheme}
+        gtk-cursor-theme-name=${cursorTheme}
+        gtk-cursor-theme-size=${cursorSize}
+      '';
+    };
   };
 
   programs = {
@@ -170,9 +205,6 @@ in {
       #xwayland.enable = true;
 
       # UWSM - https://wiki.hypr.land/Useful-Utilities/Systemd-start/#uwsm
-      # If you do enable it - you have to change:
-      # - startup command at top of this file
-      # - the way all apps are started in hyprland config files
       withUWSM = use_uwsm;
     };
 
@@ -188,6 +220,32 @@ in {
 
     # app for gnome-keyring passwords management
     seahorse.enable = true;
+
+    # GTK theming - newer apps
+    dconf = {
+      profiles.user.databases = [
+        {
+          settings = {
+            # check different values with dconf-editor
+            # example config: https://github.com/Electrostasy/dots/blob/c62895040a8474bba8c4d48828665cfc1791c711/profiles/system/gnome/default.nix#L123-L287
+            "org/gnome/desktop/interface" = {
+              color-scheme = "prefer-dark";
+              gtk-theme = theme;
+              icon-theme = iconTheme;
+              cursor-theme = cursorTheme;
+              cursor-size = cursorSize;
+            };
+          };
+        }
+      ];
+    };
+  };
+
+  # QT apps theming
+  qt = {
+    enable = true;
+    platformTheme = "gnome";
+    style = "adwaita-dark";
   };
 
   hardware.graphics = {
@@ -347,6 +405,10 @@ in {
           Restart = "no";
         };
       };
+
+      # xdg-desktop-portal-hyprland.serviceConfig.Environment = [
+      #   "QT_STYLE_OVERRIDE="
+      # ];
     };
 
     # Creates services in /etc/systemd/system/

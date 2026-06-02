@@ -5,12 +5,7 @@
   pkgs,
   username,
   ...
-}: let
-  theme = "Arc-Dark";
-  iconTheme = "Papirus-Dark";
-  cursorTheme = "Bibata-Modern-Classic";
-  cursorSize = "24";
-in {
+}: {
   # Default shell for all users
   users.defaultUserShell = pkgs.fish;
 
@@ -93,13 +88,6 @@ in {
       cargo
       php
       php83Packages.composer
-
-      # Theme apps
-      gnome-themes-extra # used for GTK theming
-      arc-theme # GTK theme
-      bibata-cursors # cursors
-      dconf-editor # check dconf settings (GTK)
-      papirus-icon-theme # icons for GTK
     ];
 
     sessionVariables = {
@@ -108,8 +96,6 @@ in {
       FILE_MANAGER = "nemo";
       HISTCONTROL = "ignoreboth:erasedups";
       LESSHISTFILE = "-";
-      XCURSOR_THEME = cursorTheme;
-      XCURSOR_SIZE = cursorSize;
       XDG_CONFIG_HOME = "$HOME/.config";
       XDG_CACHE_HOME = "$HOME/.cache";
       XDG_DATA_HOME = "$HOME/.local/share";
@@ -149,33 +135,6 @@ in {
       nix_gc = "nh clean all --ask --keep 3 --keep-since 5d"; # Garbage collect nixos
       nix_gc_all = "nh clean all --ask"; # Garbage collect all but 1 nixos generation
       nix_fmt = "nix fmt -- ~/dots/**/*.nix"; # Format all the nix files in my repo
-    };
-
-    etc = {
-      # GTK theming - just in case of old/broken apps
-      "gtk-2.0/gtkrc".text = ''
-        gtk-theme-name="${theme}"
-        gtk-icon-theme-name="${iconTheme}"
-        gtk-cursor-theme-name="${cursorTheme}"
-        gtk-cursor-theme-size=${cursorSize}
-      '';
-      "gtk-3.0/settings.ini".text = ''
-        [Settings]
-        gtk-application-prefer-dark-theme=1
-        gtk-theme-name=${theme}
-        gtk-icon-theme-name=${iconTheme}
-        gtk-cursor-theme-name=${cursorTheme}
-        gtk-cursor-theme-size=${cursorSize}
-      '';
-      "gtk-4.0/settings.ini".text = ''
-        [Settings]
-        gtk-application-prefer-dark-theme=1
-        gtk-interface-color-scheme=2
-        gtk-theme-name=${theme}
-        gtk-icon-theme-name=${iconTheme}
-        gtk-cursor-theme-name=${cursorTheme}
-        gtk-cursor-theme-size=${cursorSize}
-      '';
     };
   };
 
@@ -266,6 +225,7 @@ in {
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
+
       withRuby = true;
       withPython3 = true;
       withNodeJs = true;
@@ -311,15 +271,6 @@ in {
       profiles.user.databases = [
         {
           settings = {
-            # check different values with dconf-editor
-            # example config: https://github.com/Electrostasy/dots/blob/c62895040a8474bba8c4d48828665cfc1791c711/profiles/system/gnome/default.nix#L123-L287
-            "org/gnome/desktop/interface" = {
-              color-scheme = "prefer-dark";
-              gtk-theme = theme;
-              icon-theme = iconTheme;
-              cursor-theme = cursorTheme;
-              cursor-size = cursorSize;
-            };
             "org/nemo/preferences" = {
               click-policy = "double";
               date-format = "iso";
@@ -339,14 +290,6 @@ in {
         }
       ];
     };
-  };
-
-  # QT apps theming
-  # might need to set global theme manualy with the KDE System Settings app
-  qt = {
-    enable = true;
-    platformTheme = "gnome";
-    style = "adwaita-dark";
   };
 
   # Associate programs with file extensions
