@@ -12,7 +12,6 @@ local M = {
   -- :h nvim-treesitter.txt
   src = "neovim-treesitter/nvim-treesitter",
   dependencies = { "neovim-treesitter/treesitter-parser-registry" },
-  version = "main",
   build = ":TSUpdate",
   lazy = true,
   opts = {
@@ -32,47 +31,50 @@ local M = {
         folds = {},
       },
       -- Inner config
-      had_installs = false,
-      installed = {}, ---@type string[]
       available = {}, ---@type table<string, boolean>
       seen_langs = {}, ---@type table<string, boolean>
     },
   },
 }
 
-M.opts.custom.get_injections = tie(
-  "Plugin nvim-treesitter -> Get injected languages",
-  ---@param lang string
-  ---@return string[]
-  function(lang)
-    vim.validate("lang", lang, "string")
+M.opts.custom.get_injected_langs = tie(
+  "Get injected languages",
+  ---@param installed string[]
+  function(installed)
+    vim.validate("installed", installed, "table")
 
     local injected = {}
 
-    if not vim.treesitter.language.add(lang) then
-      return injected
-    end
-
-    local patterns = vim.tbl_get(
-      vim.treesitter.query.get(lang, "injections") or {},
-      "info",
-      "patterns"
-    )
-
-    if patterns then
-      tied.for_list(
-        "Collect injections in a language",
-        vim.iter(patterns):flatten():totable(),
-        function(_, pattern)
-          local predicate, directive, inj = unpack(pattern)
-
-          -- stylua: ignore
-          if inj ~= lang and predicate == "set!" and directive == "injection.language" then
-            injected[inj] = true
-          end
+    tied.for_list(
+      "Check installed lang for injections",
+      installed,
+      function(_, lang)
+        if not vim.treesitter.language.add(lang) then
+          return
         end
-      )
-    end
+
+        local patterns = vim.tbl_get(
+          vim.treesitter.query.get(lang, "injections") or {},
+          "info",
+          "patterns"
+        )
+
+        if patterns then
+          tied.for_list(
+            "Collect injections in a language",
+            vim.iter(patterns):flatten():totable(),
+            function(_, pattern)
+              local predicate, directive, inj = unpack(pattern)
+
+              -- stylua: ignore
+              if inj ~= lang and predicate == "set!" and directive == "injection.language" then
+                injected[inj] = true
+              end
+            end
+          )
+        end
+      end
+    )
 
     return vim.tbl_keys(injected)
   end,
@@ -83,6 +85,7 @@ M.opts.custom.delete_ignored_langs = tie(
   "Plugin nvim-treesitter -> Delete ignored languages",
   function()
     local ts = require("nvim-treesitter")
+    local installed = ts.get_installed()
     local custom = M.opts.custom
     local to_delete = {}
 
@@ -90,7 +93,7 @@ M.opts.custom.delete_ignored_langs = tie(
       "Add treesitter language for deletion",
       custom.ignore,
       function(_, lang)
-        if vim.list_contains(custom.installed, lang) then
+        if vim.list_contains(installed, lang) then
           to_delete[lang] = true
         end
       end
@@ -100,37 +103,6 @@ M.opts.custom.delete_ignored_langs = tie(
 
     if #to_delete > 0 then
       ts.uninstall(to_delete, { max_jobs = 8, summary = true })
-        :await(function() custom.installed = ts.get_installed() end)
-    end
-  end,
-  tied.do_nothing
-)
-
-M.opts.custom.install_injected = tie(
-  "Install injected languages",
-  ---@param installed string[]
-  function(installed)
-    local custom = M.opts.custom
-    local injected = {}
-
-    tied.for_list(
-      "Check installed lang for injections",
-      installed,
-      function(_, lang)
-        tied.for_list(
-          "Add injected lang to queue",
-          custom.get_injections(lang),
-          function(_, inj) injected[inj] = true end
-        )
-      end
-    )
-
-    local is_installing = custom.install_langs(vim.tbl_keys(injected))
-
-    -- Every other task is finished because of :await()
-    -- and last call didn't install any new langs
-    if not is_installing and custom.had_installs then
-      vim.notify("[treesitter]: Finished installs. Restart neovim!")
     end
   end,
   tied.do_nothing
@@ -145,12 +117,16 @@ M.opts.custom.install_langs = tie(
 
     local ts = require("nvim-treesitter")
     local ts_parsers = require("nvim-treesitter.parsers")
+    local installed = ts.get_installed()
     local custom = M.opts.custom
     local queue = vim.deepcopy(ensure_installed)
     local to_install = {}
 
     while #queue > 0 do
       local lang = table.remove(queue, 1)
+
+      -- Add langs from recursive calls
+      custom.seen_langs[lang] = true
 
       if custom.available[lang] then
         tied.for_list(
@@ -160,7 +136,7 @@ M.opts.custom.install_langs = tie(
         )
 
         if
-          not vim.list_contains(custom.installed, lang)
+          not vim.list_contains(installed, lang)
           and not vim.list_contains(custom.ignore, lang)
         then
           to_install[lang] = true
@@ -176,14 +152,18 @@ M.opts.custom.install_langs = tie(
 
     ts.install(to_install, { max_jobs = 8, summary = true })
       :await(tie("Update things after installing treesitter langs", function()
-        custom.had_installs = true
-        custom.installed = ts.get_installed()
-
         -- Reload to get access to new injections so you can install them
         package.loaded["vim.treesitter.query"] = nil
         vim.treesitter.query = require("vim.treesitter.query")
 
-        custom.install_injected(to_install)
+        local injected = custom.get_injected_langs(to_install)
+        local is_installing = custom.install_langs(injected)
+
+        -- Every other task is finished because of :await()
+        -- and last call didn't install any new langs
+        if not is_installing then
+          vim.notify("[treesitter]: Finished installs. Restart neovim!")
+        end
       end, tied.do_nothing))
 
     return true
@@ -219,10 +199,17 @@ M.config = tie("Plugin nvim-treesitter -> config", function(opts)
     custom.available[lang] = true
   end
 
-  custom.installed = ts.get_installed()
   custom.delete_ignored_langs()
-  custom.install_injected(custom.installed) -- in case of premature nvim restart
   custom.install_langs(vim.tbl_keys(custom.seen_langs))
+
+  -- NOTE: High perf cost to check for unfinished installs of injected langs
+  -- Run this command once in a while manually instead
+  tied.create_usercmd("TSInstallInjected", function()
+    local installed = ts.get_installed()
+    local injected = custom.get_injected_langs(installed)
+
+    custom.install_langs(injected)
+  end, { desc = "Install all injected parsers", nargs = 0 })
 end, tied.do_nothing)
 
 M.init = tie("Plugin nvim-treesitter -> init", function()

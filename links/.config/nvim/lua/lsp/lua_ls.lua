@@ -26,6 +26,8 @@ local M = {
 }
 
 -- NOTE: Manual setup of `---@module` without `lazydev` plugin
+-- Prefer lazydev, because of require() and @module being added on buf change
+
 M.config.on_init = tie(
   "LSP lua_ls -> on_init",
   ---@param client vim.lsp.Client

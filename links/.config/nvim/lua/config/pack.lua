@@ -439,32 +439,16 @@ M.autocmds = {
     end,
   },
   {
-    desc = "Call AfterUI event",
+    desc = "Load plugins",
     event = "UIEnter",
+    group = tied.create_augroup("my.pack.load_plugins", true),
     once = true,
-    group = tied.create_augroup("my.pack.run_after_uienter", true),
-    callback = vim.schedule_wrap(function()
+    callback = function()
       vim.g.did_ui_enter = true
-      vim.api.nvim_exec_autocmds("User", {
-        pattern = "AfterUI",
-        modeline = false,
-      })
-    end),
-  },
-  {
-    desc = "Load early plugins",
-    event = "UIEnter",
-    group = tied.create_augroup("my.pack.load_early_plugins", true),
-    once = true,
-    callback = function() M.load_plugins(M.early_load_queue) end,
-  },
-  {
-    desc = "Load lazy plugins",
-    event = "User",
-    pattern = "AfterUI",
-    group = tied.create_augroup("my.pack.load_lazy_plugins", true),
-    once = true,
-    callback = function() M.load_plugins(M.lazy_load_queue) end,
+
+      M.load_plugins(M.early_load_queue)
+      vim.schedule(function() M.load_plugins(M.lazy_load_queue) end)
+    end,
   },
 }
 
@@ -495,7 +479,12 @@ M.setup = tie("Setup plugin manager", function()
       spec.init()
     end
 
-    -- Don't load at all on lazy = nil
+    -- NOTE: Don't add to load queue on `lazy = nil`
+
+    -- NOTE: Early loaded plugins aren't guaranteed to have their module
+    -- ready for require() if the plugin wasn't installed.
+    -- Just restart neovim if there is such error, otherwise to
+    -- solve this issue the plugin would be loaded too late.
 
     if spec.lazy == false then
       table.insert(M.early_load_queue, spec.name)
@@ -520,13 +509,14 @@ M.setup = tie("Setup plugin manager", function()
     })
   end)
 
-  -- Install, but don't load
-  pcall(vim.pack.add, M.to_install, { load = function() end, confirm = false })
+  tied.do_block("Install plugins", function()
+    vim.pack.add(M.to_install, { load = function() end, confirm = false })
+  end)
 
   -- Enable built-in plugins later
   vim.schedule(function()
-    vim.cmd("packadd nvim.undotree")
-    vim.cmd("packadd nvim.difftool")
+    vim.cmd.packadd("nvim.undotree")
+    vim.cmd.packadd("nvim.difftool")
   end)
 end, tied.do_nothing)
 

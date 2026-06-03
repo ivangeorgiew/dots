@@ -72,12 +72,13 @@ M.opts = {
   sources = {
     default = { "lsp", "path", "snippets", "buffer" },
     providers = {
+      lsp = { fallbacks = {} },
       path = {
         opts = {
           -- Affects whether path completions are relative to the buffer or the project root
-          get_cwd = vim.fn.getcwd,
+          get_cwd = function(_) return vim.fn.getcwd() end,
           trailing_slash = false,
-          -- label_trailing_slash = true,
+          label_trailing_slash = true,
         },
       },
     },

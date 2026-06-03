@@ -281,10 +281,13 @@ tied.manage_session = tie(
           end
         end
       )
+
       vim.cmd("source " .. ses_file)
     end
 
     if not should_load then
+      local has_opened_files = false
+
       tied.for_list(
         "Close non-file window before session save",
         vim.api.nvim_list_wins(),
@@ -293,11 +296,15 @@ tied.manage_session = tie(
 
           if not tied.check_if_buf_is_file(bufnr) then
             vim.api.nvim_buf_delete(bufnr, { force = true })
+          else
+            has_opened_files = true
           end
         end
       )
 
-      vim.cmd("mks! " .. ses_file)
+      if has_opened_files then
+        vim.cmd("mks! " .. ses_file)
+      end
     end
   end,
   tied.do_nothing

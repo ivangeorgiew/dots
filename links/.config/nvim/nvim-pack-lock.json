@@ -55,8 +55,7 @@
     },
     "nvim-treesitter": {
       "rev": "df7489eeea351bece7fd0f9c825be5cb6a1438f0",
-      "src": "https://github.com/neovim-treesitter/nvim-treesitter",
-      "version": "'main'"
+      "src": "https://github.com/neovim-treesitter/nvim-treesitter"
     },
     "snacks": {
       "rev": "93084d71417b746ee8cc12b7107052683a846134",

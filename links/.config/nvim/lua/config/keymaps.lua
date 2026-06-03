@@ -85,8 +85,8 @@ M.to_create = {
   { "n", "yP", "<cmd>let @+ = expand('%:p')<cr>", { desc = "Absolute file path" } },
 
   -- Handle wrapped lines
-  { { "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Move up", expr = true } },
-  { { "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Move down", expr = true } },
+  { { "n", "x" }, "k", "(&wrap && v:count == 0) ? 'gk' : 'k'", { desc = "Move up", expr = true } },
+  { { "n", "x" }, "j", "(&wrap && v:count == 0) ? 'gj' : 'j'", { desc = "Move down", expr = true } },
 
   -- Cursor movement in insert mode
   { "i", "<C-h>", "<Left>",  { desc = "Move left" } },
@@ -141,7 +141,7 @@ M.to_create = {
    { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
    { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.quickfix')) ? ':copen<cr>' : ':cclose<cr>'", { desc = "Toggle quickfix list", expr = true } },
    { "n", "<leader>tu", "<cmd>Undotree<cr>", { desc = "Toggle undotree" } },
-   { "n", "<leader>tw", function() vim.o.wrap = not vim.o.wrap end, { desc = "Toggle wrapping of lines" } },
+   { "n", "<leader>tw", function() vim.wo.wrap = not vim.wo.wrap end, { desc = "Toggle wrapping of lines" } },
 
    -- LSP
    { "n", "-e", function() vim.diagnostic.open_float() end, { desc = "Show line errors" } },
