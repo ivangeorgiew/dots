@@ -162,7 +162,7 @@
     # Configure keymaps on X11 and TTY console
     # due to the console.useXkbConfig option
     xserver.xkb = {
-      layout = "us,rud";
+      layout = "us,bgd";
       variant = "dvorak,";
       options = "grp:win_space_toggle,lv3:menu_switch"; # ctrl:nocaps or ctrl:swapcaps can be used
       # used on Wayland too

@@ -94,6 +94,8 @@ in {
       {
         XCURSOR_THEME = cursorTheme;
         XCURSOR_SIZE = cursorSize;
+        __GL_GSYNC_ALLOWED = "0"; # I don't need it
+        __GL_VRR_ALLOWED = "0"; # I don't need it
         ELECTRON_OZONE_PLATFORM_HINT = "auto";
         NIXOS_OZONE_WL = "1";
         NVD_BACKEND = "direct";
@@ -107,8 +109,6 @@ in {
         XDG_CURRENT_DESKTOP = "Hyprland";
         XDG_SESSION_DESKTOP = "Hyprland";
         XDG_SESSION_TYPE = "wayland";
-        __GL_GSYNC_ALLOWED = "1";
-        __GL_VRR_ALLOWED = "1";
         HYPR_PLUGIN_DIR = pkgs.symlinkJoin {
           name = "hyprland-plugins";
           paths = with pkgs.hland; [

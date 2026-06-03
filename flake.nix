@@ -8,9 +8,9 @@
     nixpkgs.url = "github:nixos/nixpkgs/b51242d7d43689db2f3be91bd05d5b24fbb469c4"; # branch nixos-26.05
     nixpkgs-unstable.url = "github:nixos/nixpkgs/64c08a7ca051951c8eae34e3e3cb1e202fe36786"; # branch nixos-unstable
 
-    hyprland.url = "github:hyprwm/Hyprland/v0.54.3";
+    hyprland.url = "github:hyprwm/Hyprland/v0.55.2";
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins/b85a56b9531013c79f2f3846fd6ee2ff014b8960"; # TODO: change to tag when added
+      url = "github:hyprwm/hyprland-plugins/v0.55.0";
       inputs.hyprland.follows = "hyprland";
     };
   };

@@ -1,0 +1,12 @@
+{
+    "runtime": {
+      "path": [ "?.lua", "?/init.lua" ],
+      "pathStrict": "true",
+      "version": "LuaJIT"
+    },
+    "workspace": {
+      "checkThirdParty": false,
+      "ignoreDir": [ "/lua" ],
+      "library": [ "/run/current-system/sw/share/hypr/stubs" ]
+    }
+}
