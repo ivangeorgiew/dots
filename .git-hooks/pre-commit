@@ -17,6 +17,6 @@ nix fmt -- "$HOME"/dots/**/*.nix # format all nix files
 git add -u # stage only existing files
 
 # Try to apply stashed changes, but only if there were any
-if git stash list | grep -q "$TMP_MSG"; then
+if git stash list | grep "$TMP_MSG"; then
   git stash pop -q
 fi
