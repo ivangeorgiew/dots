@@ -6,7 +6,7 @@ require("dispatch")
 
 -- https://wiki.hypr.land/Configuring/Basics/Monitors/
 hl.monitor({
-  output = "DP-1",
+  output = "", -- leave blank to auto find a monitor
   mode = "highrr",
   position = "auto",
   scale = 1,
@@ -120,6 +120,7 @@ wr({ match = { class = ".*" }, float = true })
 
 -- Tiled or not and window allocation
 wr({ match = { class = "kitty" }, tile = true, workspace = "1 silent" })
+wr({ match = { class = "^(code)$" }, tile = true, workspace = "1 silent" })
 wr({ match = { class = "firefox" }, tile = true, workspace = "2 silent" })
 wr({ match = { class = "vesktop" }, tile = true, workspace = "3 silent" })
 wr({ match = { class = "Spotify" }, tile = true, workspace = "4 silent" })

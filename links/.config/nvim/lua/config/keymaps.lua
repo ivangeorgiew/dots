@@ -1,41 +1,5 @@
 local M = { rhs = {} }
 
-M.rhs.toggle_bool = function()
-  local word = vim.fn.expand("<cword>")
-  ---@type [string, string][]
-  local bools = {
-    { "true", "false" },
-    { "TRUE", "FALSE" },
-    { "True", "False" },
-    { "yes", "no" },
-    { "1", "0" },
-  }
-
-  for _, pair in ipairs(bools) do
-    local pair_idx
-
-    if word == pair[1] then
-      pair_idx = 1
-    elseif word == pair[2] then
-      pair_idx = 2
-    end
-
-    if pair_idx ~= nil then
-      vim.cmd("normal! mslb")
-
-      local col = vim.api.nvim_win_get_cursor(0)[2] + 1
-      local search = pair[pair_idx]
-      local replace = pair[2 * (1 / pair_idx)]
-
-      vim.cmd(("s/\\%%%dc%s/%s/"):format(col, search, replace))
-      vim.cmd("normal! g`s")
-      vim.cmd("nohls")
-
-      return
-    end
-  end
-end
-
 -- Delete some builtin keymaps
 ---@type [string, string[]|string] []
 M.to_delete = {
@@ -133,7 +97,7 @@ M.to_create = {
   { "n", "<C-e>", "<cmd>fclose<cr>", { desc = "Close floating window" } },
 
    -- Toggle things
-   { "n", "<leader>tb", M.rhs.toggle_bool, { desc = "Toggle boolean under cursor" } },
+   { "n", "<leader>tb", [[:set opfunc=v:lua.tied.switch_bool | normal! g@l<cr>]], { desc = "Toggle boolean under cursor" } },
    { "n", "<leader>tC", function() vim.lsp.document_color.enable(not vim.lsp.document_color.is_enabled()) end, { desc = "Toggle color references" } },
    { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
    { "n", "<leader>tD", function() vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end , { desc = "Toggle diagnostics on/off" } },

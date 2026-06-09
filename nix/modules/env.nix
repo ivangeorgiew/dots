@@ -77,6 +77,9 @@
       viber # messaging app
       vlc # video player
 
+      # For a declarative setup, switch to vscode-with-extensions and https://github.com/nix-community/nix-vscode-extensions
+      (vscode.fhsWithPackages (ps: with ps; [])) # vscode ide/text editor
+
       # Programming apps
       (python314.withPackages (ps: with ps; [pip]))
       go
@@ -93,6 +96,7 @@
     sessionVariables = {
       TERMINAL = "kitty";
       BROWSER = "firefox";
+      EDITOR = "nvim";
       FILE_MANAGER = "nemo";
       HISTCONTROL = "ignoreboth:erasedups";
       LESSHISTFILE = "-";
@@ -222,25 +226,12 @@
 
       package = pkgs.unstable.neovim-unwrapped;
 
-      defaultEditor = true;
       viAlias = true;
       vimAlias = true;
 
       withRuby = true;
       withPython3 = true;
       withNodeJs = true;
-    };
-
-    # IDE/Text editor
-    vscode = {
-      enable = false;
-
-      package = pkgs.unstable.vscode;
-      # Should be unneeded cuz of nix-ld (extension install should work ootb)
-      # package = pkgs.vscode.fhsWithPackages (ps: with ps; [ rustup zlib openssl.dev pkg-config ]);
-      # extensions = with pkgs.vscode-extensions; [];
-
-      defaultEditor = false;
     };
 
     java = {

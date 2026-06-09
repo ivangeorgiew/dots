@@ -341,3 +341,40 @@ tied.do_keys_in_win = tie(
   end,
   function() return false end
 )
+
+tied.switch_bool = tie("Switch boolean under cursor", function()
+  local word = vim.fn.expand("<cword>")
+  ---@type [string, string][]
+  local bools = {
+    { "true", "false" },
+    { "TRUE", "FALSE" },
+    { "True", "False" },
+    { "yes", "no" },
+    { "on", "off" },
+    { "1", "0" },
+  }
+
+  for _, pair in ipairs(bools) do
+    local pair_idx
+
+    if word == pair[1] then
+      pair_idx = 1
+    elseif word == pair[2] then
+      pair_idx = 2
+    end
+
+    if pair_idx ~= nil then
+      vim.cmd("normal! mslb")
+
+      local col = vim.api.nvim_win_get_cursor(0)[2] + 1
+      local search = pair[pair_idx]
+      local replace = pair[2 * (1 / pair_idx)]
+
+      vim.cmd(("silent! s/\\%%%dc%s/%s/"):format(col, search, replace))
+      vim.cmd("normal! g`s")
+      vim.cmd("nohls")
+
+      return
+    end
+  end
+end, tied.do_nothing)
