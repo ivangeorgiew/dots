@@ -71,7 +71,7 @@
       obsidian # note-taking app
       onlyoffice-desktopeditors # MS Office alternative
       qbittorrent # torrent downloading
-      unstable.firefox-bin # browser
+      unstable.firefox-devedition # browser
       unstable.google-chrome # browser
       vesktop # discord + additions
       viber # messaging app
@@ -95,7 +95,7 @@
 
     sessionVariables = {
       TERMINAL = "kitty";
-      BROWSER = "firefox";
+      BROWSER = "firefox-devedition";
       EDITOR = "nvim";
       FILE_MANAGER = "nemo";
       HISTCONTROL = "ignoreboth:erasedups";
@@ -287,7 +287,7 @@
   xdg.mime =
     # List from /run/current-system/sw/share/applications
     let
-      browser = "firefox.desktop";
+      browser = "firefox-devedition.desktop";
       torrent = "org.qbittorrent.qBittorrent.desktop";
       imgviewer = "org.kde.gwenview.desktop";
       file_manager = "nemo.desktop";
