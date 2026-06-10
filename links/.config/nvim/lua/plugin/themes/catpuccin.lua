@@ -53,7 +53,6 @@ local M = {
     -- https://github.com/catppuccin/nvim#integrations
     integrations = {
       blink_cmp = { style = "solid" },
-      mason = true,
       diffview = false,
       mini = { enabled = true },
       nvimtree = true,

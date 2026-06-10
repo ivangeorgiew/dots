@@ -2,13 +2,11 @@
   "name": "globals",
   "version": "1.0.0",
   "description": "My global npm packages",
-  "main": "index.js",
-  "author": "Ivan Georgiev <ivan_georgiew@yahoo.com>",
-  "license": "MIT",
-  "scripts": {},
   "dependencies": {
-    "neovim": "*",
-    "npm": "*",
-    "pnpm": "*"
+    "neovim": "^5.4.0",
+    "npm": "^11.16.0",
+    "pnpm": "^11.5.2",
+    "@fsouza/prettierd": "^0.28.0",
+    "eslint_d": "^15.0.2"
   }
 }

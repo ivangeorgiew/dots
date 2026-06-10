@@ -24,7 +24,6 @@
 --- @class LspConfig Used in lsp config files
 --- @field enable? boolean
 --- @field lsp_name string
---- @field pkg_name? string
 --- @field config? vim.lsp.Config
 --- @field custom? table
 

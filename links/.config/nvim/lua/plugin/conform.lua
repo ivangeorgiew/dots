@@ -32,28 +32,6 @@ M.config = tie("Plugin conform -> config", function(opts)
   require("conform").setup(opts)
 
   vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
-
-  tied.do_block("Plugin conform -> Install formatters with mason", function()
-    local to_install = {}
-
-    tied.for_table(
-      "Go through all conform formatters",
-      opts.formatters_by_ft,
-      function(_, formatters)
-        tied.for_list(
-          "Queue a code formatter for install with mason",
-          formatters,
-          function(_, formatter)
-            if type(formatter) == "string" then
-              to_install[#to_install + 1] = formatter
-            end
-          end
-        )
-      end
-    )
-
-    tied.mason_install(to_install)
-  end)
 end, tied.do_nothing)
 
 return M

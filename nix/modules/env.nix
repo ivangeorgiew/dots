@@ -75,21 +75,17 @@
       vesktop # discord + additions
       viber # messaging app
       vlc # video player
-
-      # For a declarative setup, switch to vscode-with-extensions and https://github.com/nix-community/nix-vscode-extensions
       (vscode.fhsWithPackages (ps: with ps; [])) # vscode ide/text editor
 
-      # Programming apps
+      # Programming apps (langs, linters, formatters, etc)
+      # Global npm packages are installed in ~/.npm-global
+      # Project specific packages should be installed with a devShell + direnv
       (python314.withPackages (ps: with ps; [pip]))
-      go
-      lua51Packages.lua
-      luarocks
-      nodejs
-      ruby
-      julia
-      cargo
-      php
-      php83Packages.composer
+      go # golang
+      nodejs # nodejs + npm
+      lua # lua languge
+      lua-language-server # lua lsp
+      stylua # lua formatter
     ];
 
     sessionVariables = {

@@ -21,14 +21,6 @@
       "rev": "a48aff30cfed17c69ba37ca8af2bde2b49d05420",
       "src": "https://github.com/ivangeorgiew/lazydev.nvim"
     },
-    "mason": {
-      "rev": "16ba83bfc8a25f52bb545134f5bee082b195c460",
-      "src": "https://github.com/mason-org/mason.nvim"
-    },
-    "mason-lock": {
-      "rev": "b75e2de585637a61b2fb818dc33dad7863b7b0c4",
-      "src": "https://github.com/zapling/mason-lock.nvim"
-    },
     "mini.icons": {
       "rev": "520995f1d75da0e4cc901ee95080b1ff2bc46b94",
       "src": "https://github.com/nvim-mini/mini.icons"

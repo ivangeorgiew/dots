@@ -35,24 +35,14 @@ local M = {
 }
 
 M.config = tie("Plugin nvim-lspconfig -> config", function(opts)
-  tied.do_block("Config, enable and install LSPs", function()
-    local to_install = {}
+  tied.for_list("Setup an LSP", require("lsp"), function(_, lsp)
+    if lsp.config then
+      vim.lsp.config(lsp.lsp_name, lsp.config)
+    end
 
-    tied.for_list("Setup an LSP", require("lsp"), function(_, lsp)
-      if lsp.config then
-        vim.lsp.config(lsp.lsp_name, lsp.config)
-      end
-
-      if lsp.enable ~= false then
-        vim.lsp.enable(lsp.lsp_name)
-
-        if lsp.pkg_name then
-          to_install[#to_install + 1] = lsp.pkg_name
-        end
-      end
-    end)
-
-    tied.mason_install(to_install)
+    if lsp.enable ~= false then
+      vim.lsp.enable(lsp.lsp_name)
+    end
   end)
 
   tied.do_block("Set color highlighting style", function()
