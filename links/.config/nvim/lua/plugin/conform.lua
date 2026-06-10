@@ -1,6 +1,3 @@
--- NOTE: In addition to the vim doc, there are recipes and explanations on:
--- https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md
-
 --- @module "conform"
 --- @type PluginSpec
 local M = {
@@ -9,10 +6,12 @@ local M = {
   lazy = true,
   ---@type conform.setupOpts
   opts = {
+    -- NOTE: In addition to the vim doc, there are recipes and explanations on:
+    -- https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md
     formatters_by_ft = {
       lua = { "stylua" },
       nix = { "alejandra" },
-      -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      javascript = { "prettierd" },
     },
     ---@type table<string, conform.FormatterConfigOverride|fun(bufnr: integer): nil|conform.FormatterConfigOverride>
     formatters = {
@@ -20,12 +19,12 @@ local M = {
       -- injected = { options = { ignore_errors = true } },
     },
     notify_no_formatters = true,
-    notify_on_error = false,
+    notify_on_error = true,
     default_format_opts = {
       timeout_ms = 3000,
-      lsp_format = "fallback",
+      lsp_format = "never", ---@type "never"|"fallback"|"prefer"|"first"|"last"
     },
-    format_on_save = {},
+    format_on_save = {}, -- {} == default_format_opts
   },
 }
 

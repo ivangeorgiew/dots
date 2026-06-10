@@ -29,7 +29,7 @@ local M = {
       root_folder_label = false, -- disable root folder label
       special_files = {}, -- remove highlights of special files
       symlink_destination = true, -- show symlinks
-      hidden_display = "simple", -- show how many hidden files
+      hidden_display = "all", -- show how many hidden files
       highlight_git = "none",
       highlight_diagnostics = "name",
       indent_markers = { enable = true },
@@ -144,11 +144,11 @@ M.opts.on_attach = tie("Plugin nvim-tree -> On attach", function(bufnr)
     { toggle_folder, "e", "Toggle folder" },
     -- { api.tree.reload, "R", "Refresh" },
     -- { api.tree.search_node, "S", "Search" },
-    -- { api.tree.toggle_custom_filter, "U", "Toggle Filter: Hidden" },
     -- { api.tree.toggle_git_clean_filter, "C", "Toggle Filter: Git Clean" },
-    -- { api.tree.toggle_gitignore_filter, "I", "Toggle Filter: Git Ignore" },
     { api.tree.toggle_help, "?", "Help" },
-    -- { api.tree.toggle_hidden_filter, "H", "Toggle Filter: Dotfiles" },
+    { api.filter.dotfiles.toggle, "H", "Toggle Filter: Dotfiles" },
+    { api.filter.git.ignored.toggle, "I", "Toggle Filter: Git Ignore" },
+    { api.filter.custom.toggle, "U", "Toggle Filter: Hidden" },
     -- { api.tree.toggle_no_bookmark_filter, "M", "Toggle Filter: No Bookmark" },
     -- { api.tree.toggle_no_buffer_filter, "B", "Toggle Filter: No Buffer" },
   }

@@ -45,14 +45,15 @@ _G.pcall = wrap_prot_call(pcall)
 local xpcall = xpcall
 _G.xpcall = wrap_prot_call(xpcall)
 
+-- Schedule to not freeze on many repeating errors
 --- @param err_msg string
-local print_err = function(err_msg)
+local print_err = vim.schedule_wrap(function(err_msg)
   vim.validate("err_msg", err_msg, "string")
 
   local opts = { title = "Runtime Error" }
 
-  vim.notify_once(err_msg, vim.log.levels.ERROR, opts)
-end
+  vim.notify(err_msg, vim.log.levels.ERROR, opts)
+end)
 
 --- @param err string
 local print_inner_err = function(err)

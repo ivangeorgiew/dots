@@ -22,15 +22,14 @@ local M = {
 }
 
 M.mason.init = tie("Plugin mason -> init", function()
-  tied.do_block(
-    "Plugin mason -> Add tools to PATH",
-    function()
-      vim.env.PATH = ("%s/mason/bin:%s"):format(
-        vim.fn.stdpath("data"),
-        vim.env.PATH
-      )
+  tied.do_block("Plugin mason -> Add tools to PATH", function()
+    local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+
+    -- Append so project specific versions of tools take precedence
+    if not string.match(vim.env.PATH, mason_bin) then
+      vim.env.PATH = ("%s:%s"):format(vim.env.PATH, mason_bin)
     end
-  )
+  end)
 
   tied.mason_install = tie(
     "Plugin mason -> Install tools",

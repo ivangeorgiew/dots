@@ -37,6 +37,19 @@ local M = {
   },
 }
 
+M.opts.custom.get_installed = tie(
+  "Get list of treesitter installed langs",
+  function()
+    local ts = require("nvim-treesitter")
+
+    return vim.iter(ts.get_installed()):fold({}, function(acc, lang)
+      acc[lang] = true
+      return acc
+    end)
+  end,
+  tied.do_rethrow
+)
+
 M.opts.custom.get_injected_langs = tie(
   "Get injected languages",
   ---@param installed string[]
@@ -85,15 +98,15 @@ M.opts.custom.delete_ignored_langs = tie(
   "Plugin nvim-treesitter -> Delete ignored languages",
   function()
     local ts = require("nvim-treesitter")
-    local installed = ts.get_installed()
     local custom = M.opts.custom
+    local installed = custom.get_installed()
     local to_delete = {}
 
     tied.for_list(
       "Add treesitter language for deletion",
       custom.ignore,
       function(_, lang)
-        if vim.list_contains(installed, lang) then
+        if installed[lang] then
           to_delete[lang] = true
         end
       end
@@ -117,8 +130,8 @@ M.opts.custom.install_langs = tie(
 
     local ts = require("nvim-treesitter")
     local ts_parsers = require("nvim-treesitter.parsers")
-    local installed = ts.get_installed()
     local custom = M.opts.custom
+    local installed = custom.get_installed()
     local queue = vim.deepcopy(ensure_installed)
     local to_install = {}
 
@@ -128,19 +141,18 @@ M.opts.custom.install_langs = tie(
       -- Add langs from recursive calls
       custom.seen_langs[lang] = true
 
-      if custom.available[lang] then
+      if
+        custom.available[lang]
+        and not installed[lang]
+        and not vim.list_contains(custom.ignore, lang)
+      then
         tied.for_list(
           "Add all dependencies to queue",
           vim.tbl_get(ts_parsers, lang, "requires") or {},
           function(_, dep) table.insert(queue, dep) end
         )
 
-        if
-          not vim.list_contains(installed, lang)
-          and not vim.list_contains(custom.ignore, lang)
-        then
-          to_install[lang] = true
-        end
+        to_install[lang] = true
       end
     end
 
