@@ -2,10 +2,14 @@
   inputs,
   outputs,
   lib,
-  system,
-  nixpkgs-opts,
   ...
-}: final: prev: rec {
+}: final: prev: let
+  system = prev.stdenv.hostPlatform.system;
+  nixpkgs-opts = {
+    inherit system;
+    config.allowUnfree = true;
+  };
+in rec {
   # Example to use a specific version of a package
   # some-old-pkg = (import (fetchTarball {
   #   url = "https://github.com/NixOS/nixpkgs/archive/0ad13a6833440b8e238947e47bea7f11071dc2b2.tar.gz";

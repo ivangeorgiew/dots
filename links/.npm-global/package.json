@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {},
   "dependencies": {
-    "neovim": "^5.4.0",
-    "npm": "^10.9.3",
-    "pnpm": "^10.14.0"
+    "neovim": "*",
+    "npm": "*",
+    "pnpm": "*"
   }
 }

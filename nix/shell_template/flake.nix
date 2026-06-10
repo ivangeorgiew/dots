@@ -4,55 +4,44 @@
   description = "Shell Flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # TODO: change to specific commit hash
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable"; # nixos unstable branch
   };
 
   outputs = inputs @ {nixpkgs, ...}: let
     inherit (nixpkgs) lib;
     inherit (inputs.self) outputs;
 
-    forAllSystems = (
-      func:
-        lib.genAttrs ["x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"]
-        (system:
-          func (import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-            overlays = builtins.attrValues outputs.overlays;
-          }))
-    );
-  in {
-    overlays = {
-      modifications = finalPkgs: prevPkgs: rec {
-        unstable = import inputs.nixpkgs-unstable {
-          system = prevPkgs.system;
+    forAllSystems = func:
+      lib.genAttrs ["x86_64-linux" "aarch64-linux" "aarch64-darwin"] (
+        sys: (func (import nixpkgs {
+          system = sys;
           config.allowUnfree = true;
-        };
-
-        modified = {
-          # examples in my dots overlays.nix
-        };
-      };
-    };
+          overlays = [outputs.overlays.default];
+        }))
+      );
+  in {
+    # Example in https://github.com/ivangeorgiew/dots/blob/master/nix/overlays.nix
+    overlays.default = final: prev: {};
 
     devShells = forAllSystems (pkgs:
       with pkgs; {
+        # TODO: configure the settings below
         default = mkShell {
           name = "shell";
 
-          # used at build-time
-          nativeBuildInputs = [];
+          # Build dependencies
+          inputsFrom = [];
 
-          # used at run-time
-          buildInputs = [];
+          # Executables
+          packages = [hello];
 
-          # env variables
+          # Env variables can be set here or in `shellHook`
           NIX_CONFIG = "experimental-features = nix-command flakes";
 
           # init script
           shellHook = ''
-            echo "Welcome to my nix-shell!" 1>/dev/null
+            hello
           '';
         };
       });

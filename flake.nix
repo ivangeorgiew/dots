@@ -15,32 +15,24 @@
     };
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    ...
-  }: let
-    inherit (self) outputs;
+  outputs = inputs @ {nixpkgs, ...}: let
     inherit (nixpkgs) lib;
-
-    system = "x86_64-linux";
-    nixpkgs-opts = {
-      inherit system;
-      config.allowUnfree = true;
-    };
-    pkgs = nixpkgs.legacyPackages.${system};
+    inherit (inputs.self) outputs;
 
     forAllSystems = func:
-      lib.genAttrs ["x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"] (
-        sys: func nixpkgs.legacyPackages.${sys}
-        # sys: func (import nixpkgs (nixpkgs-opts // {system = sys;}))
+      lib.genAttrs ["x86_64-linux" "aarch64-linux" "aarch64-darwin"] (
+        # sys: func nixpkgs.legacyPackages.${sys}
+        sys: (func (import nixpkgs {
+          system = sys;
+          config.allowUnfree = true;
+        }))
       );
   in {
     # Formatter for your nix files, available through 'nix fmt'
-    formatter.${system} = pkgs.alejandra;
+    formatter = forAllSystems (pkgs: pkgs.alejandra);
 
     # Custom packages, to use through `nix build`, `nix shell`, etc.
-    packages.${system} = import ./nix/pkgs {inherit pkgs;};
+    packages = forAllSystems (pkgs: import ./nix/pkgs {inherit pkgs;});
 
     # Flake templates
     templates.default = {
@@ -49,7 +41,7 @@
     };
 
     # Package overlays
-    overlays.default = import ./nix/overlays.nix {inherit inputs outputs lib system nixpkgs-opts;};
+    overlays.default = import ./nix/overlays.nix {inherit inputs outputs lib;};
 
     # NixOS Modules
     nixosModules = import ./nix/modules {inherit lib;};
@@ -57,9 +49,9 @@
     # Configurations
     nixosConfigurations = {
       mahcomp = lib.nixosSystem {
-        inherit system;
+        system = "x86_64-linux";
         specialArgs = {
-          inherit inputs outputs nixpkgs-opts;
+          inherit inputs outputs;
           username = "ivangeorgiew";
           graphicsCard = "nvidia";
         };

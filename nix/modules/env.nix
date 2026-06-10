@@ -26,7 +26,6 @@
       cmatrix # cool effect
       curl # download files
       dash # fastest shell
-      devbox # version manager (npm, pnpm, go, python, etc)
       fd # better alternative to find
       ffmpeg # for audio and video
       fishPlugins.colored-man-pages
@@ -139,6 +138,7 @@
       nix_gc = "nh clean all --ask --keep 3 --keep-since 5d"; # Garbage collect nixos
       nix_gc_all = "nh clean all --ask"; # Garbage collect all but 1 nixos generation
       nix_fmt = "nix fmt -- ~/dots/**/*.nix"; # Format all the nix files in my repo
+      nix_create_shell = "nix flake init -t ~/dots"; # Create nix devshell
     };
   };
 
@@ -157,13 +157,6 @@
         end
 
         abbr --add dotdot --regex '^\.\.+$' --function multicd
-
-        function update_nix_inputs
-          if count $argv > /dev/null
-            set -l a (string join " " $argv)
-            eval "sudo nix flake update $a --flake ~/dots"
-          end
-        end
 
         function go_to_project
           # list of project dirs
@@ -195,11 +188,8 @@
         # Display system info
         # nitch
 
-        # Hook direnv
-        direnv hook fish | source
-
         # add the npm globals to PATH
-        # manually do `npm i` inside the directory when you want to update
+        # manually do `npm update` inside the directory when you want to update
         fish_add_path --path ~/.npm-global/node_modules/.bin
 
         # Install npm global packages if needed
@@ -218,7 +208,10 @@
     };
 
     # Shell prompt
-    starship.enable = true;
+    starship = {
+      enable = true;
+      # package = pkgs.starship;
+    };
 
     # IDE/Text editor
     neovim = {
@@ -240,8 +233,7 @@
       # package = pkgs.jdk; # can be substituted to oracle version
     };
 
-    # Combined with devbox or a flake shell, autoloads
-    # packages and env variables when entering directories
+    # Combined with flake shell, autoloads packages and env variables when entering directories
     direnv = {
       enable = true;
       silent = true; # toggles direnv logging
@@ -249,13 +241,14 @@
       # package = pkgs.direnv;
       # direnvrcExtra = ''; # extra config
 
+      # Shell integration is enabled by default
+
       nix-direnv = {
         enable = true; # better implementation
         # package = pkgs.nix-direnv;
       };
     };
 
-    # GTK theming - newer apps
     dconf = {
       enable = true;
 
