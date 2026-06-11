@@ -39,6 +39,7 @@ local M = {
 
 M.opts.custom.get_installed = tie(
   "Get list of treesitter installed langs",
+  ---@return table<string,boolean>
   function()
     local ts = require("nvim-treesitter")
 

@@ -97,7 +97,7 @@ M.to_create = {
   { "n", "<C-e>", "<cmd>fclose<cr>", { desc = "Close floating window" } },
 
    -- Toggle things
-   { "n", "<leader>tb", [[:set opfunc=v:lua.tied.switch_bool | normal! g@l<cr>]], { desc = "Toggle boolean under cursor" } },
+   { "n", "<leader>tb", [[:set opfunc=v:lua.tied.switch_bool | normal! g@l<cr>]], { desc = "Toggle boolean under cursor" } }, -- rhs is done this way so that single-repeat works
    { "n", "<leader>tC", function() vim.lsp.document_color.enable(not vim.lsp.document_color.is_enabled()) end, { desc = "Toggle color references" } },
    { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
    { "n", "<leader>tD", function() vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end , { desc = "Toggle diagnostics on/off" } },
@@ -185,7 +185,7 @@ M.to_create = {
 
   -- Change stuff
   { "n", "<leader>cd", function() vim.fn.chdir(vim.fn.expand("%:p:h"), "global") end, { desc = "Change vim dir to current file location"} },
-  { "n", "<leader>ct", [[<cmd>tabe % | tabp | exec "normal! \<c-o>" | tabn<cr>]], { desc = "Move buffer to new tab and change to prev tab"} },
+  { "n", "<leader>ct", "<c-w>s<c-w>TgT<c-o>gt", { desc = "Move buffer to new tab and restore prev buffer"} },
 
   -- Unrelated mappings
   { "n", "i", [[len(getline('.')) == 0 && empty(&buftype) ? '"_cc' : 'i']], { desc = "Enter insert mode", expr = true } },

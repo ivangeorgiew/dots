@@ -354,7 +354,7 @@ M.plugin_loaded = tie(
     -- true: has finished loading
     return vim.tbl_get(M.plugins, plugin_name, "loaded")
   end,
-  tied.do_rethrow
+  tied.do_nothing
 )
 
 M.on_plugins_load = tie(

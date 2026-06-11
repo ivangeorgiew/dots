@@ -93,17 +93,18 @@ local tie_import_func = tie(
 -- local dofile = dofile
 -- _G.dofile = tie_import_func("dofile", dofile)
 
-local overwrite_tied_catch = tie(
-  "Overwrite on_catch of tied function",
-  ---@param desc string
-  ---@param extra_desc string
-  ---@param on_try function
-  ---@param on_catch tie.on_catch
-  function(desc, extra_desc, on_try, on_catch)
-    vim.validate("desc", desc, "string")
-    vim.validate("extra_desc", extra_desc, "string")
-    vim.validate("on_try", on_try, "function")
-    vim.validate("on_catch", on_catch, "function")
+local overwrite_tied_fn = tie(
+  "Overwrite tied function",
+  ---@param opts table
+  function(opts)
+    vim.validate("opts", opts, "table")
+    vim.validate("opts.desc", opts.desc, "string")
+    vim.validate("opts.extra_desc", opts.extra_desc, "string")
+    vim.validate("opts.on_try", opts.on_try, "function")
+    vim.validate("opts.on_catch", opts.on_catch, "function")
+
+    local desc, extra_desc, on_try, on_catch =
+      opts.desc, opts.extra_desc, opts.on_try, opts.on_catch
 
     local sep = " -> "
     local full_on_catch = on_catch
@@ -137,7 +138,12 @@ _G.vim.schedule = tie(
   function(fn)
     vim.validate("fn", fn, "function")
 
-    schedule(overwrite_tied_catch("Scheduled", "", fn, tied.do_nothing))
+    schedule(overwrite_tied_fn({
+      desc = "Scheduled",
+      extra_desc = "",
+      on_try = fn,
+      on_catch = tied.do_nothing,
+    }))
   end,
   tied.do_nothing
 )
@@ -147,7 +153,7 @@ _G.vim.schedule_wrap = tie(
   function(fn)
     vim.validate("fn", fn, "function")
 
-    return tie("Call scheduled function", function(...)
+    return tie("Schedule a function", function(...)
       local args = vim.F.pack_len(...)
       vim.schedule(function() fn(vim.F.unpack_len(args)) end)
     end, tied.do_nothing)
@@ -160,29 +166,20 @@ _G.vim.defer_fn = tie(
   "Tied vim.defer_fn",
   ---@param fn function
   ---@param timeout number
+  ---@return uv.uv_timer_t
   function(fn, timeout)
     vim.validate("fn", fn, "function")
     vim.validate("timeout", timeout, "number")
 
     return defer_fn(
-      overwrite_tied_catch("Deferred", "", fn, tied.do_nothing),
+      overwrite_tied_fn({
+        desc = "Deferred",
+        extra_desc = "",
+        on_try = fn,
+        on_catch = tied.do_nothing,
+      }),
       timeout
     )
-  end,
-  tied.do_rethrow
-)
-_G.vim.defer_wrap = tie(
-  "Tied vim.defer_wrap",
-  ---@param fn function
-  ---@param timeout number
-  function(fn, timeout)
-    vim.validate("fn", fn, "function")
-    vim.validate("timeout", timeout, "number")
-
-    return tie("Call deferred function", function(...)
-      local args = vim.F.pack_len(...)
-      return vim.defer_fn(function() fn(vim.F.unpack_len(args)) end, timeout)
-    end, tied.do_rethrow)
   end,
   tied.do_rethrow
 )
@@ -209,15 +206,15 @@ _G.vim.api.nvim_create_autocmd = tie(
         extra_desc = "for events: " .. table.concat(event, ", ")
       end
 
-      opts.callback = overwrite_tied_catch(
-        desc,
-        extra_desc,
-        opts.callback --[[@as function]],
-        function(props)
+      opts.callback = overwrite_tied_fn({
+        desc = desc,
+        extra_desc = extra_desc,
+        on_try = opts.callback --[[@as function]],
+        on_catch = function(props)
           local autocmd_id = props.args[1].id
           vim.api.nvim_del_autocmd(autocmd_id)
-        end
-      )
+        end,
+      })
     end
 
     return create_autocmd(event, opts)

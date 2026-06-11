@@ -1,5 +1,6 @@
--- TODO: Enable if you encourter filetypes without LSP that you want to lint
--- Check out the LazyVim config for this plugin when setting it up
+-- TODO: Add to statusline with https://github.com/mfussenegger/nvim-lint#get-the-current-running-linters-for-your-buffer
+-- NOTE: Modify built-in linters: https://github.com/mfussenegger/nvim-lint#customize-built-in-linters
+-- NOTE: Create custom linters: https://github.com/mfussenegger/nvim-lint#custom-linters
 
 --- @type PluginSpec
 local M = {

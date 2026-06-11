@@ -47,9 +47,11 @@ end, tied.do_nothing)
 local maps = {
   -- stylua: ignore start
   { "n", "<C-r>", replace_text, { desc = "Replace text in files" } },
-  { "n", "<C-t>", "<C-w><CR><C-w>T", { desc = "Open list item in new tab" } },
-  { "n", "<C-s>", "<C-w><CR>", { desc = "Open list item in hor. split" } },
-  { "n", "<C-v>", "<C-w><CR>:windo cclose<cr><C-w>L:copen<cr><cr>", { desc = "Open list item in vert. split" } },
+  { "n", "<CR>",  "<CR>:cclose<cr>", { desc = "Open list item" } },
+  { "n", "o",     "<CR>:cclose<cr>:copen<cr>", { desc = "Preview list item" } },
+  { "n", "<C-s>", "<C-w><CR>:cclose<cr>", { desc = "Open list item in hor. split" } },
+  { "n", "<C-v>", "<C-w><CR>:cclose<cr><C-w>L", { desc = "Open list item in vert. split" } },
+  { "n", "<C-t>", "<C-w><CR>:cclose<cr><C-w>T", { desc = "Open list item in new tab" } },
   -- stylua: ignore end
 }
 

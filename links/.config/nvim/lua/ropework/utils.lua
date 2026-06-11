@@ -8,7 +8,6 @@
 -- vim.tbl_contains() - check if lua table contains a value
 -- vim.tbl_deep_extend() - extend lua table
 -- vim.schedule(some_func) - execute function async
--- vim.defer_fn(some_func, 500) - execute function after specified time
 -- vim.fn.some_func() - call any builtin vim function
 
 -- NOTE: Enter keys as if the user typed them (useful for partial commands):
@@ -205,20 +204,20 @@ tied.create_augroup = tie(
   "Create augroup",
   --- @param name string
   --- @param clear boolean
-  --- @return integer
+  --- @return integer?
   function(name, clear)
     vim.validate("name", name, "string")
     vim.validate("clear", clear, "boolean")
 
     return vim.api.nvim_create_augroup(name, { clear = clear })
   end,
-  tied.do_nothing -- return nil as group id on error
+  tied.do_nothing
 )
 
 tied.create_autocmd = tie(
   "Create autocmd",
   --- @param opts AutoCmdArgs
-  --- @return integer
+  --- @return integer?
   function(opts)
     vim.validate("opts", opts, "table")
     vim.validate("opts.desc", opts.desc, "string")
@@ -230,7 +229,7 @@ tied.create_autocmd = tie(
 
     return vim.api.nvim_create_autocmd(event, opts)
   end,
-  tied.do_nothing -- return nil as autocmd id on error
+  tied.do_nothing
 )
 
 tied.check_if_buf_is_file = tie(
@@ -378,3 +377,88 @@ tied.switch_bool = tie("Switch boolean under cursor", function()
     end
   end
 end, tied.do_nothing)
+
+-- Use this when you want to create a fn that is called after a timeout,
+-- but to stops all other fn calls if they were done during the same time
+tied.debounce_wrap = tie(
+  "Create a function which is debounced",
+  --- @param desc string
+  --- @param ms number
+  --- @param callback function
+  --- @return function
+  function(desc, ms, callback)
+    vim.validate("desc", desc, "string")
+    vim.validate("ms", ms, "number")
+    vim.validate("callback", callback, "function")
+
+    local timer = assert(vim.uv.new_timer())
+    local tied_fn = vim.schedule_wrap(tie(desc, callback, tied.do_nothing))
+
+    return tie("Start debounce timer", function(...)
+      local args = vim.F.pack_len(...)
+      local after = tie("After debounce", function()
+        timer:stop()
+        tied_fn(vim.F.unpack_len(args))
+      end, tied.do_nothing)
+
+      -- Return nil on purpose
+      timer:start(ms, 0, after)
+    end, tied.do_nothing)
+  end,
+  tied.do_rethrow
+)
+
+-- Use this if you want to call a fn after a timeout once.
+-- Multiple calls aren't blocked like in the debounce variant
+tied.set_timeout = tie(
+  "Call a function after timeout",
+  --- @param desc string
+  --- @param ms number
+  --- @param callback function
+  --- @return uv.uv_timer_t?
+  function(desc, ms, callback)
+    vim.validate("desc", desc, "string")
+    vim.validate("ms", ms, "number")
+    vim.validate("callback", callback, "function")
+
+    -- It uses vim.uv.new_timer() and vim.schedule()
+    return vim.defer_fn(tie(desc, callback, tied.do_nothing), ms)
+  end,
+  tied.do_nothing
+)
+
+tied.set_interval = tie(
+  "Call a function after each interval",
+  --- @param desc string
+  --- @param ms number
+  --- @param callback function
+  --- @return uv.uv_timer_t?
+  function(desc, ms, callback)
+    vim.validate("desc", desc, "string")
+    vim.validate("ms", ms, "number")
+    vim.validate("callback", callback, "function")
+
+    local timer = assert(vim.uv.new_timer())
+    local tied_fn = vim.schedule_wrap(tie(desc, callback, tied.do_nothing))
+
+    timer:start(ms, ms, tied_fn)
+
+    return timer
+  end,
+  tied.do_nothing
+)
+
+tied.clear_interval = tie(
+  "Stop a function that is called on interval",
+  --- @param timer uv.uv_timer_t
+  function(timer)
+    vim.validate("timer", timer, "table")
+
+    timer:stop()
+
+    if not timer:is_closing() then
+      timer:close()
+    end
+  end,
+  tied.do_nothing
+)
