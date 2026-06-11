@@ -21,6 +21,10 @@
       "rev": "a48aff30cfed17c69ba37ca8af2bde2b49d05420",
       "src": "https://github.com/ivangeorgiew/lazydev.nvim"
     },
+    "lint": {
+      "rev": "99cbc3ca8a76845fca50e496be7212bebf907dd3",
+      "src": "https://github.com/mfussenegger/nvim-lint"
+    },
     "mini.icons": {
       "rev": "520995f1d75da0e4cc901ee95080b1ff2bc46b94",
       "src": "https://github.com/nvim-mini/mini.icons"
