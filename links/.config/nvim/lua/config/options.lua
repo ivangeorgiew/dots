@@ -16,7 +16,7 @@ M.setup = tie("Setup options", function()
   g.loaded_perl_provider = 0
   -- g.loaded_python3_provider = 0
   -- g.loaded_node_provider = 0
-  g.node_host_prog = "~/.npm-global/node_modules/.bin/neovim-node-host"
+  -- g.node_host_prog = "~/.npm-global/node_modules/.bin/neovim-node-host"
 
   -- Disable some built-in plugins
   g.loaded_netrwPlugin = 1 -- built-in file browser

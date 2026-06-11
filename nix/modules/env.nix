@@ -78,11 +78,18 @@
       (vscode.fhsWithPackages (ps: with ps; [])) # vscode ide/text editor
 
       # Programming apps (langs, linters, formatters, etc)
-      # Global npm packages are installed in ~/.npm-global
       # Project specific packages should be installed with a devShell + direnv
+      neovim-node-client # the neovim npm package used by the nodejs provider
       (python314.withPackages (ps: with ps; [pip]))
       go # golang
+
+      # JS/TS
       nodejs # nodejs + npm
+      pnpm # best nodejs package manager
+      prettierd # daemon for prettier formatter
+      eslint_d # daemon for eslint linter
+
+      # Lua
       lua # lua languge
       lua-language-server # lua lsp
       stylua # lua formatter
@@ -183,23 +190,6 @@
 
         # Display system info
         # nitch
-
-        # add the npm globals to PATH
-        # manually do `npm update` inside the directory when you want to update
-        fish_add_path --path ~/.npm-global/node_modules/.bin
-
-        # Install npm global packages if needed
-        set -l npm_dir ~/.npm-global
-
-        if command -q npm && test -d "$npm_dir" && test ! -d "$npm_dir/node_modules"
-          cd $npm_dir
-
-          # install npm global packages
-          echo "Installing global npm packages..."
-          npm i
-
-          cd -
-        end
       '';
     };
 
