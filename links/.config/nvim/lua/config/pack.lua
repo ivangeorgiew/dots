@@ -407,7 +407,7 @@ M.autocmds = {
   {
     desc = "Build on plugin install/update",
     event = "PackChangedPre",
-    group = tied.create_augroup("my.pack.build", true),
+    group = tied.create_augroup("my.pack.pack_changed_pre", true),
     callback = function(ev)
       if not vim.list_contains({ "install", "update" }, ev.data.kind) then
         return
@@ -441,7 +441,7 @@ M.autocmds = {
   {
     desc = "Load plugins",
     event = "UIEnter",
-    group = tied.create_augroup("my.pack.load_plugins", true),
+    group = tied.create_augroup("my.pack.load_plugins_queue", true),
     once = true,
     callback = function()
       vim.g.did_ui_enter = true

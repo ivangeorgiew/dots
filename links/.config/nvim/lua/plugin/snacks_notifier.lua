@@ -92,7 +92,7 @@ M.opts.notifier.custom.config = tie(
         desc = "Show LSP progress",
         event = "LspProgress",
         group = tied.create_augroup("my.snacks.notifier.lsp_spinner", true),
-        callback = function(ev)
+        callback = tied.debounce_wrap("Show LSP progress", 10, function(ev)
           local status = vim.lsp.status()
 
           if not status:match("Loading workspace") then
@@ -110,7 +110,7 @@ M.opts.notifier.custom.config = tie(
                 or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
             end, tied.do_nothing),
           })
-        end,
+        end),
       })
     end
   end,

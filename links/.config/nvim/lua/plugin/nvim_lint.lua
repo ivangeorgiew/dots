@@ -6,7 +6,7 @@
 local M = {
   src = "mfussenegger/nvim-lint",
   name = "lint",
-  lazy = true,
+  lazy = false, -- No startup delay
   opts = {
     linters_by_ft = {
       javascript = { "eslint_d" },
@@ -31,22 +31,23 @@ M.config = tie("Plugin nvim-lint -> config", function(opts)
 
   nvim_lint.linters_by_ft = opts.linters_by_ft
 
-  -- Recommended eslint_d settings
-  vim.env.ESLINT_D_PPID = vim.fn.getpid()
+  vim.env.ESLINT_D_PPID = vim.fn.getpid() -- Recommended eslint_d setting
 
   tied.create_autocmd({
     desc = "Lint buffer",
     group = tied.create_augroup("my.nvim-lint.run_lint", true),
     event = { "BufReadPost", "BufWritePost", "InsertLeave", "TextChanged" },
     callback = tied.debounce_wrap("Lint buffer", 100, function(e)
-      local lint_opts = {}
-
-      -- Only run linters which can work with unsaved file
-      if vim.list_contains({ "InsertLeave", "TextChanged" }, e.event) then
-        lint_opts.filter = "stdin"
+      if not tied.check_if_buf_is_file(e.buf) then
+        return
       end
 
-      nvim_lint.try_lint(nil, lint_opts)
+      if vim.list_contains({ "InsertLeave", "TextChanged" }, e.event) then
+        -- Only run linters which can work with unsaved file
+        nvim_lint.try_lint(nil, { filter = "stdin" })
+      else
+        nvim_lint.try_lint()
+      end
     end),
   })
 end, tied.do_nothing)

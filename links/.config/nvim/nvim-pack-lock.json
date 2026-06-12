@@ -26,11 +26,11 @@
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
     "mini.icons": {
-      "rev": "520995f1d75da0e4cc901ee95080b1ff2bc46b94",
+      "rev": "284509648db084c5e40a31afa9abb9887c49e04a",
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "mini.indentscope": {
-      "rev": "ad19b1f02223391f3d40440f7ff10607f0043585",
+      "rev": "98453149c3394ca3d1bf252e838e4777573b63e2",
       "src": "https://github.com/nvim-mini/mini.indentscope"
     },
     "neoscroll": {
@@ -42,11 +42,11 @@
       "src": "https://github.com/windwp/nvim-autopairs"
     },
     "nvim-lspconfig": {
-      "rev": "9573948c38bfabeec353ae7dd7d3ffec4c506a6b",
+      "rev": "ed19590a3a9792901553c388d1aadafce012f80d",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-tree": {
-      "rev": "07f541fcaa4a5ae019598240362449ab7e9812b3",
+      "rev": "82f58063d67defc620e1ef8be606fc62a7b5dc1e",
       "src": "https://github.com/nvim-tree/nvim-tree.lua"
     },
     "nvim-treesitter": {
@@ -62,7 +62,7 @@
       "src": "https://github.com/gbprod/substitute.nvim"
     },
     "todo-comments": {
-      "rev": "4aff2d8666bcff54836123bafdd8cb0cbc068af4",
+      "rev": "cd14f77b75202ecc30a9be74bfc2b6c6488b9cfb",
       "src": "https://github.com/dtor/todo-comments.nvim",
       "version": "'remove-plenary'"
     },

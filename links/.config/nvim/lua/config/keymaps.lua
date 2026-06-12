@@ -56,12 +56,16 @@ M.to_create = {
   { "i", "<C-h>", "<Left>",  { desc = "Move left" } },
   { "i", "<C-l>", "<Right>", { desc = "Move right" } },
 
-  -- Split navigation
+  -- Windows
   -- TODO: Change this and corresponding code in kitty config when you start using built-in neovim terminals
   { "n", "<C-h>", "<cmd>Navigate h<cr>", { desc = "Go to left split"  } },
   { "n", "<C-l>", "<cmd>Navigate l<cr>", { desc = "Go to right split" } },
   { "n", "<C-k>", "<cmd>Navigate k<cr>", { desc = "Go to upper split" } },
   { "n", "<C-j>", "<cmd>Navigate j<cr>", { desc = "Go to lower split" } },
+  { "n", "<leader><C-h>", "<C-w><S-h>", { desc = "Move window to the left" } },
+  { "n", "<leader><C-l>", "<C-w><S-l>", { desc = "Move window to the right" } },
+  { "n", "<leader><C-k>", "<C-w><S-k>", { desc = "Move window to the left" } },
+  { "n", "<leader><C-j>", "<C-w><S-j>", { desc = "Move window to the right" } },
 
   -- Tabs
   { "n", "<S-h>", "gT", { desc = "Switch to left tab" } },
