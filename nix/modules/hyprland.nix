@@ -150,7 +150,6 @@ in {
       wl-clipboard # copy/paste on wayland
 
       # GUI apps
-      unstable.hyprviz # GUI for configuring Hyprland
       networkmanagerapplet # manage wifi
       playerctl # controls media players
       rofi # app launcher for wayland

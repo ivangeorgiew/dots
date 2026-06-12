@@ -18,7 +18,7 @@
       "src": "https://github.com/zeioth/garbage-day.nvim"
     },
     "lazydev": {
-      "rev": "a48aff30cfed17c69ba37ca8af2bde2b49d05420",
+      "rev": "df0f6c3e2ee47ef6c4cab3b2cde313b13bb65612",
       "src": "https://github.com/ivangeorgiew/lazydev.nvim"
     },
     "lint": {
@@ -42,7 +42,7 @@
       "src": "https://github.com/windwp/nvim-autopairs"
     },
     "nvim-lspconfig": {
-      "rev": "ed19590a3a9792901553c388d1aadafce012f80d",
+      "rev": "a683e0ddf0cf64c6cd689e18ffb480ade3c162b7",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-tree": {

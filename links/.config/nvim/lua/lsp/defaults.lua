@@ -9,10 +9,7 @@ local M = {
     capabilities = vim.lsp.protocol.make_client_capabilities(),
   },
   custom = {
-    -- NOTE: No point in enabling them.
-    -- You would get worse CPU performance on any text edit, highlighting delay,
-    -- logging errors and visual noise
-    use_semantic_tokens = false,
+    use_semantic_tokens = true,
   },
 }
 
@@ -25,18 +22,23 @@ M.config.on_init = tie(
         return
       end
 
-      if not M.custom.use_semantic_tokens then
-        client.server_capabilities.semanticTokensProvider = nil
-      else
-        -- TODO: Increases debounce time. Remove when fixed
-        -- https://github.com/neovim/neovim/issues/39785#issuecomment-4450886150
-        local new = vim.lsp._capability.all.semantic_tokens.new
+      vim.lsp.semantic_tokens.enable(
+        M.custom.use_semantic_tokens,
+        { client_id = client.id }
+      )
 
-        vim.lsp._capability.all.semantic_tokens.new = function(...)
-          local ret = new(...)
-          ret.debounce = 1000 -- in ms
-          return ret
+      -- TODO: remove when bug is fixed https://github.com/neovim/neovim/issues/40208
+      local log_error = vim.lsp.log.error
+
+      -- Convert semantic_tokens errors to debug
+      vim.lsp.log.error = function(...)
+        local args = vim.F.pack_len(...)
+
+        if args[1] == "semantic_tokens" then
+          return vim.lsp.log.debug(vim.F.unpack_len(args))
         end
+
+        return log_error(vim.F.unpack_len(args))
       end
     end)
   end,

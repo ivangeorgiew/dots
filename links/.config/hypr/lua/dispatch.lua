@@ -21,7 +21,7 @@ hl.on("hyprland.start", function()
   exec(start .. " $BROWSER")
   exec(start .. " spotify")
   exec(start .. " vesktop")
-  -- exec(start .. " obsidian")
+  exec(start .. " obsidian")
   -- exec("~/.config/hypr/scripts/play_spotify.sh")
 end)
 

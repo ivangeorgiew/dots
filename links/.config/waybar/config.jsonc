@@ -107,7 +107,9 @@
         "tooltip": false,
         "scroll-step": 5.0,
         "on-click": "wpctl set-mute @DEFAULT_SINK@ toggle",
-        "on-click-right": "pavucontrol &"
+        "on-click-right": "pavucontrol &",
+        "on-scroll-up": "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
     },
 
     "battery": {
