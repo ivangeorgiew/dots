@@ -81,18 +81,10 @@
       # Project specific packages should be installed with a devShell + direnv
       neovim-node-client # the neovim npm package used by the nodejs provider
       (python314.withPackages (ps: with ps; [pip]))
-      go # golang
-
-      # JS/TS
-      nodejs # nodejs + npm
-      pnpm # best nodejs package manager
-      prettierd # daemon for prettier formatter
-      eslint_d # daemon for eslint linter
-
-      # Lua
-      lua # lua languge
-      lua-language-server # lua lsp
-      stylua # lua formatter
+      go
+      lua
+      nodejs
+      pnpm
     ];
 
     sessionVariables = {

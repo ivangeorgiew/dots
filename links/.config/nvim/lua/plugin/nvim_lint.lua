@@ -23,15 +23,39 @@ local M = {
 M.config = tie("Plugin nvim-lint -> config", function(opts)
   local nvim_lint = require("lint")
 
-  tied.for_list(
-    "Add alt js filetype to nvim-lint's linters_by_ft",
-    opts.alt_js_filetypes,
-    function(_, ft) opts.linters_by_ft[ft] = opts.linters_by_ft.javascript end
-  )
+  tied.do_block("Plugin nvim-lint -> Set javascript settings", function()
+    tied.for_list(
+      "Add alt js filetype to nvim-lint's linters_by_ft",
+      opts.alt_js_filetypes,
+      function(_, ft) opts.linters_by_ft[ft] = opts.linters_by_ft.javascript end
+    )
+
+    vim.env.ESLINT_D_PPID = vim.fn.getpid() -- Recommended eslint_d setting
+  end)
 
   nvim_lint.linters_by_ft = opts.linters_by_ft
 
-  vim.env.ESLINT_D_PPID = vim.fn.getpid() -- Recommended eslint_d setting
+  tied.do_block("Plugin nvim-lint -> Install linters with mason", function()
+    local to_install = {}
+
+    tied.for_table(
+      "Go through all nvim-lint linters",
+      opts.linters_by_ft,
+      function(_, linters)
+        tied.for_list(
+          "Queue a code linter for install with mason",
+          linters,
+          function(_, linter)
+            if type(linter) == "string" then
+              to_install[linter] = true
+            end
+          end
+        )
+      end
+    )
+
+    tied.mason_install(vim.tbl_keys(to_install))
+  end)
 
   tied.create_autocmd({
     desc = "Lint buffer",
