@@ -6,7 +6,7 @@
 local M = {
   src = "mfussenegger/nvim-lint",
   name = "lint",
-  lazy = false, -- No startup delay
+  lazy = true,
   opts = {
     linters_by_ft = {
       javascript = { "eslint_d" },
@@ -20,8 +20,24 @@ local M = {
   },
 }
 
+M.opts.lint = tied.debounce_wrap(
+  "Plugin nvim-lint -> lint",
+  100,
+  --- @param opts lint.try_lint.Opts?
+  function(opts)
+    vim.validate("opts", opts, "table", true)
+
+    local bufnr = vim.api.nvim_get_current_buf()
+
+    if tied.check_if_buf_is_file(bufnr) then
+      require("lint").try_lint(nil, opts)
+    end
+  end
+)
+
 M.config = tie("Plugin nvim-lint -> config", function(opts)
   local nvim_lint = require("lint")
+  local lint = M.opts.lint
 
   tied.do_block("Plugin nvim-lint -> Set javascript settings", function()
     tied.for_list(
@@ -35,44 +51,20 @@ M.config = tie("Plugin nvim-lint -> config", function(opts)
 
   nvim_lint.linters_by_ft = opts.linters_by_ft
 
-  tied.do_block("Plugin nvim-lint -> Install linters with mason", function()
-    local to_install = {}
-
-    tied.for_table(
-      "Go through all nvim-lint linters",
-      opts.linters_by_ft,
-      function(_, linters)
-        tied.for_list(
-          "Queue a code linter for install with mason",
-          linters,
-          function(_, linter)
-            if type(linter) == "string" then
-              to_install[linter] = true
-            end
-          end
-        )
-      end
-    )
-
-    tied.mason_install(vim.tbl_keys(to_install))
-  end)
+  lint() -- Run for current buffer
 
   tied.create_autocmd({
     desc = "Lint buffer",
     group = tied.create_augroup("my.nvim-lint.run_lint", true),
-    event = { "BufReadPost", "BufWritePost", "InsertLeave", "TextChanged" },
-    callback = tied.debounce_wrap("Lint buffer", 100, function(e)
-      if not tied.check_if_buf_is_file(e.buf) then
-        return
-      end
-
+    event = { "BufEnter", "BufWritePost", "InsertLeave", "TextChanged" },
+    callback = function(e)
       if vim.list_contains({ "InsertLeave", "TextChanged" }, e.event) then
         -- Only run linters which can work with unsaved file
-        nvim_lint.try_lint(nil, { filter = "stdin" })
+        lint({ filter = "stdin" })
       else
-        nvim_lint.try_lint()
+        lint()
       end
-    end),
+    end,
   })
 end, tied.do_nothing)
 

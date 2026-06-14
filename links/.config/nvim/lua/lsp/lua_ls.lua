@@ -25,31 +25,30 @@ local M = {
   },
 }
 
--- NOTE: Manual setup of `---@module` without `lazydev` plugin
--- Prefer lazydev, because of require() and @module being added on buf change
-
 M.config.on_init = tie(
   "LSP lua_ls -> on_init",
   ---@param client vim.lsp.Client
   function(client, _)
-    require("lsp.defaults").config.on_init(client, _)
+    vim.lsp.semantic_tokens.enable(true, { client = client.id })
 
-    local path = vim.tbl_get(client, "workspace_folders", 1, "name")
+    -- NOTE: Manual setup of `---@module` without `lazydev` plugin
+    -- Prefer lazydev, because of require() and @module being added on buf change
+    local cwd = vim.tbl_get(client, "workspace_folders", 1, "name")
 
     if
       tied.plugins["lazydev"]
-      or not path
-      or vim.uv.fs_stat(path .. "/.luarc.json")
-      or vim.uv.fs_stat(path .. "/.luarc.jsonc")
+      or not cwd
+      or vim.uv.fs_stat(cwd .. "/.luarc.json")
+      or vim.uv.fs_stat(cwd .. "/.luarc.jsonc")
     then
       return
     end
 
     local file_paths = tied.dir({
-      path = path,
+      path = cwd,
       type = "file",
       ext = ".lua",
-      map = function(file_name) return vim.fs.joinpath(path, file_name) end,
+      map = function(file_name) return vim.fs.joinpath(cwd, file_name) end,
     })
     local module_regex = "%-%-%-%s*@module%s*[\"']([%w%.%-_/]*)[\"']"
     local modules = {}
@@ -90,7 +89,7 @@ M.config.on_init = tie(
 
         local plugin_path = vim.fs.normalize(opts[1].path)
 
-        if vim.uv.fs_stat(path .. "/lua") then
+        if vim.uv.fs_stat(plugin_path .. "/lua") then
           plugin_path = plugin_path .. "/lua"
         end
 

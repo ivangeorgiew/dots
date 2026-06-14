@@ -65,17 +65,19 @@ local foreach = tie(
 tied.for_list = foreach(true)
 tied.for_table = foreach(false)
 
--- Useful when a block of code is a separate logic,
--- but there is no point in moving it to a function
 tied.do_block = tie(
   "Execute tied code block",
+  --- Useful when a block of code is a separate logic,
+  --- but there is no point in moving it to a function
   --- @param desc string
   --- @param on_try function
-  function(desc, on_try)
+  --- @param on_catch tie.on_catch?
+  function(desc, on_try, on_catch)
     vim.validate("desc", desc, "string")
     vim.validate("on_try", on_try, "function")
+    vim.validate("on_catch", on_catch, "function", true)
 
-    tie(desc, on_try, tied.do_nothing)()
+    tie(desc, on_try, on_catch or tied.do_nothing)()
   end,
   tied.do_nothing
 )
