@@ -7,6 +7,7 @@
 --- @class PluginSpec Plugin definition
 --- @field src string
 --- @field name string?
+--- @field path string?
 --- @field submodule boolean?
 --- @field version string|vim.VersionRange?
 --- @field dependencies string[]|PluginDependency[]?

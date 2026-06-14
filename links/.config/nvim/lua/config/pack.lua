@@ -6,6 +6,7 @@
 local M = {
   ---@type table<string,PluginSpec>
   plugins = {},
+  plugins_dir = vim.fn.stdpath("data") .. "/site/pack/core/opt/",
   local_plugins_dir = "~/projects",
   to_install = {},
   early_load_queue = {},
@@ -28,25 +29,24 @@ local M = {
   },
 }
 
-M.parse_src = tie(
-  "Convert plugin spec src to url",
-  ---@param src string
-  ---@return string
-  function(src)
-    vim.validate("src", src, "string")
-    assert(src:match(".*/.*") ~= nil, "Invalid src")
+M.parse_base_spec = tie(
+  "Parse plugin spec required fields",
+  ---@param spec PluginSpec
+  ---@return PluginSpec
+  function(spec)
+    vim.validate("spec", spec, "table")
+    vim.validate("spec.src", spec.src, "string")
+    vim.validate("spec.name", spec.name, "string", true)
+
+    assert(spec.src:match(".*/.*") ~= nil, "Invalid spec.src")
 
     -- stylua: ignore
-    return vim.startswith("https://", src) and src or ("https://github.com/" .. src)
-  end,
-  tied.do_rethrow
-)
+    spec.src = vim.startswith("https://", spec.src) and spec.src or ("https://github.com/" .. spec.src)
+    spec.name = (spec.name or spec.src):match("([^/]+)$"):gsub("%.nvim$", "")
+    spec.path = M.plugins_dir .. spec.name
 
-M.parse_name = tie(
-  "Convert plugin spec src to name",
-  ---@param src string
-  ---@return string
-  function(src) return src:match("([^/]+)$"):gsub("%.nvim$", "") end,
+    return spec
+  end,
   tied.do_rethrow
 )
 
@@ -56,13 +56,14 @@ M.add_plugin_specs = tie(
   function(raw_data)
     vim.validate("raw_data", raw_data, "table")
 
+    local sub_opts = {}
     local queue = { raw_data }
     local raw_plugins = {}
 
     while #queue > 0 do
       local curr_data = table.remove(queue, 1)
 
-      if type(curr_data) == "table" then
+      if type(curr_data) == "table" and #vim.tbl_keys(curr_data) > 0 then
         if type(curr_data[1]) == "table" then
           tied.for_list(
             "Add raw plugin info to queue",
@@ -75,8 +76,6 @@ M.add_plugin_specs = tie(
       end
     end
 
-    local sub_opts = {}
-
     tied.for_list("Parse plugin spec", raw_plugins, function(_, spec)
       for prop_name, prop_type in pairs(M.input_props) do
         vim.validate(prop_name, spec[prop_name], prop_type, true)
@@ -86,20 +85,24 @@ M.add_plugin_specs = tie(
         return
       end
 
-      spec.src = M.parse_src(spec.src)
-
-      if not spec.name then
-        spec.name = M.parse_name(spec.src)
-      end
+      spec = M.parse_base_spec(spec)
 
       if type(spec.build) == "string" then
-        local build_cmd = string.sub(spec.build --[[@as string]], 2)
+        local build_cmd = spec.build --[[@as string ]]
+        local is_vimcmd = vim.startswith(build_cmd, ":")
 
-        spec.build = tie(
-          ("Plugin %s -> build"):format(spec.name),
-          function() vim.cmd(build_cmd) end,
-          tied.do_nothing
-        )
+        spec.build = tie(("Plugin %s -> build"):format(spec.name), function()
+          if is_vimcmd then
+            vim.cmd(build_cmd:sub(2))
+          else
+            vim
+              .system(
+                vim.split(build_cmd, "%s+", { trimempty = true }),
+                { cwd = spec.path, text = true }
+              )
+              :wait()
+          end
+        end, tied.do_nothing)
       end
 
       if spec.opts and not spec.config then
@@ -164,8 +167,7 @@ M.add_plugin_specs = tie(
           vim.validate(("deps[%d].src"):format(idx), dep_spec.src, "string")
           vim.validate(("deps[%d].name"):format(idx), dep_spec.name, "string")
 
-          dep_spec.src = M.parse_src(dep_spec.src)
-          dep_spec.name = M.parse_name(dep_spec.name)
+          dep_spec = M.parse_base_spec(dep_spec)
 
           table.insert(parsed_deps, dep_spec)
 
@@ -230,9 +232,8 @@ M.load_plugins = tie(
       -- From the original load function in vim.pack.add
       -- Fail on error deliberately
       if vim.v.vim_did_enter == 1 then
-        local opts = vim.pack.get({ spec.name }, { info = false })[1]
         local after_paths =
-          vim.fn.glob(opts.path .. "/after/plugin/**/*.{vim,lua}", false, true)
+          vim.fn.glob(spec.path .. "/after/plugin/**/*.{vim,lua}", false, true)
 
         vim.tbl_map(
           function(path) vim.cmd.source({ path, magic = { file = false } }) end,
