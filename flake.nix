@@ -48,10 +48,10 @@
 
     # Configurations
     nixosConfigurations = {
-      mahcomp = lib.nixosSystem {
+      mahcomp = lib.nixosSystem rec {
         system = "x86_64-linux";
         specialArgs = {
-          inherit inputs outputs;
+          inherit inputs outputs system;
           username = "ivangeorgiew";
           graphicsCard = "nvidia";
         };

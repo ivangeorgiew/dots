@@ -58,6 +58,7 @@
       # GUI apps
       anki-bin # SRS (flashcards)
       custom.spotify-no-ads # music player
+      custom.zed-editor # ide/text editor
       easyeffects # sound effects
       gedit # basic text editor GUI
       kdePackages.ark # 7-zip alternative
@@ -130,8 +131,8 @@
       nix_boot = "nix_update && nh os boot"; # Change nixos config after boot
       nix_list = "nh os info"; # List nixos generations
       nix_roll = "nh os rollback --to"; # Rollback to a generation
-      nix_gc = "nh clean all --ask --keep 3 --keep-since 5d"; # Garbage collect nixos
-      nix_gc_all = "nh clean all --ask"; # Garbage collect all but 1 nixos generation
+      nix_gc = "nh clean all --ask --optimise --keep 3 --keep-since 15d"; # Garbage collect nixos
+      nix_gc_all = "nh clean all --ask --optimise"; # Garbage collect all but 1 nixos generation
       nix_fmt = "nix fmt -- ~/dots/**/*.nix"; # Format all the nix files in my repo
       nix_create_shell = "nix flake init -t ~/dots"; # Create nix devshell
     };
@@ -260,7 +261,7 @@
     let
       browser = "firefox-devedition.desktop";
       torrent = "org.qbittorrent.qBittorrent.desktop";
-      imgviewer = "org.kde.gwenview.desktop";
+      imgviewer = "org.gnome.Loupe.desktop";
       file_manager = "nemo.desktop";
     in {
       defaultApplications = {

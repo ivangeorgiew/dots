@@ -97,7 +97,7 @@
       clean = {
         enable = true;
         dates = "weekly";
-        extraArgs = "--keep 3 --keep-since 15d";
+        extraArgs = "--optimise --keep 3 --keep-since 15d";
       };
     };
   };

@@ -44,7 +44,16 @@ in rec {
   custom =
     outputs.packages.${system}
     // {
-      # TODO: remove when 1.2.0 is in nixpkgs
+      # TODO: remove when it's added in nixos-unstable
+      zed-editor =
+        # v1.6.3
+        (import (fetchTarball {
+            url = "https://github.com/NixOS/nixpkgs/archive/16fd1aa718db6f9407112fecfa1cb10345b8ee01.tar.gz";
+            sha256 = "08nc8nkch7np3ai9mxlrv5axk2v78zhn6gn2r3vci8si85qvhw5p";
+          })
+          nixpkgs-opts).zed-editor;
+
+      # TODO: remove when it's added in nixos-unstable
       envfs = unstable.envfs.overrideAttrs (oldAttrs: rec {
         version = "1.2.0";
         src = prev.fetchFromGitHub {

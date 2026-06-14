@@ -121,6 +121,7 @@ wr({ match = { class = ".*" }, float = true })
 -- Tiled or not and window allocation
 wr({ match = { class = "kitty" }, tile = true, workspace = "1 silent" })
 wr({ match = { class = "^(code)$" }, tile = true, workspace = "1 silent" })
+wr({ match = { class = "dev.zed.Zed" }, tile = true, workspace = "1 silent" })
 wr({ match = { class = "firefox" }, tile = true, workspace = "2 silent" })
 wr({ match = { class = "firefox-devedition" }, tile = true, workspace = "2 silent" })
 wr({ match = { class = "google-chrome" }, tile = true, workspace = "2 silent" })
