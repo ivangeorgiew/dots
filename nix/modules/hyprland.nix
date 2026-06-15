@@ -111,7 +111,7 @@ in {
         XDG_SESSION_TYPE = "wayland";
         HYPR_PLUGIN_DIR = pkgs.symlinkJoin {
           name = "hyprland-plugins";
-          paths = with pkgs.hland; [
+          paths = with pkgs.custom.hland; [
             # Use either plugins-git or plugins-nix
             plugins-git.hyprbars # titlebars on windows
           ];
@@ -195,12 +195,12 @@ in {
   programs = {
     # Enabling sets a bunch of necessary things
     # https://github.com/NixOS/nixpkgs/blob/nixos-23.05/nixos/modules/programs/hyprland.nix#L59
-    hyprland = {
+    hyprland = with pkgs.custom.hland; {
       enable = true;
 
       # Use packages from the Hyprland input
-      package = pkgs.hland.hypr-pkgs.hyprland;
-      portalPackage = pkgs.hland.hypr-pkgs.xdg-desktop-portal-hyprland;
+      package = hypr-pkgs.hyprland;
+      portalPackage = hypr-pkgs.xdg-desktop-portal-hyprland;
 
       # Enabled by default
       #xwayland.enable = true;
@@ -243,10 +243,10 @@ in {
     style = "adwaita-dark";
   };
 
-  hardware.graphics = {
+  hardware.graphics = with pkgs.custom.hland; {
     # Use mesa from the hyprland input's nixpkgs commit to prevent issues
-    package = pkgs.hland.nixpkgs.mesa;
-    package32 = pkgs.hland.nixpkgs.driversi686Linux.mesa;
+    package = hypr-nixpkgs.mesa;
+    package32 = hypr-nixpkgs.driversi686Linux.mesa;
   };
 
   xdg.portal = {

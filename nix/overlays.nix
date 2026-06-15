@@ -10,29 +10,8 @@
     config.allowUnfree = true;
   };
 in rec {
-  # Example to use a specific version of a package
-  # some-old-pkg = (import (fetchTarball {
-  #   url = "https://github.com/NixOS/nixpkgs/archive/0ad13a6833440b8e238947e47bea7f11071dc2b2.tar.gz";
-  #   sha256 = "053ypqqcr3hbdh9c0fnzgs2cbwmi15vz9b1k33p4wk36f70w6il3";
-  # }) nixpkgs-opts).some-old-pkg;
-
   # Prefer this method to legacyPackages in order to be able to use unfree packages
   unstable = import inputs.nixpkgs-unstable nixpkgs-opts;
-
-  hland = {
-    # nixpkgs-unstable which Hyprland uses. Can fix some issues.
-    # No need for unfree packages for now
-    nixpkgs = inputs.hyprland.inputs.nixpkgs.legacyPackages.${system};
-
-    # Packages related to Hyprland
-    hypr-pkgs = inputs.hyprland.packages.${system};
-
-    # Official Hyprland plugins by vaxry
-    plugins-git = inputs.hyprland-plugins.packages.${system};
-
-    # Plugins from nixpkgs
-    plugins-nix = unstable.hyprlandPlugins;
-  };
 
   # Unstable wrapper, not unstable neovim
   # Overrides python3 packages to fix pynvim version `:checkhealth` warning
@@ -44,6 +23,27 @@ in rec {
   custom =
     outputs.packages.${system}
     // {
+      # Example to use a specific version of a package
+      # some-old-pkg = (import (fetchTarball {
+      #   url = "https://github.com/NixOS/nixpkgs/archive/0ad13a6833440b8e238947e47bea7f11071dc2b2.tar.gz";
+      #   sha256 = "053ypqqcr3hbdh9c0fnzgs2cbwmi15vz9b1k33p4wk36f70w6il3";
+      # }) nixpkgs-opts).some-old-pkg;
+
+      hland = {
+        # nixpkgs-unstable which Hyprland uses. Can fix some issues.
+        # No need for unfree packages for now
+        hypr-nixpkgs = inputs.hyprland.inputs.nixpkgs.legacyPackages.${system};
+
+        # Packages related to Hyprland
+        hypr-pkgs = inputs.hyprland.packages.${system};
+
+        # Official Hyprland plugins by vaxry
+        plugins-git = inputs.hyprland-plugins.packages.${system};
+
+        # Plugins from nixpkgs
+        plugins-nix = unstable.hyprlandPlugins;
+      };
+
       # TODO: remove when it's added in nixos-unstable
       zed-editor =
         # v1.6.3
@@ -97,8 +97,16 @@ in rec {
             install -Dm644 --strip target/release/libspotifyadblock.so -t $out/lib
           '';
         };
+        # TODO: remove when unstable.spotify is not on XWayland anymore
+        spotify =
+          # version 1.2.84.475.ga1a748ff
+          (import (fetchTarball {
+              url = "https://github.com/NixOS/nixpkgs/archive/00148f722d6c0d912ae1398292ca5915d99be9b5.tar.gz";
+              sha256 = "1iaix450dlxdlm7rmwv4f544dx4glsjm2spnnf3zr5b4kag642zg";
+            })
+            nixpkgs-opts).spotify;
       in
-        prev.spotify.overrideAttrs (oldAttrs: {
+        spotify.overrideAttrs (oldAttrs: {
           buildInputs = (oldAttrs.buildInputs or []) ++ (with prev; [zip unzip]);
           postInstall =
             (oldAttrs.postInstall or "")

@@ -126,7 +126,7 @@ wr({ match = { class = "firefox" }, tile = true, workspace = "2 silent" })
 wr({ match = { class = "firefox-devedition" }, tile = true, workspace = "2 silent" })
 wr({ match = { class = "google-chrome" }, tile = true, workspace = "2 silent" })
 wr({ match = { class = "vesktop" }, tile = true, workspace = "3 silent" })
-wr({ match = { class = "Spotify" }, tile = true, workspace = "4 silent" })
+wr({ match = { class = "spotify" }, tile = true, workspace = "4 silent" })
 wr({ match = { class = "obsidian" }, tile = true, workspace = "5 silent" })
 wr({ match = { class = "vlc" }, tile = false, workspace = "5" })
 wr({ match = { class = "org.qbittorrent.qBittorrent" }, tile = false, workspace = "5" })
@@ -134,7 +134,7 @@ wr({ match = { class = "org.keepassxc.KeePassXC" }, tile = true })
 wr({ match = { class = "io.github.timasoft.hyprviz" }, tile = true })
 
 -- Opacity
-wr({ match = { class = "Spotify" }, opacity = 0.9 })
+wr({ match = { class = "spotify" }, opacity = 0.9 })
 -- wr({ match = { class = "^(vesktop)$" }, opacity = 0.97, })
 
 -- Size
