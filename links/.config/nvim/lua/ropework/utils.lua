@@ -464,3 +464,42 @@ tied.clear_interval = tie(
   end,
   tied.do_nothing
 )
+
+tied.set_exec_time = tie(
+  "Set execution time",
+  ---@param name string
+  ---@param should_init boolean?
+  function(name, should_init)
+    vim.validate("name", name, "string")
+    vim.validate("should_init", should_init, "boolean", true)
+
+    local time = vim.g.time_table
+
+    if should_init or not time[name] then
+      time[name] = vim.uv.hrtime()
+    elseif type(time[name]) == "number" then
+      time[name] = 1e-6 * (vim.uv.hrtime() - time[name])
+    end
+
+    vim.g.time_table = time
+  end,
+  tied.do_nothing
+)
+
+tied.show_exec_times = tie("Show execution times", function()
+  local times = {}
+
+  tied.for_table(
+    "Convert time to string",
+    vim.g.time_table,
+    function(name, time)
+      table.insert(times, ("%s time: %.2f ms"):format(name, time))
+    end
+  )
+
+  vim.notify(
+    table.concat(times, "\n"),
+    vim.log.levels.INFO,
+    { title = "Execution Time" }
+  )
+end, tied.do_nothing)

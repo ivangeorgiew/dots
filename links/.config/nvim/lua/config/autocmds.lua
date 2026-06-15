@@ -12,11 +12,6 @@ end, tied.do_nothing)
 ---@type AutoCmdArgs[]
 M.config = {
   {
-    desc = "Auto-save vim session",
-    event = "VimLeavePre",
-    callback = function() tied.manage_session(false) end,
-  },
-  {
     desc = "Auto-load vim session",
     event = "UIEnter",
     once = true,
@@ -26,6 +21,11 @@ M.config = {
         tied.manage_session(true)
       end
     end,
+  },
+  {
+    desc = "Auto-save vim session",
+    event = "VimLeavePre",
+    callback = function() tied.manage_session(false) end,
   },
   {
     desc = "Reload file on change",

@@ -8,7 +8,6 @@ local M = {
   plugins = {},
   plugins_dir = vim.fn.stdpath("data") .. "/site/pack/core/opt/",
   local_plugins_dir = "~/projects",
-  to_install = {},
   early_load_queue = {},
   lazy_load_queue = {},
   input_props = {
@@ -89,10 +88,10 @@ M.add_plugin_specs = tie(
 
       if type(spec.build) == "string" then
         local build_cmd = spec.build --[[@as string ]]
-        local is_vimcmd = vim.startswith(build_cmd, ":")
+        local is_vim_cmd = vim.startswith(build_cmd, ":")
 
         spec.build = tie(("Plugin %s -> build"):format(spec.name), function()
-          if is_vimcmd then
+          if is_vim_cmd then
             vim.cmd(build_cmd:sub(2))
           else
             vim
@@ -282,8 +281,7 @@ M.create_ft_event = tie(
         if vim.g.did_ui_enter then
           M.load_plugins({ spec.name })
         else
-          -- Execute after UIEnter has finished
-          vim.schedule(function() M.load_plugins({ spec.name }) end)
+          vim.list_extend(M.lazy_load_queue, { spec.name })
         end
       end,
     })
@@ -440,15 +438,22 @@ M.autocmds = {
     end,
   },
   {
-    desc = "Load plugins",
+    desc = "Load plugins queue",
     event = "UIEnter",
     group = tied.create_augroup("my.pack.load_plugins_queue", true),
     once = true,
     callback = function()
       vim.g.did_ui_enter = true
 
+      tied.set_exec_time("Early plugins")
       M.load_plugins(M.early_load_queue)
-      vim.schedule(function() M.load_plugins(M.lazy_load_queue) end)
+      tied.set_exec_time("Early plugins")
+
+      vim.schedule(function()
+        tied.set_exec_time("Lazy plugins")
+        M.load_plugins(M.lazy_load_queue)
+        tied.set_exec_time("Lazy plugins")
+      end)
     end,
   },
 }
@@ -473,6 +478,9 @@ M.setup = tie("Setup plugin manager", function()
     M.autocmds,
     function(_, cmd_opts) tied.create_autocmd(cmd_opts) end
   )
+
+  local installed = tied.dir({ path = M.plugins_dir, type = "dir", depth = 1 })
+  local to_install = {}
 
   tied.for_table("Setup a plugin", M.plugins, function(_, spec)
     -- Init functions are ran before any plugin is loaded
@@ -503,15 +511,19 @@ M.setup = tie("Setup plugin manager", function()
       M.create_cmd_stubs(spec)
     end
 
-    table.insert(M.to_install, {
-      src = spec.src,
-      version = spec.version,
-      name = spec.name,
-    })
+    if not vim.list_contains(installed, spec.name) then
+      table.insert(to_install, {
+        src = spec.src,
+        version = spec.version,
+        name = spec.name,
+      })
+    end
   end)
 
   tied.do_block("Install plugins", function()
-    vim.pack.add(M.to_install, { load = function() end, confirm = false })
+    if #to_install > 0 then
+      vim.pack.add(to_install, { load = function() end, confirm = false })
+    end
   end)
 
   -- Enable built-in plugins later

@@ -197,6 +197,7 @@ M.to_create = {
   { "n", "<F5>", function() tied.manage_session(true) end, { desc = "Load session" } },
   { "n", "<BS>", "dh", { desc = "Delete prev letter" } },
   { "n", "~", "~h", { desc = "Change case of symbol under cursor" } },
+  { "n", "<leader><S-t>", ":= tied.show_exec_times()<cr>", { desc = "Show execution times" } },
 
   -- Command mode abbreviations
   { "ca", "te", "tabe", {} },
