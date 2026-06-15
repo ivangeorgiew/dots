@@ -1,8 +1,6 @@
 {
-  inputs,
   lib,
   pkgs,
-  config,
   username,
   graphicsCard,
   ...
@@ -45,7 +43,7 @@ in {
 
       useTextGreeter = true; # If using TUI greeter like tuigreet
 
-      settings = rec {
+      settings = {
         # First login
         initial_session = {
           command =

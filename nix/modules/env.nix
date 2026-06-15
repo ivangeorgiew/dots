@@ -1,11 +1,4 @@
-{
-  inputs,
-  lib,
-  config,
-  pkgs,
-  username,
-  ...
-}: {
+{pkgs, ...}: {
   # Default shell for all users
   users.defaultUserShell = pkgs.fish;
 
@@ -86,6 +79,7 @@
       lua
       nodejs
       pnpm
+      nil # nix lsp
     ];
 
     sessionVariables = {

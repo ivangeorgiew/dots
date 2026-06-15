@@ -1,12 +1,4 @@
-{
-  inputs,
-  outputs,
-  lib,
-  config,
-  pkgs,
-  username,
-  ...
-}: {
+{pkgs, ...}: {
   # Setup fonts
   fonts = {
     # Enables common fonts, causes more issues than it solves

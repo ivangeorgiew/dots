@@ -1,10 +1,7 @@
 {
-  inputs,
-  outputs,
   lib,
   config,
   pkgs,
-  username,
   ...
 }: {
   # Define your hostname.

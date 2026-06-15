@@ -109,7 +109,7 @@ M.setup = tie("Setup options", function()
   o.timeoutlen = 5000 -- time in ms to wait for mapped sequence
   o.undofile = true -- whether to use undo file
   o.undolevels = 10000 -- max number of undo changes
-  o.updatetime = 250 -- used for CursorHold and swap file
+  o.updatetime = 500 -- used for CursorHold and swap file
   o.virtualedit = "block" -- be able to place the cursor anywhere during vis block mode
   o.wildignore:append({ "*/node_modules/*" }) -- ignore node_modules folders for completion stuff
   o.wildmode = "longest:full,full" -- command line completion

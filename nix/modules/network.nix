@@ -1,12 +1,4 @@
-{
-  inputs,
-  outputs,
-  lib,
-  config,
-  pkgs,
-  username,
-  ...
-}: {
+{lib, ...}: {
   networking = {
     # Change to per interface if using systemd-networkd
     useDHCP = lib.mkDefault true;
