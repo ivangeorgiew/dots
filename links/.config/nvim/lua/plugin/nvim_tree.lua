@@ -1,6 +1,6 @@
 -- TODO: check the wiki: https://github.com/nvim-tree/nvim-tree.lua/wiki
 
----@type PluginSpec
+---@type plugin_spec
 local M = {
   -- File tree viewer
   src = "nvim-tree/nvim-tree.lua",

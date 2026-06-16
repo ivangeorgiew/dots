@@ -1,5 +1,5 @@
 --- @module "blink.cmp"
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- Autocompletion
   src = "saghen/blink.cmp",
@@ -26,7 +26,7 @@ M.opts = {
     enabled = true,
     window = {
       show_documentation = false,
-      treesitter_highlighting = true, -- NOTE: disable if perf. issues
+      treesitter_highlighting = false, -- NOTE: disable if perf. issues
     },
   },
   completion = {
@@ -41,10 +41,19 @@ M.opts = {
       auto_show = true,
       auto_show_delay_ms = 0,
       draw = {
+        components = {
+          source_name = {
+            text = tie(
+              "Plugin blink.cmp -> Format completion source",
+              function(ctx) return ("[%s]"):format(ctx.source_name) end,
+              function() return "" end
+            ),
+          },
+        },
         -- Better visualisation then default
         columns = {
           { "label", "label_description", gap = 1 },
-          { "kind_icon", "kind", gap = 1 },
+          { "kind_icon", "source_name", gap = 1 },
         },
       },
     },
@@ -53,7 +62,7 @@ M.opts = {
       auto_show = true,
       auto_show_delay_ms = 250,
       update_delay_ms = 250,
-      treesitter_highlighting = true, -- NOTE: disable if perf. issues
+      treesitter_highlighting = false, -- NOTE: disable if perf. issues
     },
     accept = {
       -- Disable auto () on function name completion

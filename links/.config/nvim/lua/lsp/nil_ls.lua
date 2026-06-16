@@ -1,4 +1,4 @@
----@type LspConfig
+---@type lsp_config
 local M = {
   lsp_name = "nil_ls",
   config = {

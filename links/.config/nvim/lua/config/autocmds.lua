@@ -9,7 +9,7 @@ M.setup = tie("Setup autocmds", function()
   end)
 end, tied.do_nothing)
 
----@type AutoCmdArgs[]
+---@type tied.create_autocmd.opts[]
 M.config = {
   {
     desc = "Auto-load vim session",
@@ -75,7 +75,7 @@ M.config = {
       end
 
       tied.do_block("Create floating window keymaps", function()
-        ---@type KeymapSetArgs[]
+        ---@type tied.create_map.args[]
         local maps = {
           -- stylua: ignore start
           -- NOTE: Close with <C-e>
@@ -99,7 +99,7 @@ M.config = {
   },
   {
     desc = "Change cursor to last position",
-    event = "BufWinEnter",
+    event = "BufEnter",
     callback = function(ev)
       if not tied.check_if_buf_is_file(ev.buf) or vim.fn.line(".") > 1 then
         return
@@ -111,6 +111,66 @@ M.config = {
       if prev_line > 0 and prev_line <= last_line then
         vim.cmd([[silent noautocmd keepjumps normal! g`"zvzz]])
       end
+    end,
+  },
+  {
+    desc = "On help window",
+    event = "BufWinEnter",
+    callback = function()
+      if vim.bo.filetype == "help" then
+        vim.cmd("wincmd L")
+      end
+    end,
+  },
+  {
+    desc = "On lua files",
+    event = "FileType",
+    pattern = "lua",
+    callback = function()
+      local l = vim.opt_local
+
+      l.formatoptions = "ljcqrtn"
+    end,
+  },
+  {
+    desc = "On undotree window",
+    event = "FileType",
+    pattern = "nvim-undotree",
+    callback = function()
+      local l = vim.opt_local
+
+      l.foldenable = false
+
+      vim.cmd("vertical resize 40")
+    end,
+  },
+  {
+    desc = "On quickfix/loclist window",
+    event = "FileType",
+    pattern = "qf",
+    callback = function()
+      vim.cmd("wincmd J") -- move to the bottom of all other windows
+
+      ---@type tied.create_map.args[]
+      local maps = {
+        -- stylua: ignore start
+        { "n", "<C-r>", tied.replace_text, { desc = "Replace text in files" } },
+        { "n", "<CR>",  "<CR>:cclose<cr>", { desc = "Open list item" } },
+        { "n", "o",     "<CR>:cclose<cr>:copen<cr>", { desc = "Preview list item" } },
+        { "n", "<C-s>", "<C-w><CR>:cclose<cr>", { desc = "Open list item in hor. split" } },
+        { "n", "<C-v>", "<C-w><CR>:cclose<cr><C-w>L", { desc = "Open list item in vert. split" } },
+        { "n", "<C-t>", "<C-w><CR>:cclose<cr><C-w>T", { desc = "Open list item in new tab" } },
+        -- stylua: ignore end
+      }
+
+      tied.for_list(
+        "Create quickfix/loc list keymap",
+        maps,
+        function(_, map_args)
+          map_args[4].buf = 0
+          tied.create_map(unpack(map_args))
+        end
+      )
     end,
   },
 }

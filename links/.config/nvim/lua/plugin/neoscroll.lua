@@ -1,6 +1,6 @@
 -- TODO: I can use Snacks.scroll as alternative
 
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- Smooth scrolling in files
   src = "karb94/neoscroll.nvim",

@@ -1,6 +1,6 @@
 -- TODO: alternative are blink.pairs or mini.pairs with LazyVim's additions
 
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- Adds closing pairs (), "", etc
   src = "windwp/nvim-autopairs",

@@ -1,4 +1,4 @@
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   src = "folke/tokyonight.nvim",
   enabled = vim.g.colorscheme == "tokyonight",

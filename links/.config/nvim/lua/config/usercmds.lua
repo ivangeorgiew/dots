@@ -47,7 +47,7 @@ M.get_plugin_name_completions = tie(
   function() return {} end
 )
 
----@type UserCmdArgs[]
+---@type tied.create_usercmd.args[]
 M.config = {
   {
     "Navigate",

@@ -1,4 +1,4 @@
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- Show virtual line for current code scope
   src = "nvim-mini/mini.indentscope",

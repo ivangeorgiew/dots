@@ -1,4 +1,4 @@
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- Add todo, fix, note, etc type of comments
   -- Fork that removes the archived dependancy
@@ -78,7 +78,7 @@ M.config = tie("Plugin todo-comments -> config", function(opts)
   todo.setup(opts)
 
   tied.do_block("Plugin todo-comments -> Create all keymaps", function()
-    ---@type KeymapSetArgs[]
+    ---@type tied.create_map.args[]
     local maps = {
       -- stylua: ignore start
       { "n", "[t", todo.jump_prev, { desc = "Prev special comment" } },

@@ -1,3 +1,13 @@
 require("ropework.tie") -- error-handling wrapper function
-require("ropework.builtins") -- replace some global builtins
-require("ropework.utils") -- add global utils
+
+tie(
+  "Replace some global functions",
+  function() require("ropework.builtins") end,
+  tied.do_nothing
+)()
+
+tie(
+  "Add global utils",
+  function() require("ropework.utils") end,
+  tied.do_rethrow
+)()

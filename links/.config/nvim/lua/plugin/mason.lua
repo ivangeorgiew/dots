@@ -1,4 +1,4 @@
---- @type table<string,PluginSpec>
+--- @type table<string,plugin_spec>
 local M = {
   mason = {
     --- External tools installer

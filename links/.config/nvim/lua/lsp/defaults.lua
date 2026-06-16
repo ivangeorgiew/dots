@@ -1,6 +1,6 @@
 -- NOTE: Docs https://neovim.io/doc/user/lsp.html
 
----@type LspConfig
+---@type lsp_config
 local M = {
   enable = false, -- not an actual LSP
   lsp_name = "*",

@@ -1,4 +1,4 @@
----@type PluginSpec
+---@type plugin_spec
 local M = {
   src = "ivangeorgiew/snacks.nvim",
   lazy = true,

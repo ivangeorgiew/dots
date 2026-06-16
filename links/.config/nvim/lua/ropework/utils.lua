@@ -135,7 +135,7 @@ tied.delete_map = tie(
 
 tied.dir = tie(
   "Traverse a directory and return item names",
-  --- @param opts TiedDirOpts
+  --- @param opts tied.dir.opts
   function(opts)
     vim.validate("opts", opts, "table")
     vim.validate("opts.path", opts.path, "string")
@@ -218,7 +218,7 @@ tied.create_augroup = tie(
 
 tied.create_autocmd = tie(
   "Create autocmd",
-  --- @param opts AutoCmdArgs
+  --- @param opts tied.create_autocmd.opts
   --- @return integer?
   function(opts)
     vim.validate("opts", opts, "table")
@@ -380,6 +380,29 @@ tied.switch_bool = tie("Switch boolean under cursor", function()
   end
 end, tied.do_nothing)
 
+tied.paste_word_list = tie("Paste word list", function()
+  tied.ui_select(
+    { "With commas", "On new lines" },
+    { prompt = "How to paste?" },
+    function(_, choice_idx)
+      if not choice_idx then
+        return
+      end
+
+      vim.cmd([[normal! "cp]])
+
+      local on_new_lines = choice_idx == 2
+
+      if on_new_lines then
+        vim.cmd([[normal! ^ms]])
+        vim.cmd([[silent s/, /\r/g | nohls]])
+        vim.cmd([[normal! Vg`s=]])
+      else
+      end
+    end
+  )
+end, tied.do_nothing)
+
 -- Use this when you want to create a fn that is called after a timeout,
 -- but to stops all other fn calls if they were done during the same time
 tied.debounce_wrap = tie(
@@ -503,3 +526,106 @@ tied.show_exec_times = tie("Show execution times", function()
     { title = "Execution Time" }
   )
 end, tied.do_nothing)
+
+tied.set_lsp_features = tie(
+  "Set LSP features",
+  ---@param client_id number?
+  ---@param features lsp_features
+  function(client_id, features)
+    vim.validate("client_id", client_id, "number", true)
+    vim.validate("features", features, "table")
+
+    tied.for_table(
+      "Enable LSP feature",
+      features,
+      function(feature, should_enable)
+        local enable = vim.tbl_get(vim.lsp, feature, "enable")
+
+        assert(type(enable) == "function", "No such LSP feature")
+        enable(should_enable, { client_id = client_id })
+      end
+    )
+  end,
+  tied.do_nothing
+)
+
+tied.replace_text = tie("Replace text in files", function()
+  assert(vim.bo.filetype == "qf", "Must be ran in quckfix/loclist")
+
+  tied.ui_input({ prompt = "Search for: " }, function(search)
+    if not search then
+      return
+    end
+
+    tied.ui_input({ prompt = "Replace with: " }, function(replace)
+      if not replace then
+        return
+      end
+
+      tied.ui_select(
+        { "Yes, but only full words", "Yes, any occurance", "No" },
+        { prompt = ("Replace `%s` with `%s` ?"):format(search, replace) },
+        function(choice)
+          if type(choice) ~= "string" then
+            return
+          end
+
+          if choice:match("full words") then
+            search = ("\\<%s\\>"):format(search)
+          end
+
+          if choice:match("Yes") then
+            vim.cmd(
+              ("%s %%sno@%s@%s@gIe | update"):format(
+                "silent noautocmd keepjumps keepalt cfdo",
+                search,
+                replace
+              )
+            )
+            vim.cmd("cfirst | cclose")
+          end
+        end
+      )
+    end)
+  end)
+end, tied.do_nothing)
+
+tied.lsp_on_list = tie(
+  "Implement vim.lsp.ListOpts on_list",
+  ---@param opts vim.lsp.LocationOpts.OnList
+  function(opts)
+    if #opts.items > 1 then
+      -- For less code the whole function could be just these 2 lines
+      vim.fn.setqflist({}, " ", { title = opts.title, items = opts.items })
+      vim.cmd("botright copen")
+      return
+    end
+
+    local item = opts.items[1]
+    local bufnr = item.bufnr or vim.fn.bufadd(item.filename)
+    local propmt =
+      "Where to open result? (default=c) [(c)urrent/(v)ert/(t)ab]: "
+
+    tied.ui_input({ prompt = propmt }, function(choice)
+      local cmd
+
+      if not choice then
+        return
+      end
+
+      if choice:match("^t") then
+        cmd = "tab sbuffer "
+      elseif choice:match("^v") then
+        cmd = "vert sbuffer "
+      else
+        cmd = "buffer "
+      end
+
+      vim.cmd(cmd .. bufnr)
+      vim.bo[bufnr].buflisted = true
+      vim.api.nvim_win_set_cursor(0, { item.lnum, item.col - 1 })
+      vim.cmd("normal! zv")
+    end)
+  end,
+  tied.do_nothing
+)

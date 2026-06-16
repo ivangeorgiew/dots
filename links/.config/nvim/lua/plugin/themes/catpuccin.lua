@@ -1,5 +1,5 @@
 --- @module "catppuccin"
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   src = "catppuccin/nvim",
   name = "catppuccin",
@@ -49,10 +49,10 @@ local M = {
       inlay_hints = { background = false },
     },
     auto_integrations = false, -- requires lazy.nvim
-    default_integrations = false,
+    default_integrations = true,
     -- https://github.com/catppuccin/nvim#integrations
     integrations = {
-      blink_cmp = { style = "solid" },
+      blink_cmp = { enabled = true, style = "bordered" },
       diffview = false,
       mini = { enabled = true },
       nvimtree = true,
@@ -67,10 +67,10 @@ local M = {
       -- Highlight groups: https://github.com/catppuccin/nvim/blob/main/lua/catppuccin/groups
       return {
         WinSeparator = hypr_border,
-        -- ["@namespace.builtin.lua"] = global,
         TabLine = { bg = "none" },
         TabLineSel = { bg = colors.surface1 },
-        Pmenu = { fg = colors.text },
+        BlinkCmpSource = { link = "BlinkCmpLabel" },
+        -- ["@namespace.builtin.lua"] = global,
       }
     end, function() return {} end),
   },

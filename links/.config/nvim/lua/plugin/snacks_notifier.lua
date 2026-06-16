@@ -1,5 +1,5 @@
 ---@module "snacks"
----@type PluginSpec
+---@type plugin_spec
 local M = {
   src = "ivangeorgiew/snacks.nvim",
   submodule = true,
@@ -60,7 +60,7 @@ M.opts.notifier.custom.which_key = {
   { "<leader>n", mode = "n", group = "Notifications" },
 }
 
----@type KeymapSetArgs[]
+---@type tied.create_map.args[]
 M.opts.notifier.custom.maps = {
   {
     "n",

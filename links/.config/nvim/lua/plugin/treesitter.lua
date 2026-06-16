@@ -6,7 +6,7 @@
 -- https://github.com/neovim-treesitter/nvim-treesitter/blob/main/lua/nvim-treesitter/parsers.lua
 -- https://github.com/neovim-treesitter/nvim-treesitter/blob/main/runtime/queries/lua/injections.scm
 
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- Language parsing which provides better highlight, indentation, etc.
   -- :h nvim-treesitter.txt
@@ -27,7 +27,7 @@ local M = {
       ---@type table<string, { enable: boolean?, ignore: string[]? }>
       queries = {
         highlights = {},
-        indents = { ignore = { "lua" } },
+        indents = {},
         folds = {},
       },
       -- Inner config

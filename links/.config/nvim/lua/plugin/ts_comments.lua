@@ -1,4 +1,4 @@
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- Enchances native comments functionality
   src = "folke/ts-comments.nvim",

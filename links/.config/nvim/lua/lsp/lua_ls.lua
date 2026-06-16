@@ -1,7 +1,7 @@
----@type LspConfig
+---@type lsp_config
 local M = {
   lsp_name = "lua_ls",
-  pkg_name = "lua-language-server",
+  mason_pkg = "lua-language-server",
   config = {
     settings = {
       -- https://luals.github.io/wiki/settings/
@@ -29,7 +29,7 @@ M.config.on_init = tie(
   "LSP lua_ls -> on_init",
   ---@param client vim.lsp.Client
   function(client, _)
-    vim.lsp.semantic_tokens.enable(true, { client = client.id })
+    -- tied.set_lsp_features(client.id, { semantic_tokens = true })
 
     -- NOTE: Manual setup of `---@module` without `lazydev` plugin
     -- Prefer lazydev, because of require() and @module being added on buf change

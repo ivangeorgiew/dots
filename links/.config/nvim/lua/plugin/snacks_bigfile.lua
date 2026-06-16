@@ -1,5 +1,5 @@
 ---@module "snacks"
----@type PluginSpec
+---@type plugin_spec
 local M = {
   src = "ivangeorgiew/snacks.nvim",
   submodule = true,

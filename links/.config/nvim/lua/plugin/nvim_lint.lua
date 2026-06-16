@@ -2,7 +2,7 @@
 -- NOTE: Modify built-in linters: https://github.com/mfussenegger/nvim-lint#customize-built-in-linters
 -- NOTE: Create custom linters: https://github.com/mfussenegger/nvim-lint#custom-linters
 
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   src = "mfussenegger/nvim-lint",
   name = "lint",

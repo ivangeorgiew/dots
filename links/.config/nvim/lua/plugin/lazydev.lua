@@ -1,5 +1,5 @@
 --- @module "lazydev"
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   src = "ivangeorgiew/lazydev.nvim",
   lazy = true,

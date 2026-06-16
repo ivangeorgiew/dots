@@ -4,7 +4,7 @@
 -- Another plugin manager with vim.pack: https://github.com/zuqini/zpack.nvim
 
 local M = {
-  ---@type table<string,PluginSpec>
+  ---@type table<string,plugin_spec>
   plugins = {},
   plugins_dir = vim.fn.stdpath("data") .. "/site/pack/core/opt/",
   local_plugins_dir = "~/projects",
@@ -30,8 +30,8 @@ local M = {
 
 M.parse_base_spec = tie(
   "Parse plugin spec required fields",
-  ---@param spec PluginSpec
-  ---@return PluginSpec
+  ---@param spec plugin_spec
+  ---@return plugin_spec
   function(spec)
     vim.validate("spec", spec, "table")
     vim.validate("spec.src", spec.src, "string")
@@ -265,7 +265,7 @@ M.load_plugins = tie(
 
 M.create_ft_event = tie(
   "Create event for loading a plugin",
-  ---@param spec PluginSpec
+  ---@param spec plugin_spec
   function(spec)
     vim.validate("spec", spec, "table")
 
@@ -291,7 +291,7 @@ M.create_ft_event = tie(
 
 M.create_cmd_stubs = tie(
   "Create usercmd stubs for loading a plugin",
-  ---@param spec PluginSpec
+  ---@param spec plugin_spec
   function(spec)
     vim.validate("spec", spec, "table")
 

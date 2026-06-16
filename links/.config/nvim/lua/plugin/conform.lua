@@ -1,5 +1,5 @@
 --- @module "conform"
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- File formatter by filetype
   src = "stevearc/conform.nvim",

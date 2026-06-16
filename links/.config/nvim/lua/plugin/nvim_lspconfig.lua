@@ -1,17 +1,16 @@
 local S = vim.diagnostic.severity
 
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- Provides good default LSP configs
   -- :h lspconfig
   src = "neovim/nvim-lspconfig",
   lazy = true,
   opts = {
-    --- @type vim.diagnostic.Opts
     diagnostics = {
       update_in_insert = false,
       severity_sort = true,
-      underline = false,
+      underline = true,
       -- virtual_lines = { current_line = true },
       virtual_text = { source = false, prefix = "", spacing = 1 },
       signs = {
@@ -22,37 +21,42 @@ local M = {
           [S.HINT] = "󰌵",
         },
       },
-      float = {
-        source = false,
-        severity_sort = true,
-      },
-      jump = {
-        wrap = true,
-        severity = { S.ERROR, S.WARN },
-      },
+      float = { source = false, severity_sort = true },
+      jump = { wrap = true, severity = { S.ERROR, S.WARN } },
     },
   },
 }
 
 M.config = tie("Plugin nvim-lspconfig -> config", function(opts)
-  -- Do defaults setup before enabling LSPs
+  -- To enable any feature, call this function in an LSP's on_init
+  tied.set_lsp_features(nil, {
+    semantic_tokens = false,
+    codelens = false,
+    document_color = false,
+    inline_completion = false,
+    linked_editing_range = false,
+    on_type_formatting = false,
+  })
+
+  tied.create_autocmd({
+    desc = "Remove built-in LSP defaults",
+    event = "LspAttach",
+    group = tied.create_augroup("my.lsp.attach.remove_defaults", true),
+    callback = function(ev)
+      vim.bo[ev.buf].formatexpr = nil
+      vim.bo[ev.buf].omnifunc = nil
+      vim.bo[ev.buf].tagfunc = nil
+    end,
+  })
 
   tied.set_hl(0, "LspInlayHint", { link = "Comment" })
 
   tied.do_block(
-    "Setup diagnostics",
+    "Set diagnostics config",
     function() vim.diagnostic.config(opts.diagnostics) end
   )
 
-  tied.do_block("Setup lsp document_color", function()
-    -- Disable by default (has toggle keybind)
-    vim.lsp.document_color.enable(false, {}, { style = "virtual" })
-  end, tied.do_nothing)
-
-  tied.do_block("Setup lsp semantic_tokens", function()
-    -- Disable by default (enable in a specific lsp's `on_init` if needed)
-    vim.lsp.semantic_tokens.enable(false)
-
+  tied.do_block("Fix lsp issues", function()
     -- TODO: remove when bug is fixed https://github.com/neovim/neovim/issues/40208
     local log_error = vim.lsp.log.error
     vim.lsp.log.error = tie("Log lsp error", function(...)
@@ -77,8 +81,8 @@ M.config = tie("Plugin nvim-lspconfig -> config", function(opts)
       if lsp.enable ~= false then
         vim.lsp.enable(lsp.lsp_name)
 
-        if lsp.pkg_name then
-          to_install[lsp.pkg_name] = true
+        if lsp.mason_pkg then
+          to_install[lsp.mason_pkg] = true
         end
       end
     end)

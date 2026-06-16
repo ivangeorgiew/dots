@@ -1,4 +1,4 @@
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- Show keybind hints on key press
   src = "ivangeorgiew/which-key.nvim",
@@ -39,7 +39,6 @@ local M = {
         mode = "n",
         { "<leader>t", group = "Toggle" },
         { "<leader>%", group = "Whole file" },
-        { "<leader>c", group = "Change" },
         { "q", group = "Quit" },
         { "-", group = "LSP" },
         { "D", group = "Cut", op = true },

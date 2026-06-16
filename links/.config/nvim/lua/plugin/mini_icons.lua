@@ -1,4 +1,4 @@
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- Pretty icons
   src = "nvim-mini/mini.icons",

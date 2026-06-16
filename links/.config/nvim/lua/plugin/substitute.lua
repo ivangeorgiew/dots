@@ -1,6 +1,6 @@
 -- TODO: fix indentation after replace and paste
 
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   -- Adds replace and exchange commands
   src = "gbprod/substitute.nvim",
@@ -22,7 +22,7 @@ M.config = tie("Plugin substitute -> config", function(opts)
     local r = "r" -- replace key
     local x = "x" -- exchange key
 
-    ---@type KeymapSetArgs[]
+    ---@type tied.create_map.args[]
     local maps = {
       { "n", r, subs.operator, { desc = "Replace" } },
       { "x", r, subs.visual, { desc = "Replace" } },

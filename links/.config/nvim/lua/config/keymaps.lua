@@ -1,4 +1,6 @@
-local M = { rhs = {} }
+local M = {}
+
+M.lsp_buf_opts = { on_list = tied.lsp_on_list }
 
 -- Delete some builtin keymaps
 ---@type [string, string[]|string] []
@@ -28,7 +30,7 @@ M.to_delete = {
   { "grx", "n" },
 }
 
----@type KeymapSetArgs[]
+---@type tied.create_map.args[]
 M.to_create = {
   -- stylua: ignore start
 
@@ -102,29 +104,31 @@ M.to_create = {
 
    -- Toggle things
    { "n", "<leader>tb", [[:set opfunc=v:lua.tied.switch_bool | normal! g@l<cr>]], { desc = "Toggle boolean under cursor" } }, -- rhs is done this way so that single-repeat works
-   { "n", "<leader>tC", function() vim.lsp.document_color.enable(not vim.lsp.document_color.is_enabled()) end, { desc = "Toggle color references" } },
-   { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
-   { "n", "<leader>tD", function() vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end , { desc = "Toggle diagnostics on/off" } },
    { "n", "<leader>te", vim.diagnostic.setqflist, { desc = "Toggle errors list" } },
+   { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
+   { "n", "<leader>tC", function() vim.lsp.document_color.enable(not vim.lsp.document_color.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle color references" } },
+   { "n", "<leader>tD", function() vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end , { desc = "Toggle diagnostics on/off" } },
    { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
    { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.quickfix')) ? ':copen<cr>' : ':cclose<cr>'", { desc = "Toggle quickfix list", expr = true } },
    { "n", "<leader>tu", "<cmd>Undotree<cr>", { desc = "Toggle undotree" } },
    { "n", "<leader>tw", function() vim.wo.wrap = not vim.wo.wrap end, { desc = "Toggle wrapping of lines" } },
 
    -- LSP
-   { "n", "-e", function() vim.diagnostic.open_float() end, { desc = "Show line errors" } },
-   { "n", "-k", function() vim.lsp.buf.hover() end, { desc = "Show documentation popup" } },
-   { "n", "-j", function() vim.lsp.buf.signature_help() end, { desc = "Show function signature" } },
-   { "n", "-u", function() vim.lsp.buf.rename() end, { desc = "Rename variable" } },
-   { "n", "-x", function() vim.lsp.codelens.run() end, { desc = "Run codelens" } },
-   { "n", "-D", function() vim.lsp.buf.declaration() end, { desc = "Go to declaration" } }, -- prefer `implementation`
-   { "n", "-d", function() vim.lsp.buf.definition({ loclist = false }) end, { desc = "Go to definition" } }, -- prefer `implementation`
-   { "n", "-i", function() vim.lsp.buf.implementation({ loclist = false }) end, { desc = "Go to implementation" } },
-   { "n", "-t", function() vim.lsp.buf.type_definition({ loclist = false }) end, { desc = "Go to type definition" } },
-   { "n", "-r", function() vim.lsp.buf.references(nil, { loclist = false }) end, { desc = "Show references" } },
-   { "n", "-s", function() vim.lsp.buf.document_symbol({ loclist = false }) end, { desc = "Show document symbols" } },
-   { "n", "-c", function() vim.lsp.document_color.color_presentation() end, { desc = "Change color representation" } },
    { { "n", "x" }, "-a", function() vim.lsp.buf.code_action() end, { desc = "Select code action" } },
+   { "n",          "-c", function() vim.lsp.document_color.color_presentation() end, { desc = "Change color representation" } },
+   { "n",          "-d", function() vim.lsp.buf.definition(M.lsp_buf_opts) end, { desc = "Go to definition" } },
+   { "n",          "-D", function() vim.lsp.buf.declaration(M.lsp_buf_opts) end, { desc = "Go to declaration" } },
+   { "n",          "-e", function() vim.diagnostic.open_float() end, { desc = "List line errors" } },
+   { "n",          "-i", function() vim.lsp.buf.implementation(M.lsp_buf_opts) end, { desc = "Go to implementation" } },
+   { "n",          "-I", function() vim.lsp.buf.incoming_calls() end, { desc = "List incomming calls" } },
+   { "n",          "-j", function() vim.lsp.buf.signature_help() end, { desc = "Show function signature" } },
+   { "n",          "-k", function() vim.lsp.buf.hover() end, { desc = "Show documentation popup" } },
+   { "n",          "-O", function() vim.lsp.buf.outgoing_calls() end, { desc = "List outgoing calls" } },
+   { "n",          "-r", function() vim.lsp.buf.rename() end, { desc = "Rename variable" } },
+   { "n",          "-R", function() vim.lsp.buf.references(nil, M.lsp_buf_opts) end, { desc = "List references" } },
+   { "n",          "-s", function() vim.lsp.buf.document_symbol(M.lsp_buf_opts) end, { desc = "List document symbols" } },
+   { "n",          "-t", function() vim.lsp.buf.type_definition(M.lsp_buf_opts) end, { desc = "Go to type definition" } },
+   { "n",          "-x", function() vim.lsp.codelens.run() end, { desc = "Run codelens" } },
 
   -- Command mode movement
   { "c", "<C-a>", "<Home>",    { desc = "Go to the beginning", silent = false } },
@@ -188,16 +192,23 @@ M.to_create = {
   { "n", "K", [[mzhf<space>"_cl<cr><esc>g`z]],{ desc = "Split line" } },
 
   -- Change stuff
-  { "n", "<leader>cd", function() vim.fn.chdir(vim.fn.expand("%:p:h"), "global") end, { desc = "Change vim dir to current file location"} },
-  { "n", "<leader>ct", "<c-w>s<c-w>TgT<c-o>gt", { desc = "Move buffer to new tab and restore prev buffer"} },
+
+  -- Append to register
+  { "n", "<leader>8", [["cyiw]], { desc = "Start a word list" } },
+  { "x", "<leader>8", [["cy]], { desc = "Start a word list" } },
+  { "n", "<leader>9", [[:let @c .= ', '<cr>"Cyiw]], { desc = "Append to word list" } },
+  { "x", "<leader>9", [[:let @c .= ', '<cr>"Cy]], { desc = "Append to word list" } },
+  { "n", "<leader>0", tied.paste_word_list, { desc = "Paste word list" } },
 
   -- Unrelated mappings
   { "n", "i", [[len(getline('.')) == 0 && empty(&buftype) ? '"_cc' : 'i']], { desc = "Enter insert mode", expr = true } },
+  { "n", "<leader>d", function() vim.fn.chdir(vim.fn.expand("%:p:h"), "global") end, { desc = "Change cwd to current file location"} },
   { "n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" } },
   { "n", "<F5>", function() tied.manage_session(true) end, { desc = "Load session" } },
   { "n", "<BS>", "dh", { desc = "Delete prev letter" } },
   { "n", "~", "~h", { desc = "Change case of symbol under cursor" } },
   { "n", "<leader><S-t>", ":= tied.show_exec_times()<cr>", { desc = "Show execution times" } },
+  { "x", "s", ":sort ir //<Left>", { desc = "Sort lines by search pattern", silent = false } },
 
   -- Command mode abbreviations
   { "ca", "te", "tabe", {} },

@@ -1,4 +1,4 @@
----@type LspConfig[]
+---@type lsp_config[]
 local M = tied.dir({
   path = vim.fn.stdpath("config") .. "/lua/lsp",
   type = "file",

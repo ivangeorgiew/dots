@@ -1,4 +1,4 @@
---- @type PluginSpec
+--- @type plugin_spec
 local M = {
   src = "rebelot/kanagawa.nvim",
   enabled = vim.g.colorscheme == "kanagawa",
