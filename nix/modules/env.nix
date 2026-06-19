@@ -28,6 +28,7 @@
       gcc # c compiler
       gdu # windirstat for linux (sort dirs by size)
       gh # github authenticator
+      gnupg # used to verify downloaded apps
       git # obvious
       glibc # need by some apps
       gnumake # make command
@@ -74,6 +75,7 @@
       # Programming apps (langs, linters, formatters, etc)
       # Project specific packages should be installed with a devShell + direnv
       (python314.withPackages (ps: with ps; [pip]))
+      mise # per-project tool manager
 
       # Used by neovim or other IDEs
       neovim-node-client
@@ -172,6 +174,11 @@
         # Create ~/projects folder if needed
         if test ! -d "~/projects"
           mkdir ~/projects
+        end
+
+        # Setup mise tool manager
+        if command -q mise
+          mise activate fish | source
         end
 
         # Disable greeting
