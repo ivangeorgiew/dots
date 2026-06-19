@@ -15,29 +15,42 @@
     };
   };
 
-  outputs = inputs @ {nixpkgs, ...}: let
-    inherit (nixpkgs) lib;
+  outputs = inputs @ {...}: let
+    inherit (inputs.nixpkgs) lib;
     inherit (inputs.self) outputs;
 
-    forAllSystems = func:
-      lib.genAttrs ["x86_64-linux" "aarch64-linux" "aarch64-darwin"] (
-        # sys: func nixpkgs.legacyPackages.${sys}
-        sys: (func (import nixpkgs {
-          system = sys;
-          config.allowUnfree = true;
-        }))
-      );
+    forAllSystems = fn:
+      lib.genAttrs ["x86_64-linux" "aarch64-linux" "aarch64-darwin"] (sys:
+        fn {
+          pkgs = import inputs.nixpkgs {
+            system = sys;
+            config.allowUnfree = true;
+          };
+          unstable = import inputs.nixpkgs-unstable {
+            system = sys;
+            config.allowUnfree = true;
+          };
+        });
   in {
     # Formatter for your nix files, available through 'nix fmt'
-    formatter = forAllSystems (pkgs: pkgs.alejandra);
+    formatter = forAllSystems ({pkgs, ...}: pkgs.alejandra);
 
     # Custom packages, to use through `nix build`, `nix shell`, etc.
-    packages = forAllSystems (pkgs: import ./nix/pkgs {inherit pkgs;});
+    packages = forAllSystems ({pkgs, ...}: import ./nix/pkgs {inherit pkgs;});
+
+    # Used with `nix develop flake` or with a .envrc file
+    # Templates: https://github.com/the-nix-way/dev-templates
+    devShells = forAllSystems (
+      allPkgInputs @ {...}:
+        builtins.mapAttrs
+        (name: val: import val allPkgInputs)
+        (import ./nix/shells {inherit lib;})
+    );
 
     # Flake templates
     templates.default = {
       description = "Default shell template";
-      path = ./nix/shell_template;
+      path = ./nix/template;
     };
 
     # Package overlays
