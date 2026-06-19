@@ -197,9 +197,8 @@ tied.foldtext = tie("Tied vim.o.foldtext", function()
   local end_line_nr = vim.v.foldend
   local first_line = vim.fn.getline(start_line_nr)
   local fold_lines_nr = end_line_nr - start_line_nr + 1
-  local text = string.format("%s ⮞ [%d lines]", first_line, fold_lines_nr)
 
-  return text
+  return string.format(" ⮞  %s [%d lines]", first_line, fold_lines_nr)
 end, function() return vim.fn.getline(vim.v.foldstart) end)
 
 tied.create_augroup = tie(

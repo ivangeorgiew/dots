@@ -99,7 +99,7 @@ M.config = {
   },
   {
     desc = "Change cursor to last position",
-    event = "BufEnter",
+    event = "BufWinEnter",
     callback = function(ev)
       if not tied.check_if_buf_is_file(ev.buf) or vim.fn.line(".") > 1 then
         return

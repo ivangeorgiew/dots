@@ -73,13 +73,15 @@
 
       # Programming apps (langs, linters, formatters, etc)
       # Project specific packages should be installed with a devShell + direnv
-      neovim-node-client # the neovim npm package used by the nodejs provider
       (python314.withPackages (ps: with ps; [pip]))
-      go
-      lua
-      nodejs
-      pnpm
-      nil # nix lsp
+
+      # Used by neovim or other IDEs
+      neovim-node-client
+      lua-language-server
+      stylua # lua style formatter
+      eslint_d # js linter daemon
+      prettierd # js formatter daemon
+      nil # nix LSP
     ];
 
     sessionVariables = {

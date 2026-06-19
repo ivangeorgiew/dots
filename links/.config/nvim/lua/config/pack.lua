@@ -402,6 +402,7 @@ M.on_plugins_load = tie(
   tied.do_nothing
 )
 
+---@type tied.create_autocmd.opts[]
 M.autocmds = {
   {
     desc = "Build on plugin install/update",

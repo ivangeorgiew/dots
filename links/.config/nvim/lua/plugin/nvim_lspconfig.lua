@@ -71,8 +71,6 @@ M.config = tie("Plugin nvim-lspconfig -> config", function(opts)
   end)
 
   tied.do_block("Config, enable and install LSPs", function()
-    local to_install = {}
-
     tied.for_list("Setup an LSP", require("lsp"), function(_, lsp)
       if lsp.config then
         vim.lsp.config(lsp.lsp_name, lsp.config)
@@ -80,14 +78,8 @@ M.config = tie("Plugin nvim-lspconfig -> config", function(opts)
 
       if lsp.enable ~= false then
         vim.lsp.enable(lsp.lsp_name)
-
-        if lsp.mason_pkg then
-          to_install[lsp.mason_pkg] = true
-        end
       end
     end)
-
-    tied.mason_install(vim.tbl_keys(to_install))
   end)
 end, tied.do_nothing)
 

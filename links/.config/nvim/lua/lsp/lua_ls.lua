@@ -1,7 +1,6 @@
 ---@type lsp_config
 local M = {
   lsp_name = "lua_ls",
-  mason_pkg = "lua-language-server",
   config = {
     settings = {
       -- https://luals.github.io/wiki/settings/
