@@ -14,8 +14,8 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "garbage-day": {
-      "rev": "2fcc56556281de8ee871a5f3beb9db7ab747ef32",
-      "src": "https://github.com/zeioth/garbage-day.nvim"
+      "rev": "32f0aa10928141d5d390db9878a041327971b79a",
+      "src": "https://github.com/moqsien/garbage-day.nvim"
     },
     "lazydev": {
       "rev": "df0f6c3e2ee47ef6c4cab3b2cde313b13bb65612",

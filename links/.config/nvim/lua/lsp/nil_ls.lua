@@ -1,6 +1,14 @@
 ---@type lsp_config
 local M = {
-  lsp_name = "nil_ls",
+  name = "nil_ls",
+  features = {
+    codelens = false,
+    semantic_tokens = false,
+    document_color = false,
+    inline_completion = false,
+    linked_editing_range = false,
+    on_type_formatting = false,
+  },
   config = {
     init_options = { formatting = { command = { "alejandra" } } },
   },

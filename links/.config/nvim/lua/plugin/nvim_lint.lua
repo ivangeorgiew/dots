@@ -46,7 +46,9 @@ M.config = tie("Plugin nvim-lint -> config", function(opts)
       function(_, ft) opts.linters_by_ft[ft] = opts.linters_by_ft.javascript end
     )
 
-    vim.env.ESLINT_D_PPID = vim.fn.getpid() -- Recommended eslint_d setting
+    -- eslint_d settings
+    vim.env.ESLINT_D_MISS = "ignore" -- Run eslint_d only when eslint is installed
+    vim.env.ESLINT_D_PPID = vim.fn.getpid() -- Stop eslint_d when nvim closes
   end)
 
   nvim_lint.linters_by_ft = opts.linters_by_ft

@@ -108,7 +108,7 @@ M.config = {
       local prev_line = vim.fn.line([['"]])
       local last_line = vim.fn.line("$")
 
-      if prev_line > 0 and prev_line <= last_line then
+      if prev_line > 1 and prev_line <= last_line then
         vim.cmd([[silent noautocmd keepjumps normal! g`"zvzz]])
       end
     end,

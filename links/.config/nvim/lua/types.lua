@@ -22,12 +22,6 @@
 --- @field ft string|string[]?
 --- @field loaded boolean?
 
---- @class lsp_config Used in lsp config files
---- @field enable? boolean
---- @field lsp_name string
---- @field config? vim.lsp.Config
---- @field custom? table
-
 --- @class lsp_features all lsp features which have `feature.enable(true, { client_id })`
 --- @field semantic_tokens boolean? highlight words
 --- @field codelens boolean? show references with virtual text
@@ -35,6 +29,13 @@
 --- @field inline_completion boolean? multiline completion (usefull for ai)
 --- @field linked_editing_range boolean? ex: changing starting html tag, changes closing html tag
 --- @field on_type_formatting boolean? try to format text while you type it
+
+--- @class lsp_config Used in lsp config files
+--- @field name string
+--- @field features lsp_features
+--- @field enabled? boolean
+--- @field config? vim.lsp.Config
+--- @field custom? table
 
 --- @class tied.dir.opts
 --- @field path string

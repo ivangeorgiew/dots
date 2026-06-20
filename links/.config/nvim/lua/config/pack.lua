@@ -8,6 +8,7 @@ local M = {
   plugins = {},
   plugins_dir = vim.fn.stdpath("data") .. "/site/pack/core/opt/",
   local_plugins_dir = "~/projects",
+  to_add = {},
   early_load_queue = {},
   lazy_load_queue = {},
   input_props = {
@@ -480,9 +481,6 @@ M.setup = tie("Setup plugin manager", function()
     function(_, cmd_opts) tied.create_autocmd(cmd_opts) end
   )
 
-  local installed = tied.dir({ path = M.plugins_dir, type = "dir", depth = 1 })
-  local to_install = {}
-
   tied.for_table("Setup a plugin", M.plugins, function(_, spec)
     -- Init functions are ran before any plugin is loaded
     if spec.init then
@@ -512,18 +510,17 @@ M.setup = tie("Setup plugin manager", function()
       M.create_cmd_stubs(spec)
     end
 
-    if not vim.list_contains(installed, spec.name) then
-      table.insert(to_install, {
-        src = spec.src,
-        version = spec.version,
-        name = spec.name,
-      })
-    end
+    -- Don't filter in order keep the plugin.active logic
+    table.insert(M.to_add, {
+      src = spec.src,
+      version = spec.version,
+      name = spec.name,
+    })
   end)
 
   tied.do_block("Install plugins", function()
-    if #to_install > 0 then
-      vim.pack.add(to_install, { load = function() end, confirm = false })
+    if #M.to_add > 0 then
+      vim.pack.add(M.to_add, { load = function() end, confirm = false })
     end
   end)
 

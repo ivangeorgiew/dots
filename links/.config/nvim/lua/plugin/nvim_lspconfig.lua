@@ -28,16 +28,6 @@ local M = {
 }
 
 M.config = tie("Plugin nvim-lspconfig -> config", function(opts)
-  -- To enable any feature, call this function in an LSP's on_init
-  tied.set_lsp_features(nil, {
-    semantic_tokens = false,
-    codelens = false,
-    document_color = false,
-    inline_completion = false,
-    linked_editing_range = false,
-    on_type_formatting = false,
-  })
-
   tied.create_autocmd({
     desc = "Remove built-in LSP defaults",
     event = "LspAttach",
@@ -70,16 +60,29 @@ M.config = tie("Plugin nvim-lspconfig -> config", function(opts)
     end, tied.do_nothing)
   end)
 
-  tied.do_block("Config, enable and install LSPs", function()
-    tied.for_list("Setup an LSP", require("lsp"), function(_, lsp)
-      if lsp.config then
-        vim.lsp.config(lsp.lsp_name, lsp.config)
-      end
+  tied.for_list("Setup an LSP", require("lsp"), function(_, lsp)
+    local on_init = tie(
+      "LSP -> Set generic settings on init",
+      function(client, _)
+        if lsp.features then
+          tied.set_lsp_features(client.id, lsp.features)
+        end
 
-      if lsp.enable ~= false then
-        vim.lsp.enable(lsp.lsp_name)
-      end
-    end)
+        if vim.tbl_get(lsp, "config", "on_init") then
+          lsp.config.on_init(client, _)
+        end
+      end,
+      tied.do_nothing
+    )
+
+    vim.lsp.config(
+      lsp.name,
+      vim.tbl_deep_extend("force", lsp.config or {}, { on_init = on_init })
+    )
+
+    if lsp.enabled ~= false then
+      vim.lsp.enable(lsp.name)
+    end
   end)
 end, tied.do_nothing)
 

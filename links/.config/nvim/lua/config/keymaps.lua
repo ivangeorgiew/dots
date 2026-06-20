@@ -104,10 +104,10 @@ M.to_create = {
 
    -- Toggle things
    { "n", "<leader>tb", [[:set opfunc=v:lua.tied.switch_bool | normal! g@l<cr>]], { desc = "Toggle boolean under cursor" } }, -- rhs is done this way so that single-repeat works
-   { "n", "<leader>te", vim.diagnostic.setqflist, { desc = "Toggle errors list" } },
+   { "n", "<leader>tc", function() vim.lsp.document_color.enable(not vim.lsp.document_color.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle color references" } },
    { "n", "<leader>td", function() vim.cmd("windo " .. (vim.o.diff and "diffoff!" or "diffthis")) end , { desc = "Toggle diff mode" } },
-   { "n", "<leader>tC", function() vim.lsp.document_color.enable(not vim.lsp.document_color.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle color references" } },
    { "n", "<leader>tD", function() vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end , { desc = "Toggle diagnostics on/off" } },
+   { "n", "<leader>te", vim.diagnostic.setqflist, { desc = "Toggle errors list" } },
    { "n", "<leader>ti", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 }) end, { desc = "Toggle inlay hints" } },
    { "n", "<leader>tq", "empty(filter(getwininfo(), 'v:val.tabnr == tabpagenr() && v:val.quickfix')) ? ':copen<cr>' : ':cclose<cr>'", { desc = "Toggle quickfix list", expr = true } },
    { "n", "<leader>tu", "<cmd>Undotree<cr>", { desc = "Toggle undotree" } },

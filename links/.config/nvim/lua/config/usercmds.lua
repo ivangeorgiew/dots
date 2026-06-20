@@ -103,7 +103,7 @@ M.config = {
     { desc = "Remove all files related to neovim besides config", nargs = 0 },
   },
   {
-    "PluginListAll",
+    "PluginList",
     function() vim.pack.update(nil, { offline = true }) end,
     { desc = "List all installed plugins", nargs = 0 },
   },
