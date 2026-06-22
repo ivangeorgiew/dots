@@ -13,7 +13,7 @@ local M = {
   src = "neovim-treesitter/nvim-treesitter",
   dependencies = { "neovim-treesitter/treesitter-parser-registry" },
   build = ":TSUpdate",
-  lazy = true,
+  lazy = false,
   opts = {
     -- NOTE: need to manually set install_dir due to a bug
     -- where rtp is not being set on fresh install of all plugins
@@ -27,7 +27,7 @@ local M = {
       ---@type table<string, { enable: boolean?, ignore: string[]? }>
       queries = {
         highlights = {},
-        indents = {},
+        indents = { enable = false },
         folds = {},
       },
       -- Inner config
