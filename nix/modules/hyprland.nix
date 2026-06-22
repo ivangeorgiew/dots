@@ -132,18 +132,19 @@ in {
       dunst # notifications
       grim # screenshots for wayland
       kdePackages.qtwayland # requirement for qt6
-      libsForQt5.qt5.qtwayland # requirement for qt5
       libsecret # used by seahorse and gnome-keyring
+      libsForQt5.qt5.qtwayland # requirement for qt5
       mpvpaper # video wallpaper
       polkit_gnome # authentication for some apps
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
+      tomat # status bar pomodoro clock
       unstable.app2unit # UWSM related
       unstable.hyprpicker # color picker
       unstable.waybar # status bar
-      vulkan-tools # to debug issues with vulkan
       virtualglLib # provides glxinfo for debugging
+      vulkan-tools # to debug issues with vulkan
       wf-recorder # screen recording
       wl-clipboard # copy/paste on wayland
 
@@ -345,7 +346,9 @@ in {
         after = ["graphical-session.target"];
         requisite = ["graphical-session.target"];
         script = "hyprctl reload";
-        serviceConfig.Type = "oneshot";
+        serviceConfig = {
+          Type = "oneshot";
+        };
       };
 
       waybar = merge exec_common {
@@ -353,6 +356,13 @@ in {
         partOf = ["graphical-session.target" "reload-hypr.service"];
         after = ["graphical-session.target" "reload-hypr.service"];
         script = "waybar";
+      };
+
+      tomat = merge exec_common {
+        description = "Pomodoro clock for status bars";
+        partOf = ["graphical-session.target" "reload-hypr.service"];
+        after = ["graphical-session.target" "reload-hypr.service"];
+        script = "tomat daemon run";
       };
 
       dunst = merge exec_common {

@@ -5,9 +5,9 @@
 
     "modules-left": [
       // "custom/weather",
-      "custom/keyboard",
       "temperature",
       "custom/gpu",
+      "custom/tomat",
       "hyprland/workspaces"
     ],
 
@@ -19,6 +19,7 @@
 
     "modules-right": [
       "tray",
+      "custom/keyboard",
       "pulseaudio",
       // "network",
       "clock",
@@ -83,33 +84,33 @@
     },
 
     "backlight": {
-        "device": "eDP-1",
-        "format": "{icon}",
-        "tooltip-format": "{percent}",
-        "format-icons": ["󱩎 ", "󱩏 ", "󱩐 ", "󱩑 ", "󱩒 ", "󱩓 ", "󱩔 ", "󱩕 ", "󱩖 ", "󰛨 "]
+      "device": "eDP-1",
+      "format": "{icon}",
+      "tooltip-format": "{percent}",
+      "format-icons": ["󱩎 ", "󱩏 ", "󱩐 ", "󱩑 ", "󱩒 ", "󱩓 ", "󱩔 ", "󱩕 ", "󱩖 ", "󰛨 "]
     },
 
     "network": {
-        "format-wifi": "{icon}",
-        "format-ethernet": "󰈀",
-        "format-disconnected": "󰖪",
-        "tooltip-format": "{essid}",
-        "on-click": "",
-        "format-icons": ["󰤯","󰤟","󰤢","󰤥","󰤨"]
+      "format-wifi": "{icon}",
+      "format-ethernet": "󰈀",
+      "format-disconnected": "󰖪",
+      "tooltip-format": "{essid}",
+      "on-click": "",
+      "format-icons": ["󰤯","󰤟","󰤢","󰤥","󰤨"]
     },
 
     "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": "󰸈 {volume}%",
-        "format-icons": {
-            "default": ["", "", "󰕾"]
-        },
-        "tooltip": false,
-        "scroll-step": 5.0,
-        "on-click": "wpctl set-mute @DEFAULT_SINK@ toggle",
-        "on-click-right": "pavucontrol &",
-        "on-scroll-up": "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+",
-        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+      "format": "{icon} {volume}%",
+      "format-muted": "󰸈 {volume}%",
+      "format-icons": {
+        "default": ["", "", "󰕾"]
+      },
+      "tooltip": false,
+      "scroll-step": 5.0,
+      "on-click": "wpctl set-mute @DEFAULT_SINK@ toggle",
+      "on-click-right": "pavucontrol &",
+      "on-scroll-up": "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+",
+      "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
     },
 
     "battery": {
@@ -130,6 +131,17 @@
       "format-alt": "{icon} {time}",
       "format-full": "󱊣",
       "format-icons": ["󱊡", "󱊢", "󱊣"]
+    },
+
+    "custom/tomat": {
+      "exec": "tomat status",
+      "interval": 1,
+      "return-type": "json",
+      "format": "{}",
+      "on-click": "tomat toggle",
+      "on-click-right": "tomat stop",
+      "on-click-middle": "tomat skip",
+      "tooltip": false
     },
 
     "custom/weather": {
@@ -199,7 +211,7 @@
 
     "custom/launcher": {
       "format": "󱄅",
-      "tooltip": false,
+      "tooltip-format": "Run an app",
       "on-click": "rofi -show drun &"
     }
 }

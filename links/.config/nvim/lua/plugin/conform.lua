@@ -21,7 +21,7 @@ local M = {
       -- Experimental formatter for code chunks of different language than the filetype
       -- injected = { options = { ignore_errors = true } },
     },
-    notify_no_formatters = true,
+    notify_no_formatters = false,
     notify_on_error = true,
     default_format_opts = {
       timeout_ms = 3000,

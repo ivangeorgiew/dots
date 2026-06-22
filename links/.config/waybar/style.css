@@ -26,6 +26,7 @@ window#waybar {
 }
 
 #workspaces {
+  margin-top: 0px;
   margin-left: 0px;
   padding-left: 0px;
 }
@@ -54,7 +55,7 @@ window#waybar {
 }
 
 #custom-keyboard {
-  color: #ecd3a0;
+  color: #7a95c9;
 }
 
 #network {
@@ -158,4 +159,9 @@ tooltip label {
 #custom-playerlabel {
   font-size: 15px;
   background: none;
+}
+
+#custom-tomat {
+  /* color: #7a95c9; */
+  margin-right: 0px;
 }

@@ -1,0 +1,28 @@
+[timer]
+work = 50.0           # Work duration in minutes
+break = 10.0          # Break duration in minutes
+long_break = 10.0     # Long break duration in minutes
+sessions = 99999      # Sessions until long break
+auto_advance = "none" # Auto-advance mode: "none", "all", "to-break", "to-work"
+
+[sound]
+mode = "embedded"     # Sound mode: "embedded", "system-beep", "none"
+volume = 0.2          # Volume level (0.0-1.0)
+
+[notification]
+enabled = true        # Enable desktop notifications
+icon = "auto"         # Icon mode: "auto", "theme", or custom path
+timeout = 4000        # Notification timeout in milliseconds
+
+[display]
+text_format = "{icon} {time} {state}"  # Text display format
+
+[display.icons]
+work = "🍅"         # Work/Idle phase icon
+break = "☕"        # Break phase icon
+long_break = "☕️"   # Long break phase icon
+play = ""          # Playing state symbol
+pause = ""         # Paused state symbol
+stop = ""          # Stopped/Idle state symbol
+
+# There is hook config too, but I'm not using it

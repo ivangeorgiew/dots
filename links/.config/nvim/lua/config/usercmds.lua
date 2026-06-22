@@ -75,34 +75,6 @@ M.config = {
     { desc = "Find in all files", nargs = "+", complete = "dir" },
   },
   {
-    "NvimClearCache",
-    function()
-      tied.ui_select(
-        { "Yes", "No" },
-        { prompt = "Are you sure you want to reset nvim config?" },
-        function(choice)
-          if type(choice) ~= "string" or not choice:match("Yes") then
-            return
-          end
-
-          tied.for_list(
-            "Remove an nvim related dir",
-            { "data", "cache", "state" },
-            function(_, name)
-              local dir = vim.fn.stdpath(name)
-
-              if vim.uv.fs_stat(dir) then
-                vim.fs.rm(dir, { recursive = true, force = true })
-              end
-            end
-          )
-          vim.cmd("qall")
-        end
-      )
-    end,
-    { desc = "Remove all files related to neovim besides config", nargs = 0 },
-  },
-  {
     "PluginList",
     function() vim.pack.update(nil, { offline = true }) end,
     { desc = "List all installed plugins", nargs = 0 },
