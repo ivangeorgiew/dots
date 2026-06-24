@@ -13,20 +13,6 @@ local M = {
     settings = {
       require_configuration = true,
     },
-    filetypes = {
-      "astro",
-      "css",
-      "graphql",
-      "html",
-      "javascript",
-      "javascriptreact",
-      "json",
-      "jsonc",
-      "svelte",
-      "typescript",
-      "typescriptreact",
-      "vue",
-    },
   },
 }
 

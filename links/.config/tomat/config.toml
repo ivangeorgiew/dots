@@ -1,6 +1,6 @@
 [timer]
-work = 50.0           # Work duration in minutes
-break = 10.0          # Break duration in minutes
+work = 55.0           # Work duration in minutes
+break = 5.0          # Break duration in minutes
 long_break = 10.0     # Long break duration in minutes
 sessions = 99999      # Sessions until long break
 auto_advance = "none" # Auto-advance mode: "none", "all", "to-break", "to-work"

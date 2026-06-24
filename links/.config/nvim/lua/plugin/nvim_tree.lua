@@ -95,6 +95,7 @@ M.opts.on_attach = tie("Plugin nvim-tree -> On attach", function(bufnr)
   -- NOTE: don't delete maps, just un/comment and change if needed
   ---@type [function, string, string][]
   local maps = {
+    -- stylua: ignore start
     -- { api.fs.copy.basename, "yn", "Yank file name" },
     -- { api.fs.copy.filename, "yf", "Yank full file name" },
     { api.fs.copy.absolute_path, "yP", "Yank absolute path" },
@@ -151,6 +152,7 @@ M.opts.on_attach = tie("Plugin nvim-tree -> On attach", function(bufnr)
     { api.filter.custom.toggle, "U", "Toggle Filter: Hidden" },
     -- { api.tree.toggle_no_bookmark_filter, "M", "Toggle Filter: No Bookmark" },
     -- { api.tree.toggle_no_buffer_filter, "B", "Toggle Filter: No Buffer" },
+    -- stylua: ignore end
   }
 
   tied.for_list("Plugin nvim_tree -> Create keymap", maps, function(_, map_args)

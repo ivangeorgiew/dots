@@ -6,6 +6,9 @@
 pkgs.mkShell {
   name = "pnpm";
 
+  # Env variables can be set here or in `shellHook`
+  NIX_CONFIG = "experimental-features = nix-command flakes";
+
   # Build dependencies
   inputsFrom = [];
 
@@ -18,11 +21,7 @@ pkgs.mkShell {
     })
   ];
 
-  # Env variables can be set here or in `shellHook`
-  NIX_CONFIG = "experimental-features = nix-command flakes";
-
   # Init script
   shellHook = ''
-    pnpm i
   '';
 }

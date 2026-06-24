@@ -14,7 +14,8 @@ local M = {
   },
   config = {
     -- TODO: Check plugins like https://github.com/antosha417/nvim-lsp-file-operations
-    capabilities = vim.lsp.protocol.make_client_capabilities(),
+    -- NOTE: Those are the defaults, no need to pass them
+    -- capabilities = vim.lsp.protocol.make_client_capabilities(),
   },
 }
 

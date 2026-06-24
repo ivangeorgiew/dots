@@ -81,7 +81,7 @@
       neovim-node-client
       lua-language-server
       stylua # lua style formatter
-      eslint_d # js linter daemon
+      vscode-langservers-extracted # HTML/CSS/JSON/ESLint LSPs extracted from vscode
       prettierd # js formatter daemon
       nil # nix LSP
     ];
@@ -200,6 +200,7 @@
       enable = true;
 
       package = pkgs.unstable.neovim-unwrapped;
+      # package = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
       viAlias = true;
       vimAlias = true;

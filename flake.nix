@@ -13,6 +13,8 @@
       url = "github:hyprwm/hyprland-plugins/v0.55.0";
       inputs.hyprland.follows = "hyprland";
     };
+
+    # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
 
   outputs = inputs @ {...}: let
@@ -39,7 +41,7 @@
     packages = forAllSystems ({pkgs, ...}: import ./nix/pkgs {inherit pkgs;});
 
     # Used with `nix develop flake` or with a .envrc file
-    # Templates: https://github.com/the-nix-way/dev-templates
+    # Example devshells: https://github.com/the-nix-way/dev-templates
     devShells = forAllSystems (
       allPkgInputs @ {...}:
         builtins.mapAttrs
@@ -47,7 +49,8 @@
         (import ./nix/shells {inherit lib;})
     );
 
-    # Flake templates
+    # Flake devshell templates
+    # Use: nix flake init -t github:ivangeorgiew/dots
     templates.default = {
       description = "Default shell template";
       path = ./nix/template;
