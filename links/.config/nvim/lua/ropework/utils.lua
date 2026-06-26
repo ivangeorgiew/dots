@@ -611,14 +611,12 @@ tied.lsp_on_list = tie(
 
 tied.run_codeaction = tie(
   "Run LSP codeaction",
-  ---@param opts table?
+  ---@param opts tied.run_codeaction.opts
   function(opts)
     vim.validate("opts", opts, "table", true)
 
-    opts = opts or {}
-
     vim.lsp.buf.code_action({
-      apply = type(opts.title) == "string",
+      apply = opts.apply,
       filter = tie(
         "Filter codeactions",
         ---@param x lsp.CodeAction|lsp.Command
@@ -629,14 +627,20 @@ tied.run_codeaction = tie(
           -- stylua: ignore start
           local is_correct_client = not opts.client_name or opts.client_name == client.name
           local is_correct_command = not opts.command or x.command == opts.command
-          local is_correct_title = not opts.title or x.title == opts.title
-          local is_correct_kind = not opts.kind or x.kind == opts.kind
+          local is_correct_title = not opts.title or (x.title or ""):match(opts.title)
           -- stylua: ignore end
 
-          return is_correct_client
+          local is_correct = 1
+            and is_correct_client
             and is_correct_command
             and is_correct_title
-            and is_correct_kind
+
+          if opts.debug and is_correct then
+            vim.print(x)
+            return false
+          end
+
+          return is_correct
         end,
         function() return false end
       ),

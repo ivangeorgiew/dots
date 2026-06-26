@@ -4,15 +4,15 @@ local M = {
   -- File formatter by filetype
   src = "stevearc/conform.nvim",
   lazy = true,
+  custom = {
+    ---@type table<string,string[]> Set formatters for multiple filetypes
+    fts_by_formatter = {},
+  },
   ---@type conform.setupOpts
   opts = {
     -- NOTE: In addition to the vim doc, there are recipes and explanations on:
     -- https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md
     -- NOTE: Every filetype can have additional options specified
-    custom = {
-      ---@type table<string,string[]> Custom table that specifies formatters for multiple filetypes
-      fts_by_formatter = {},
-    },
     formatters_by_ft = {
       lua = { "stylua" },
       nix = { "alejandra" },
@@ -27,60 +27,16 @@ local M = {
     },
     log_level = vim.log.levels.WARN,
     notify_no_formatters = false,
-    notify_on_error = true,
+    notify_on_error = false,
     default_format_opts = {
-      lsp_format = "fallback", ---@type "never"|"fallback"|"prefer"|"first"|"last"
+      lsp_format = "fallback",
+      timeout_ms = 1000,
     },
-    format_on_save = { timeout_ms = 1000 }, -- sync formatting before saving (preferred)
-    -- format_after_save = { timeout_ms = 3000 }, -- async formatting after saving
   },
 }
 
----@type tied.create_map.args[]
-M.opts.custom.maps = {
-  -- stylua: ignore start
-  { "n", "<leader>tF", ":lua vim.b.no_autoformat = not vim.b.no_autoformat<cr>", { desc = "Toggle buffer auto-formatting" }, },
-  -- stylua: ignore end
-}
-
-M.opts.custom.set_format_opts = tie(
-  "Plugin conform -> Set format_*",
-  ---@param opts_key string
-  function(opts_key)
-    vim.validate("opts_key", opts_key, "string")
-
-    if not M.opts[opts_key] then
-      return
-    end
-
-    ---@type conform.FormatOpts?
-    local format_opts = M.opts[opts_key]
-
-    M.opts[opts_key] = tie(
-      "Plugin conform -> " .. opts_key,
-      ---@param bufnr integer
-      ---@return conform.FormatOpts?
-      function(bufnr)
-        if not tied.check_if_buf_is_file(bufnr) then
-          return
-        end
-
-        local path = vim.api.nvim_buf_get_name(bufnr)
-
-        if vim.b[bufnr].no_autoformat or path:match("/node_modules/") then
-          return
-        end
-
-        return format_opts
-      end,
-      tied.do_nothing
-    )
-  end,
-  tied.do_nothing
-)
-
 M.config = tie("Plugin conform -> config", function(opts)
-  local custom = opts.custom
+  local conform = require("conform")
 
   tied.do_block("Plugin conform -> Modify options", function()
     -- Run prettierd only if prettier is installed
@@ -88,7 +44,7 @@ M.config = tie("Plugin conform -> config", function(opts)
 
     tied.for_table(
       "Setup plugin conform fts_by_formatter",
-      custom.fts_by_formatter,
+      M.custom.fts_by_formatter,
       function(formatter, filetypes)
         for _, ft in ipairs(filetypes) do
           opts.formatters_by_ft[ft] = opts.formatters_by_ft[ft] or {}
@@ -96,21 +52,61 @@ M.config = tie("Plugin conform -> config", function(opts)
         end
       end
     )
+  end)
 
-    custom.set_format_opts("format_on_save")
-    custom.set_format_opts("format_after_save")
+  conform.setup(opts)
+
+  vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
+
+  tied.do_block("Plugin conform -> Set keymaps", function()
+    ---@type tied.create_map.args[]
+    local maps = {
+      -- stylua: ignore start
+      { "n", "<leader>tF", ":lua vim.b.no_autoformat = not vim.b.no_autoformat<cr>", { desc = "Toggle buffer auto-formatting" }, },
+      -- stylua: ignore end
+    }
 
     tied.for_list(
       "Plugin conform -> Create keymap",
-      custom.maps,
+      maps,
       function(_, map_args) tied.create_map(unpack(map_args)) end
     )
   end)
 
-  opts.custom = nil
-  require("conform").setup(opts)
+  tied.do_block("Plugin conform -> Set usercmds", function()
+    local report = tie("Report format erorr", function(err)
+      if err then
+        vim.notify(err, vim.log.levels.ERROR)
+      end
+    end, tied.do_nothing)
 
-  vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
+    tied.create_usercmd(
+      "ConformFormat",
+      function() conform.format({ async = true }, report) end,
+      { desc = "Format buffer with conform.nvim", nargs = 0 }
+    )
+  end)
+
+  tied.create_autocmd({
+    desc = "Format file before save",
+    event = "BufWritePre",
+    group = tied.create_augroup("my.plugin.conform.format_on_save", true),
+    callback = function(ev)
+      local bufnr = ev.buf
+
+      if not tied.check_if_buf_is_file(bufnr) or vim.b[bufnr].no_autoformat then
+        return
+      end
+
+      vim.api.nvim_exec_autocmds("User", {
+        pattern = "BeforeConformFormat",
+        modeline = false,
+        data = {},
+      })
+
+      conform.format({ bufnr = bufnr })
+    end,
+  })
 end, tied.do_nothing)
 
 return M

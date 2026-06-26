@@ -8,11 +8,11 @@ local M = {
   -- and setup: https://cmp.saghen.dev/configuration/snippets.html
   -- dependencies = { "rafamadriz/friendly-snippets" },
   lazy = true,
+  custom = {},
 }
 
 --- @type blink.cmp.Config
 M.opts = {
-  custom = {},
   appearance = {
     nerd_font_variant = "mono",
   },
@@ -73,11 +73,12 @@ M.opts = {
     },
     -- NOTE: might want to change those later (there are a bunch more options)
     trigger = {
-      show_on_insert = true,
+      show_in_snippet = false,
       show_on_backspace = true,
       show_on_backspace_in_keyword = true,
-      show_on_blocked_trigger_characters = {},
-      show_on_x_blocked_trigger_characters = {},
+      -- show_on_insert = true,
+      -- show_on_blocked_trigger_characters = {},
+      -- show_on_x_blocked_trigger_characters = {},
     },
   },
   -- TODO: https://cmp.saghen.dev/configuration/sources#community-sources
@@ -140,7 +141,7 @@ M.opts.cmdline = {
 M.opts.term = { enabled = false }
 
 --- @type blink.cmp.Config
-M.opts.custom.lazydev_opts = {
+M.custom.lazydev_opts = {
   sources = {
     per_filetype = {
       lua = { inherit_defaults = true, "lazydev" },
@@ -156,17 +157,14 @@ M.opts.custom.lazydev_opts = {
 }
 
 M.config = tie("Plugin blink.cmp -> Config", function(opts)
-  local custom = vim.deepcopy(opts.custom)
   local to_load = {}
-
-  opts.custom = nil -- Remove so blink.cmp doesn't complain
 
   if tied.plugins["lazydev"] then
     -- Always load lazydev if installed
     -- It has internal logic to enable only on lua projects
     table.insert(to_load, "lazydev")
 
-    opts = vim.tbl_deep_extend("force", opts, custom.lazydev_opts)
+    opts = vim.tbl_deep_extend("force", opts, M.custom.lazydev_opts)
   end
 
   tied.load_plugins(to_load)

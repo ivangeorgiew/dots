@@ -18,26 +18,26 @@ local M = {
     -- NOTE: need to manually set install_dir due to a bug
     -- where rtp is not being set on fresh install of all plugins
     install_dir = vim.fs.joinpath(vim.fn.stdpath("data"), "site"),
-    custom = {
-      ---@type string[]
-      ignore = {
-        "comment", -- interferes when todo-comments.nvim
-        "kitty", -- broken highlighting and unneeded
-      },
-      ---@type table<string, { enable: boolean?, ignore: string[]? }>
-      queries = {
-        highlights = {},
-        indents = { enable = false },
-        folds = {},
-      },
-      -- Inner config
-      available = {}, ---@type table<string, boolean>
-      seen_langs = {}, ---@type table<string, boolean>
+  },
+  custom = {
+    ---@type string[]
+    ignore = {
+      "comment", -- interferes when todo-comments.nvim
+      "kitty", -- broken highlighting and unneeded
     },
+    ---@type table<string, { enable: boolean?, ignore: string[]? }>
+    queries = {
+      highlights = {},
+      indents = { enable = false },
+      folds = {},
+    },
+    -- Inner config
+    available = {}, ---@type table<string, boolean>
+    seen_langs = {}, ---@type table<string, boolean>
   },
 }
 
-M.opts.custom.get_installed = tie(
+M.custom.get_installed = tie(
   "Get list of treesitter installed langs",
   ---@return table<string,boolean>
   function()
@@ -51,7 +51,7 @@ M.opts.custom.get_installed = tie(
   tied.do_rethrow
 )
 
-M.opts.custom.get_injected_langs = tie(
+M.custom.get_injected_langs = tie(
   "Get injected languages",
   ---@param installed string[]
   function(installed)
@@ -95,17 +95,16 @@ M.opts.custom.get_injected_langs = tie(
   function() return {} end
 )
 
-M.opts.custom.delete_ignored_langs = tie(
+M.custom.delete_ignored_langs = tie(
   "Plugin nvim-treesitter -> Delete ignored languages",
   function()
     local ts = require("nvim-treesitter")
-    local custom = M.opts.custom
-    local installed = custom.get_installed()
+    local installed = M.custom.get_installed()
     local to_delete = {}
 
     tied.for_list(
       "Add treesitter language for deletion",
-      custom.ignore,
+      M.custom.ignore,
       function(_, lang)
         if installed[lang] then
           to_delete[lang] = true
@@ -122,7 +121,7 @@ M.opts.custom.delete_ignored_langs = tie(
   tied.do_nothing
 )
 
-M.opts.custom.install_langs = tie(
+M.custom.install_langs = tie(
   "Plugin nvim-treesitter -> Install languages",
   ---@param ensure_installed string[]
   ---@return boolean
@@ -131,8 +130,7 @@ M.opts.custom.install_langs = tie(
 
     local ts = require("nvim-treesitter")
     local ts_parsers = require("nvim-treesitter.parsers")
-    local custom = M.opts.custom
-    local installed = custom.get_installed()
+    local installed = M.custom.get_installed()
     local queue = vim.deepcopy(ensure_installed)
     local to_install = {}
 
@@ -140,12 +138,12 @@ M.opts.custom.install_langs = tie(
       local lang = table.remove(queue, 1)
 
       -- Add langs from recursive calls
-      custom.seen_langs[lang] = true
+      M.custom.seen_langs[lang] = true
 
       if
-        custom.available[lang]
+        M.custom.available[lang]
         and not installed[lang]
-        and not vim.list_contains(custom.ignore, lang)
+        and not vim.list_contains(M.custom.ignore, lang)
       then
         tied.for_list(
           "Add all dependencies to queue",
@@ -169,8 +167,8 @@ M.opts.custom.install_langs = tie(
         package.loaded["vim.treesitter.query"] = nil
         vim.treesitter.query = require("vim.treesitter.query")
 
-        local injected = custom.get_injected_langs(to_install)
-        local is_installing = custom.install_langs(injected)
+        local injected = M.custom.get_injected_langs(to_install)
+        local is_installing = M.custom.install_langs(injected)
 
         -- Every other task is finished because of :await()
         -- and last call didn't install any new langs
@@ -184,7 +182,7 @@ M.opts.custom.install_langs = tie(
   function() return false end
 )
 
-M.opts.custom.should_enable = tie(
+M.custom.should_enable = tie(
   "Plugin nvim-treesitter -> Should enable query?",
   ---@param lang string
   ---@param query string
@@ -192,7 +190,7 @@ M.opts.custom.should_enable = tie(
     vim.validate("lang", lang, "string")
     vim.validate("query", query, "string")
 
-    local c = M.opts.custom.queries[query]
+    local c = M.custom.queries[query]
     local query_enabled = c.enable ~= false
     local lang_not_ignored = not vim.list_contains(c.ignore or {}, lang)
     local lang_supports_query = vim.treesitter.query.get(lang, query) ~= nil
@@ -204,24 +202,23 @@ M.opts.custom.should_enable = tie(
 
 M.config = tie("Plugin nvim-treesitter -> config", function(opts)
   local ts = require("nvim-treesitter")
-  local custom = opts.custom
 
   ts.setup(opts)
 
   for _, lang in ipairs(ts.get_available()) do
-    custom.available[lang] = true
+    M.custom.available[lang] = true
   end
 
-  custom.delete_ignored_langs()
-  custom.install_langs(vim.tbl_keys(custom.seen_langs))
+  M.custom.delete_ignored_langs()
+  M.custom.install_langs(vim.tbl_keys(M.custom.seen_langs))
 
   -- NOTE: High perf cost to check for unfinished installs of injected langs
   -- Run this command once in a while manually instead
   tied.create_usercmd("TSInstallInjected", function()
     local installed = ts.get_installed()
-    local injected = custom.get_injected_langs(installed)
+    local injected = M.custom.get_injected_langs(installed)
 
-    custom.install_langs(injected)
+    M.custom.install_langs(injected)
   end, { desc = "Install all injected parsers", nargs = 0 })
 end, tied.do_nothing)
 
@@ -232,20 +229,19 @@ M.init = tie("Plugin nvim-treesitter -> init", function()
     event = "FileType",
     callback = function(ev)
       local lang = vim.treesitter.language.get_lang(ev.match)
-      local custom = M.opts.custom
-      local should_enable = custom.should_enable
+      local should_enable = M.custom.should_enable
 
       if not lang then
         return
       end
 
-      if not custom.seen_langs[lang] then
+      if not M.custom.seen_langs[lang] then
         -- Used to both prevent needless fn calls
         -- and to install langs from before plugin load
-        custom.seen_langs[lang] = true
+        M.custom.seen_langs[lang] = true
 
         if tied.plugin_loaded("nvim-treesitter") then
-          custom.install_langs({ lang })
+          M.custom.install_langs({ lang })
         end
       end
 

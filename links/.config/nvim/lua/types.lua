@@ -15,6 +15,7 @@
 --- @field lazy? boolean
 --- @field dev? boolean
 --- @field opts? table
+--- @field custom? table
 --- @field init? function
 --- @field config? function
 --- @field build? string|function
@@ -61,8 +62,8 @@
 --- @field event string|string[]
 
 --- @class tied.run_codeaction.opts
+--- @field apply? boolean
+--- @field debug? boolean
 --- @field client_name? string
---- @field client_id? integer
 --- @field command? string
 --- @field title? string
---- @field kind? string

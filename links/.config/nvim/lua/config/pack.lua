@@ -21,6 +21,7 @@ local M = {
     lazy = "boolean",
     dev = "boolean",
     opts = "table",
+    custom = "table",
     init = "function",
     config = "function",
     build = { "string", "function" },
