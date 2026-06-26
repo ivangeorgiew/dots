@@ -21,7 +21,7 @@ local M = {
         mode = "all", ---@type "all"|"problems"
       },
       format = true,
-      quiet = false,
+      quiet = true,
       onIgnoredFiles = "off", ---@type "off"|"warn"|"error"
       bulkSuppression = { enable = false }, -- https://eslint.org/docs/latest/use/suppressions
       problems = { shortenToSingleLine = true }, -- Defaults to false

@@ -62,9 +62,16 @@
 --- @field desc string
 --- @field event string|string[]
 
---- @class tied.run_codeaction.opts
---- @field apply? boolean
---- @field debug? boolean
---- @field client_name? string
---- @field command? string
+--- @class tied.run_lsp_command.opts
+--- @field client vim.lsp.Client
+--- @field cmd lsp.Command
+--- @field bufnr? number
+--- @field timeout? number
+
+--- @class tied.run_lsp_codeaction.opts
+--- @field client_id number
+--- @field kind string
+--- @field bufnr? number
 --- @field title? string
+--- @field log? boolean
+--- @field timeout? number

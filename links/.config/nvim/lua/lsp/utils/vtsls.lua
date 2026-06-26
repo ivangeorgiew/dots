@@ -433,4 +433,61 @@ M.settings = {
   },
 }
 
+M.on_save = tie(
+  "LSP vtsls -> Do things on save",
+  ---@param client vim.lsp.Client
+  function(client)
+    tied.create_autocmd({
+      desc = "Fix imports on save",
+      event = "User",
+      pattern = "BeforeConformFormat",
+      group = tied.create_augroup("my.lsp.vtsls.on_save", true),
+      callback = function(ev)
+        if not client.attached_buffers[ev.buf] then
+          return
+        end
+
+        local bufnr = ev.buf
+        local ft = vim.bo[bufnr].filetype
+
+        tied.run_lsp_codeaction({
+          client_id = client.id,
+          kind = "source.addMissingImports.ts",
+          bufnr = bufnr,
+        })
+
+        local file_path = vim.api.nvim_buf_get_name(bufnr)
+        local cmd_names = {
+          "typescript.removeUnusedImports",
+          "javascript.removeUnusedImports",
+          "typescript.sortImports",
+          "javascript.sortImports",
+          "typescript.organizeImports",
+        }
+
+        tied.for_list(
+          "Run LSP vtsls command before file format",
+          cmd_names,
+          function(_, cmd_name)
+            if ft:sub(0, 10) ~= cmd_name:sub(0, 10) then
+              return
+            end
+
+            tied.run_lsp_command({
+              client = client,
+              bufnr = bufnr,
+              cmd = {
+                title = cmd_name,
+                command = cmd_name,
+                arguments = { file_path },
+              },
+            })
+          end
+        )
+      end,
+    })
+  end,
+  tied.do_nothing
+)
+
 return M

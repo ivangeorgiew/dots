@@ -1,5 +1,6 @@
 -- TODO: Chech which settings you might want to change once you've worked on typescript projects extensively
 -- TODO: Check the vtsls Readme for additional recommendations
+-- TODO: Check for useful code in https://github.com/yioneko/nvim-vtsls
 
 local utils = require("lsp.utils.vtsls")
 local settings = utils.settings
@@ -69,20 +70,7 @@ local M = {
 M.config.on_init = tie(
   "LSP vtsls -> on_init",
   ---@param client vim.lsp.Client
-  function(client)
-    -- TODO: remove unused, add and sort imports on save
-    -- tied.create_autocmd({
-    --   desc = "LSP vtsls -> Fix imports on save",
-    --   event = "User",
-    --   pattern = "BeforeConformFormat",
-    --   group = tied.create_augroup("my.lsp.vtsls.on_save", true),
-    --   callback = function(ev)
-    --     if not client.attached_buffers[ev.buf] then
-    --       return
-    --     end
-    --   end,
-    -- })
-  end,
+  function(client) utils.on_save(client) end,
   tied.do_nothing
 )
 

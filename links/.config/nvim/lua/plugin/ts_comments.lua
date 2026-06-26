@@ -6,6 +6,7 @@ local M = {
   opts = {
     lang = {
       kitty = "# %s",
+      json = "// %s",
     },
   },
 }

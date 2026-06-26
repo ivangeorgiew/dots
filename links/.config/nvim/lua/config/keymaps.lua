@@ -140,6 +140,7 @@ M.to_create = {
   -- Go to next occurance
   { "n", "m", "*", { desc = "Go to next occurance of the word" } },
   { "n", "M", "#", { desc = "Go to prev occurance of the word" } },
+  { "n", "*", "m", { desc = "Set mark" } }, -- swapped
 
   -- Macros (capital register letter to append)
   { "n", "#", "reg_recording() == 'e' ? 'q' : 'qe'", { desc = "Start/end default macro", expr = true } },
@@ -191,13 +192,11 @@ M.to_create = {
   { "n", "J", "mzJg`z", { desc = "Join lines" } },
   { "n", "K", [[mzhf<space>"_cl<cr><esc>g`z]],{ desc = "Split line" } },
 
-  -- Change stuff
-
   -- Append to register
   { "n", "<leader>8", [["cyiw]], { desc = "Start a word list" } },
   { "x", "<leader>8", [["cy]], { desc = "Start a word list" } },
   { "n", "<leader>9", [[:let @c .= ', '<cr>"Cyiw]], { desc = "Append to word list" } },
-  { "x", "<leader>9", [[:let @c .= ', '<cr>"Cy]], { desc = "Append to word list" } },
+  { "x", "<leader>9", [[:<C-u>let @c .= ', '<cr>gv"Cy]], { desc = "Append to word list" } },
   { "n", "<leader>0", tied.paste_word_list, { desc = "Paste word list" } },
 
   -- Unrelated mappings

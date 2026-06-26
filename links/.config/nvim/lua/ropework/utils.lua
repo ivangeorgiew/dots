@@ -609,42 +609,130 @@ tied.lsp_on_list = tie(
   tied.do_nothing
 )
 
-tied.run_codeaction = tie(
-  "Run LSP codeaction",
-  ---@param opts tied.run_codeaction.opts
+tied.run_lsp_command = tie(
+  "Run LSP command synchronously",
+  -- Sync version of client:exec_cmd()
+  ---@param opts tied.run_lsp_command.opts
   function(opts)
-    vim.validate("opts", opts, "table", true)
+    vim.validate("opts", opts, "table")
 
-    vim.lsp.buf.code_action({
-      apply = opts.apply,
-      filter = tie(
-        "Filter codeactions",
-        ---@param x lsp.CodeAction|lsp.Command
-        ---@param client_id integer
-        function(x, client_id)
-          local client = vim.lsp.get_client_by_id(client_id) or {}
+    local client = opts.client
+    local cmd = vim.deepcopy(opts.cmd)
+    local bufnr = opts.bufnr or 0
+    local timeout = opts.timeout or 1000
+    local cmd_name = cmd.command
+    local fn = client.commands[cmd_name] or vim.lsp.commands[cmd_name]
 
-          -- stylua: ignore start
-          local is_correct_client = not opts.client_name or opts.client_name == client.name
-          local is_correct_command = not opts.command or x.command == opts.command
-          local is_correct_title = not opts.title or (x.title or ""):match(opts.title)
-          -- stylua: ignore end
+    if
+      not tied.check_if_buf_is_file(bufnr)
+      or not vim.lsp.get_client_by_id(client.id)
+    then
+      return
+    end
 
-          local is_correct = 1
-            and is_correct_client
-            and is_correct_command
-            and is_correct_title
+    if type(fn) == "function" then
+      fn(cmd, { client_id = client.id, bufnr = bufnr })
+    else
+      client:request_sync(
+        "workspace/executeCommand",
+        { command = cmd.command, arguments = cmd.arguments },
+        timeout,
+        bufnr
+      )
+    end
+  end,
+  tied.do_nothing
+)
 
-          if opts.debug and is_correct then
-            vim.print(x)
-            return false
-          end
+tied.run_lsp_codeaction = tie(
+  "Run LSP codeaction synchronously",
+  -- Sync version of vim.lsp.buf.codeaction({ apply = true })
+  ---@param opts tied.run_lsp_codeaction.opts
+  function(opts)
+    vim.validate("opts", opts, "table")
 
-          return is_correct
-        end,
-        function() return false end
-      ),
-    })
+    local request, params
+    local timeout = opts.timeout or 1000
+    local bufnr = opts.bufnr or 0
+    local client = vim.lsp.get_client_by_id(opts.client_id) or {}
+
+    ---@type lsp.CodeActionParams
+    params = vim.lsp.util.make_range_params(0, client.offset_encoding)
+    params.context = { diagnostics = {}, only = { opts.kind }, triggerKind = 1 }
+
+    request =
+      client:request_sync("textDocument/codeAction", params, timeout, bufnr)
+
+    if not request then
+      return
+    end
+
+    ---@type (lsp.CodeAction|lsp.Command)[]
+    local actions = {}
+
+    for _, action in pairs(request.result or {}) do
+      local is_correct_title = not opts.title
+        or (action.title):match(opts.title)
+
+      if is_correct_title then
+        table.insert(actions, action)
+      end
+    end
+
+    if opts.log then
+      vim.notify(vim.inspect(actions))
+      return
+    end
+
+    if #actions ~= 1 then
+      if #actions > 1 then
+        vim.notify(
+          "Tried to run more than 1 LSP codeactions: " .. vim.inspect(actions)
+        )
+      end
+
+      return
+    end
+
+    local action = actions[1]
+
+    if action.disabled then
+      return
+    end
+
+    local is_codeaction = type(action.command) ~= "string"
+    local should_call_resolve = not (action.edit and action.command)
+      and client:supports_method("codeAction/resolve")
+
+    -- Don't request codeaction resolve if we got a simple lsp command previously
+    if is_codeaction and should_call_resolve then
+      request =
+        client:request_sync("codeAction/resolve", action, timeout, bufnr)
+
+      if request and not request.err and request.result then
+        action = request.result
+      end
+    end
+
+    -- Order matters: first apply edit, then run lsp command
+    if action.edit then
+      vim.lsp.util.apply_workspace_edit(action.edit, client.offset_encoding)
+    end
+
+    if action.command then
+      local lsp_cmd = action
+
+      if type(action.command) == "table" then
+        lsp_cmd = action.command
+      end
+
+      tied.run_lsp_command({
+        client = client,
+        cmd = lsp_cmd,
+        bufnr = bufnr,
+        timeout = timeout,
+      })
+    end
   end,
   tied.do_nothing
 )
