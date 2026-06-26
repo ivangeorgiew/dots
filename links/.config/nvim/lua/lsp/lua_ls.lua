@@ -2,6 +2,7 @@
 local M = {
   name = "lua_ls",
   features = {
+    formatting = false,
     codelens = false,
     semantic_tokens = false,
     document_color = false,
@@ -35,12 +36,12 @@ local M = {
   },
 }
 
+-- NOTE: Manual setup of `---@module` without `lazydev` plugin
+-- Prefer lazydev, because of require() and @module being added on buf change
 M.config.on_init = tie(
   "LSP lua_ls -> on_init",
   ---@param client vim.lsp.Client
   function(client, _)
-    -- NOTE: Manual setup of `---@module` without `lazydev` plugin
-    -- Prefer lazydev, because of require() and @module being added on buf change
     local cwd = vim.tbl_get(client, "workspace_folders", 1, "name")
 
     if

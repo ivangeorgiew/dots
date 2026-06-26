@@ -2,6 +2,7 @@
 local M = {
   name = "nil_ls",
   features = {
+    formatting = true,
     codelens = false,
     semantic_tokens = false,
     document_color = false,

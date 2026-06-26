@@ -73,15 +73,18 @@ M.opts = {
     },
     -- NOTE: might want to change those later (there are a bunch more options)
     trigger = {
-      show_in_snippet = true,
+      show_on_insert = true,
       show_on_backspace = true,
+      show_on_backspace_in_keyword = true,
+      show_on_blocked_trigger_characters = {},
+      show_on_x_blocked_trigger_characters = {},
     },
   },
   -- TODO: https://cmp.saghen.dev/configuration/sources#community-sources
   sources = {
     default = { "lsp", "path", "snippets", "buffer" },
     providers = {
-      lsp = { fallbacks = {} },
+      lsp = { fallbacks = {}, score_offset = 50 },
       path = {
         opts = {
           -- Affects whether path completions are relative to the buffer or the project root

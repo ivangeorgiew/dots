@@ -7,6 +7,7 @@ local M = {
   src = "mfussenegger/nvim-lint",
   name = "lint",
   lazy = true,
+  enabled = false, -- NOTE: Disabled until I actually need any linters
   opts = {
     linters_by_ft = {},
   },

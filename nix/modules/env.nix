@@ -78,12 +78,13 @@
       mise # per-project tool manager
 
       # Used by neovim or other IDEs
-      neovim-node-client
+      neovim-node-client # used by neovim plugins that require node.js
       lua-language-server
       stylua # lua style formatter
       vscode-langservers-extracted # HTML/CSS/JSON/ESLint LSPs extracted from vscode
       prettierd # js formatter daemon
       nil # nix LSP
+      vtsls # javascript/typescript LSP
     ];
 
     sessionVariables = {
@@ -129,6 +130,7 @@
       nix_boot = "nix_update && nh os boot"; # Change nixos config after boot
       nix_list = "nh os info"; # List nixos generations
       nix_roll = "nh os rollback --to"; # Rollback to a generation
+      nix_search = "nh search"; # Search nix packages
       nix_gc = "nh clean all --ask --optimise --keep 3 --keep-since 15d"; # Garbage collect nixos
       nix_gc_all = "nh clean all --ask --optimise"; # Garbage collect all but 1 nixos generation
       nix_fmt = "nix fmt -- ~/dots/**/*.nix"; # Format all the nix files in my repo

@@ -9,6 +9,10 @@ local M = {
     -- NOTE: In addition to the vim doc, there are recipes and explanations on:
     -- https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md
     -- NOTE: Every filetype can have additional options specified
+    custom = {
+      ---@type table<string,string[]> Custom table that specifies formatters for multiple filetypes
+      fts_by_formatter = {},
+    },
     formatters_by_ft = {
       lua = { "stylua" },
       nix = { "alejandra" },
@@ -29,17 +33,14 @@ local M = {
     },
     format_on_save = { timeout_ms = 1000 }, -- sync formatting before saving (preferred)
     -- format_after_save = { timeout_ms = 3000 }, -- async formatting after saving
-    custom = {
-      ---@type tied.create_map.args[]
-      maps = {
-        -- stylua: ignore start
-        { "n", "<leader>tF", ":lua vim.b.no_autoformat = not vim.b.no_autoformat<cr>", { desc = "Toggle buffer auto-formatting" }, },
-        -- stylua: ignore end
-      },
-      ---@type table<string,string[]> Custom table that specifies formatters for multiple filetypes
-      fts_by_formatter = {},
-    },
   },
+}
+
+---@type tied.create_map.args[]
+M.opts.custom.maps = {
+  -- stylua: ignore start
+  { "n", "<leader>tF", ":lua vim.b.no_autoformat = not vim.b.no_autoformat<cr>", { desc = "Toggle buffer auto-formatting" }, },
+  -- stylua: ignore end
 }
 
 M.opts.custom.set_format_opts = tie(

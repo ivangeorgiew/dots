@@ -2,6 +2,7 @@
 local M = {
   name = "eslint",
   features = {
+    formatting = true,
     codelens = false,
     semantic_tokens = false,
     document_color = false,
@@ -22,7 +23,7 @@ local M = {
       quiet = false,
       onIgnoredFiles = "off", ---@type "off"|"warn"|"error"
       bulkSuppression = { enable = false }, -- https://eslint.org/docs/latest/use/suppressions
-      problems = { shortenToSingleLine = false }, -- Defaults to false
+      problems = { shortenToSingleLine = true }, -- Defaults to false
       workingDirectory = {
         mode = "auto", ---@type "auto"|"location"
       },

@@ -194,11 +194,12 @@ tied.colorscheme_config = tie(
 
 tied.foldtext = tie("Tied vim.o.foldtext", function()
   local start_line_nr = vim.v.foldstart
-  local end_line_nr = vim.v.foldend
   local first_line = vim.fn.getline(start_line_nr)
-  local fold_lines_nr = end_line_nr - start_line_nr + 1
+  -- local end_line_nr = vim.v.foldend
+  -- local fold_lines_nr = end_line_nr - start_line_nr + 1
 
-  return string.format(" ⮞  %s [%d lines]", first_line, fold_lines_nr)
+  return first_line:gsub("^(%s*)", "%1⮞ ")
+  -- return string.format(" ⮞  %s [%d lines]", first_line, fold_lines_nr)
 end, function() return vim.fn.getline(vim.v.foldstart) end)
 
 tied.create_augroup = tie(
@@ -534,16 +535,23 @@ tied.set_lsp_features = tie(
     vim.validate("client_id", client_id, "number", true)
     vim.validate("features", features, "table")
 
-    tied.for_table(
-      "Enable LSP feature",
-      features,
-      function(feature, should_enable)
+    tied.for_table("Set LSP feature", features, function(feature, should_enable)
+      if feature == "formatting" then
+        if client_id and not should_enable then
+          local client = vim.lsp.get_client_by_id(client_id)
+
+          if client then
+            client.server_capabilities.documentFormattingProvider = false
+            client.server_capabilities.documentRangeFormattingProvider = false
+          end
+        end
+      else
         local enable = vim.tbl_get(vim.lsp, feature, "enable")
 
         assert(type(enable) == "function", "No such LSP feature")
         enable(should_enable, { client_id = client_id })
       end
-    )
+    end)
   end,
   tied.do_nothing
 )
@@ -593,38 +601,46 @@ tied.lsp_on_list = tie(
   "Implement vim.lsp.ListOpts on_list",
   ---@param opts vim.lsp.LocationOpts.OnList
   function(opts)
-    if #opts.items > 1 then
-      -- For less code the whole function could be just these 2 lines
-      vim.fn.setqflist({}, " ", { title = opts.title, items = opts.items })
-      vim.cmd("botright copen")
-      return
-    end
+    -- Don't bother with vim.ui.input on single result
+    -- Instead always open quickfix
+    vim.fn.setqflist({}, " ", { title = opts.title, items = opts.items })
+    vim.cmd("botright copen")
+  end,
+  tied.do_nothing
+)
 
-    local item = opts.items[1]
-    local bufnr = item.bufnr or vim.fn.bufadd(item.filename)
-    local propmt =
-      "Where to open result? (default=c) [(c)urrent/(v)ert/(t)ab]: "
+tied.run_codeaction = tie(
+  "Run LSP codeaction",
+  ---@param opts table?
+  function(opts)
+    vim.validate("opts", opts, "table", true)
 
-    tied.ui_input({ prompt = propmt }, function(choice)
-      local cmd
+    opts = opts or {}
 
-      if not choice then
-        return
-      end
+    vim.lsp.buf.code_action({
+      apply = type(opts.title) == "string",
+      filter = tie(
+        "Filter codeactions",
+        ---@param x lsp.CodeAction|lsp.Command
+        ---@param client_id integer
+        function(x, client_id)
+          local client = vim.lsp.get_client_by_id(client_id) or {}
 
-      if choice:match("^t") then
-        cmd = "tab sbuffer "
-      elseif choice:match("^v") then
-        cmd = "vert sbuffer "
-      else
-        cmd = "buffer "
-      end
+          -- stylua: ignore start
+          local is_correct_client = not opts.client_name or opts.client_name == client.name
+          local is_correct_command = not opts.command or x.command == opts.command
+          local is_correct_title = not opts.title or x.title == opts.title
+          local is_correct_kind = not opts.kind or x.kind == opts.kind
+          -- stylua: ignore end
 
-      vim.cmd(cmd .. bufnr)
-      vim.bo[bufnr].buflisted = true
-      vim.api.nvim_win_set_cursor(0, { item.lnum, item.col - 1 })
-      vim.cmd("normal! zv")
-    end)
+          return is_correct_client
+            and is_correct_command
+            and is_correct_title
+            and is_correct_kind
+        end,
+        function() return false end
+      ),
+    })
   end,
   tied.do_nothing
 )

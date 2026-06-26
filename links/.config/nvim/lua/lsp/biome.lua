@@ -2,6 +2,7 @@
 local M = {
   name = "biome",
   features = {
+    formatting = true,
     codelens = false,
     semantic_tokens = false,
     document_color = false,
