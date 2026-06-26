@@ -1,7 +1,8 @@
 -- TODO: Chech which settings you might want to change once you've worked on typescript projects extensively
 -- TODO: Check the vtsls Readme for additional recommendations
 
-local settings = require("lsp.utils.vtsls").settings
+local utils = require("lsp.utils.vtsls")
+local settings = utils.settings
 
 settings.both.referencesCodeLens.enabled = false
 settings.both.referencesCodeLens.showOnAllFunctions = true
@@ -29,11 +30,10 @@ settings.typescript.implementationsCodeLens.showOnInterfaceMethods = true
 settings.typescript.implementationsCodeLens.showOnAllClassMethods = true
 settings.typescript.tsserver.maxTsServerMemory = 4096
 
-settings.typescript.tsserver.watchOptions.watchFile = "useFsEvents"
-settings.typescript.tsserver.watchOptions.watchDirectory = "useFsEvents"
-settings.typescript.tsserver.watchOptions.fallbackPolling =
-  "dynamicPriorityPolling"
-settings.typescript.tsserver.watchOptions.synchronousWatchDirectory = false
+-- settings.typescript.tsserver.watchOptions.watchFile = "useFsEvents"
+-- settings.typescript.tsserver.watchOptions.watchDirectory = "useFsEvents"
+-- settings.typescript.tsserver.watchOptions.fallbackPolling = "dynamicPriorityPolling"
+-- settings.typescript.tsserver.watchOptions.synchronousWatchDirectory = false
 
 settings["js/ts"].implicitProjectConfig.checkJs = true
 
@@ -43,6 +43,7 @@ settings.vtsls.autoUseWorkspaceTsdk = true
 ---@type lsp_config
 local M = {
   name = "vtsls",
+  exe = "vtsls",
   features = {
     -- TODO: which to enable?
     formatting = false,

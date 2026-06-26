@@ -1,6 +1,7 @@
 ---@type lsp_config
 local M = {
   name = "eslint",
+  exe = "vscode-eslint-language-server",
   features = {
     formatting = true,
     codelens = false,
@@ -44,36 +45,5 @@ M.config.on_attach = tie(
   end,
   tied.do_nothing
 )
-
--- NOTE: Unneeded with `format = true`, but left for example
--- M.config.on_init = tie(
---   "LSP eslint -> on_init",
---   ---@param client vim.lsp.Client
---   function(client)
---     tied.create_autocmd({
---       desc = "Format eslint on save",
---       event = "BufWritePre",
---       group = tied.create_augroup("my.lsp.eslint.applyAllFixes", true),
---       callback = function(ev)
---         if not client.attached_buffers[ev.buf] then
---           return
---         end
---
---         -- NOTE: All commands are in
---         -- vim.print(client.server_capabilities.executeCommandProvider.commands)
---         client:request_sync("workspace/executeCommand", {
---           command = "eslint.applyAllFixes",
---           arguments = {
---             {
---               uri = vim.uri_from_bufnr(ev.buf),
---               version = vim.lsp.util.buf_versions[ev.buf],
---             },
---           },
---         }, 1000, ev.buf)
---       end,
---     })
---   end,
---   tied.do_nothing
--- )
 
 return M

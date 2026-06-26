@@ -8,6 +8,10 @@ local M = {
   name = "lint",
   lazy = true,
   enabled = false, -- NOTE: Disabled until I actually need any linters
+  custom = {
+    -- Required globally installed executables
+    exes = {},
+  },
   opts = {
     linters_by_ft = {},
   },
@@ -33,6 +37,8 @@ M.config = tie("Plugin nvim-lint -> config", function(opts)
   local lint = M.opts.lint
 
   nvim_lint.linters_by_ft = opts.linters_by_ft
+
+  vim.list_extend(tied.exes, M.custom.exes)
 
   lint() -- Run for current buffer
 

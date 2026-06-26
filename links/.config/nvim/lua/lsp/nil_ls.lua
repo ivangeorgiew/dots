@@ -1,6 +1,7 @@
 ---@type lsp_config
 local M = {
   name = "nil_ls",
+  exe = "nil",
   features = {
     formatting = true,
     codelens = false,

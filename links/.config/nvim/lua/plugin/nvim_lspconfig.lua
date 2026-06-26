@@ -75,6 +75,10 @@ M.config = tie("Plugin nvim-lspconfig -> config", function(opts)
       tied.do_nothing
     )
 
+    if lsp.exe then
+      table.insert(tied.exes, lsp.exe)
+    end
+
     vim.lsp.config(
       lsp.name,
       vim.tbl_deep_extend("force", lsp.config or {}, { on_init = on_init })

@@ -34,6 +34,7 @@
 
 --- @class lsp_config Used in lsp config files
 --- @field name string
+--- @field exe? string
 --- @field features? lsp_features
 --- @field enabled? boolean
 --- @field config? vim.lsp.Config

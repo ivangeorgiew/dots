@@ -5,6 +5,8 @@ local M = {
   src = "stevearc/conform.nvim",
   lazy = true,
   custom = {
+    -- Required globally installed executables
+    exes = { "stylua", "alejandra", "prettierd" },
     ---@type table<string,string[]> Set formatters for multiple filetypes
     fts_by_formatter = {},
   },
@@ -20,7 +22,7 @@ local M = {
     },
     ---@type table<string, conform.FormatterConfigOverride|fun(bufnr: integer): nil|conform.FormatterConfigOverride>
     formatters = {
-      prettierd = { require_cwd = true },
+      -- prettierd = { require_cwd = true },
 
       -- Experimental formatter for code chunks of different language than the filetype
       -- injected = { options = { ignore_errors = true } },
@@ -29,7 +31,7 @@ local M = {
     notify_no_formatters = false,
     notify_on_error = false,
     default_format_opts = {
-      lsp_format = "fallback",
+      lsp_format = "first",
       timeout_ms = 1000,
     },
   },
@@ -41,6 +43,8 @@ M.config = tie("Plugin conform -> config", function(opts)
   tied.do_block("Plugin conform -> Modify options", function()
     -- Run prettierd only if prettier is installed
     vim.env.PRETTIERD_LOCAL_PRETTIER_ONLY = 1
+
+    vim.list_extend(tied.exes, M.custom.exes)
 
     tied.for_table(
       "Setup plugin conform fts_by_formatter",
@@ -105,6 +109,12 @@ M.config = tie("Plugin conform -> config", function(opts)
       })
 
       conform.format({ bufnr = bufnr })
+
+      vim.api.nvim_exec_autocmds("User", {
+        pattern = "AfterConformFormat",
+        modeline = false,
+        data = {},
+      })
     end,
   })
 end, tied.do_nothing)

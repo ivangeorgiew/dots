@@ -1,6 +1,7 @@
 ---@type lsp_config
 local M = {
   name = "lua_ls",
+  exe = "lua-language-server",
   features = {
     formatting = false,
     codelens = false,

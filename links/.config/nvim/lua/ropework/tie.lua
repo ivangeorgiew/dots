@@ -8,6 +8,9 @@ tied._DISABLE = false
 -- Keep weak references in order to be able to garbage collect
 tied.functions = setmetatable({}, { __mode = "k" })
 
+-- List of external programs needed by neovim
+tied.exes = {} ---@type string[]
+
 -- Indicates to rethow the error if returned in `on_catch`
 tied.RETHROW = "[rethrow error]"
 
