@@ -2,11 +2,11 @@
 {
   description = "My NixOS flake config";
 
-  # ALWAYS use tag or specific commit for each input
+  # ALWAYS use tag or specific commit/tag for each input
   # Don't use inputs.<>.follows due to cache misses and issues. Only when absolutely necessary.
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/b51242d7d43689db2f3be91bd05d5b24fbb469c4"; # branch nixos-26.05
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/64c08a7ca051951c8eae34e3e3cb1e202fe36786"; # branch nixos-unstable
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/e73de5be04e0eff4190a1432b946d469c794e7b4"; # branch nixos-unstable
 
     hyprland.url = "github:hyprwm/Hyprland/v0.55.2";
     hyprland-plugins = {

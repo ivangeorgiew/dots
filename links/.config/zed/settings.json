@@ -7,6 +7,14 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "disable_ai": true,
+  "rounded_selection": false,
+  "selection_highlight": false,
+  "cursor_blink": false,
+  "buffer_font_weight": 500.0,
+  "auto_update": false,
+  "restore_on_startup": "last_session",
+  "when_closing_with_no_tabs": "platform_default",
   "project_panel": {
     "dock": "right",
   },
@@ -33,12 +41,12 @@
     "trust_all_worktrees": true,
   },
   "vim_mode": true,
-  "icon_theme": "Zed (Default)",
-  "ui_font_size": 16,
+  "icon_theme": "Catppuccin Mocha",
+  "ui_font_size": 18,
   "buffer_font_size": 15,
   "theme": {
     "mode": "dark",
     "light": "One Light",
-    "dark": "One Dark",
+    "dark": "Catppuccin Mocha",
   },
 }

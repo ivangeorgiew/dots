@@ -1,5 +1,5 @@
 [timer]
-work = 55.0           # Work duration in minutes
+work = 50.0           # Work duration in minutes
 break = 5.0          # Break duration in minutes
 long_break = 10.0     # Long break duration in minutes
 sessions = 99999      # Sessions until long break

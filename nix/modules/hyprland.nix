@@ -129,18 +129,18 @@ in {
     # Desktop related packages
     systemPackages = with pkgs; [
       # CLI apps
+      app2unit # UWSM related
       dunst # notifications
       grim # screenshots for wayland
       kdePackages.qtwayland # requirement for qt6
-      libsecret # used by seahorse and gnome-keyring
       libsForQt5.qt5.qtwayland # requirement for qt5
+      libsecret # used by seahorse and gnome-keyring
       mpvpaper # video wallpaper
       polkit_gnome # authentication for some apps
       slurp # needed by `grim`
       swaybg # wallpapers for wayland
       swaylock-effects # lock screen
       tomat # status bar pomodoro clock
-      unstable.app2unit # UWSM related
       unstable.hyprpicker # color picker
       unstable.waybar # status bar
       virtualglLib # provides glxinfo for debugging
@@ -209,7 +209,7 @@ in {
     };
 
     uwsm = {
-      package = pkgs.unstable.uwsm;
+      package = pkgs.uwsm;
     };
 
     # app for gnome-keyring passwords management

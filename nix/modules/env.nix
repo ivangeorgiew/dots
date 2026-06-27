@@ -52,7 +52,7 @@
       # GUI apps
       anki-bin # SRS (flashcards)
       custom.spotify-no-ads # music player
-      custom.zed-editor # ide/text editor
+      unstable.zed-editor # ide/text editor
       easyeffects # sound effects
       gedit # basic text editor GUI
       kdePackages.ark # 7-zip alternative
@@ -70,12 +70,13 @@
       vesktop # discord + additions
       viber # messaging app
       vlc # video player
-      (vscode.fhsWithPackages (ps: with ps; [])) # vscode ide/text editor
+      (unstable.vscode.fhsWithPackages (ps: [])) # vscode ide/text editor
 
       # Programming apps (langs, linters, formatters, etc)
       # Project specific packages should be installed with a devShell + direnv
       (python314.withPackages (ps: with ps; [pip]))
       mise # per-project tool manager
+      unstable.opencode # AI coding agent built for the terminal
 
       # Used by neovim or other IDEs
       neovim-node-client # used by neovim plugins that require node.js
